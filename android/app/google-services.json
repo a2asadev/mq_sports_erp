@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "173120069745",
+    "project_id": "mq-inventory-b3834",
+    "storage_bucket": "mq-inventory-b3834.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173120069745:android:7bbd03a9de2a5970effbd0",
+        "android_client_info": {
+          "package_name": "com.example.mq_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx_SXTL6hpO0CM1mZRhQ7hJvT3h-H1c8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
