@@ -93,7 +93,7 @@ class UsersScreen extends ConsumerWidget {
               user.displayName.isNotEmpty ? user.displayName : user.email;
           return ListTile(
             leading: CircleAvatar(
-              child: Text(name.substring(0, 1).toUpperCase()),
+              child: Text(name.isEmpty ? '?' : name.substring(0, 1).toUpperCase()),
             ),
             title: Text(isSelf ? '$name (you)' : name),
             subtitle: Text('${user.email}\n${user.role.label}'),

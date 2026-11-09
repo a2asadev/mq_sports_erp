@@ -83,7 +83,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
     final UserModel? existing = widget.user;
     final bool isEdit = existing != null;
     final String? myId = ref.watch(currentUserProvider).valueOrNull?.id;
-    final bool isSelf = isEdit && existing.id == myId;
+    final bool isSelf = existing != null && existing.id == myId;
 
     return Scaffold(
       appBar: AppBar(title: Text(isEdit ? 'Edit user' : 'Add user')),

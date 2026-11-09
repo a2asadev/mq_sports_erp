@@ -38,22 +38,35 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
 
   /// Pulls the collection from Firestore. A cloud record replaces the local
   /// one only when it is new to this device or has a newer `updatedAt`.
+  /// Local records that no longer exist in the cloud (deleted on another
+  /// device) are removed, except ones changed after this sync started.
   @override
   Future<void> syncFromCloud() async {
+    final DateTime startedAt = DateTime.now();
     final List<Map<String, dynamic>> remoteMaps =
         await _remote.fetchAll(collectionName);
+    final List<T> remoteItems = remoteMaps.map(_fromMap).toList();
+    final List<T> localItems = await _local.getAll();
     final Map<String, T> localById = <String, T>{
-      for (final T item in await _local.getAll()) item.id: item,
+      for (final T item in localItems) item.id: item,
+    };
+    final Set<String> remoteIds = <String>{
+      for (final T item in remoteItems) item.id,
     };
     final List<T> toStore = <T>[];
-    for (final Map<String, dynamic> map in remoteMaps) {
-      final T remoteItem = _fromMap(map);
+    for (final T remoteItem in remoteItems) {
       final T? localItem = localById[remoteItem.id];
       if (localItem == null || remoteItem.updatedAt.isAfter(localItem.updatedAt)) {
         toStore.add(remoteItem);
       }
     }
     await _local.putAll(toStore);
+    for (final T localItem in localItems) {
+      if (!remoteIds.contains(localItem.id) &&
+          localItem.updatedAt.isBefore(startedAt)) {
+        await _local.delete(localItem.id);
+      }
+    }
   }
 
   Future<void> save(T item) async {

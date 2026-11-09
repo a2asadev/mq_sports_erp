@@ -86,6 +86,15 @@ abstract class BaseListNotifier<T extends SyncableModel>
     }
   }
 
+  /// Exposes [error] through `AsyncValue.error` while keeping the current
+  /// list available. Always returns false so callers can `return` it.
+  bool reportFailure(AppException error) {
+    final List<T> previous = state.valueOrNull ?? <T>[];
+    state = AsyncValue<List<T>>.error(error, StackTrace.current)
+        .copyWithPrevious(AsyncData<List<T>>(previous));
+    return false;
+  }
+
   void _rollback(List<T> previous, AppException error, StackTrace stackTrace) {
     if (_isDisposed) {
       return;

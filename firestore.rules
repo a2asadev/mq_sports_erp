@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function isActiveUser() {
+      return isSignedIn() && exists(userPath()) && get(userPath()).data.isActive == true;
+    }
+
+    function isActiveAdmin() {
+      return isActiveUser() && get(userPath()).data.role == 'admin';
+    }
+
+    function isActiveAdminOrManager() {
+      return isActiveUser() && get(userPath()).data.role in ['admin', 'manager'];
+    }
+
+    // Users: a user reads their own record; only active admins manage users.
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isActiveAdmin());
+      allow create, update, delete: if isActiveAdmin();
+    }
+
+    // Personal profiles: owner (while active) or an admin.
+    match /user_profiles/{id} {
+      allow read: if isActiveAdmin() || (isActiveUser() && resource.data.authUid == request.auth.uid);
+      allow create: if isActiveUser() && request.resource.data.authUid == request.auth.uid;
+      allow update: if isActiveUser() && resource.data.authUid == request.auth.uid;
+    }
+
+    // Catalog: every active user reads; admins and managers write.
+    match /categories/{id} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isActiveAdminOrManager();
+    }
+
+    match /products/{id} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isActiveAdminOrManager();
+    }
+
+    // Every other collection: any active user for now. Tighten per module
+    // as each module is added.
+    match /{collection}/{id} {
+      allow read, write: if isActiveUser()
+          && !(collection in ['users', 'user_profiles', 'categories', 'products']);
+    }
+  }
+}

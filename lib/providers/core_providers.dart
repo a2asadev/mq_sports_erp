@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/repositories/base_repository.dart';
 import 'package:mq_sports_erp/services/auth_admin_service.dart';
 import 'package:mq_sports_erp/services/auth_service.dart';
 import 'package:mq_sports_erp/services/firestore_service.dart';
@@ -27,13 +25,6 @@ final Provider<AuthAdminService> authAdminServiceProvider =
 final StreamProvider<String?> authUidProvider =
     StreamProvider<String?>((Ref ref) {
   return ref.watch(authServiceProvider).uidChanges();
-});
-
-/// Repositories included in the bulk background sync. Each new module
-/// adds its repository to this list.
-final Provider<List<SyncableRepository>> syncRepositoriesProvider =
-    Provider<List<SyncableRepository>>((Ref ref) {
-  return const <SyncableRepository>[];
 });
 
 class SyncStatusNotifier extends Notifier<SyncStatus> {
@@ -61,17 +52,3 @@ class SyncTickNotifier extends Notifier<int> {
 
 final NotifierProvider<SyncTickNotifier, int> syncTickProvider =
     NotifierProvider<SyncTickNotifier, int>(SyncTickNotifier.new);
-
-final Provider<SyncService> syncServiceProvider =
-    Provider<SyncService>((Ref ref) {
-  final SyncService service = SyncService(
-    connectivity: Connectivity(),
-    repositories: ref.watch(syncRepositoriesProvider),
-    onStatusChanged: (SyncStatus status) =>
-        ref.read(syncStatusProvider.notifier).setStatus(status),
-    onSyncCompleted: () => ref.read(syncTickProvider.notifier).increment(),
-  );
-  service.start();
-  ref.onDispose(service.dispose);
-  return service;
-});

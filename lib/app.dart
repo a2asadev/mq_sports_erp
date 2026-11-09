@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:mq_sports_erp/providers/sync_providers.dart';
 import 'package:mq_sports_erp/providers/user_profile_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/access_denied_screen.dart';
@@ -50,10 +51,10 @@ class _AccessGate extends ConsumerWidget {
   const _AccessGate();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {    
+  Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<UserModel?> current = ref.watch(currentUserProvider);
     return current.when(
-      data: (UserModel? user) {        
+      data: (UserModel? user) {
         if (user == null) {
           return const AccessDeniedScreen(
             message: 'Your account is not registered in MQ Sports ERP. '

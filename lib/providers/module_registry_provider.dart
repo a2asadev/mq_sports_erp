@@ -4,12 +4,36 @@ import 'package:mq_sports_erp/core/erp_module.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:mq_sports_erp/screens/catalog/categories_screen.dart';
+import 'package:mq_sports_erp/screens/catalog/products_screen.dart';
 import 'package:mq_sports_erp/screens/users/users_screen.dart';
 
 /// Registry of every ERP module. Each new module appends one `ErpModule`.
 final Provider<List<ErpModule>> erpModulesProvider =
     Provider<List<ErpModule>>((Ref ref) {
   return <ErpModule>[
+    ErpModule(
+      id: 'categories',
+      title: 'Categories',
+      icon: Icons.category_outlined,
+      allowedRoles: const <UserRole>{
+        UserRole.admin,
+        UserRole.manager,
+        UserRole.staff,
+      },
+      builder: (BuildContext context) => const CategoriesScreen(),
+    ),
+    ErpModule(
+      id: 'products',
+      title: 'Products',
+      icon: Icons.inventory_2_outlined,
+      allowedRoles: const <UserRole>{
+        UserRole.admin,
+        UserRole.manager,
+        UserRole.staff,
+      },
+      builder: (BuildContext context) => const ProductsScreen(),
+    ),
     ErpModule(
       id: 'users',
       title: 'Users',

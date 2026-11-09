@@ -27,3 +27,8 @@ class AuthFailureException extends AppException {
 class PermissionDeniedException extends AppException {
   const PermissionDeniedException(super.message);
 }
+
+/// Thrown when submitted data breaks a business rule.
+class ValidationException extends AppException {
+  const ValidationException(super.message);
+}
