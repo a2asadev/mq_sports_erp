@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/providers/sync_providers.dart';
+import 'package:mq_sports_erp/providers/sync_coordinator.dart';
 import 'package:mq_sports_erp/providers/user_profile_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/access_denied_screen.dart';
@@ -15,8 +15,9 @@ class MqSportsApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Keeps the background sync service alive for the whole app lifetime.
-    ref.watch(syncServiceProvider);
+    // Keeps the sync coordinator (and its metadata listener) alive.
+    ref.listen<SyncState>(syncCoordinatorProvider,
+        (SyncState? previous, SyncState next) {});
     return MaterialApp(
       title: 'MQ Sports ERP',
       debugShowCheckedModeBanner: false,

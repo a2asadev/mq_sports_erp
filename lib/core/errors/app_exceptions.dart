@@ -32,3 +32,11 @@ class PermissionDeniedException extends AppException {
 class ValidationException extends AppException {
   const ValidationException(super.message);
 }
+
+/// Thrown when the cloud collection changed since this device last synced it.
+class VersionConflictException extends AppException {
+  const VersionConflictException(this.currentVersion)
+      : super('The cloud data changed. Download the updates first.');
+
+  final int currentVersion;
+}

@@ -22,17 +22,17 @@ service cloud.firestore {
       return isActiveUser() && get(userPath()).data.role in ['admin', 'manager'];
     }
 
+    // Per-collection version info (version: int, updated_at: timestamp).
+    // Every active user listens to it; uploads raise the version.
+    match /metadata/{collection} {
+      allow read: if isActiveUser();
+      allow write: if isActiveUser();
+    }
+
     // Users: a user reads their own record; only active admins manage users.
     match /users/{uid} {
       allow read: if isSignedIn() && (request.auth.uid == uid || isActiveAdmin());
       allow create, update, delete: if isActiveAdmin();
-    }
-
-    // Personal profiles: owner (while active) or an admin.
-    match /user_profiles/{id} {
-      allow read: if isActiveAdmin() || (isActiveUser() && resource.data.authUid == request.auth.uid);
-      allow create: if isActiveUser() && request.resource.data.authUid == request.auth.uid;
-      allow update: if isActiveUser() && resource.data.authUid == request.auth.uid;
     }
 
     // Catalog: every active user reads; admins and managers write.
@@ -50,7 +50,7 @@ service cloud.firestore {
     // as each module is added.
     match /{collection}/{id} {
       allow read, write: if isActiveUser()
-          && !(collection in ['users', 'user_profiles', 'categories', 'products']);
+          && !(collection in ['metadata', 'users', 'categories', 'products']);
     }
   }
 }

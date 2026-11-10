@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
@@ -18,22 +16,19 @@ final Provider<UserRepository> userRepositoryProvider =
       fromMap: UserModel.fromMap,
     ),
     remote: ref.watch(firestoreServiceProvider),
+    pendingStore: ref.watch(pendingChangeStoreProvider),
+    resolveCurrentUser: () => ref.read(currentUserProvider.future),
   );
 });
 
 /// The `users` record of the signed-in login: it carries the role and the
 /// active flag. Null when signed out or when the login has no user record.
 ///
-/// Serves the Hive copy instantly, then refreshes from Firestore in the
-/// background, so a deactivated or deleted user loses access as soon as the
-/// refresh arrives.
+/// Read from Hive. Only when this device has no copy yet (first login) is it
+/// downloaded once; after that it changes only through a sync.
 class CurrentUserNotifier extends AsyncNotifier<UserModel?> {
-  int _generation = 0;
-
   @override
   Future<UserModel?> build() async {
-    ref.onDispose(() => _generation++);
-    final int generation = _generation;
     final String? uid = await ref.watch(authUidProvider.future);
     if (uid == null) {
       return null;
@@ -41,7 +36,6 @@ class CurrentUserNotifier extends AsyncNotifier<UserModel?> {
     final UserRepository repository = ref.read(userRepositoryProvider);
     final UserModel? local = await repository.getLocalById(uid);
     if (local != null) {
-      unawaited(_refresh(generation, uid, repository));
       return local;
     }
     final UserModel? remote = await repository.fetchRemote(uid);
@@ -49,30 +43,6 @@ class CurrentUserNotifier extends AsyncNotifier<UserModel?> {
       await repository.storeLocal(remote);
     }
     return remote;
-  }
-
-  Future<void> _refresh(
-    int generation,
-    String uid,
-    UserRepository repository,
-  ) async {
-    try {
-      final UserModel? remote = await repository.fetchRemote(uid);
-      if (generation != _generation) {
-        return;
-      }
-      if (remote == null) {
-        await repository.deleteLocal(uid);
-      } else {
-        await repository.storeLocal(remote);
-      }
-      if (generation == _generation) {
-        state = AsyncData<UserModel?>(remote);
-      }
-    } on AppException {
-      // Offline or transient failure: keep the last known local record.
-      return;
-    }
   }
 }
 

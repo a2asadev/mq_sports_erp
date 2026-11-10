@@ -8,10 +8,10 @@ import 'package:mq_sports_erp/repositories/base_repository.dart';
 
 /// Base `AsyncNotifier` for every entity list.
 ///
-/// - Reads local Hive data first for instant state.
-/// - Syncs with the cloud in the background and refreshes state silently.
-/// - Mutations are optimistic and roll back to the previous snapshot on
-///   failure, exposing the error through `AsyncValue.error`.
+/// - Reads only from Hive (never from Firestore).
+/// - Reloads from Hive after downloaded data was merged in.
+/// - Mutations are optimistic and roll back to the previous snapshot if the
+///   local write fails, exposing the error through `AsyncValue.error`.
 abstract class BaseListNotifier<T extends SyncableModel>
     extends AsyncNotifier<List<T>> {
   BaseRepository<T> get repository;
@@ -25,9 +25,7 @@ abstract class BaseListNotifier<T extends SyncableModel>
     ref.listen<int>(syncTickProvider, (int? previous, int next) {
       unawaited(_reloadFromLocal());
     });
-    final List<T> local = await repository.getLocal();
-    unawaited(_backgroundSync());
-    return local;
+    return repository.getLocal();
   }
 
   Future<void> _reloadFromLocal() async {
@@ -36,17 +34,6 @@ abstract class BaseListNotifier<T extends SyncableModel>
       if (!_isDisposed) {
         state = AsyncData<List<T>>(local);
       }
-    } on AppException {
-      return;
-    }
-  }
-
-  /// Sync failures here are intentionally silent: the UI keeps showing local
-  /// data and `SyncService` reports connectivity/sync status separately.
-  Future<void> _backgroundSync() async {
-    try {
-      await repository.syncFromCloud();
-      await _reloadFromLocal();
     } on AppException {
       return;
     }

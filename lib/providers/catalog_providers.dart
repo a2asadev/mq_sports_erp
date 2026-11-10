@@ -15,14 +15,31 @@ import 'package:mq_sports_erp/services/hive_local_repository.dart';
 
 final Provider<BaseRepository<CategoryModel>> categoryRepositoryProvider =
     Provider<BaseRepository<CategoryModel>>((Ref ref) {
+  final HiveLocalRepository<CategoryModel> local =
+      HiveLocalRepository<CategoryModel>(
+    boxName: StorageKeys.categories,
+    fromMap: CategoryModel.fromMap,
+  );
   return BaseRepository<CategoryModel>(
     collectionName: StorageKeys.categories,
-    local: HiveLocalRepository<CategoryModel>(
-      boxName: StorageKeys.categories,
-      fromMap: CategoryModel.fromMap,
-    ),
-    remote: ref.watch(firestoreServiceProvider),
+    entityLabel: 'Category',
+    local: local,
+    pendingStore: ref.watch(pendingChangeStoreProvider),
     fromMap: CategoryModel.fromMap,
+    labelOf: (CategoryModel category) => category.name,
+    // A category may only be deleted while nothing on this device uses it.
+    // Also re-checked after a sync downloads other users' changes.
+    deleteGuard: (String id) async {
+      final List<CategoryModel> categories = await local.getAll();
+      if (categories.any((CategoryModel c) => c.parentId == id)) {
+        return 'it has subcategories';
+      }
+      final List<ProductModel> products =
+          await ref.read(productRepositoryProvider).getLocal();
+      final int used =
+          products.where((ProductModel p) => p.categoryId == id).length;
+      return used > 0 ? 'it is used by $used product(s)' : null;
+    },
   );
 });
 
@@ -30,12 +47,14 @@ final Provider<BaseRepository<ProductModel>> productRepositoryProvider =
     Provider<BaseRepository<ProductModel>>((Ref ref) {
   return BaseRepository<ProductModel>(
     collectionName: StorageKeys.products,
+    entityLabel: 'Product',
     local: HiveLocalRepository<ProductModel>(
       boxName: StorageKeys.products,
       fromMap: ProductModel.fromMap,
     ),
-    remote: ref.watch(firestoreServiceProvider),
+    pendingStore: ref.watch(pendingChangeStoreProvider),
     fromMap: ProductModel.fromMap,
+    labelOf: (ProductModel product) => product.name,
   );
 });
 
@@ -126,18 +145,11 @@ class CategoriesNotifier extends BaseListNotifier<CategoryModel> {
     if (!ref.read(canManageCatalogProvider)) {
       return reportFailure(const PermissionDeniedException(_noPermissionMessage));
     }
-    if (_items.any((CategoryModel other) => other.parentId == id)) {
-      return reportFailure(const ValidationException(
-          'This category has subcategories. Delete or move them first.'));
-    }
     try {
-      final List<ProductModel> products =
-          await ref.read(productRepositoryProvider).getLocal();
-      final int used =
-          products.where((ProductModel p) => p.categoryId == id).length;
-      if (used > 0) {
+      final String? reason = await repository.deleteBlockReason(id);
+      if (reason != null) {
         return reportFailure(ValidationException(
-            'This category is used by $used product(s). Move or delete them first.'));
+            'This category cannot be deleted because $reason.'));
       }
     } on AppException catch (e) {
       return reportFailure(e);
