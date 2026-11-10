@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/providers/catalog_providers.dart';
+import 'package:mq_sports_erp/providers/parties_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
 
@@ -12,5 +13,8 @@ final Provider<List<SyncableRepository>> syncRepositoriesProvider =
     ref.watch(userRepositoryProvider),
     ref.watch(categoryRepositoryProvider),
     ref.watch(productRepositoryProvider),
+    ref.watch(vendorRepositoryProvider),
+    ref.watch(customerRepositoryProvider),
+    ref.watch(ledgerRepositoryProvider),
   ];
 });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
+import 'package:mq_sports_erp/core/utils/price_warnings.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
@@ -52,10 +53,16 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
   Future<void> _editVariant({VariantModel? variant, int? index}) async {
     final bool readOnly = !ref.read(canManageCatalogProvider);
+    final Set<String> otherSkus = <String>{
+      for (int i = 0; i < _variants.length; i++)
+        if (i != index) _variants[i].sku.trim().toLowerCase(),
+    };
     final VariantModel? result = await showVariantDialog(
       context,
       variant: variant,
       readOnly: readOnly,
+      productName: _nameController.text,
+      otherSkus: otherSkus,
     );
     if (result == null || !mounted) {
       return;
@@ -109,6 +116,57 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     if (succeeded) {
       Navigator.of(context).pop();
     }
+  }
+
+  Widget _variantCard(int index, bool locked) {
+    final VariantModel variant = _variants[index];
+    final List<String> warnings = priceWarnings(
+      isWholesale: variant.isWholesale,
+      costPrice: variant.costPrice,
+      wholesalePrice: variant.wholesalePrice,
+      salePrice: variant.salePrice,
+    );
+    final String cost = variant.costPrice.toStringAsFixed(2);
+    final String sale = variant.salePrice.toStringAsFixed(2);
+    final String prices = variant.isWholesale
+        ? 'Cost $cost · Wholesale ${variant.wholesalePrice.toStringAsFixed(2)} · Retail $sale'
+        : 'Cost $cost · Sale $sale';
+    return Card(
+      child: ListTile(
+        isThreeLine: true,
+        title: Text(variant.label),
+        subtitle: Text(
+          'SKU ${variant.sku}${variant.isActive ? '' : ' · Inactive'}\n$prices',
+        ),
+        onTap: _isSubmitting
+            ? null
+            : () => _editVariant(variant: variant, index: index),
+        trailing: (warnings.isEmpty && locked)
+            ? null
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  if (warnings.isNotEmpty)
+                    Tooltip(
+                      message: warnings.join('\n'),
+                      child: Icon(Icons.warning_amber_rounded,
+                          color: Colors.orange.shade700),
+                    ),
+                  if (!locked)
+                    IconButton(
+                      tooltip: 'Remove variant',
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: () => setState(() {
+                        _variants = <VariantModel>[
+                          for (int j = 0; j < _variants.length; j++)
+                            if (j != index) _variants[j],
+                        ];
+                      }),
+                    ),
+                ],
+              ),
+      ),
+    );
   }
 
   @override
@@ -238,32 +296,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         ),
                       ),
                     for (int i = 0; i < _variants.length; i++)
-                      Card(
-                        child: ListTile(
-                          title: Text(_variants[i].label),
-                          subtitle: Text(
-                            'SKU ${_variants[i].sku}'
-                            ' · Sale ${_variants[i].salePrice.toStringAsFixed(2)}'
-                            '${_variants[i].isActive ? '' : ' · Inactive'}',
-                          ),
-                          onTap: _isSubmitting
-                              ? null
-                              : () => _editVariant(
-                                  variant: _variants[i], index: i),
-                          trailing: locked
-                              ? null
-                              : IconButton(
-                                  tooltip: 'Remove variant',
-                                  icon: const Icon(Icons.delete_outline),
-                                  onPressed: () => setState(() {
-                                    _variants = <VariantModel>[
-                                      for (int j = 0; j < _variants.length; j++)
-                                        if (j != i) _variants[j],
-                                    ];
-                                  }),
-                                ),
-                        ),
-                      ),
+                      _variantCard(i, locked),
                     if (canManage) ...<Widget>[
                       const SizedBox(height: 24),
                       FilledButton(

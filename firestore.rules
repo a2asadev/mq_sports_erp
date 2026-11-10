@@ -46,11 +46,28 @@ service cloud.firestore {
       allow create, update, delete: if isActiveAdminOrManager();
     }
 
+    // Parties and their balance ledger: every active user reads (the app
+    // only shows Vendors to admins and managers); admins and managers write.
+    match /vendors/{id} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isActiveAdminOrManager();
+    }
+
+    match /customers/{id} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isActiveAdminOrManager();
+    }
+
+    match /ledgers/{id} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isActiveAdminOrManager();
+    }
+
     // Every other collection: any active user for now. Tighten per module
     // as each module is added.
     match /{collection}/{id} {
       allow read, write: if isActiveUser()
-          && !(collection in ['metadata', 'users', 'categories', 'products']);
+          && !(collection in ['metadata', 'users', 'categories', 'products', 'vendors', 'customers', 'ledgers']);
     }
   }
 }

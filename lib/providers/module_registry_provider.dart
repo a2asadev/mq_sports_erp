@@ -6,6 +6,8 @@ import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/catalog/categories_screen.dart';
 import 'package:mq_sports_erp/screens/catalog/products_screen.dart';
+import 'package:mq_sports_erp/screens/parties/customers_screen.dart';
+import 'package:mq_sports_erp/screens/parties/vendors_screen.dart';
 import 'package:mq_sports_erp/screens/users/users_screen.dart';
 
 /// Registry of every ERP module. Each new module appends one `ErpModule`.
@@ -33,6 +35,24 @@ final Provider<List<ErpModule>> erpModulesProvider =
         UserRole.staff,
       },
       builder: (BuildContext context) => const ProductsScreen(),
+    ),
+    ErpModule(
+      id: 'customers',
+      title: 'Customers',
+      icon: Icons.groups_outlined,
+      allowedRoles: const <UserRole>{
+        UserRole.admin,
+        UserRole.manager,
+        UserRole.staff,
+      },
+      builder: (BuildContext context) => const CustomersScreen(),
+    ),
+    ErpModule(
+      id: 'vendors',
+      title: 'Vendors',
+      icon: Icons.local_shipping_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      builder: (BuildContext context) => const VendorsScreen(),
     ),
     ErpModule(
       id: 'users',

@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/core/utils/price_warnings.dart';
+import 'package:mq_sports_erp/core/utils/sku_generator.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
 
 /// Opens the variant editor. Returns the saved variant, or null when the
 /// dialog was cancelled or opened read-only.
+///
+/// [productName] and [otherSkus] (the SKUs of the product's other variants)
+/// are used by the SKU auto-create button.
 Future<VariantModel?> showVariantDialog(
   BuildContext context, {
   VariantModel? variant,
   required bool readOnly,
+  required String productName,
+  required Set<String> otherSkus,
 }) {
   return showDialog<VariantModel>(
     context: context,
-    builder: (BuildContext dialogContext) =>
-        _VariantDialog(variant: variant, readOnly: readOnly),
+    builder: (BuildContext dialogContext) => _VariantDialog(
+      variant: variant,
+      readOnly: readOnly,
+      productName: productName,
+      otherSkus: otherSkus,
+    ),
   );
 }
 
@@ -30,10 +41,17 @@ class _AttributeRow {
 }
 
 class _VariantDialog extends StatefulWidget {
-  const _VariantDialog({required this.variant, required this.readOnly});
+  const _VariantDialog({
+    required this.variant,
+    required this.readOnly,
+    required this.productName,
+    required this.otherSkus,
+  });
 
   final VariantModel? variant;
   final bool readOnly;
+  final String productName;
+  final Set<String> otherSkus;
 
   @override
   State<_VariantDialog> createState() => _VariantDialogState();
@@ -45,9 +63,12 @@ class _VariantDialogState extends State<_VariantDialog> {
   late final TextEditingController _skuController;
   late final TextEditingController _barcodeController;
   late final TextEditingController _costController;
+  late final TextEditingController _wholesaleController;
   late final TextEditingController _saleController;
   late final List<_AttributeRow> _attributes;
   late bool _isActive;
+  late bool _isWholesale;
+  String? _skuHelper;
 
   @override
   void initState() {
@@ -58,6 +79,8 @@ class _VariantDialogState extends State<_VariantDialog> {
     _barcodeController = TextEditingController(text: existing?.barcode ?? '');
     _costController = TextEditingController(
         text: (existing?.costPrice ?? 0).toStringAsFixed(2));
+    _wholesaleController = TextEditingController(
+        text: (existing?.wholesalePrice ?? 0).toStringAsFixed(2));
     _saleController = TextEditingController(
         text: (existing?.salePrice ?? 0).toStringAsFixed(2));
     _attributes = <_AttributeRow>[
@@ -66,6 +89,7 @@ class _VariantDialogState extends State<_VariantDialog> {
         _AttributeRow(entry.key, entry.value),
     ];
     _isActive = existing?.isActive ?? true;
+    _isWholesale = existing?.isWholesale ?? false;
   }
 
   @override
@@ -74,6 +98,7 @@ class _VariantDialogState extends State<_VariantDialog> {
     _skuController.dispose();
     _barcodeController.dispose();
     _costController.dispose();
+    _wholesaleController.dispose();
     _saleController.dispose();
     for (final _AttributeRow row in _attributes) {
       row.dispose();
@@ -81,12 +106,36 @@ class _VariantDialogState extends State<_VariantDialog> {
     super.dispose();
   }
 
+  double _parse(TextEditingController controller) =>
+      double.tryParse(controller.text.trim()) ?? 0;
+
   String? _validatePrice(String? value) {
     final double? parsed = double.tryParse((value ?? '').trim());
     if (parsed == null || parsed < 0) {
       return 'Enter a valid price.';
     }
     return null;
+  }
+
+  void _autoCreateSku() {
+    final List<String> values = _attributes
+        .map((_AttributeRow row) => row.valueController.text.trim())
+        .where((String value) => value.isNotEmpty)
+        .toList();
+    final String sku = SkuGenerator.generate(
+      productName: widget.productName,
+      variantName: _nameController.text,
+      attributeValues: values,
+      existingSkus: widget.otherSkus,
+    );
+    setState(() {
+      if (sku.isEmpty) {
+        _skuHelper = 'Enter the product name or an attribute value first.';
+      } else {
+        _skuController.text = sku;
+        _skuHelper = null;
+      }
+    });
   }
 
   void _save() {
@@ -110,18 +159,47 @@ class _VariantDialogState extends State<_VariantDialog> {
       attributes: attributes,
       costPrice: double.parse(_costController.text.trim()),
       salePrice: double.parse(_saleController.text.trim()),
+      isWholesale: _isWholesale,
+      wholesalePrice:
+          _isWholesale ? double.parse(_wholesaleController.text.trim()) : 0,
       isActive: _isActive,
     );
     Navigator.of(context).pop(result);
   }
 
+  Widget _priceField({
+    required TextEditingController controller,
+    required String label,
+    required bool readOnly,
+    String? Function(String?)? validator,
+  }) {
+    return Expanded(
+      child: TextFormField(
+        controller: controller,
+        enabled: !readOnly,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        decoration: InputDecoration(labelText: label),
+        validator: validator,
+        onChanged: (String _) => setState(() {}),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool readOnly = widget.readOnly;
+    final ThemeData theme = Theme.of(context);
+    final List<String> warnings = priceWarnings(
+      isWholesale: _isWholesale,
+      costPrice: _parse(_costController),
+      wholesalePrice: _parse(_wholesaleController),
+      salePrice: _parse(_saleController),
+    );
+
     return AlertDialog(
       title: Text(widget.variant == null ? 'Add variant' : 'Variant'),
       content: SizedBox(
-        width: 420,
+        width: 440,
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -132,7 +210,17 @@ class _VariantDialogState extends State<_VariantDialog> {
                 TextFormField(
                   controller: _skuController,
                   enabled: !readOnly,
-                  decoration: const InputDecoration(labelText: 'SKU'),
+                  decoration: InputDecoration(
+                    labelText: 'SKU',
+                    helperText: _skuHelper,
+                    suffixIcon: readOnly
+                        ? null
+                        : IconButton(
+                            tooltip: 'Auto-create SKU',
+                            icon: const Icon(Icons.auto_fix_high),
+                            onPressed: _autoCreateSku,
+                          ),
+                  ),
                   validator: (String? value) =>
                       (value == null || value.trim().isEmpty)
                           ? 'SKU is required.'
@@ -150,35 +238,63 @@ class _VariantDialogState extends State<_VariantDialog> {
                   decoration:
                       const InputDecoration(labelText: 'Barcode (optional)'),
                 ),
+                const SizedBox(height: 8),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Wholesale variant'),
+                  subtitle: const Text('Adds a separate wholesale price'),
+                  value: _isWholesale,
+                  onChanged: readOnly
+                      ? null
+                      : (bool value) => setState(() => _isWholesale = value),
+                ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Expanded(
-                      child: TextFormField(
-                        controller: _costController,
-                        enabled: !readOnly,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true),
-                        decoration:
-                            const InputDecoration(labelText: 'Cost price'),
-                        validator: _validatePrice,
-                      ),
+                    _priceField(
+                      controller: _costController,
+                      label: 'Cost price',
+                      readOnly: readOnly,
+                      validator: _validatePrice,
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _saleController,
-                        enabled: !readOnly,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true),
-                        decoration:
-                            const InputDecoration(labelText: 'Sale price'),
+                    if (_isWholesale) ...<Widget>[
+                      const SizedBox(width: 12),
+                      _priceField(
+                        controller: _wholesaleController,
+                        label: 'Wholesale price',
+                        readOnly: readOnly,
                         validator: _validatePrice,
                       ),
+                    ],
+                    const SizedBox(width: 12),
+                    _priceField(
+                      controller: _saleController,
+                      label: _isWholesale ? 'Retail price' : 'Sale price',
+                      readOnly: readOnly,
+                      validator: _validatePrice,
                     ),
                   ],
                 ),
+                for (final String warning in warnings)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(Icons.warning_amber_rounded,
+                            size: 18, color: Colors.orange.shade700),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            warning,
+                            style: TextStyle(color: Colors.orange.shade700),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 const SizedBox(height: 16),
-                Text('Attributes', style: Theme.of(context).textTheme.titleSmall),
+                Text('Attributes', style: theme.textTheme.titleSmall),
                 for (int i = 0; i < _attributes.length; i++)
                   Row(
                     children: <Widget>[
@@ -196,7 +312,7 @@ class _VariantDialogState extends State<_VariantDialog> {
                           controller: _attributes[i].valueController,
                           enabled: !readOnly,
                           decoration: const InputDecoration(
-                              labelText: 'Value', hintText: 'M'),
+                              labelText: 'Value', hintText: 'Small'),
                         ),
                       ),
                       if (!readOnly)

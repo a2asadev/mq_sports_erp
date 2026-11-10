@@ -2,6 +2,10 @@ import 'package:uuid/uuid.dart';
 
 /// A sellable variant of a product (for example size M / red). It has no
 /// repository of its own: it is stored inside its parent `ProductModel`.
+///
+/// Pricing: every variant has a [costPrice] and a [salePrice]. A wholesale
+/// variant ([isWholesale]) additionally has a [wholesalePrice]; its
+/// [salePrice] is then the retail price.
 class VariantModel {
   VariantModel({
     String? id,
@@ -11,6 +15,8 @@ class VariantModel {
     Map<String, String>? attributes,
     this.costPrice = 0,
     this.salePrice = 0,
+    this.isWholesale = false,
+    this.wholesalePrice = 0,
     this.isActive = true,
   })  : id = id ?? const Uuid().v4(),
         attributes = Map<String, String>.unmodifiable(
@@ -25,7 +31,13 @@ class VariantModel {
   /// Option values such as `{'Size': 'M', 'Color': 'Red'}`.
   final Map<String, String> attributes;
   final double costPrice;
+
+  /// Sale price, or the retail price when [isWholesale] is true.
   final double salePrice;
+  final bool isWholesale;
+
+  /// Only meaningful when [isWholesale] is true; otherwise 0.
+  final double wholesalePrice;
   final bool isActive;
 
   /// Human-readable label: the name, else the attribute values, else the SKU.
@@ -48,6 +60,8 @@ class VariantModel {
       'attributes': attributes,
       'costPrice': costPrice,
       'salePrice': salePrice,
+      'isWholesale': isWholesale,
+      'wholesalePrice': wholesalePrice,
       'isActive': isActive,
     };
   }
@@ -66,6 +80,8 @@ class VariantModel {
       ),
       costPrice: (map['costPrice'] as num?)?.toDouble() ?? 0,
       salePrice: (map['salePrice'] as num?)?.toDouble() ?? 0,
+      isWholesale: map['isWholesale'] as bool? ?? false,
+      wholesalePrice: (map['wholesalePrice'] as num?)?.toDouble() ?? 0,
       isActive: map['isActive'] as bool? ?? true,
     );
   }
@@ -77,6 +93,8 @@ class VariantModel {
     Map<String, String>? attributes,
     double? costPrice,
     double? salePrice,
+    bool? isWholesale,
+    double? wholesalePrice,
     bool? isActive,
   }) {
     return VariantModel(
@@ -87,6 +105,8 @@ class VariantModel {
       attributes: attributes ?? this.attributes,
       costPrice: costPrice ?? this.costPrice,
       salePrice: salePrice ?? this.salePrice,
+      isWholesale: isWholesale ?? this.isWholesale,
+      wholesalePrice: wholesalePrice ?? this.wholesalePrice,
       isActive: isActive ?? this.isActive,
     );
   }
