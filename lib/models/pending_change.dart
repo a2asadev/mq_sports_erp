@@ -28,6 +28,7 @@ class PendingChange {
     required this.itemLabel,
     required this.type,
     required this.changedAt,
+    this.groupId = '',
   });
 
   final String collection;
@@ -41,6 +42,11 @@ class PendingChange {
   final PendingChangeType type;
   final DateTime changedAt;
 
+  /// Changes that share a non-empty group id (for example a purchase, its
+  /// stock entries and its vendor ledger entries) are uploaded together in
+  /// one atomic Firestore transaction.
+  final String groupId;
+
   String get key => '$collection:$entityId';
 
   Map<String, dynamic> toMap() {
@@ -51,6 +57,7 @@ class PendingChange {
       'itemLabel': itemLabel,
       'type': type.name,
       'changedAt': changedAt.toIso8601String(),
+      'groupId': groupId,
     };
   }
 
@@ -63,6 +70,7 @@ class PendingChange {
       type: PendingChangeType.fromName(map['type'] as String?),
       changedAt: DateTime.tryParse(map['changedAt'] as String? ?? '') ??
           DateTime.now(),
+      groupId: map['groupId'] as String? ?? '',
     );
   }
 
@@ -70,6 +78,7 @@ class PendingChange {
     String? itemLabel,
     PendingChangeType? type,
     DateTime? changedAt,
+    String? groupId,
   }) {
     return PendingChange(
       collection: collection,
@@ -78,6 +87,7 @@ class PendingChange {
       itemLabel: itemLabel ?? this.itemLabel,
       type: type ?? this.type,
       changedAt: changedAt ?? this.changedAt,
+      groupId: groupId ?? this.groupId,
     );
   }
 }

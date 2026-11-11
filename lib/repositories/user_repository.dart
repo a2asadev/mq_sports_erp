@@ -2,6 +2,7 @@ import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/services/activity_logger.dart';
 import 'package:mq_sports_erp/services/firestore_service.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
 import 'package:mq_sports_erp/services/pending_change_store.dart';
@@ -11,6 +12,7 @@ class UserRepository extends BaseRepository<UserModel> {
     required HiveLocalRepository<UserModel> local,
     required FirestoreService remote,
     required PendingChangeStore pendingStore,
+    ActivityLogger? logger,
     required Future<UserModel?> Function() resolveCurrentUser,
   })  : _local = local,
         _remote = remote,
@@ -20,6 +22,7 @@ class UserRepository extends BaseRepository<UserModel> {
           entityLabel: 'User',
           local: local,
           pendingStore: pendingStore,
+          logger: logger,
           fromMap: UserModel.fromMap,
           labelOf: (UserModel user) =>
               user.displayName.isNotEmpty ? user.displayName : user.email,

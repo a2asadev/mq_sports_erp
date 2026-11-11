@@ -14,6 +14,8 @@ class LedgerModel implements SyncableModel {
     DateTime? entryDate,
     this.description = '',
     this.reference = '',
+    this.purchaseId = '',
+    this.orderId = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -32,6 +34,12 @@ class LedgerModel implements SyncableModel {
   final DateTime entryDate;
   final String description;
   final String reference;
+
+  /// Id of the purchase this entry belongs to (empty for general entries).
+  final String purchaseId;
+
+  /// Id of the order this entry belongs to (empty for general entries).
+  final String orderId;
   final DateTime createdAt;
 
   @override
@@ -52,6 +60,8 @@ class LedgerModel implements SyncableModel {
       'entryDate': entryDate.toIso8601String(),
       'description': description,
       'reference': reference,
+      'purchaseId': purchaseId,
+      'orderId': orderId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -67,6 +77,8 @@ class LedgerModel implements SyncableModel {
       entryDate: DateTime.tryParse(map['entryDate'] as String? ?? ''),
       description: map['description'] as String? ?? '',
       reference: map['reference'] as String? ?? '',
+      purchaseId: map['purchaseId'] as String? ?? '',
+      orderId: map['orderId'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -90,6 +102,8 @@ class LedgerModel implements SyncableModel {
       entryDate: entryDate ?? this.entryDate,
       description: description ?? this.description,
       reference: reference ?? this.reference,
+      purchaseId: purchaseId,
+      orderId: orderId,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

@@ -379,7 +379,7 @@ class PartyDetailScreen extends ConsumerWidget {
                               style: theme.textTheme.bodySmall),
                         ],
                       ),
-                      if (canManage)
+                      if (canManage && row.key.purchaseId.isEmpty)
                         IconButton(
                           tooltip: 'Delete entry',
                           icon: const Icon(Icons.delete_outline),

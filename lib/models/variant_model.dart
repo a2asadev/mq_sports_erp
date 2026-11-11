@@ -17,6 +17,7 @@ class VariantModel {
     this.salePrice = 0,
     this.isWholesale = false,
     this.wholesalePrice = 0,
+    this.alertThreshold = 0,
     this.isActive = true,
   })  : id = id ?? const Uuid().v4(),
         attributes = Map<String, String>.unmodifiable(
@@ -38,6 +39,10 @@ class VariantModel {
 
   /// Only meaningful when [isWholesale] is true; otherwise 0.
   final double wholesalePrice;
+
+  /// Low-stock alert level: the variant is flagged when its stock on hand is
+  /// at or below this number. 0 means no alert is set.
+  final int alertThreshold;
   final bool isActive;
 
   /// Human-readable label: the name, else the attribute values, else the SKU.
@@ -62,6 +67,7 @@ class VariantModel {
       'salePrice': salePrice,
       'isWholesale': isWholesale,
       'wholesalePrice': wholesalePrice,
+      'alertThreshold': alertThreshold,
       'isActive': isActive,
     };
   }
@@ -82,6 +88,7 @@ class VariantModel {
       salePrice: (map['salePrice'] as num?)?.toDouble() ?? 0,
       isWholesale: map['isWholesale'] as bool? ?? false,
       wholesalePrice: (map['wholesalePrice'] as num?)?.toDouble() ?? 0,
+      alertThreshold: (map['alertThreshold'] as num?)?.toInt() ?? 0,
       isActive: map['isActive'] as bool? ?? true,
     );
   }
@@ -95,6 +102,7 @@ class VariantModel {
     double? salePrice,
     bool? isWholesale,
     double? wholesalePrice,
+    int? alertThreshold,
     bool? isActive,
   }) {
     return VariantModel(
@@ -107,6 +115,7 @@ class VariantModel {
       salePrice: salePrice ?? this.salePrice,
       isWholesale: isWholesale ?? this.isWholesale,
       wholesalePrice: wholesalePrice ?? this.wholesalePrice,
+      alertThreshold: alertThreshold ?? this.alertThreshold,
       isActive: isActive ?? this.isActive,
     );
   }

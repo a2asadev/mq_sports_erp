@@ -3,12 +3,15 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/models/activity_log_model.dart';
 import 'package:mq_sports_erp/models/pending_change.dart';
 import 'package:mq_sports_erp/models/remote_collection_meta.dart';
+import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/sync_registry_provider.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/services/activity_log_store.dart';
 import 'package:mq_sports_erp/services/firestore_service.dart';
 import 'package:mq_sports_erp/services/pending_change_store.dart';
 import 'package:mq_sports_erp/services/sync_state_store.dart';
@@ -121,6 +124,10 @@ class _Deps {
 class SyncCoordinator extends Notifier<SyncState> {
   static const int _chunkSize = 400;
   static const int _maxConflictRetries = 3;
+
+  /// Uploaded logs older than this are removed from the device (the cloud
+  /// copy is kept).
+  static const Duration _logRetention = Duration(days: 90);
 
   int _generation = 0;
   StreamSubscription<Map<String, RemoteCollectionMeta>>? _metadataSub;
@@ -239,6 +246,12 @@ class SyncCoordinator extends Notifier<SyncState> {
       try {
         await _downloadBeforeDeletes(generation, repos, deps);
       } on AppException catch (e) {
+        await _logSync(
+          action: 'sync_failed',
+          level: LogLevel.error,
+          summary: 'Sync stopped while downloading before deletes: ${e.message}',
+        );
+        await _uploadLogs();
         _finish(generation, e.message, isError: true);
       }
       return;
@@ -256,10 +269,32 @@ class SyncCoordinator extends Notifier<SyncState> {
           discarded += await _pull(generation, repo, deps, state.remoteVersionOf(name));
           downloaded++;
         }
+      }
+      // Records that belong together (a purchase with its stock and ledger
+      // entries) go up in one atomic transaction, before the single changes.
+      uploaded += await _pushGroups(generation, repos, deps);
+      for (final SyncableRepository repo in repos) {
+        if (generation != _generation) {
+          return;
+        }
         uploaded += await _push(generation, repo, deps);
       }
+      if (uploaded > 0 || downloaded > 0 || discarded > 0) {
+        await _logSync(
+          action: 'sync_completed',
+          level: discarded > 0 ? LogLevel.warning : LogLevel.info,
+          summary: 'Sync completed: ${_summary(uploaded, downloaded, discarded)}',
+        );
+      }
+      await _uploadLogs();
       _finish(generation, _summary(uploaded, downloaded, discarded), isError: false);
     } on AppException catch (e) {
+      await _logSync(
+        action: 'sync_failed',
+        level: LogLevel.error,
+        summary: 'Sync failed: ${e.message}',
+      );
+      await _uploadLogs();
       _finish(generation, e.message, isError: true);
     }
   }
@@ -284,12 +319,26 @@ class SyncCoordinator extends Notifier<SyncState> {
           downloaded++;
         }
       }
+      if (downloaded > 0 || discarded > 0) {
+        await _logSync(
+          action: 'login_sync_completed',
+          level: discarded > 0 ? LogLevel.warning : LogLevel.info,
+          summary: 'Download at sign-in: ${_summary(0, downloaded, discarded)}',
+        );
+      }
+      await _uploadLogs();
       _finish(
         generation,
         downloaded == 0 ? null : _summary(0, downloaded, discarded),
         isError: false,
       );
     } on AppException catch (e) {
+      await _logSync(
+        action: 'sync_failed',
+        level: LogLevel.error,
+        summary: 'Download at sign-in failed: ${e.message}',
+      );
+      await _uploadLogs();
       _finish(generation, e.message, isError: true);
     }
   }
@@ -337,7 +386,9 @@ class SyncCoordinator extends Notifier<SyncState> {
         return uploaded;
       }
       final List<PendingChange> changes =
-          await deps.pendingStore.getForCollection(name);
+          (await deps.pendingStore.getForCollection(name))
+              .where((PendingChange c) => c.groupId.isEmpty)
+              .toList();
       if (changes.isEmpty) {
         return uploaded;
       }
@@ -374,6 +425,12 @@ class SyncCoordinator extends Notifier<SyncState> {
         uploaded += upserts.length + deletes.length;
       } on VersionConflictException catch (e) {
         conflicts++;
+        await _logSync(
+          action: 'sync_conflict',
+          level: LogLevel.warning,
+          summary: 'Another device changed "$name" while uploading '
+              '(attempt $conflicts). Downloaded its changes and retrying.',
+        );
         if (conflicts > _maxConflictRetries) {
           throw const RemoteSyncException(
               'The cloud data keeps changing. Please try again in a moment.');
@@ -423,6 +480,12 @@ class SyncCoordinator extends Notifier<SyncState> {
           ? ''
           : 'Review the list and press sync again to upload.',
     ];
+    await _logSync(
+      action: 'sync_downloaded_before_deletes',
+      level: cancelled.isNotEmpty ? LogLevel.warning : LogLevel.info,
+      summary: parts.where((String p) => p.isNotEmpty).join(' '),
+    );
+    await _uploadLogs();
     _finish(
       generation,
       parts.where((String p) => p.isNotEmpty).join(' '),
@@ -452,12 +515,111 @@ class SyncCoordinator extends Notifier<SyncState> {
         await repo.restoreFromCloud(deps.remote, change.entityId);
         await deps.pendingStore.removeAll(<String>[change.key]);
         cancelled.add('"${change.itemLabel}" was not deleted because $reason.');
+        await ref.read(activityLoggerProvider).record(
+              kind: LogKind.sync,
+              action: 'delete_cancelled',
+              level: LogLevel.warning,
+              module: repo.collectionName,
+              entityId: change.entityId,
+              entityLabel: change.itemLabel,
+              summary: 'Deleting ${repo.entityLabel} "${change.itemLabel}" was '
+                  'cancelled and the record restored, because $reason.',
+            );
       }
     }
     if (cancelled.isNotEmpty) {
       deps.tick.increment();
     }
     return cancelled;
+  }
+
+  /// Uploads every pending group in its own atomic transaction that spans all
+  /// collections involved. If another device uploaded first, downloads the
+  /// involved collections and tries again.
+  Future<int> _pushGroups(
+    int generation,
+    List<SyncableRepository> repos,
+    _Deps deps,
+  ) async {
+    final Map<String, SyncableRepository> byName = <String, SyncableRepository>{
+      for (final SyncableRepository repo in repos) repo.collectionName: repo,
+    };
+    int uploaded = 0;
+    int conflicts = 0;
+    while (true) {
+      if (generation != _generation) {
+        return uploaded;
+      }
+      final List<PendingChange> grouped = (await deps.pendingStore.getAll())
+          .where((PendingChange c) => c.groupId.isNotEmpty)
+          .toList();
+      if (grouped.isEmpty) {
+        return uploaded;
+      }
+      final String groupId = grouped.last.groupId;
+      final List<PendingChange> changes =
+          grouped.where((PendingChange c) => c.groupId == groupId).toList();
+      final List<GroupWrite> writes = <GroupWrite>[];
+      for (final PendingChange change in changes) {
+        final SyncableRepository? repo = byName[change.collection];
+        if (repo == null) {
+          continue;
+        }
+        if (change.type == PendingChangeType.delete) {
+          writes.add(GroupWrite(collection: change.collection, id: change.entityId));
+          continue;
+        }
+        final Map<String, dynamic>? map = await repo.localMap(change.entityId);
+        if (map != null) {
+          writes.add(GroupWrite(
+            collection: change.collection,
+            id: change.entityId,
+            data: map,
+          ));
+        }
+      }
+      if (writes.isEmpty) {
+        await deps.pendingStore.removeAll(changes.map((PendingChange c) => c.key));
+        continue;
+      }
+      final Map<String, int> expected = <String, int>{
+        for (final GroupWrite write in writes)
+          write.collection: state.localVersionOf(write.collection),
+      };
+      try {
+        final Map<String, int> newVersions = await deps.remote.commitGroup(
+          expectedVersions: expected,
+          writes: writes,
+        );
+        for (final MapEntry<String, int> entry in newVersions.entries) {
+          await deps.versionStore.setVersion(entry.key, entry.value);
+          if (generation == _generation) {
+            _setVersions(entry.key, entry.value);
+          }
+        }
+        await deps.pendingStore.removeAll(changes.map((PendingChange c) => c.key));
+        uploaded += writes.length;
+      } on GroupVersionConflictException catch (e) {
+        conflicts++;
+        await _logSync(
+          action: 'sync_conflict',
+          level: LogLevel.warning,
+          summary: 'Another device changed ${e.currentVersions.keys.join(', ')} '
+              'while uploading a grouped change (attempt $conflicts). '
+              'Downloaded its changes and retrying.',
+        );
+        if (conflicts > _maxConflictRetries) {
+          throw const RemoteSyncException(
+              'The cloud data keeps changing. Please try again in a moment.');
+        }
+        for (final MapEntry<String, int> entry in e.currentVersions.entries) {
+          final SyncableRepository? repo = byName[entry.key];
+          if (repo != null) {
+            await _pull(generation, repo, deps, entry.value);
+          }
+        }
+      }
+    }
   }
 
   void _setVersions(String collection, int version) {
@@ -471,6 +633,42 @@ class SyncCoordinator extends Notifier<SyncState> {
         ),
       },
     );
+  }
+
+  Future<void> _logSync({
+    required String action,
+    required String summary,
+    LogLevel level = LogLevel.info,
+  }) {
+    return ref.read(activityLoggerProvider).record(
+          kind: LogKind.sync,
+          action: action,
+          level: level,
+          module: 'sync',
+          summary: summary,
+        );
+  }
+
+  /// Uploads the activity logs written on this device, then removes uploaded
+  /// logs older than the retention period. Best effort: it runs after the
+  /// data sync (also when that failed, because that is when logs matter most)
+  /// and its own failure never fails or blocks the sync.
+  Future<void> _uploadLogs() async {
+    try {
+      final ActivityLogStore store = ref.read(activityLogStoreProvider);
+      final FirestoreService remote = ref.read(firestoreServiceProvider);
+      final List<ActivityLogModel> pending = await store.getPending();
+      for (int start = 0; start < pending.length; start += _chunkSize) {
+        final List<ActivityLogModel> chunk =
+            pending.skip(start).take(_chunkSize).toList();
+        await remote.uploadLogs(
+            chunk.map((ActivityLogModel log) => log.toMap()).toList());
+        await store.markUploaded(chunk.map((ActivityLogModel log) => log.id));
+      }
+      await store.purgeUploadedOlderThan(_logRetention);
+    } on AppException {
+      return;
+    }
   }
 
   void _finish(int generation, String? message, {required bool isError}) {

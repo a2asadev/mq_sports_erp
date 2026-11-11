@@ -3,6 +3,7 @@
 class StorageKeys {
   const StorageKeys._();
 
+  static const String activityLogs = 'activity_logs';
   static const String categories = 'categories';
   static const String customers = 'customers';
   static const String goodsReceiptNotes = 'goods_receipt_notes';
@@ -10,6 +11,8 @@ class StorageKeys {
   static const String orders = 'orders';
   static const String products = 'products';
   static const String purchaseOrders = 'purchase_orders';
+  static const String purchases = 'purchases';
+  static const String stockAudits = 'stock_audits';
   static const String stockLedgers = 'stock_ledgers';
   static const String users = 'users';
   static const String userProfiles = 'user_profiles';

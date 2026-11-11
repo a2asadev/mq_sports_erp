@@ -4,11 +4,14 @@ import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
+import 'package:mq_sports_erp/models/stock_ledger_model.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
+import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:mq_sports_erp/providers/stock_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
@@ -25,6 +28,7 @@ final Provider<BaseRepository<CategoryModel>> categoryRepositoryProvider =
     entityLabel: 'Category',
     local: local,
     pendingStore: ref.watch(pendingChangeStoreProvider),
+    logger: ref.watch(activityLoggerProvider),
     fromMap: CategoryModel.fromMap,
     labelOf: (CategoryModel category) => category.name,
     // A category may only be deleted while nothing on this device uses it.
@@ -53,8 +57,17 @@ final Provider<BaseRepository<ProductModel>> productRepositoryProvider =
       fromMap: ProductModel.fromMap,
     ),
     pendingStore: ref.watch(pendingChangeStoreProvider),
+    logger: ref.watch(activityLoggerProvider),
     fromMap: ProductModel.fromMap,
     labelOf: (ProductModel product) => product.name,
+    // A product with stock history can only be deactivated, not deleted.
+    deleteGuard: (String id) async {
+      final List<StockLedgerModel> entries =
+          await ref.read(stockLedgerRepositoryProvider).getLocal();
+      return entries.any((StockLedgerModel e) => e.productId == id)
+          ? 'it has stock history'
+          : null;
+    },
   );
 });
 
@@ -259,6 +272,34 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
     } on AppException catch (e) {
       return reportFailure(e);
     }
+    final ProductModel? existing = _items
+        .where((ProductModel p) => p.id == normalized.id)
+        .firstOrNull;
+    if (existing != null) {
+      final Set<String> keptIds = <String>{
+        for (final VariantModel v in normalized.variants) v.id,
+      };
+      final List<VariantModel> removed = existing.variants
+          .where((VariantModel v) => !keptIds.contains(v.id))
+          .toList();
+      if (removed.isNotEmpty) {
+        try {
+          final List<StockLedgerModel> entries =
+              await ref.read(stockLedgerRepositoryProvider).getLocal();
+          final List<VariantModel> withHistory = removed
+              .where((VariantModel v) =>
+                  entries.any((StockLedgerModel e) => e.variantId == v.id))
+              .toList();
+          if (withHistory.isNotEmpty) {
+            return reportFailure(ValidationException(
+                '"${withHistory.first.label}" has stock history and cannot be '
+                'removed. Mark it inactive instead.'));
+          }
+        } on AppException catch (e) {
+          return reportFailure(e);
+        }
+      }
+    }
     await updateItem(normalized);
     return !state.hasError;
   }
@@ -266,6 +307,15 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
   Future<bool> deleteProduct(String id) async {
     if (!ref.read(canManageCatalogProvider)) {
       return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+    }
+    try {
+      final String? reason = await repository.deleteBlockReason(id);
+      if (reason != null) {
+        return reportFailure(ValidationException(
+            'This product cannot be deleted because $reason. Mark it inactive instead.'));
+      }
+    } on AppException catch (e) {
+      return reportFailure(e);
     }
     await remove(id);
     return !state.hasError;

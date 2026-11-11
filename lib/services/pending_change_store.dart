@@ -64,6 +64,7 @@ class PendingChangeStore {
     required String entityId,
     required String itemLabel,
     required bool isNew,
+    String groupId = '',
   }) async {
     try {
       final Box<String> box = await _open();
@@ -81,6 +82,7 @@ class PendingChangeStore {
         itemLabel: itemLabel,
         type: type,
         changedAt: DateTime.now(),
+        groupId: groupId.isNotEmpty ? groupId : (existing?.groupId ?? ''),
       );
       await box.put(key, jsonEncode(change.toMap()));
       _changes.add(null);

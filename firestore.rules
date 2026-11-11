@@ -58,16 +58,75 @@ service cloud.firestore {
       allow create, update, delete: if isActiveAdminOrManager();
     }
 
+    // Sales are made by any active user (staff included), so staff may also
+    // create the customer ledger entries of an order (its charge and
+    // payments). Everything else on the ledger stays with admins/managers.
     match /ledgers/{id} {
       allow read: if isActiveUser();
-      allow create, update, delete: if isActiveAdminOrManager();
+      allow create: if isActiveAdminOrManager()
+          || (isActiveUser()
+              && request.resource.data.partyType == 'customer'
+              && request.resource.data.entryType in ['charge', 'payment']
+              && request.resource.data.orderId is string
+              && request.resource.data.orderId != '');
+      allow update, delete: if isActiveAdminOrManager();
+    }
+
+    // Purchases and stock movements are append-only records: admins and
+    // managers create them, nobody deletes them.
+    match /purchases/{id} {
+      allow read: if isActiveUser();
+      allow create, update: if isActiveAdminOrManager();
+      allow delete: if false;
+    }
+
+    // Staff may create the stock-out entries of a sale (type 'sale', negative
+    // quantity). Returning stock (a cancelled order) is admin/manager only.
+    match /stock_ledgers/{id} {
+      allow read: if isActiveUser();
+      allow create: if isActiveAdminOrManager()
+          || (isActiveUser()
+              && request.resource.data.movementType == 'sale'
+              && request.resource.data.quantity < 0);
+      allow update: if isActiveAdminOrManager();
+      allow delete: if false;
+    }
+
+    // Activity logs: append-only. Every active user's device uploads the logs
+    // it wrote (a device may upload logs of another user who used it before),
+    // only admins read them, and nobody edits or deletes them. Re-writing a
+    // log with identical content is allowed so an interrupted upload can be
+    // retried.
+    match /activity_logs/{id} {
+      allow read: if isActiveAdmin();
+      allow create: if isActiveUser();
+      allow update: if isActiveUser() && request.resource.data == resource.data;
+      allow delete: if false;
+    }
+
+    // Stock audits (manual counts) are append-only records created by admins
+    // and managers together with their adjustment entries. Everyone reads
+    // them because every device downloads every synced collection.
+    match /stock_audits/{id} {
+      allow read: if isActiveUser();
+      allow create: if isActiveAdminOrManager();
+      allow update, delete: if false;
+    }
+
+    // Orders: any active user creates them and moves them along the pipeline;
+    // only admins/managers may set the status to 'cancelled'. Never deleted.
+    match /orders/{id} {
+      allow read: if isActiveUser();
+      allow create, update: if isActiveUser()
+          && (request.resource.data.status != 'cancelled' || isActiveAdminOrManager());
+      allow delete: if false;
     }
 
     // Every other collection: any active user for now. Tighten per module
     // as each module is added.
     match /{collection}/{id} {
       allow read, write: if isActiveUser()
-          && !(collection in ['metadata', 'users', 'categories', 'products', 'vendors', 'customers', 'ledgers']);
+          && !(collection in ['metadata', 'users', 'categories', 'products', 'vendors', 'customers', 'ledgers', 'purchases', 'stock_ledgers', 'orders', 'stock_audits', 'activity_logs']);
     }
   }
 }

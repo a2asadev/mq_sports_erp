@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/models/activity_log_model.dart';
 import 'package:mq_sports_erp/models/syncable_model.dart';
+import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
 
@@ -76,13 +78,29 @@ abstract class BaseListNotifier<T extends SyncableModel>
   /// Exposes [error] through `AsyncValue.error` while keeping the current
   /// list available. Always returns false so callers can `return` it.
   bool reportFailure(AppException error) {
+    logFailure(error);
     final List<T> previous = state.valueOrNull ?? <T>[];
     state = AsyncValue<List<T>>.error(error, StackTrace.current)
         .copyWithPrevious(AsyncData<List<T>>(previous));
     return false;
   }
 
+  /// Writes a rejected or failed action to the activity log. A refused action
+  /// (validation, permission) is a warning; anything else is an error.
+  void logFailure(AppException error) {
+    final bool refused =
+        error is ValidationException || error is PermissionDeniedException;
+    unawaited(ref.read(activityLoggerProvider).record(
+          kind: LogKind.failure,
+          action: refused ? 'refused' : 'failed',
+          level: refused ? LogLevel.warning : LogLevel.error,
+          module: repository.collectionName,
+          summary: error.message,
+        ));
+  }
+
   void _rollback(List<T> previous, AppException error, StackTrace stackTrace) {
+    logFailure(error);
     if (_isDisposed) {
       return;
     }

@@ -65,6 +65,7 @@ class _VariantDialogState extends State<_VariantDialog> {
   late final TextEditingController _costController;
   late final TextEditingController _wholesaleController;
   late final TextEditingController _saleController;
+  late final TextEditingController _alertController;
   late final List<_AttributeRow> _attributes;
   late bool _isActive;
   late bool _isWholesale;
@@ -83,6 +84,8 @@ class _VariantDialogState extends State<_VariantDialog> {
         text: (existing?.wholesalePrice ?? 0).toStringAsFixed(2));
     _saleController = TextEditingController(
         text: (existing?.salePrice ?? 0).toStringAsFixed(2));
+    _alertController =
+        TextEditingController(text: '${existing?.alertThreshold ?? 0}');
     _attributes = <_AttributeRow>[
       for (final MapEntry<String, String> entry
           in (existing?.attributes ?? const <String, String>{}).entries)
@@ -100,6 +103,7 @@ class _VariantDialogState extends State<_VariantDialog> {
     _costController.dispose();
     _wholesaleController.dispose();
     _saleController.dispose();
+    _alertController.dispose();
     for (final _AttributeRow row in _attributes) {
       row.dispose();
     }
@@ -162,6 +166,7 @@ class _VariantDialogState extends State<_VariantDialog> {
       isWholesale: _isWholesale,
       wholesalePrice:
           _isWholesale ? double.parse(_wholesaleController.text.trim()) : 0,
+      alertThreshold: int.parse(_alertController.text.trim()),
       isActive: _isActive,
     );
     Navigator.of(context).pop(result);
@@ -293,6 +298,23 @@ class _VariantDialogState extends State<_VariantDialog> {
                       ],
                     ),
                   ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _alertController,
+                  enabled: !readOnly,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Low-stock alert level',
+                    helperText: 'Flag this variant when stock is at or below '
+                        'this number. 0 = no alert.',
+                  ),
+                  validator: (String? value) {
+                    final int? parsed = int.tryParse((value ?? '').trim());
+                    return (parsed == null || parsed < 0)
+                        ? 'Enter 0 or a whole number.'
+                        : null;
+                  },
+                ),
                 const SizedBox(height: 16),
                 Text('Attributes', style: theme.textTheme.titleSmall),
                 for (int i = 0; i < _attributes.length; i++)

@@ -40,3 +40,12 @@ class VersionConflictException extends AppException {
 
   final int currentVersion;
 }
+
+/// Thrown when one or more collections of a grouped upload changed in the
+/// cloud since this device last synced them.
+class GroupVersionConflictException extends AppException {
+  const GroupVersionConflictException(this.currentVersions)
+      : super('The cloud data changed. Download the updates first.');
+
+  final Map<String, int> currentVersions;
+}

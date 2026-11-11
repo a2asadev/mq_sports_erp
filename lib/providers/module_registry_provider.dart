@@ -6,7 +6,11 @@ import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/catalog/categories_screen.dart';
 import 'package:mq_sports_erp/screens/catalog/products_screen.dart';
+import 'package:mq_sports_erp/screens/logs/activity_logs_screen.dart';
 import 'package:mq_sports_erp/screens/parties/customers_screen.dart';
+import 'package:mq_sports_erp/screens/purchasing/purchases_screen.dart';
+import 'package:mq_sports_erp/screens/sales/orders_screen.dart';
+import 'package:mq_sports_erp/screens/stock/stock_screen.dart';
 import 'package:mq_sports_erp/screens/parties/vendors_screen.dart';
 import 'package:mq_sports_erp/screens/users/users_screen.dart';
 
@@ -53,6 +57,42 @@ final Provider<List<ErpModule>> erpModulesProvider =
       icon: Icons.local_shipping_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
       builder: (BuildContext context) => const VendorsScreen(),
+    ),
+    ErpModule(
+      id: 'purchases',
+      title: 'Purchases',
+      icon: Icons.shopping_cart_checkout_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      builder: (BuildContext context) => const PurchasesScreen(),
+    ),
+    ErpModule(
+      id: 'sales',
+      title: 'Sales & Orders',
+      icon: Icons.point_of_sale_outlined,
+      allowedRoles: const <UserRole>{
+        UserRole.admin,
+        UserRole.manager,
+        UserRole.staff,
+      },
+      builder: (BuildContext context) => const OrdersScreen(),
+    ),
+    ErpModule(
+      id: 'stock',
+      title: 'Stock',
+      icon: Icons.warehouse_outlined,
+      allowedRoles: const <UserRole>{
+        UserRole.admin,
+        UserRole.manager,
+        UserRole.staff,
+      },
+      builder: (BuildContext context) => const StockScreen(),
+    ),
+    ErpModule(
+      id: 'logs',
+      title: 'Activity Logs',
+      icon: Icons.history_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin},
+      builder: (BuildContext context) => const ActivityLogsScreen(),
     ),
     ErpModule(
       id: 'users',

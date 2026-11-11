@@ -3,12 +3,14 @@ import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
+import 'package:mq_sports_erp/models/order_model.dart';
 import 'package:mq_sports_erp/models/party_enums.dart';
 import 'package:mq_sports_erp/models/party_list_item.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/models/vendor_model.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
+import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
@@ -35,6 +37,7 @@ final Provider<BaseRepository<LedgerModel>> ledgerRepositoryProvider =
       fromMap: LedgerModel.fromMap,
     ),
     pendingStore: ref.watch(pendingChangeStoreProvider),
+    logger: ref.watch(activityLoggerProvider),
     fromMap: LedgerModel.fromMap,
     labelOf: (LedgerModel entry) =>
         '${entry.entryType.name} ${entry.amount.toStringAsFixed(2)}',
@@ -71,6 +74,7 @@ final Provider<BaseRepository<VendorModel>> vendorRepositoryProvider =
     entityLabel: 'Vendor',
     local: local,
     pendingStore: ref.watch(pendingChangeStoreProvider),
+    logger: ref.watch(activityLoggerProvider),
     fromMap: VendorModel.fromMap,
     labelOf: (VendorModel vendor) => vendor.name,
     deleteGuard: (String id) async {
@@ -92,11 +96,26 @@ final Provider<BaseRepository<CustomerModel>> customerRepositoryProvider =
     entityLabel: 'Customer',
     local: local,
     pendingStore: ref.watch(pendingChangeStoreProvider),
+    logger: ref.watch(activityLoggerProvider),
     fromMap: CustomerModel.fromMap,
     labelOf: (CustomerModel customer) => customer.name,
     deleteGuard: (String id) async {
       final CustomerModel? customer = await local.getById(id);
-      return _partyDeleteReason(ref, id, customer?.openingBalance);
+      final String? reason =
+          await _partyDeleteReason(ref, id, customer?.openingBalance);
+      if (reason != null) {
+        return reason;
+      }
+      // Orders are read from their Hive box directly: the order providers
+      // depend on this file, so importing them here would be circular. An
+      // order with a zero total has no ledger entry, so it is checked here.
+      final List<OrderModel> orders = await HiveLocalRepository<OrderModel>(
+        boxName: StorageKeys.orders,
+        fromMap: OrderModel.fromMap,
+      ).getAll();
+      return orders.any((OrderModel o) => o.customerId == id)
+          ? 'it has orders'
+          : null;
     },
   );
 });
@@ -276,6 +295,13 @@ class LedgerNotifier extends BaseListNotifier<LedgerModel> {
   Future<bool> deleteEntry(String id) async {
     if (!ref.read(canManagePartiesProvider)) {
       return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+    }
+    final LedgerModel? entry = (state.valueOrNull ?? <LedgerModel>[])
+        .where((LedgerModel e) => e.id == id)
+        .firstOrNull;
+    if (entry != null && entry.purchaseId.isNotEmpty) {
+      return reportFailure(const ValidationException(
+          'This entry belongs to a purchase and cannot be deleted.'));
     }
     await remove(id);
     return !state.hasError;

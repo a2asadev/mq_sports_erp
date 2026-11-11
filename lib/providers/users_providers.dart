@@ -4,6 +4,7 @@ import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
+import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/repositories/user_repository.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
@@ -17,6 +18,7 @@ final Provider<UserRepository> userRepositoryProvider =
     ),
     remote: ref.watch(firestoreServiceProvider),
     pendingStore: ref.watch(pendingChangeStoreProvider),
+    logger: ref.watch(activityLoggerProvider),
     resolveCurrentUser: () => ref.read(currentUserProvider.future),
   );
 });

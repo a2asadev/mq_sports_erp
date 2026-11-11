@@ -1,6 +1,9 @@
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/core/utils/map_diff.dart';
+import 'package:mq_sports_erp/models/activity_log_model.dart';
 import 'package:mq_sports_erp/models/pending_change.dart';
 import 'package:mq_sports_erp/models/syncable_model.dart';
+import 'package:mq_sports_erp/services/activity_logger.dart';
 import 'package:mq_sports_erp/services/firestore_service.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
 import 'package:mq_sports_erp/services/pending_change_store.dart';
@@ -51,11 +54,13 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
     required T Function(Map<String, dynamic> map) fromMap,
     required String Function(T item) labelOf,
     Future<String?> Function(String id)? deleteGuard,
+    ActivityLogger? logger,
   })  : _local = local,
         _pending = pendingStore,
         _fromMap = fromMap,
         _labelOf = labelOf,
-        _deleteGuard = deleteGuard;
+        _deleteGuard = deleteGuard,
+        _logger = logger;
 
   @override
   final String collectionName;
@@ -68,6 +73,7 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
   final T Function(Map<String, dynamic> map) _fromMap;
   final String Function(T item) _labelOf;
   final Future<String?> Function(String id)? _deleteGuard;
+  final ActivityLogger? _logger;
 
   Future<List<T>> getLocal() => _local.getAll();
 
@@ -75,7 +81,7 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
 
   /// Saves to Hive and logs the pending change. If logging fails, the Hive
   /// write is undone.
-  Future<void> save(T item) async {
+  Future<void> save(T item, {String groupId = ''}) async {
     final T? previous = await _local.getById(item.id);
     await _local.put(item);
     try {
@@ -85,6 +91,7 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
         entityId: item.id,
         itemLabel: _labelOf(item),
         isNew: previous == null,
+        groupId: groupId,
       );
     } on AppException {
       if (previous == null) {
@@ -93,6 +100,65 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
         await _local.put(previous);
       }
       rethrow;
+    }
+    await _logSave(previous, item, groupId);
+  }
+
+  /// Activity log of a save: a "create", or an "update" with the fields that
+  /// changed (nothing is logged for a save that changed nothing).
+  Future<void> _logSave(T? previous, T item, String groupId) async {
+    final ActivityLogger? logger = _logger;
+    if (logger == null) {
+      return;
+    }
+    final String label = _labelOf(item);
+    if (previous == null) {
+      await logger.record(
+        kind: LogKind.record,
+        action: 'create',
+        module: collectionName,
+        entityId: item.id,
+        entityLabel: label,
+        summary: 'Created $entityLabel "$label"',
+        groupId: groupId,
+      );
+      return;
+    }
+    final List<LogFieldChange> changes = diffMaps(previous.toMap(), item.toMap());
+    if (changes.isEmpty) {
+      return;
+    }
+    await logger.record(
+      kind: LogKind.record,
+      action: 'update',
+      module: collectionName,
+      entityId: item.id,
+      entityLabel: label,
+      summary: 'Edited $entityLabel "$label" (${changes.length} field(s) changed)',
+      changes: changes,
+      groupId: groupId,
+    );
+  }
+
+  /// Removes a record that was created locally and never uploaded, together
+  /// with its pending change. Used to undo a failed multi-record write.
+  Future<void> discardNewLocally(String id) async {
+    final T? removed = await _local.getById(id);
+    await _local.delete(id);
+    await _pending.removeAll(<String>['$collectionName:$id']);
+    final ActivityLogger? logger = _logger;
+    if (logger != null && removed != null) {
+      final String label = _labelOf(removed);
+      await logger.record(
+        kind: LogKind.record,
+        action: 'discard',
+        level: LogLevel.warning,
+        module: collectionName,
+        entityId: id,
+        entityLabel: label,
+        summary: 'Undid the creation of $entityLabel "$label" because the '
+            'action it belonged to failed',
+      );
     }
   }
 
@@ -111,6 +177,18 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
         await _local.put(previous);
       }
       rethrow;
+    }
+    final ActivityLogger? logger = _logger;
+    if (logger != null) {
+      final String label = previous == null ? id : _labelOf(previous);
+      await logger.record(
+        kind: LogKind.record,
+        action: 'delete',
+        module: collectionName,
+        entityId: id,
+        entityLabel: label,
+        summary: 'Deleted $entityLabel "$label"',
+      );
     }
   }
 
@@ -148,6 +226,13 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
       final PendingChange? change = pendingById[remoteItem.id];
       if (change != null) {
         if (change.type == PendingChangeType.delete) {
+          continue;
+        }
+        if (localItem != null &&
+            remoteItem.updatedAt.isAtSameMomentAs(localItem.updatedAt)) {
+          // Already uploaded earlier (for example the app closed before the
+          // pending change was cleared).
+          pendingToDrop.add(change.key);
           continue;
         }
         if (localItem != null && !remoteItem.updatedAt.isAfter(localItem.updatedAt)) {

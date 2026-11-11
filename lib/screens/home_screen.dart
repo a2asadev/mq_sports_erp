@@ -4,6 +4,7 @@ import 'package:mq_sports_erp/core/erp_module.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/providers/module_registry_provider.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:mq_sports_erp/screens/dashboard/dashboard_panel.dart';
 import 'package:mq_sports_erp/widgets/logout_button.dart';
 import 'package:mq_sports_erp/widgets/sync_status_chip.dart';
 
@@ -33,35 +34,49 @@ class HomeScreen extends ConsumerWidget {
           LogoutButton(),
         ],
       ),
-      body: modules.isEmpty
-          ? const Center(child: Text('No modules available for your role yet.'))
-          : GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 200,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
+      body: CustomScrollView(
+        slivers: <Widget>[
+          // Only admins and managers see anything here.
+          const SliverToBoxAdapter(child: DashboardPanel()),
+          if (modules.isEmpty)
+            const SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Text('No modules available for your role yet.'),
               ),
-              itemCount: modules.length,
-              itemBuilder: (BuildContext context, int index) {
-                final ErpModule module = modules[index];
-                return Card(
-                  child: InkWell(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute<void>(builder: module.builder),
+            )
+          else
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverGrid.builder(
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                ),
+                itemCount: modules.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final ErpModule module = modules[index];
+                  return Card(
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(builder: module.builder),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(module.icon, size: 40),
+                          const SizedBox(height: 8),
+                          Text(module.title),
+                        ],
+                      ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(module.icon, size: 40),
-                        const SizedBox(height: 8),
-                        Text(module.title),
-                      ],
-                    ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
+        ],
+      ),
     );
   }
 }
