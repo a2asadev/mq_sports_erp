@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The app talks to the backend API. Firebase used to add this permission
+         by itself; the template only grants it to debug and profile builds. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="mq_admin"
         android:name="${applicationName}"
