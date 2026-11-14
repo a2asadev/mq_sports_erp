@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/utils/whatsapp.dart';
+import 'package:mq_sports_erp/models/customer_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
 import 'package:mq_sports_erp/core/utils/formatters.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
@@ -24,6 +27,40 @@ class OrderDetailScreen extends ConsumerWidget {
   const OrderDetailScreen({super.key, required this.orderId});
 
   final String orderId;
+
+  /// The customer's phone: from their record, else from the delivery details of a web order.
+  String _phoneFor(WidgetRef ref, OrderModel order) {
+    final List<CustomerModel> customers =
+        ref.read(customersProvider).valueOrNull ?? <CustomerModel>[];
+    for (final CustomerModel c in customers) {
+      if (c.id == order.customerId && c.phone.trim().isNotEmpty) {
+        return c.phone;
+      }
+    }
+    final Match? found = RegExp(r'[+d][ds-]{8,}d').firstMatch(order.shippingAddress);
+    return found?.group(0) ?? '';
+  }
+
+  /// Opens WhatsApp with a ready message; the person presses send.
+  Future<void> _whatsApp(BuildContext context, WidgetRef ref, OrderModel order) async {
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final Uri? link = WhatsApp.link(_phoneFor(ref, order), WhatsApp.orderMessage(order));
+    if (link == null) {
+      messenger.showSnackBar(const SnackBar(
+        content: Text('This customer has no usable phone number. Add one to their record.'),
+      ));
+      return;
+    }
+    bool opened = false;
+    try {
+      opened = await launchUrl(link, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      opened = false;
+    }
+    if (!opened) {
+      messenger.showSnackBar(const SnackBar(content: Text('WhatsApp could not be opened on this device.')));
+    }
+  }
 
   Future<void> _recordPayment(
     BuildContext context,
@@ -278,6 +315,12 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
             ),
           ],
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: () => _whatsApp(context, ref, order),
+            icon: const Icon(Icons.chat_outlined),
+            label: const Text('Message on WhatsApp'),
+          ),
           const SizedBox(height: 16),
           Text('Status history', style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
