@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/utils/whatsapp.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
+import 'package:mq_sports_erp/providers/shop_name_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
 import 'package:mq_sports_erp/core/utils/formatters.dart';
@@ -44,7 +45,8 @@ class OrderDetailScreen extends ConsumerWidget {
   /// Opens WhatsApp with a ready message; the person presses send.
   Future<void> _whatsApp(BuildContext context, WidgetRef ref, OrderModel order) async {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final Uri? link = WhatsApp.link(_phoneFor(ref, order), WhatsApp.orderMessage(order));
+    final String shopName = await ref.read(shopNameProvider.future);
+    final Uri? link = WhatsApp.link(_phoneFor(ref, order), WhatsApp.orderMessage(order, shopName: shopName));
     if (link == null) {
       messenger.showSnackBar(const SnackBar(
         content: Text('This customer has no usable phone number. Add one to their record.'),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:mq_sports_erp/models/user_model.dart';
@@ -7,11 +8,14 @@ import 'package:mq_sports_erp/online/api_auth_service.dart';
 import 'package:mq_sports_erp/online/api_client.dart';
 import 'package:mq_sports_erp/online/api_config.dart';
 import 'package:mq_sports_erp/online/remote_store.dart';
+import 'package:mq_sports_erp/online/secure_token_store.dart';
 import 'package:mq_sports_erp/online/token_store.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 
+/// The refresh token: protected system storage on mobile and desktop; browser
+/// storage on the web (which has no safer place).
 final Provider<TokenStore> tokenStoreProvider =
-    Provider<TokenStore>((Ref ref) => SharedPrefsTokenStore());
+    Provider<TokenStore>((Ref ref) => kIsWeb ? SharedPrefsTokenStore() : SecureTokenStore());
 
 final Provider<http.Client> httpClientProvider = Provider<http.Client>((Ref ref) {
   final http.Client client = http.Client();

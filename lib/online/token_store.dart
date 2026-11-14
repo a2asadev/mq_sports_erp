@@ -38,6 +38,12 @@ class SharedPrefsTokenStore implements TokenStore {
     await prefs.setString(_key, token);
   }
 
+  /// Removes only the token (used when it moves to protected storage).
+  Future<void> clearRefreshToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_key);
+  }
+
   @override
   Future<String?> readUserJson() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -84,7 +84,7 @@ The server writes every log (in the same transaction as the action, user taken f
 - The Next.js online store is built (backend monorepo `apps/store`, see its README); online payment, e-mail/SMS and shopper password reset are not.
 - Not built yet: Purchase Orders, Goods Receipt Notes, POS checkout (barcode, tax, split payments, receipts), refunds.
 - Web: server-side paging for the big lists (orders, ledger, movements) once they grow; refresh token in an httpOnly cookie.
-- Mobile/desktop: the refresh token is in plain preferences (move to secure storage); product photos are downloaded in the product JSON (`images`) but not shown yet; the stock sum has a SQL query (`onHandByVariant`) that the Stock screen does not use yet.
+- Mobile/desktop: the refresh token is in the OS protected storage on mobile/desktop (`SecureTokenStore`; browser storage on the web); product photos are downloaded in the product JSON (`images`) but not shown yet; the stock sum has a SQL query (`onHandByVariant`) that the Stock screen does not use yet.
 - Offline catalog/party edits are last-writer-wins: a stale offline edit can overwrite someone's newer one when it uploads (an agreed trade-off; versioned edits would fix it).
 - Tests: `test/data` (database round trips, outbox, pending effects, sync engine with a fake server), `test/online` (API client, in-memory store, web flow), `test/models`, `test/providers`, `test/core`. Screens are untested.
 
