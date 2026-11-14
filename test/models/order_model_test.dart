@@ -30,6 +30,33 @@ void main() {
       expect(order.totalUnits, 3);
     });
 
+    test('the delivery fee is part of the total, after the discounts', () {
+      final OrderModel order = OrderModel(
+        orderNo: 'ORD-W',
+        customerId: 'c',
+        customerName: 'Ali',
+        channel: 'web',
+        items: <OrderItem>[_item(2, 100, discount: 20), _item(1, 50)],
+        discount: 30,
+        shippingFee: 250,
+        shippingAddress: 'Ali, 0300 - House 5, Lahore',
+      );
+      expect(order.subtotal, 230);
+      expect(order.totalAmount, 450);
+      expect(order.isWebOrder, isTrue);
+      final OrderModel copy = OrderModel.fromMap(order.toMap());
+      expect(copy.totalAmount, 450);
+      expect(copy.shippingFee, 250);
+      expect(copy.shippingAddress, order.shippingAddress);
+      expect(copy.channel, 'web');
+      expect(copy.copyWith(status: OrderStatus.shipped).shippingFee, 250);
+      // Orders from before the online store have none of these.
+      final OrderModel old = OrderModel.fromMap(<String, dynamic>{'id': 'x', 'orderNo': 'O', 'customerId': 'c', 'customerName': 'A'});
+      expect(old.shippingFee, 0);
+      expect(old.channel, 'admin');
+      expect(old.isWebOrder, isFalse);
+    });
+
     test('a discount larger than the amount never gives a negative total', () {
       final OrderModel order = OrderModel(
         orderNo: 'ORD-2',

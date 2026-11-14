@@ -210,7 +210,19 @@ class OrderDetailScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text('${formatDate(order.orderDate)} · ${order.saleType.label} sale'),
+                  Text(
+                      '${formatDate(order.orderDate)} · ${order.saleType.label} sale${order.isWebOrder ? ' · Online store' : ''}'),
+                  if (order.shippingAddress.isNotEmpty) ...<Widget>[
+                    const SizedBox(height: 4),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const Icon(Icons.local_shipping_outlined, size: 18),
+                        const SizedBox(width: 6),
+                        Expanded(child: Text(order.shippingAddress)),
+                      ],
+                    ),
+                  ],
                   if (order.notes.isNotEmpty) ...<Widget>[
                     const SizedBox(height: 4),
                     Text(order.notes),
@@ -230,6 +242,8 @@ class OrderDetailScreen extends ConsumerWidget {
                   if (order.totalDiscount > 0.005)
                     _amountRow('Discounts (lines and order)',
                         '- ${formatAmount(order.totalDiscount)}'),
+                  if (order.shippingFee > 0.005)
+                    _amountRow('Delivery', formatAmount(order.shippingFee)),
                   _amountRow('Total', formatAmount(total), bold: true),
                   if (!cancelled) ...<Widget>[
                     _amountRow('Paid', formatAmount(paid)),

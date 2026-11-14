@@ -181,6 +181,9 @@ class OrderModel implements SyncableModel {
     this.saleType = OrderSaleType.retail,
     List<OrderItem>? items,
     this.discount = 0,
+    this.shippingFee = 0,
+    this.shippingAddress = '',
+    this.channel = 'admin',
     this.notes = '',
     List<OrderStatusEntry>? statusHistory,
     DateTime? createdAt,
@@ -207,6 +210,15 @@ class OrderModel implements SyncableModel {
 
   /// Discount on the whole order, as an amount, applied after line discounts.
   final double discount;
+
+  /// Delivery charge, part of [totalAmount] (online-store orders).
+  final double shippingFee;
+
+  /// Who to deliver to and where (online-store orders), as text.
+  final String shippingAddress;
+
+  /// Where the order came from: 'admin', 'pos' or 'web' (the online store).
+  final String channel;
   final String notes;
   final List<OrderStatusEntry> statusHistory;
   final DateTime createdAt;
@@ -220,9 +232,12 @@ class OrderModel implements SyncableModel {
     return _round2(sum);
   }
 
+  /// Placed by a shopper on the online store.
+  bool get isWebOrder => channel == 'web';
+
   double get totalAmount {
     final double net = subtotal - discount;
-    return _round2(net > 0 ? net : 0);
+    return _round2((net > 0 ? net : 0) + shippingFee);
   }
 
   /// Line discounts plus the order discount.
@@ -247,6 +262,9 @@ class OrderModel implements SyncableModel {
       'saleType': saleType.name,
       'items': items.map((OrderItem i) => i.toMap()).toList(),
       'discount': discount,
+      'shippingFee': shippingFee,
+      'shippingAddress': shippingAddress,
+      'channel': channel,
       'notes': notes,
       'statusHistory':
           statusHistory.map((OrderStatusEntry e) => e.toMap()).toList(),
@@ -274,6 +292,9 @@ class OrderModel implements SyncableModel {
           .map(OrderItem.fromMap)
           .toList(),
       discount: (map['discount'] as num?)?.toDouble() ?? 0,
+      shippingFee: (map['shippingFee'] as num?)?.toDouble() ?? 0,
+      shippingAddress: map['shippingAddress'] as String? ?? '',
+      channel: map['channel'] as String? ?? 'admin',
       notes: map['notes'] as String? ?? '',
       statusHistory: rawHistory
           .whereType<Map<String, dynamic>>()
@@ -301,6 +322,9 @@ class OrderModel implements SyncableModel {
       saleType: saleType,
       items: items,
       discount: discount,
+      shippingFee: shippingFee,
+      shippingAddress: shippingAddress,
+      channel: channel,
       notes: notes ?? this.notes,
       statusHistory: statusHistory ?? this.statusHistory,
       createdAt: createdAt,

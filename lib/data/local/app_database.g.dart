@@ -6357,6 +6357,30 @@ class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
       type: DriftSqlType.double,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _shippingFeeMeta =
+      const VerificationMeta('shippingFee');
+  @override
+  late final GeneratedColumn<double> shippingFee = GeneratedColumn<double>(
+      'shipping_fee', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _shippingAddressMeta =
+      const VerificationMeta('shippingAddress');
+  @override
+  late final GeneratedColumn<String> shippingAddress = GeneratedColumn<String>(
+      'shipping_address', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _channelMeta =
+      const VerificationMeta('channel');
+  @override
+  late final GeneratedColumn<String> channel = GeneratedColumn<String>(
+      'channel', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('admin'));
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -6386,6 +6410,9 @@ class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
         status,
         saleType,
         discount,
+        shippingFee,
+        shippingAddress,
+        channel,
         notes,
         createdAt,
         updatedAt
@@ -6445,6 +6472,22 @@ class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
       context.handle(_discountMeta,
           discount.isAcceptableOrUnknown(data['discount']!, _discountMeta));
     }
+    if (data.containsKey('shipping_fee')) {
+      context.handle(
+          _shippingFeeMeta,
+          shippingFee.isAcceptableOrUnknown(
+              data['shipping_fee']!, _shippingFeeMeta));
+    }
+    if (data.containsKey('shipping_address')) {
+      context.handle(
+          _shippingAddressMeta,
+          shippingAddress.isAcceptableOrUnknown(
+              data['shipping_address']!, _shippingAddressMeta));
+    }
+    if (data.containsKey('channel')) {
+      context.handle(_channelMeta,
+          channel.isAcceptableOrUnknown(data['channel']!, _channelMeta));
+    }
     if (data.containsKey('notes')) {
       context.handle(
           _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
@@ -6486,6 +6529,12 @@ class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
           .read(DriftSqlType.string, data['${effectivePrefix}sale_type'])!,
       discount: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}discount'])!,
+      shippingFee: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}shipping_fee'])!,
+      shippingAddress: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}shipping_address'])!,
+      channel: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}channel'])!,
       notes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}notes'])!,
       createdAt: attachedDatabase.typeMapping
@@ -6510,6 +6559,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
   final String status;
   final String saleType;
   final double discount;
+  final double shippingFee;
+  final String shippingAddress;
+  final String channel;
   final String notes;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -6522,6 +6574,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       required this.status,
       required this.saleType,
       required this.discount,
+      required this.shippingFee,
+      required this.shippingAddress,
+      required this.channel,
       required this.notes,
       required this.createdAt,
       required this.updatedAt});
@@ -6536,6 +6591,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
     map['status'] = Variable<String>(status);
     map['sale_type'] = Variable<String>(saleType);
     map['discount'] = Variable<double>(discount);
+    map['shipping_fee'] = Variable<double>(shippingFee);
+    map['shipping_address'] = Variable<String>(shippingAddress);
+    map['channel'] = Variable<String>(channel);
     map['notes'] = Variable<String>(notes);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -6552,6 +6610,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       status: Value(status),
       saleType: Value(saleType),
       discount: Value(discount),
+      shippingFee: Value(shippingFee),
+      shippingAddress: Value(shippingAddress),
+      channel: Value(channel),
       notes: Value(notes),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -6570,6 +6631,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       status: serializer.fromJson<String>(json['status']),
       saleType: serializer.fromJson<String>(json['saleType']),
       discount: serializer.fromJson<double>(json['discount']),
+      shippingFee: serializer.fromJson<double>(json['shippingFee']),
+      shippingAddress: serializer.fromJson<String>(json['shippingAddress']),
+      channel: serializer.fromJson<String>(json['channel']),
       notes: serializer.fromJson<String>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -6587,6 +6651,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       'status': serializer.toJson<String>(status),
       'saleType': serializer.toJson<String>(saleType),
       'discount': serializer.toJson<double>(discount),
+      'shippingFee': serializer.toJson<double>(shippingFee),
+      'shippingAddress': serializer.toJson<String>(shippingAddress),
+      'channel': serializer.toJson<String>(channel),
       'notes': serializer.toJson<String>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -6602,6 +6669,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
           String? status,
           String? saleType,
           double? discount,
+          double? shippingFee,
+          String? shippingAddress,
+          String? channel,
           String? notes,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
@@ -6614,6 +6684,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
         status: status ?? this.status,
         saleType: saleType ?? this.saleType,
         discount: discount ?? this.discount,
+        shippingFee: shippingFee ?? this.shippingFee,
+        shippingAddress: shippingAddress ?? this.shippingAddress,
+        channel: channel ?? this.channel,
         notes: notes ?? this.notes,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -6631,6 +6704,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       status: data.status.present ? data.status.value : this.status,
       saleType: data.saleType.present ? data.saleType.value : this.saleType,
       discount: data.discount.present ? data.discount.value : this.discount,
+      shippingFee:
+          data.shippingFee.present ? data.shippingFee.value : this.shippingFee,
+      shippingAddress: data.shippingAddress.present
+          ? data.shippingAddress.value
+          : this.shippingAddress,
+      channel: data.channel.present ? data.channel.value : this.channel,
       notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -6648,6 +6727,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
           ..write('status: $status, ')
           ..write('saleType: $saleType, ')
           ..write('discount: $discount, ')
+          ..write('shippingFee: $shippingFee, ')
+          ..write('shippingAddress: $shippingAddress, ')
+          ..write('channel: $channel, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -6656,8 +6738,21 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
   }
 
   @override
-  int get hashCode => Object.hash(id, orderNo, customerId, customerName,
-      orderDate, status, saleType, discount, notes, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      id,
+      orderNo,
+      customerId,
+      customerName,
+      orderDate,
+      status,
+      saleType,
+      discount,
+      shippingFee,
+      shippingAddress,
+      channel,
+      notes,
+      createdAt,
+      updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -6670,6 +6765,9 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
           other.status == this.status &&
           other.saleType == this.saleType &&
           other.discount == this.discount &&
+          other.shippingFee == this.shippingFee &&
+          other.shippingAddress == this.shippingAddress &&
+          other.channel == this.channel &&
           other.notes == this.notes &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -6684,6 +6782,9 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
   final Value<String> status;
   final Value<String> saleType;
   final Value<double> discount;
+  final Value<double> shippingFee;
+  final Value<String> shippingAddress;
+  final Value<String> channel;
   final Value<String> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -6697,6 +6798,9 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
     this.status = const Value.absent(),
     this.saleType = const Value.absent(),
     this.discount = const Value.absent(),
+    this.shippingFee = const Value.absent(),
+    this.shippingAddress = const Value.absent(),
+    this.channel = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -6711,6 +6815,9 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
     this.status = const Value.absent(),
     this.saleType = const Value.absent(),
     this.discount = const Value.absent(),
+    this.shippingFee = const Value.absent(),
+    this.shippingAddress = const Value.absent(),
+    this.channel = const Value.absent(),
     this.notes = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -6731,6 +6838,9 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
     Expression<String>? status,
     Expression<String>? saleType,
     Expression<double>? discount,
+    Expression<double>? shippingFee,
+    Expression<String>? shippingAddress,
+    Expression<String>? channel,
     Expression<String>? notes,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -6745,6 +6855,9 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
       if (status != null) 'status': status,
       if (saleType != null) 'sale_type': saleType,
       if (discount != null) 'discount': discount,
+      if (shippingFee != null) 'shipping_fee': shippingFee,
+      if (shippingAddress != null) 'shipping_address': shippingAddress,
+      if (channel != null) 'channel': channel,
       if (notes != null) 'notes': notes,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -6761,6 +6874,9 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
       Value<String>? status,
       Value<String>? saleType,
       Value<double>? discount,
+      Value<double>? shippingFee,
+      Value<String>? shippingAddress,
+      Value<String>? channel,
       Value<String>? notes,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
@@ -6774,6 +6890,9 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
       status: status ?? this.status,
       saleType: saleType ?? this.saleType,
       discount: discount ?? this.discount,
+      shippingFee: shippingFee ?? this.shippingFee,
+      shippingAddress: shippingAddress ?? this.shippingAddress,
+      channel: channel ?? this.channel,
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -6808,6 +6927,15 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
     if (discount.present) {
       map['discount'] = Variable<double>(discount.value);
     }
+    if (shippingFee.present) {
+      map['shipping_fee'] = Variable<double>(shippingFee.value);
+    }
+    if (shippingAddress.present) {
+      map['shipping_address'] = Variable<String>(shippingAddress.value);
+    }
+    if (channel.present) {
+      map['channel'] = Variable<String>(channel.value);
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
@@ -6834,6 +6962,9 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
           ..write('status: $status, ')
           ..write('saleType: $saleType, ')
           ..write('discount: $discount, ')
+          ..write('shippingFee: $shippingFee, ')
+          ..write('shippingAddress: $shippingAddress, ')
+          ..write('channel: $channel, ')
           ..write('notes: $notes, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -11660,6 +11791,9 @@ typedef $$OrdersTableCreateCompanionBuilder = OrdersCompanion Function({
   Value<String> status,
   Value<String> saleType,
   Value<double> discount,
+  Value<double> shippingFee,
+  Value<String> shippingAddress,
+  Value<String> channel,
   Value<String> notes,
   required DateTime createdAt,
   required DateTime updatedAt,
@@ -11674,6 +11808,9 @@ typedef $$OrdersTableUpdateCompanionBuilder = OrdersCompanion Function({
   Value<String> status,
   Value<String> saleType,
   Value<double> discount,
+  Value<double> shippingFee,
+  Value<String> shippingAddress,
+  Value<String> channel,
   Value<String> notes,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
@@ -11712,6 +11849,16 @@ class $$OrdersTableFilterComposer
 
   ColumnFilters<double> get discount => $composableBuilder(
       column: $table.discount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get shippingFee => $composableBuilder(
+      column: $table.shippingFee, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get shippingAddress => $composableBuilder(
+      column: $table.shippingAddress,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get channel => $composableBuilder(
+      column: $table.channel, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnFilters(column));
@@ -11757,6 +11904,16 @@ class $$OrdersTableOrderingComposer
   ColumnOrderings<double> get discount => $composableBuilder(
       column: $table.discount, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<double> get shippingFee => $composableBuilder(
+      column: $table.shippingFee, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get shippingAddress => $composableBuilder(
+      column: $table.shippingAddress,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get channel => $composableBuilder(
+      column: $table.channel, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnOrderings(column));
 
@@ -11800,6 +11957,15 @@ class $$OrdersTableAnnotationComposer
   GeneratedColumn<double> get discount =>
       $composableBuilder(column: $table.discount, builder: (column) => column);
 
+  GeneratedColumn<double> get shippingFee => $composableBuilder(
+      column: $table.shippingFee, builder: (column) => column);
+
+  GeneratedColumn<String> get shippingAddress => $composableBuilder(
+      column: $table.shippingAddress, builder: (column) => column);
+
+  GeneratedColumn<String> get channel =>
+      $composableBuilder(column: $table.channel, builder: (column) => column);
+
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 
@@ -11841,6 +12007,9 @@ class $$OrdersTableTableManager extends RootTableManager<
             Value<String> status = const Value.absent(),
             Value<String> saleType = const Value.absent(),
             Value<double> discount = const Value.absent(),
+            Value<double> shippingFee = const Value.absent(),
+            Value<String> shippingAddress = const Value.absent(),
+            Value<String> channel = const Value.absent(),
             Value<String> notes = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
@@ -11855,6 +12024,9 @@ class $$OrdersTableTableManager extends RootTableManager<
             status: status,
             saleType: saleType,
             discount: discount,
+            shippingFee: shippingFee,
+            shippingAddress: shippingAddress,
+            channel: channel,
             notes: notes,
             createdAt: createdAt,
             updatedAt: updatedAt,
@@ -11869,6 +12041,9 @@ class $$OrdersTableTableManager extends RootTableManager<
             Value<String> status = const Value.absent(),
             Value<String> saleType = const Value.absent(),
             Value<double> discount = const Value.absent(),
+            Value<double> shippingFee = const Value.absent(),
+            Value<String> shippingAddress = const Value.absent(),
+            Value<String> channel = const Value.absent(),
             Value<String> notes = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
@@ -11883,6 +12058,9 @@ class $$OrdersTableTableManager extends RootTableManager<
             status: status,
             saleType: saleType,
             discount: discount,
+            shippingFee: shippingFee,
+            shippingAddress: shippingAddress,
+            channel: channel,
             notes: notes,
             createdAt: createdAt,
             updatedAt: updatedAt,

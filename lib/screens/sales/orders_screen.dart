@@ -191,6 +191,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                           <String>[
                             formatDate(order.orderDate),
                             order.saleType.label,
+                            if (order.isWebOrder) 'Online store',
                             '${order.items.length} item(s)',
                           ].join(' · '),
                         ),

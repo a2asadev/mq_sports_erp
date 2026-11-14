@@ -31,10 +31,18 @@ class AppDatabase extends _$AppDatabase {
   factory AppDatabase.open(String userId) => AppDatabase(driftDatabase(name: 'mq_erp_$userId'));
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 2) {
+            // Online-store orders: delivery fee, delivery details and the channel.
+            await m.addColumn(orders, orders.shippingFee);
+            await m.addColumn(orders, orders.shippingAddress);
+            await m.addColumn(orders, orders.channel);
+          }
+        },
         beforeOpen: (OpeningDetails details) async {
           // Related rows are removed by the code that removes their parent, in
           // one transaction. Foreign keys stay off: the device may briefly hold

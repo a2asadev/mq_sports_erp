@@ -73,12 +73,13 @@ The server writes every log (in the same transaction as the action, user taken f
 - **Stock Audit** (admin/manager): counted quantities, confirming adjusts stock; history screen included.
 - **Low-stock alerts**: `VariantModel.alertThreshold` and `isLowStock()` in `core/utils/stock_alerts.dart`.
 - **Executive dashboard** (`dashboard_providers.dart`, admin/manager): computed in the app from the lists (`computeDashboardStats`, unit-tested); the server's `GET /v1/dashboard` gives the same figures (checked by the flow tests).
-- **Sales & Orders**: customer required, Retail/Wholesale tag, per-line and per-order discounts, status pipeline Pending → Processing → Shipped → Delivered (+ Cancelled, admin/manager only, not after Delivered), payments, credit limit. A cancelled order is final (the server refuses any later change).
+- **Sales & Orders**: customer required, Retail/Wholesale tag, per-line and per-order discounts, status pipeline Pending → Processing → Shipped → Delivered (+ Cancelled, admin/manager only, not after Delivered), payments, credit limit. A cancelled order is final (the server refuses any later change). **Online-store orders** (`channel` `web`, placed by shoppers on the Next.js store in `c:srcmq_erpappsstore`, cash on delivery) arrive through sync like any order: `OrderModel.shippingFee` is part of `totalAmount`, `shippingAddress` holds the delivery details, and the web customers are ordinary customer records. Stock is taken out at checkout; an admin/manager cancels fake orders. The shop's own offline orders never carry a delivery fee. Drift schema is version 2 (the `orders` table gained `shippingFee`, `shippingAddress`, `channel`).
 - **Sync screen** + `sync_status_chip` (queue, refused entries with Retry/Discard, Sync now, download everything again). On web an "Online" chip replaces it.
 - Module access: categories/products/customers/stock/sales = admin+manager+staff; vendors/purchases = admin+manager; users and Activity Logs = admin. Staff may create orders, advance status and record payments; the server sends staff no vendors, purchases or audits.
 
 ## Pending / planned
-- Phase 4: the Next.js online store (separate app in the backend monorepo).
+- The Next.js online store is built (backend monorepo `apps/store`, see its README); online payment, e-mail/SMS and shopper password reset are not.
+- A Settings screen for the store (`GET/PUT /v1/store-settings`: open/closed, delivery fee, free-delivery amount, phone) is not in this app yet; use the API.
 - Not built yet: Purchase Orders, Goods Receipt Notes, POS checkout (barcode, tax, split payments, receipts), refunds.
 - Web: server-side paging for the big lists (orders, ledger, movements) once they grow; refresh token in an httpOnly cookie.
 - Mobile/desktop: the refresh token is in plain preferences (move to secure storage); product photos are downloaded in the product JSON (`images`) but not shown yet; the stock sum has a SQL query (`onHandByVariant`) that the Stock screen does not use yet.

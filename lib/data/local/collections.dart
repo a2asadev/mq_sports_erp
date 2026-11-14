@@ -842,6 +842,9 @@ class OrdersCollection extends LocalCollection<OrderModel> {
                 ))
             .toList(),
         discount: r.discount,
+        shippingFee: r.shippingFee,
+        shippingAddress: r.shippingAddress,
+        channel: r.channel,
         notes: r.notes,
         statusHistory: (List<OrderStatusRow>.of(history)
               ..sort((OrderStatusRow a, OrderStatusRow b) => a.position.compareTo(b.position)))
@@ -898,6 +901,9 @@ class OrdersCollection extends LocalCollection<OrderModel> {
                 status: Value<String>(o.status.name),
                 saleType: Value<String>(o.saleType.name),
                 discount: Value<double>(o.discount),
+                shippingFee: Value<double>(o.shippingFee),
+                shippingAddress: Value<String>(o.shippingAddress),
+                channel: Value<String>(o.channel),
                 notes: Value<String>(o.notes),
                 createdAt: Value<DateTime>(o.createdAt),
                 updatedAt: Value<DateTime>(o.updatedAt),

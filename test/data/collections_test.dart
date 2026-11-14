@@ -183,6 +183,7 @@ void main() {
     final OrderModel order = OrderModel(
       id: 'o1', orderNo: 'ORD-1', customerId: 'c', customerName: 'Ali', orderDate: t1,
       status: OrderStatus.shipped, saleType: OrderSaleType.wholesale, discount: 10, notes: 'rush',
+      shippingFee: 250, shippingAddress: 'Ali, 0300 - House 5, Lahore', channel: 'web',
       createdAt: t1, updatedAt: t2,
       items: <OrderItem>[
         OrderItem(id: 'i1', productId: 'p', variantId: 'v1', productName: 'Bat', variantLabel: 'S', sku: 'B-S', quantity: 3, unitPrice: 100, discount: 20),
@@ -201,6 +202,8 @@ void main() {
     expect(back?.statusHistory.map((OrderStatusEntry e) => e.status),
         <OrderStatus>[OrderStatus.pending, OrderStatus.processing, OrderStatus.shipped]);
     expect(back?.totalAmount, order.totalAmount);
+    expect(back?.shippingFee, 250);
+    expect(back?.channel, 'web');
 
     // A change of status replaces the history rather than adding to it.
     await local.orders.upsertAll(<OrderModel>[

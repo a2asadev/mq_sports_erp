@@ -242,6 +242,9 @@ class Orders extends Table {
   TextColumn get status => text().withDefault(const Constant('pending'))();
   TextColumn get saleType => text().withDefault(const Constant('retail'))();
   RealColumn get discount => real().withDefault(const Constant(0))();
+  RealColumn get shippingFee => real().withDefault(const Constant(0))();
+  TextColumn get shippingAddress => text().withDefault(const Constant(''))();
+  TextColumn get channel => text().withDefault(const Constant('admin'))();
   TextColumn get notes => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
