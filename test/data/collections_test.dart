@@ -7,6 +7,7 @@ import 'package:mq_sports_erp/models/customer_model.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
 import 'package:mq_sports_erp/models/party_enums.dart';
+import 'package:mq_sports_erp/models/product_image.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
@@ -32,6 +33,41 @@ void main() {
   // Times with milliseconds, in local time (as the sync store produces them).
   final DateTime t1 = DateTime(2026, 11, 14, 9, 30, 15, 123);
   final DateTime t2 = DateTime(2026, 11, 14, 22, 5, 1, 7);
+
+  test('photos are stored: addresses of users, categories, customers and vendors, and a product\'s image list', () async {
+    await local.users.upsertAll(<UserModel>[
+      UserModel(id: 'u1', email: 'a@b.c', photoUrl: 'http://m/u1.webp', createdAt: t1, updatedAt: t2),
+    ]);
+    await local.categories.upsertAll(<CategoryModel>[
+      CategoryModel(id: 'c1', name: 'Bats', photoUrl: 'http://m/c1.webp', createdAt: t1, updatedAt: t2),
+    ]);
+    await local.customers.upsertAll(<CustomerModel>[
+      CustomerModel(id: 'cu1', name: 'Ali', photoUrl: 'http://m/cu1.webp', createdAt: t1, updatedAt: t2),
+    ]);
+    await local.vendors.upsertAll(<VendorModel>[
+      VendorModel(id: 'v1', name: 'Supplier', photoUrl: 'http://m/v1.webp', createdAt: t1, updatedAt: t2),
+    ]);
+    final ProductModel product = ProductModel(
+      id: 'p1', name: 'Bat', categoryId: 'c1', createdAt: t1, updatedAt: t2,
+      images: const <ProductImage>[
+        ProductImage(id: 'i1', width: 600, height: 400, thumbUrl: 't1', mediumUrl: 'm1', largeUrl: 'l1'),
+        ProductImage(id: 'i2', position: 1, variantId: 'var', mediumUrl: 'm2'),
+      ],
+    );
+    await local.products.upsertAll(<ProductModel>[product]);
+
+    expect((await local.users.byId('u1'))?.photoUrl, 'http://m/u1.webp');
+    expect((await local.categories.byId('c1'))?.photoUrl, 'http://m/c1.webp');
+    expect((await local.customers.byId('cu1'))?.photoUrl, 'http://m/cu1.webp');
+    expect((await local.vendors.byId('v1'))?.photoUrl, 'http://m/v1.webp');
+    final ProductModel? back = await local.products.byId('p1');
+    expect(back?.toMap(), product.toMap());
+    expect(back?.images.map((ProductImage i) => i.id), <String>['i1', 'i2']);
+
+    // Removing the photos clears them.
+    await local.products.upsertAll(<ProductModel>[product.copyWith(images: const <ProductImage>[], updatedAt: t2)]);
+    expect((await local.products.byId('p1'))?.images, isEmpty);
+  });
 
   test('users keep every field, including the role and the active flag', () async {
     final UserModel user = UserModel(

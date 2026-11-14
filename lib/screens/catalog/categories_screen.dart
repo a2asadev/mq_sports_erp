@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
@@ -93,9 +94,11 @@ class CategoriesScreen extends ConsumerWidget {
           return ListTile(
             contentPadding:
                 EdgeInsets.only(left: 16 + node.depth * 24.0, right: 8),
-            leading: Icon(node.depth == 0
-                ? Icons.folder_outlined
-                : Icons.subdirectory_arrow_right),
+            leading: category.photoUrl.isNotEmpty
+                ? PhotoAvatar(url: category.photoUrl, label: category.name)
+                : Icon(node.depth == 0
+                    ? Icons.folder_outlined
+                    : Icons.subdirectory_arrow_right),
             title: Text(category.name),
             subtitle:
                 category.description.isEmpty ? null : Text(category.description),

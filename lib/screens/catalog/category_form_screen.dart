@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/online/photo_service.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
@@ -26,6 +28,7 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
   late final TextEditingController _descriptionController;
   late String _parentId;
   late bool _isActive;
+  late String _photoUrl;
   bool _isSubmitting = false;
 
   @override
@@ -37,6 +40,7 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
         TextEditingController(text: existing?.description ?? '');
     _parentId = existing?.parentId ?? widget.initialParentId;
     _isActive = existing?.isActive ?? true;
+    _photoUrl = existing?.photoUrl ?? '';
   }
 
   @override
@@ -85,6 +89,7 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
             parentId: parentId,
             description: _descriptionController.text,
             isActive: _isActive,
+            photoUrl: _photoUrl,
           ));
     if (!mounted) {
       return;
@@ -115,6 +120,18 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
+                    if (widget.category != null)
+                      PhotoEditor(
+                        kind: PhotoKind.category,
+                        entityId: widget.category!.id,
+                        photoUrl: _photoUrl,
+                        title: 'Category photo',
+                        enabled: !_isSubmitting,
+                        onChanged: (String url) => _photoUrl = url,
+                      )
+                    else
+                      const PhotoAfterSaveHint(),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _nameController,
                       enabled: !_isSubmitting,

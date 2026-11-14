@@ -14,6 +14,7 @@ class UserModel implements SyncableModel {
     this.phoneNumber = '',
     this.role = UserRole.staff,
     this.isActive = true,
+    this.photoUrl = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -26,6 +27,9 @@ class UserModel implements SyncableModel {
   final String phoneNumber;
   final UserRole role;
   final bool isActive;
+
+  /// Address of the photo ('' = none). Changed with the photo upload, never by saving the form.
+  final String photoUrl;
   final DateTime createdAt;
 
   @override
@@ -40,6 +44,7 @@ class UserModel implements SyncableModel {
       'phoneNumber': phoneNumber,
       'role': role.name,
       'isActive': isActive,
+      'photoUrl': photoUrl,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -53,6 +58,7 @@ class UserModel implements SyncableModel {
       phoneNumber: map['phoneNumber'] as String? ?? '',
       role: UserRole.fromName(map['role'] as String?),
       isActive: map['isActive'] as bool? ?? false,
+      photoUrl: map['photoUrl'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -64,6 +70,7 @@ class UserModel implements SyncableModel {
     String? phoneNumber,
     UserRole? role,
     bool? isActive,
+    String? photoUrl,
     DateTime? updatedAt,
   }) {
     return UserModel(
@@ -73,6 +80,7 @@ class UserModel implements SyncableModel {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       role: role ?? this.role,
       isActive: isActive ?? this.isActive,
+      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

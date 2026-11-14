@@ -17,6 +17,7 @@ class VendorModel implements SyncableModel {
     this.notes = '',
     this.openingBalance = 0,
     this.isActive = true,
+    this.photoUrl = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -35,6 +36,9 @@ class VendorModel implements SyncableModel {
   final String notes;
   final double openingBalance;
   final bool isActive;
+
+  /// Address of the photo ('' = none). Changed with the photo upload, never by saving the form.
+  final String photoUrl;
   final DateTime createdAt;
 
   @override
@@ -54,6 +58,7 @@ class VendorModel implements SyncableModel {
       'notes': notes,
       'openingBalance': openingBalance,
       'isActive': isActive,
+      'photoUrl': photoUrl,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -72,6 +77,7 @@ class VendorModel implements SyncableModel {
       notes: map['notes'] as String? ?? '',
       openingBalance: (map['openingBalance'] as num?)?.toDouble() ?? 0,
       isActive: map['isActive'] as bool? ?? true,
+      photoUrl: map['photoUrl'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -89,6 +95,7 @@ class VendorModel implements SyncableModel {
     String? notes,
     double? openingBalance,
     bool? isActive,
+    String? photoUrl,
     DateTime? updatedAt,
   }) {
     return VendorModel(
@@ -103,6 +110,7 @@ class VendorModel implements SyncableModel {
       notes: notes ?? this.notes,
       openingBalance: openingBalance ?? this.openingBalance,
       isActive: isActive ?? this.isActive,
+      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

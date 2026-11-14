@@ -1,3 +1,4 @@
+import 'package:mq_sports_erp/models/product_image.dart';
 import 'package:mq_sports_erp/models/syncable_model.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
 import 'package:uuid/uuid.dart';
@@ -13,11 +14,15 @@ class ProductModel implements SyncableModel {
     this.description = '',
     this.isActive = true,
     List<VariantModel>? variants,
+    List<ProductImage>? images,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
         variants = List<VariantModel>.unmodifiable(
           variants ?? const <VariantModel>[],
+        ),
+        images = List<ProductImage>.unmodifiable(
+          images ?? const <ProductImage>[],
         ),
         createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
@@ -32,6 +37,9 @@ class ProductModel implements SyncableModel {
   final String description;
   final bool isActive;
   final List<VariantModel> variants;
+
+  /// Published photos, main one first. Changed only by the photo upload.
+  final List<ProductImage> images;
   final DateTime createdAt;
 
   @override
@@ -59,6 +67,7 @@ class ProductModel implements SyncableModel {
       'description': description,
       'isActive': isActive,
       'variants': variants.map((VariantModel v) => v.toMap()).toList(),
+      'images': images.map((ProductImage i) => i.toMap()).toList(),
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -78,6 +87,10 @@ class ProductModel implements SyncableModel {
           .whereType<Map<String, dynamic>>()
           .map(VariantModel.fromMap)
           .toList(),
+      images: (map['images'] as List<Object?>? ?? <Object?>[])
+          .whereType<Map<String, dynamic>>()
+          .map(ProductImage.fromMap)
+          .toList(),
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -91,6 +104,7 @@ class ProductModel implements SyncableModel {
     String? description,
     bool? isActive,
     List<VariantModel>? variants,
+    List<ProductImage>? images,
     DateTime? updatedAt,
   }) {
     return ProductModel(
@@ -101,6 +115,7 @@ class ProductModel implements SyncableModel {
       description: description ?? this.description,
       isActive: isActive ?? this.isActive,
       variants: variants ?? this.variants,
+      images: images ?? this.images,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

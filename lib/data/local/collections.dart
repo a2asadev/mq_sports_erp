@@ -9,6 +9,7 @@ import 'package:mq_sports_erp/models/customer_model.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
 import 'package:mq_sports_erp/models/party_enums.dart';
+import 'package:mq_sports_erp/models/product_image.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
@@ -117,6 +118,7 @@ class UsersCollection extends LocalCollection<UserModel> {
         phoneNumber: r.phoneNumber,
         role: UserRole.fromName(r.role),
         isActive: r.isActive,
+        photoUrl: r.photoUrl,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -142,6 +144,7 @@ class UsersCollection extends LocalCollection<UserModel> {
               phoneNumber: Value<String>(u.phoneNumber),
               role: Value<String>(u.role.name),
               isActive: Value<bool>(u.isActive),
+              photoUrl: Value<String>(u.photoUrl),
               createdAt: Value<DateTime>(u.createdAt),
               updatedAt: Value<DateTime>(u.updatedAt),
             ),
@@ -172,6 +175,7 @@ class CategoriesCollection extends LocalCollection<CategoryModel> {
         parentId: r.parentId,
         description: r.description,
         isActive: r.isActive,
+        photoUrl: r.photoUrl,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -197,6 +201,7 @@ class CategoriesCollection extends LocalCollection<CategoryModel> {
               parentId: Value<String>(c.parentId),
               description: Value<String>(c.description),
               isActive: Value<bool>(c.isActive),
+              photoUrl: Value<String>(c.photoUrl),
               createdAt: Value<DateTime>(c.createdAt),
               updatedAt: Value<DateTime>(c.updatedAt),
             ),
@@ -242,6 +247,19 @@ class ProductsCollection extends LocalCollection<ProductModel> {
     );
   }
 
+  /// The saved photos; a damaged value never stops the product from loading.
+  static List<ProductImage> _images(String json) {
+    try {
+      final Object? decoded = jsonDecode(json);
+      if (decoded is List<Object?>) {
+        return decoded.whereType<Map<String, dynamic>>().map(ProductImage.fromMap).toList();
+      }
+    } on FormatException {
+      // fall through
+    }
+    return const <ProductImage>[];
+  }
+
   ProductModel _model(ProductRow r, List<VariantRow> variants) => ProductModel(
         id: r.id,
         name: r.name,
@@ -249,6 +267,7 @@ class ProductsCollection extends LocalCollection<ProductModel> {
         brand: r.brand,
         description: r.description,
         isActive: r.isActive,
+        images: _images(r.imagesJson),
         variants: (List<VariantRow>.of(variants)
               ..sort((VariantRow a, VariantRow b) => a.position.compareTo(b.position)))
             .map(_variant)
@@ -291,6 +310,7 @@ class ProductsCollection extends LocalCollection<ProductModel> {
                 brand: Value<String>(p.brand),
                 description: Value<String>(p.description),
                 isActive: Value<bool>(p.isActive),
+                imagesJson: Value<String>(jsonEncode(p.images.map((ProductImage i) => i.toMap()).toList())),
                 createdAt: Value<DateTime>(p.createdAt),
                 updatedAt: Value<DateTime>(p.updatedAt),
               ),
@@ -349,6 +369,7 @@ class VendorsCollection extends LocalCollection<VendorModel> {
         notes: r.notes,
         openingBalance: r.openingBalance,
         isActive: r.isActive,
+        photoUrl: r.photoUrl,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -379,6 +400,7 @@ class VendorsCollection extends LocalCollection<VendorModel> {
               notes: Value<String>(v.notes),
               openingBalance: Value<double>(v.openingBalance),
               isActive: Value<bool>(v.isActive),
+              photoUrl: Value<String>(v.photoUrl),
               createdAt: Value<DateTime>(v.createdAt),
               updatedAt: Value<DateTime>(v.updatedAt),
             ),
@@ -416,6 +438,7 @@ class CustomersCollection extends LocalCollection<CustomerModel> {
         creditLimit: r.creditLimit,
         openingBalance: r.openingBalance,
         isActive: r.isActive,
+        photoUrl: r.photoUrl,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -448,6 +471,7 @@ class CustomersCollection extends LocalCollection<CustomerModel> {
               creditLimit: Value<double>(c.creditLimit),
               openingBalance: Value<double>(c.openingBalance),
               isActive: Value<bool>(c.isActive),
+              photoUrl: Value<String>(c.photoUrl),
               createdAt: Value<DateTime>(c.createdAt),
               updatedAt: Value<DateTime>(c.updatedAt),
             ),

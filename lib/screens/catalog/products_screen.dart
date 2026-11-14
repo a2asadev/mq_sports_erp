@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
@@ -135,6 +136,14 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                       final String path =
                           CategoryTree.pathOf(product.categoryId, categories);
                       return ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: NetworkPhoto(
+                            url: product.images.isEmpty ? '' : product.images.first.thumbUrl,
+                            size: 48,
+                            placeholder: Icons.inventory_2_outlined,
+                          ),
+                        ),
                         title: Text(product.name),
                         subtitle: Text(
                           '${path.isEmpty ? 'Uncategorized' : path}'

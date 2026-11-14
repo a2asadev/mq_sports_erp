@@ -11,6 +11,7 @@ class CategoryModel implements SyncableModel {
     this.parentId = '',
     this.description = '',
     this.isActive = true,
+    this.photoUrl = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -23,6 +24,9 @@ class CategoryModel implements SyncableModel {
   final String parentId;
   final String description;
   final bool isActive;
+
+  /// Address of the photo ('' = none). Changed with the photo upload, never by saving the form.
+  final String photoUrl;
   final DateTime createdAt;
 
   @override
@@ -36,6 +40,7 @@ class CategoryModel implements SyncableModel {
       'parentId': parentId,
       'description': description,
       'isActive': isActive,
+      'photoUrl': photoUrl,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -48,6 +53,7 @@ class CategoryModel implements SyncableModel {
       parentId: map['parentId'] as String? ?? '',
       description: map['description'] as String? ?? '',
       isActive: map['isActive'] as bool? ?? true,
+      photoUrl: map['photoUrl'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -59,6 +65,7 @@ class CategoryModel implements SyncableModel {
     String? parentId,
     String? description,
     bool? isActive,
+    String? photoUrl,
     DateTime? updatedAt,
   }) {
     return CategoryModel(
@@ -67,6 +74,7 @@ class CategoryModel implements SyncableModel {
       parentId: parentId ?? this.parentId,
       description: description ?? this.description,
       isActive: isActive ?? this.isActive,
+      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

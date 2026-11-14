@@ -11,6 +11,7 @@ class PartyListItem {
     required this.creditLimit,
     required this.isActive,
     required this.searchText,
+    this.photoUrl = '',
   });
 
   final String id;
@@ -31,6 +32,9 @@ class PartyListItem {
 
   /// Lowercased text the search box matches against.
   final String searchText;
+
+  /// The party's photo address ('' = none).
+  final String photoUrl;
 
   bool get hasBalance => balance.abs() >= 0.005;
 

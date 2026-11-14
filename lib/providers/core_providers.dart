@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/online/api_auth_service.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/photo_service.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/services/auth_admin_service.dart';
@@ -24,6 +25,28 @@ final Provider<AuthAdminService> authAdminServiceProvider =
       ref.read(syncTickProvider.notifier).increment();
     }
   });
+});
+
+/// Choosing and uploading photos. After a change the new photo address is
+/// brought onto this device (the web copy is refreshed; the others pull).
+final Provider<PhotoService> photoServiceProvider = Provider<PhotoService>((Ref ref) {
+  final bool online = ref.watch(dataModeProvider).isOnline;
+  return PhotoService(
+    api: ref.watch(apiClientProvider),
+    httpClient: ref.watch(httpClientProvider),
+    refresh: () async {
+      try {
+        if (online) {
+          await ref.read(remoteStoreProvider).refresh();
+        } else {
+          await ref.read(syncEngineProvider).pull();
+          ref.read(syncTickProvider.notifier).increment();
+        }
+      } catch (_) {
+        // The photo is saved; the next sync brings it to this device.
+      }
+    },
+  );
 });
 
 /// Current user uid, or null when signed out.

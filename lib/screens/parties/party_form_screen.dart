@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/online/photo_service.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:mq_sports_erp/models/party_enums.dart';
 
 /// Values entered in the vendor/customer form.
@@ -15,6 +17,7 @@ class PartyFormData {
     this.openingBalance = 0,
     this.notes = '',
     this.isActive = true,
+    this.photoUrl = '',
   });
 
   final String name;
@@ -28,6 +31,7 @@ class PartyFormData {
   final double openingBalance;
   final String notes;
   final bool isActive;
+  final String photoUrl;
 }
 
 /// One form for both vendors and customers. The vendor/customer wrappers turn
@@ -39,7 +43,11 @@ class PartyFormScreen extends StatefulWidget {
     required this.typeOptions,
     required this.onSubmit,
     this.initial,
+    this.entityId,
   });
+
+  /// The id of the saved record (null while adding), needed for its photo.
+  final String? entityId;
 
   final PartyType partyType;
   final List<MapEntry<String, String>> typeOptions;
@@ -65,6 +73,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
   late final TextEditingController _notesController;
   late String _typeKey;
   late bool _isActive;
+  late String _photoUrl;
   bool _isSubmitting = false;
 
   bool get _isCustomer => widget.partyType == PartyType.customer;
@@ -86,6 +95,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
     _notesController = TextEditingController(text: initial?.notes ?? '');
     _typeKey = initial?.typeKey ?? widget.typeOptions.first.key;
     _isActive = initial?.isActive ?? true;
+    _photoUrl = initial?.photoUrl ?? '';
   }
 
   @override
@@ -120,6 +130,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
       openingBalance: double.parse(_openingController.text.trim()),
       notes: _notesController.text.trim(),
       isActive: _isActive,
+      photoUrl: _photoUrl,
     ));
     if (!mounted) {
       return;
@@ -151,6 +162,18 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
+                    if (widget.entityId != null)
+                      PhotoEditor(
+                        kind: _isCustomer ? PhotoKind.customer : PhotoKind.vendor,
+                        entityId: widget.entityId!,
+                        photoUrl: _photoUrl,
+                        title: _isCustomer ? 'Customer photo / shop front' : 'Vendor photo / logo',
+                        enabled: !locked,
+                        onChanged: (String url) => _photoUrl = url,
+                      )
+                    else
+                      const PhotoAfterSaveHint(),
+                    _gap(),
                     TextFormField(
                       controller: _nameController,
                       enabled: !locked,

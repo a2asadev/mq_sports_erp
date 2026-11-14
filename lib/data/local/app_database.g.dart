@@ -51,6 +51,14 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _photoUrlMeta =
+      const VerificationMeta('photoUrl');
+  @override
+  late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
+      'photo_url', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -71,6 +79,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
         phoneNumber,
         role,
         isActive,
+        photoUrl,
         createdAt,
         updatedAt
       ];
@@ -115,6 +124,10 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
       context.handle(_isActiveMeta,
           isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
     }
+    if (data.containsKey('photo_url')) {
+      context.handle(_photoUrlMeta,
+          photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -148,6 +161,8 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRow> {
           .read(DriftSqlType.string, data['${effectivePrefix}role'])!,
       isActive: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      photoUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_url'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -168,6 +183,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
   final String phoneNumber;
   final String role;
   final bool isActive;
+  final String photoUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
   const UserRow(
@@ -177,6 +193,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       required this.phoneNumber,
       required this.role,
       required this.isActive,
+      required this.photoUrl,
       required this.createdAt,
       required this.updatedAt});
   @override
@@ -188,6 +205,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
     map['phone_number'] = Variable<String>(phoneNumber);
     map['role'] = Variable<String>(role);
     map['is_active'] = Variable<bool>(isActive);
+    map['photo_url'] = Variable<String>(photoUrl);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -201,6 +219,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       phoneNumber: Value(phoneNumber),
       role: Value(role),
       isActive: Value(isActive),
+      photoUrl: Value(photoUrl),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -216,6 +235,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       phoneNumber: serializer.fromJson<String>(json['phoneNumber']),
       role: serializer.fromJson<String>(json['role']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      photoUrl: serializer.fromJson<String>(json['photoUrl']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -230,6 +250,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
       'phoneNumber': serializer.toJson<String>(phoneNumber),
       'role': serializer.toJson<String>(role),
       'isActive': serializer.toJson<bool>(isActive),
+      'photoUrl': serializer.toJson<String>(photoUrl),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -242,6 +263,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
           String? phoneNumber,
           String? role,
           bool? isActive,
+          String? photoUrl,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
       UserRow(
@@ -251,6 +273,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
         phoneNumber: phoneNumber ?? this.phoneNumber,
         role: role ?? this.role,
         isActive: isActive ?? this.isActive,
+        photoUrl: photoUrl ?? this.photoUrl,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -264,6 +287,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
           data.phoneNumber.present ? data.phoneNumber.value : this.phoneNumber,
       role: data.role.present ? data.role.value : this.role,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -278,6 +302,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
           ..write('phoneNumber: $phoneNumber, ')
           ..write('role: $role, ')
           ..write('isActive: $isActive, ')
+          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -286,7 +311,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
 
   @override
   int get hashCode => Object.hash(id, email, displayName, phoneNumber, role,
-      isActive, createdAt, updatedAt);
+      isActive, photoUrl, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -297,6 +322,7 @@ class UserRow extends DataClass implements Insertable<UserRow> {
           other.phoneNumber == this.phoneNumber &&
           other.role == this.role &&
           other.isActive == this.isActive &&
+          other.photoUrl == this.photoUrl &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -308,6 +334,7 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
   final Value<String> phoneNumber;
   final Value<String> role;
   final Value<bool> isActive;
+  final Value<String> photoUrl;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -318,6 +345,7 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
     this.phoneNumber = const Value.absent(),
     this.role = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.photoUrl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -329,6 +357,7 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
     this.phoneNumber = const Value.absent(),
     this.role = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.photoUrl = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -343,6 +372,7 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
     Expression<String>? phoneNumber,
     Expression<String>? role,
     Expression<bool>? isActive,
+    Expression<String>? photoUrl,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -354,6 +384,7 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
       if (phoneNumber != null) 'phone_number': phoneNumber,
       if (role != null) 'role': role,
       if (isActive != null) 'is_active': isActive,
+      if (photoUrl != null) 'photo_url': photoUrl,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -367,6 +398,7 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
       Value<String>? phoneNumber,
       Value<String>? role,
       Value<bool>? isActive,
+      Value<String>? photoUrl,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
       Value<int>? rowid}) {
@@ -377,6 +409,7 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       role: role ?? this.role,
       isActive: isActive ?? this.isActive,
+      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -404,6 +437,9 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (photoUrl.present) {
+      map['photo_url'] = Variable<String>(photoUrl.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -425,6 +461,7 @@ class UsersCompanion extends UpdateCompanion<UserRow> {
           ..write('phoneNumber: $phoneNumber, ')
           ..write('role: $role, ')
           ..write('isActive: $isActive, ')
+          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -475,6 +512,14 @@ class $CategoriesTable extends Categories
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _photoUrlMeta =
+      const VerificationMeta('photoUrl');
+  @override
+  late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
+      'photo_url', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -488,8 +533,16 @@ class $CategoriesTable extends Categories
       'updated_at', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, parentId, description, isActive, createdAt, updatedAt];
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        parentId,
+        description,
+        isActive,
+        photoUrl,
+        createdAt,
+        updatedAt
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -525,6 +578,10 @@ class $CategoriesTable extends Categories
       context.handle(_isActiveMeta,
           isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
     }
+    if (data.containsKey('photo_url')) {
+      context.handle(_photoUrlMeta,
+          photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -556,6 +613,8 @@ class $CategoriesTable extends Categories
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       isActive: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      photoUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_url'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -575,6 +634,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
   final String parentId;
   final String description;
   final bool isActive;
+  final String photoUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
   const CategoryRow(
@@ -583,6 +643,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
       required this.parentId,
       required this.description,
       required this.isActive,
+      required this.photoUrl,
       required this.createdAt,
       required this.updatedAt});
   @override
@@ -593,6 +654,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
     map['parent_id'] = Variable<String>(parentId);
     map['description'] = Variable<String>(description);
     map['is_active'] = Variable<bool>(isActive);
+    map['photo_url'] = Variable<String>(photoUrl);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -605,6 +667,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
       parentId: Value(parentId),
       description: Value(description),
       isActive: Value(isActive),
+      photoUrl: Value(photoUrl),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -619,6 +682,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
       parentId: serializer.fromJson<String>(json['parentId']),
       description: serializer.fromJson<String>(json['description']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      photoUrl: serializer.fromJson<String>(json['photoUrl']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -632,6 +696,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
       'parentId': serializer.toJson<String>(parentId),
       'description': serializer.toJson<String>(description),
       'isActive': serializer.toJson<bool>(isActive),
+      'photoUrl': serializer.toJson<String>(photoUrl),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -643,6 +708,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
           String? parentId,
           String? description,
           bool? isActive,
+          String? photoUrl,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
       CategoryRow(
@@ -651,6 +717,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
         parentId: parentId ?? this.parentId,
         description: description ?? this.description,
         isActive: isActive ?? this.isActive,
+        photoUrl: photoUrl ?? this.photoUrl,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -662,6 +729,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
       description:
           data.description.present ? data.description.value : this.description,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -675,6 +743,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
           ..write('parentId: $parentId, ')
           ..write('description: $description, ')
           ..write('isActive: $isActive, ')
+          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -682,8 +751,8 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, name, parentId, description, isActive, createdAt, updatedAt);
+  int get hashCode => Object.hash(id, name, parentId, description, isActive,
+      photoUrl, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -693,6 +762,7 @@ class CategoryRow extends DataClass implements Insertable<CategoryRow> {
           other.parentId == this.parentId &&
           other.description == this.description &&
           other.isActive == this.isActive &&
+          other.photoUrl == this.photoUrl &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -703,6 +773,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
   final Value<String> parentId;
   final Value<String> description;
   final Value<bool> isActive;
+  final Value<String> photoUrl;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -712,6 +783,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
     this.parentId = const Value.absent(),
     this.description = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.photoUrl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -722,6 +794,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
     this.parentId = const Value.absent(),
     this.description = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.photoUrl = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -735,6 +808,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
     Expression<String>? parentId,
     Expression<String>? description,
     Expression<bool>? isActive,
+    Expression<String>? photoUrl,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -745,6 +819,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
       if (parentId != null) 'parent_id': parentId,
       if (description != null) 'description': description,
       if (isActive != null) 'is_active': isActive,
+      if (photoUrl != null) 'photo_url': photoUrl,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -757,6 +832,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
       Value<String>? parentId,
       Value<String>? description,
       Value<bool>? isActive,
+      Value<String>? photoUrl,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
       Value<int>? rowid}) {
@@ -766,6 +842,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
       parentId: parentId ?? this.parentId,
       description: description ?? this.description,
       isActive: isActive ?? this.isActive,
+      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -790,6 +867,9 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (photoUrl.present) {
+      map['photo_url'] = Variable<String>(photoUrl.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -810,6 +890,7 @@ class CategoriesCompanion extends UpdateCompanion<CategoryRow> {
           ..write('parentId: $parentId, ')
           ..write('description: $description, ')
           ..write('isActive: $isActive, ')
+          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -865,6 +946,14 @@ class $ProductsTable extends Products
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _imagesJsonMeta =
+      const VerificationMeta('imagesJson');
+  @override
+  late final GeneratedColumn<String> imagesJson = GeneratedColumn<String>(
+      'images_json', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('[]'));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -885,6 +974,7 @@ class $ProductsTable extends Products
         brand,
         description,
         isActive,
+        imagesJson,
         createdAt,
         updatedAt
       ];
@@ -931,6 +1021,12 @@ class $ProductsTable extends Products
       context.handle(_isActiveMeta,
           isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
     }
+    if (data.containsKey('images_json')) {
+      context.handle(
+          _imagesJsonMeta,
+          imagesJson.isAcceptableOrUnknown(
+              data['images_json']!, _imagesJsonMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -964,6 +1060,8 @@ class $ProductsTable extends Products
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       isActive: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      imagesJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}images_json'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -984,6 +1082,9 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
   final String brand;
   final String description;
   final bool isActive;
+
+  /// The photos as a JSON list (see ProductImage).
+  final String imagesJson;
   final DateTime createdAt;
   final DateTime updatedAt;
   const ProductRow(
@@ -993,6 +1094,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       required this.brand,
       required this.description,
       required this.isActive,
+      required this.imagesJson,
       required this.createdAt,
       required this.updatedAt});
   @override
@@ -1004,6 +1106,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
     map['brand'] = Variable<String>(brand);
     map['description'] = Variable<String>(description);
     map['is_active'] = Variable<bool>(isActive);
+    map['images_json'] = Variable<String>(imagesJson);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1017,6 +1120,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       brand: Value(brand),
       description: Value(description),
       isActive: Value(isActive),
+      imagesJson: Value(imagesJson),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -1032,6 +1136,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       brand: serializer.fromJson<String>(json['brand']),
       description: serializer.fromJson<String>(json['description']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      imagesJson: serializer.fromJson<String>(json['imagesJson']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -1046,6 +1151,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       'brand': serializer.toJson<String>(brand),
       'description': serializer.toJson<String>(description),
       'isActive': serializer.toJson<bool>(isActive),
+      'imagesJson': serializer.toJson<String>(imagesJson),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -1058,6 +1164,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
           String? brand,
           String? description,
           bool? isActive,
+          String? imagesJson,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
       ProductRow(
@@ -1067,6 +1174,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
         brand: brand ?? this.brand,
         description: description ?? this.description,
         isActive: isActive ?? this.isActive,
+        imagesJson: imagesJson ?? this.imagesJson,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -1080,6 +1188,8 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       description:
           data.description.present ? data.description.value : this.description,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      imagesJson:
+          data.imagesJson.present ? data.imagesJson.value : this.imagesJson,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1094,6 +1204,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
           ..write('brand: $brand, ')
           ..write('description: $description, ')
           ..write('isActive: $isActive, ')
+          ..write('imagesJson: $imagesJson, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1101,8 +1212,8 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, name, categoryId, brand, description, isActive, createdAt, updatedAt);
+  int get hashCode => Object.hash(id, name, categoryId, brand, description,
+      isActive, imagesJson, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1113,6 +1224,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
           other.brand == this.brand &&
           other.description == this.description &&
           other.isActive == this.isActive &&
+          other.imagesJson == this.imagesJson &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1124,6 +1236,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
   final Value<String> brand;
   final Value<String> description;
   final Value<bool> isActive;
+  final Value<String> imagesJson;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -1134,6 +1247,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
     this.brand = const Value.absent(),
     this.description = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.imagesJson = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1145,6 +1259,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
     this.brand = const Value.absent(),
     this.description = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.imagesJson = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -1160,6 +1275,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
     Expression<String>? brand,
     Expression<String>? description,
     Expression<bool>? isActive,
+    Expression<String>? imagesJson,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -1171,6 +1287,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
       if (brand != null) 'brand': brand,
       if (description != null) 'description': description,
       if (isActive != null) 'is_active': isActive,
+      if (imagesJson != null) 'images_json': imagesJson,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1184,6 +1301,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
       Value<String>? brand,
       Value<String>? description,
       Value<bool>? isActive,
+      Value<String>? imagesJson,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
       Value<int>? rowid}) {
@@ -1194,6 +1312,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
       brand: brand ?? this.brand,
       description: description ?? this.description,
       isActive: isActive ?? this.isActive,
+      imagesJson: imagesJson ?? this.imagesJson,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -1221,6 +1340,9 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (imagesJson.present) {
+      map['images_json'] = Variable<String>(imagesJson.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1242,6 +1364,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
           ..write('brand: $brand, ')
           ..write('description: $description, ')
           ..write('isActive: $isActive, ')
+          ..write('imagesJson: $imagesJson, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -1972,6 +2095,14 @@ class $VendorsTable extends Vendors with TableInfo<$VendorsTable, VendorRow> {
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _photoUrlMeta =
+      const VerificationMeta('photoUrl');
+  @override
+  late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
+      'photo_url', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -1997,6 +2128,7 @@ class $VendorsTable extends Vendors with TableInfo<$VendorsTable, VendorRow> {
         notes,
         openingBalance,
         isActive,
+        photoUrl,
         createdAt,
         updatedAt
       ];
@@ -2061,6 +2193,10 @@ class $VendorsTable extends Vendors with TableInfo<$VendorsTable, VendorRow> {
       context.handle(_isActiveMeta,
           isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
     }
+    if (data.containsKey('photo_url')) {
+      context.handle(_photoUrlMeta,
+          photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -2104,6 +2240,8 @@ class $VendorsTable extends Vendors with TableInfo<$VendorsTable, VendorRow> {
           DriftSqlType.double, data['${effectivePrefix}opening_balance'])!,
       isActive: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      photoUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_url'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -2129,6 +2267,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
   final String notes;
   final double openingBalance;
   final bool isActive;
+  final String photoUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
   const VendorRow(
@@ -2143,6 +2282,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
       required this.notes,
       required this.openingBalance,
       required this.isActive,
+      required this.photoUrl,
       required this.createdAt,
       required this.updatedAt});
   @override
@@ -2159,6 +2299,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
     map['notes'] = Variable<String>(notes);
     map['opening_balance'] = Variable<double>(openingBalance);
     map['is_active'] = Variable<bool>(isActive);
+    map['photo_url'] = Variable<String>(photoUrl);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -2177,6 +2318,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
       notes: Value(notes),
       openingBalance: Value(openingBalance),
       isActive: Value(isActive),
+      photoUrl: Value(photoUrl),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -2197,6 +2339,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
       notes: serializer.fromJson<String>(json['notes']),
       openingBalance: serializer.fromJson<double>(json['openingBalance']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      photoUrl: serializer.fromJson<String>(json['photoUrl']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -2216,6 +2359,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
       'notes': serializer.toJson<String>(notes),
       'openingBalance': serializer.toJson<double>(openingBalance),
       'isActive': serializer.toJson<bool>(isActive),
+      'photoUrl': serializer.toJson<String>(photoUrl),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -2233,6 +2377,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
           String? notes,
           double? openingBalance,
           bool? isActive,
+          String? photoUrl,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
       VendorRow(
@@ -2247,6 +2392,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
         notes: notes ?? this.notes,
         openingBalance: openingBalance ?? this.openingBalance,
         isActive: isActive ?? this.isActive,
+        photoUrl: photoUrl ?? this.photoUrl,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -2267,6 +2413,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
           ? data.openingBalance.value
           : this.openingBalance,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -2286,6 +2433,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
           ..write('notes: $notes, ')
           ..write('openingBalance: $openingBalance, ')
           ..write('isActive: $isActive, ')
+          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2293,8 +2441,21 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, type, contactPerson, phone, email,
-      address, city, notes, openingBalance, isActive, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+      id,
+      name,
+      type,
+      contactPerson,
+      phone,
+      email,
+      address,
+      city,
+      notes,
+      openingBalance,
+      isActive,
+      photoUrl,
+      createdAt,
+      updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2310,6 +2471,7 @@ class VendorRow extends DataClass implements Insertable<VendorRow> {
           other.notes == this.notes &&
           other.openingBalance == this.openingBalance &&
           other.isActive == this.isActive &&
+          other.photoUrl == this.photoUrl &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -2326,6 +2488,7 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
   final Value<String> notes;
   final Value<double> openingBalance;
   final Value<bool> isActive;
+  final Value<String> photoUrl;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -2341,6 +2504,7 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
     this.notes = const Value.absent(),
     this.openingBalance = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.photoUrl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -2357,6 +2521,7 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
     this.notes = const Value.absent(),
     this.openingBalance = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.photoUrl = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -2376,6 +2541,7 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
     Expression<String>? notes,
     Expression<double>? openingBalance,
     Expression<bool>? isActive,
+    Expression<String>? photoUrl,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -2392,6 +2558,7 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
       if (notes != null) 'notes': notes,
       if (openingBalance != null) 'opening_balance': openingBalance,
       if (isActive != null) 'is_active': isActive,
+      if (photoUrl != null) 'photo_url': photoUrl,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -2410,6 +2577,7 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
       Value<String>? notes,
       Value<double>? openingBalance,
       Value<bool>? isActive,
+      Value<String>? photoUrl,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
       Value<int>? rowid}) {
@@ -2425,6 +2593,7 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
       notes: notes ?? this.notes,
       openingBalance: openingBalance ?? this.openingBalance,
       isActive: isActive ?? this.isActive,
+      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -2467,6 +2636,9 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (photoUrl.present) {
+      map['photo_url'] = Variable<String>(photoUrl.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -2493,6 +2665,7 @@ class VendorsCompanion extends UpdateCompanion<VendorRow> {
           ..write('notes: $notes, ')
           ..write('openingBalance: $openingBalance, ')
           ..write('isActive: $isActive, ')
+          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -2594,6 +2767,14 @@ class $CustomersTable extends Customers
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _photoUrlMeta =
+      const VerificationMeta('photoUrl');
+  @override
+  late final GeneratedColumn<String> photoUrl = GeneratedColumn<String>(
+      'photo_url', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -2620,6 +2801,7 @@ class $CustomersTable extends Customers
         creditLimit,
         openingBalance,
         isActive,
+        photoUrl,
         createdAt,
         updatedAt
       ];
@@ -2690,6 +2872,10 @@ class $CustomersTable extends Customers
       context.handle(_isActiveMeta,
           isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
     }
+    if (data.containsKey('photo_url')) {
+      context.handle(_photoUrlMeta,
+          photoUrl.isAcceptableOrUnknown(data['photo_url']!, _photoUrlMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -2735,6 +2921,8 @@ class $CustomersTable extends Customers
           DriftSqlType.double, data['${effectivePrefix}opening_balance'])!,
       isActive: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      photoUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_url'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -2761,6 +2949,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
   final double creditLimit;
   final double openingBalance;
   final bool isActive;
+  final String photoUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
   const CustomerRow(
@@ -2776,6 +2965,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       required this.creditLimit,
       required this.openingBalance,
       required this.isActive,
+      required this.photoUrl,
       required this.createdAt,
       required this.updatedAt});
   @override
@@ -2793,6 +2983,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
     map['credit_limit'] = Variable<double>(creditLimit);
     map['opening_balance'] = Variable<double>(openingBalance);
     map['is_active'] = Variable<bool>(isActive);
+    map['photo_url'] = Variable<String>(photoUrl);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -2812,6 +3003,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       creditLimit: Value(creditLimit),
       openingBalance: Value(openingBalance),
       isActive: Value(isActive),
+      photoUrl: Value(photoUrl),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -2833,6 +3025,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       creditLimit: serializer.fromJson<double>(json['creditLimit']),
       openingBalance: serializer.fromJson<double>(json['openingBalance']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      photoUrl: serializer.fromJson<String>(json['photoUrl']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -2853,6 +3046,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       'creditLimit': serializer.toJson<double>(creditLimit),
       'openingBalance': serializer.toJson<double>(openingBalance),
       'isActive': serializer.toJson<bool>(isActive),
+      'photoUrl': serializer.toJson<String>(photoUrl),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -2871,6 +3065,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
           double? creditLimit,
           double? openingBalance,
           bool? isActive,
+          String? photoUrl,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
       CustomerRow(
@@ -2886,6 +3081,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
         creditLimit: creditLimit ?? this.creditLimit,
         openingBalance: openingBalance ?? this.openingBalance,
         isActive: isActive ?? this.isActive,
+        photoUrl: photoUrl ?? this.photoUrl,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
@@ -2908,6 +3104,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
           ? data.openingBalance.value
           : this.openingBalance,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      photoUrl: data.photoUrl.present ? data.photoUrl.value : this.photoUrl,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -2928,6 +3125,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
           ..write('creditLimit: $creditLimit, ')
           ..write('openingBalance: $openingBalance, ')
           ..write('isActive: $isActive, ')
+          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2948,6 +3146,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       creditLimit,
       openingBalance,
       isActive,
+      photoUrl,
       createdAt,
       updatedAt);
   @override
@@ -2966,6 +3165,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
           other.creditLimit == this.creditLimit &&
           other.openingBalance == this.openingBalance &&
           other.isActive == this.isActive &&
+          other.photoUrl == this.photoUrl &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -2983,6 +3183,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
   final Value<double> creditLimit;
   final Value<double> openingBalance;
   final Value<bool> isActive;
+  final Value<String> photoUrl;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<int> rowid;
@@ -2999,6 +3200,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
     this.creditLimit = const Value.absent(),
     this.openingBalance = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.photoUrl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -3016,6 +3218,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
     this.creditLimit = const Value.absent(),
     this.openingBalance = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.photoUrl = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.rowid = const Value.absent(),
@@ -3036,6 +3239,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
     Expression<double>? creditLimit,
     Expression<double>? openingBalance,
     Expression<bool>? isActive,
+    Expression<String>? photoUrl,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -3053,6 +3257,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
       if (creditLimit != null) 'credit_limit': creditLimit,
       if (openingBalance != null) 'opening_balance': openingBalance,
       if (isActive != null) 'is_active': isActive,
+      if (photoUrl != null) 'photo_url': photoUrl,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -3072,6 +3277,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
       Value<double>? creditLimit,
       Value<double>? openingBalance,
       Value<bool>? isActive,
+      Value<String>? photoUrl,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
       Value<int>? rowid}) {
@@ -3088,6 +3294,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
       creditLimit: creditLimit ?? this.creditLimit,
       openingBalance: openingBalance ?? this.openingBalance,
       isActive: isActive ?? this.isActive,
+      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -3133,6 +3340,9 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (photoUrl.present) {
+      map['photo_url'] = Variable<String>(photoUrl.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -3160,6 +3370,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
           ..write('creditLimit: $creditLimit, ')
           ..write('openingBalance: $openingBalance, ')
           ..write('isActive: $isActive, ')
+          ..write('photoUrl: $photoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -8734,6 +8945,7 @@ typedef $$UsersTableCreateCompanionBuilder = UsersCompanion Function({
   Value<String> phoneNumber,
   Value<String> role,
   Value<bool> isActive,
+  Value<String> photoUrl,
   required DateTime createdAt,
   required DateTime updatedAt,
   Value<int> rowid,
@@ -8745,6 +8957,7 @@ typedef $$UsersTableUpdateCompanionBuilder = UsersCompanion Function({
   Value<String> phoneNumber,
   Value<String> role,
   Value<bool> isActive,
+  Value<String> photoUrl,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
   Value<int> rowid,
@@ -8775,6 +8988,9 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
 
   ColumnFilters<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -8810,6 +9026,9 @@ class $$UsersTableOrderingComposer
   ColumnOrderings<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -8843,6 +9062,9 @@ class $$UsersTableAnnotationComposer
 
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get photoUrl =>
+      $composableBuilder(column: $table.photoUrl, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -8880,6 +9102,7 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<String> phoneNumber = const Value.absent(),
             Value<String> role = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> photoUrl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -8891,6 +9114,7 @@ class $$UsersTableTableManager extends RootTableManager<
             phoneNumber: phoneNumber,
             role: role,
             isActive: isActive,
+            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -8902,6 +9126,7 @@ class $$UsersTableTableManager extends RootTableManager<
             Value<String> phoneNumber = const Value.absent(),
             Value<String> role = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> photoUrl = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
             Value<int> rowid = const Value.absent(),
@@ -8913,6 +9138,7 @@ class $$UsersTableTableManager extends RootTableManager<
             phoneNumber: phoneNumber,
             role: role,
             isActive: isActive,
+            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -8946,6 +9172,7 @@ typedef $$CategoriesTableCreateCompanionBuilder = CategoriesCompanion Function({
   Value<String> parentId,
   Value<String> description,
   Value<bool> isActive,
+  Value<String> photoUrl,
   required DateTime createdAt,
   required DateTime updatedAt,
   Value<int> rowid,
@@ -8956,6 +9183,7 @@ typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
   Value<String> parentId,
   Value<String> description,
   Value<bool> isActive,
+  Value<String> photoUrl,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
   Value<int> rowid,
@@ -8984,6 +9212,9 @@ class $$CategoriesTableFilterComposer
 
   ColumnFilters<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -9016,6 +9247,9 @@ class $$CategoriesTableOrderingComposer
   ColumnOrderings<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -9046,6 +9280,9 @@ class $$CategoriesTableAnnotationComposer
 
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get photoUrl =>
+      $composableBuilder(column: $table.photoUrl, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -9082,6 +9319,7 @@ class $$CategoriesTableTableManager extends RootTableManager<
             Value<String> parentId = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> photoUrl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -9092,6 +9330,7 @@ class $$CategoriesTableTableManager extends RootTableManager<
             parentId: parentId,
             description: description,
             isActive: isActive,
+            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -9102,6 +9341,7 @@ class $$CategoriesTableTableManager extends RootTableManager<
             Value<String> parentId = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> photoUrl = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
             Value<int> rowid = const Value.absent(),
@@ -9112,6 +9352,7 @@ class $$CategoriesTableTableManager extends RootTableManager<
             parentId: parentId,
             description: description,
             isActive: isActive,
+            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -9146,6 +9387,7 @@ typedef $$ProductsTableCreateCompanionBuilder = ProductsCompanion Function({
   Value<String> brand,
   Value<String> description,
   Value<bool> isActive,
+  Value<String> imagesJson,
   required DateTime createdAt,
   required DateTime updatedAt,
   Value<int> rowid,
@@ -9157,6 +9399,7 @@ typedef $$ProductsTableUpdateCompanionBuilder = ProductsCompanion Function({
   Value<String> brand,
   Value<String> description,
   Value<bool> isActive,
+  Value<String> imagesJson,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
   Value<int> rowid,
@@ -9188,6 +9431,9 @@ class $$ProductsTableFilterComposer
 
   ColumnFilters<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get imagesJson => $composableBuilder(
+      column: $table.imagesJson, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -9223,6 +9469,9 @@ class $$ProductsTableOrderingComposer
   ColumnOrderings<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get imagesJson => $composableBuilder(
+      column: $table.imagesJson, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -9256,6 +9505,9 @@ class $$ProductsTableAnnotationComposer
 
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get imagesJson => $composableBuilder(
+      column: $table.imagesJson, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -9293,6 +9545,7 @@ class $$ProductsTableTableManager extends RootTableManager<
             Value<String> brand = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> imagesJson = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -9304,6 +9557,7 @@ class $$ProductsTableTableManager extends RootTableManager<
             brand: brand,
             description: description,
             isActive: isActive,
+            imagesJson: imagesJson,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -9315,6 +9569,7 @@ class $$ProductsTableTableManager extends RootTableManager<
             Value<String> brand = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> imagesJson = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
             Value<int> rowid = const Value.absent(),
@@ -9326,6 +9581,7 @@ class $$ProductsTableTableManager extends RootTableManager<
             brand: brand,
             description: description,
             isActive: isActive,
+            imagesJson: imagesJson,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -9669,6 +9925,7 @@ typedef $$VendorsTableCreateCompanionBuilder = VendorsCompanion Function({
   Value<String> notes,
   Value<double> openingBalance,
   Value<bool> isActive,
+  Value<String> photoUrl,
   required DateTime createdAt,
   required DateTime updatedAt,
   Value<int> rowid,
@@ -9685,6 +9942,7 @@ typedef $$VendorsTableUpdateCompanionBuilder = VendorsCompanion Function({
   Value<String> notes,
   Value<double> openingBalance,
   Value<bool> isActive,
+  Value<String> photoUrl,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
   Value<int> rowid,
@@ -9732,6 +9990,9 @@ class $$VendorsTableFilterComposer
 
   ColumnFilters<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -9784,6 +10045,9 @@ class $$VendorsTableOrderingComposer
   ColumnOrderings<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -9833,6 +10097,9 @@ class $$VendorsTableAnnotationComposer
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
 
+  GeneratedColumn<String> get photoUrl =>
+      $composableBuilder(column: $table.photoUrl, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -9874,6 +10141,7 @@ class $$VendorsTableTableManager extends RootTableManager<
             Value<String> notes = const Value.absent(),
             Value<double> openingBalance = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> photoUrl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -9890,6 +10158,7 @@ class $$VendorsTableTableManager extends RootTableManager<
             notes: notes,
             openingBalance: openingBalance,
             isActive: isActive,
+            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -9906,6 +10175,7 @@ class $$VendorsTableTableManager extends RootTableManager<
             Value<String> notes = const Value.absent(),
             Value<double> openingBalance = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> photoUrl = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
             Value<int> rowid = const Value.absent(),
@@ -9922,6 +10192,7 @@ class $$VendorsTableTableManager extends RootTableManager<
             notes: notes,
             openingBalance: openingBalance,
             isActive: isActive,
+            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -9962,6 +10233,7 @@ typedef $$CustomersTableCreateCompanionBuilder = CustomersCompanion Function({
   Value<double> creditLimit,
   Value<double> openingBalance,
   Value<bool> isActive,
+  Value<String> photoUrl,
   required DateTime createdAt,
   required DateTime updatedAt,
   Value<int> rowid,
@@ -9979,6 +10251,7 @@ typedef $$CustomersTableUpdateCompanionBuilder = CustomersCompanion Function({
   Value<double> creditLimit,
   Value<double> openingBalance,
   Value<bool> isActive,
+  Value<String> photoUrl,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
   Value<int> rowid,
@@ -10029,6 +10302,9 @@ class $$CustomersTableFilterComposer
 
   ColumnFilters<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -10084,6 +10360,9 @@ class $$CustomersTableOrderingComposer
   ColumnOrderings<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get photoUrl => $composableBuilder(
+      column: $table.photoUrl, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -10136,6 +10415,9 @@ class $$CustomersTableAnnotationComposer
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
 
+  GeneratedColumn<String> get photoUrl =>
+      $composableBuilder(column: $table.photoUrl, builder: (column) => column);
+
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
@@ -10178,6 +10460,7 @@ class $$CustomersTableTableManager extends RootTableManager<
             Value<double> creditLimit = const Value.absent(),
             Value<double> openingBalance = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> photoUrl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -10195,6 +10478,7 @@ class $$CustomersTableTableManager extends RootTableManager<
             creditLimit: creditLimit,
             openingBalance: openingBalance,
             isActive: isActive,
+            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -10212,6 +10496,7 @@ class $$CustomersTableTableManager extends RootTableManager<
             Value<double> creditLimit = const Value.absent(),
             Value<double> openingBalance = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<String> photoUrl = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
             Value<int> rowid = const Value.absent(),
@@ -10229,6 +10514,7 @@ class $$CustomersTableTableManager extends RootTableManager<
             creditLimit: creditLimit,
             openingBalance: openingBalance,
             isActive: isActive,
+            photoUrl: photoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
@@ -92,9 +93,7 @@ class UsersScreen extends ConsumerWidget {
           final String name =
               user.displayName.isNotEmpty ? user.displayName : user.email;
           return ListTile(
-            leading: CircleAvatar(
-              child: Text(name.isEmpty ? '?' : name.substring(0, 1).toUpperCase()),
-            ),
+            leading: PhotoAvatar(url: user.photoUrl, label: name),
             title: Text(isSelf ? '$name (you)' : name),
             subtitle: Text('${user.email}\n${user.role.label}'),
             isThreeLine: true,

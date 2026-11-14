@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
 import 'package:mq_sports_erp/core/utils/price_warnings.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
+import 'package:mq_sports_erp/models/product_image.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
 import 'package:mq_sports_erp/providers/catalog_providers.dart';
@@ -28,6 +30,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   late List<VariantModel> _variants;
   bool _isSubmitting = false;
   bool _showVariantError = false;
+  List<ProductImage> _images = const <ProductImage>[];
 
   @override
   void initState() {
@@ -41,6 +44,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     _categoryId = (categoryId == null || categoryId.isEmpty) ? null : categoryId;
     _isActive = existing?.isActive ?? true;
     _variants = <VariantModel>[...?existing?.variants];
+    _images = existing?.images ?? const <ProductImage>[];
   }
 
   @override
@@ -108,6 +112,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             description: _descriptionController.text,
             isActive: _isActive,
             variants: _variants,
+            images: _images,
           ));
     if (!mounted) {
       return;
@@ -204,6 +209,16 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
+                    if (widget.product != null)
+                      ProductPhotosEditor(
+                        productId: widget.product!.id,
+                        images: _images,
+                        enabled: !locked,
+                        onChanged: (List<ProductImage> images) => _images = images,
+                      )
+                    else
+                      const PhotoAfterSaveHint(what: 'photos'),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _nameController,
                       enabled: !locked,

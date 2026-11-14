@@ -15,6 +15,7 @@ class CustomerFormScreen extends ConsumerWidget {
     final CustomerModel? existing = customer;
     return PartyFormScreen(
       partyType: PartyType.customer,
+      entityId: existing?.id,
       typeOptions: <MapEntry<String, String>>[
         for (final CustomerType t in CustomerType.values)
           MapEntry<String, String>(t.name, t.label),
@@ -33,6 +34,7 @@ class CustomerFormScreen extends ConsumerWidget {
               openingBalance: existing.openingBalance,
               notes: existing.notes,
               isActive: existing.isActive,
+              photoUrl: existing.photoUrl,
             ),
       onSubmit: (PartyFormData data) {
         final CustomersNotifier notifier = ref.read(customersProvider.notifier);
@@ -63,6 +65,7 @@ class CustomerFormScreen extends ConsumerWidget {
           creditLimit: data.creditLimit,
           openingBalance: data.openingBalance,
           isActive: data.isActive,
+          photoUrl: data.photoUrl,
         ));
       },
     );

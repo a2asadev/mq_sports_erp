@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:mq_sports_erp/core/utils/formatters.dart';
 import 'package:mq_sports_erp/models/party_enums.dart';
 import 'package:mq_sports_erp/models/party_list_item.dart';
@@ -151,11 +152,7 @@ class _PartyListViewState extends State<PartyListView> {
                     final PartyListItem item = visible[index];
                     return ListTile(
                       selected: item.id == widget.selectedId,
-                      leading: CircleAvatar(
-                        child: Text(item.title.isEmpty
-                            ? '?'
-                            : item.title.substring(0, 1).toUpperCase()),
-                      ),
+                      leading: PhotoAvatar(url: item.photoUrl, label: item.title),
                       title: Text(item.title),
                       subtitle: Text(
                         <String>[

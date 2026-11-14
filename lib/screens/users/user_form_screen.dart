@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/online/photo_service.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
@@ -22,6 +24,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
   final TextEditingController _passwordController = TextEditingController();
   late UserRole _role;
   late bool _isActive;
+  late String _photoUrl;
   bool _obscurePassword = true;
   bool _isSubmitting = false;
 
@@ -34,6 +37,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
     _phoneController = TextEditingController(text: existing?.phoneNumber ?? '');
     _role = existing?.role ?? UserRole.staff;
     _isActive = existing?.isActive ?? true;
+    _photoUrl = existing?.photoUrl ?? '';
   }
 
   @override
@@ -68,6 +72,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
             phoneNumber: phone,
             role: _role,
             isActive: _isActive,
+            photoUrl: _photoUrl,
           ));
     if (!mounted) {
       return;
@@ -98,6 +103,18 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
+                    if (existing != null)
+                      PhotoEditor(
+                        kind: PhotoKind.user,
+                        entityId: existing.id,
+                        photoUrl: _photoUrl,
+                        title: 'Profile photo',
+                        enabled: !_isSubmitting,
+                        onChanged: (String url) => _photoUrl = url,
+                      )
+                    else
+                      const PhotoAfterSaveHint(),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: _nameController,
                       enabled: !_isSubmitting,

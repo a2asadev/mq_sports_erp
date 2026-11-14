@@ -15,6 +15,7 @@ class VendorFormScreen extends ConsumerWidget {
     final VendorModel? existing = vendor;
     return PartyFormScreen(
       partyType: PartyType.vendor,
+      entityId: existing?.id,
       typeOptions: <MapEntry<String, String>>[
         for (final VendorType t in VendorType.values)
           MapEntry<String, String>(t.name, t.label),
@@ -32,6 +33,7 @@ class VendorFormScreen extends ConsumerWidget {
               openingBalance: existing.openingBalance,
               notes: existing.notes,
               isActive: existing.isActive,
+              photoUrl: existing.photoUrl,
             ),
       onSubmit: (PartyFormData data) {
         final VendorsNotifier notifier = ref.read(vendorsProvider.notifier);
@@ -60,6 +62,7 @@ class VendorFormScreen extends ConsumerWidget {
           notes: data.notes,
           openingBalance: data.openingBalance,
           isActive: data.isActive,
+          photoUrl: data.photoUrl,
         ));
       },
     );

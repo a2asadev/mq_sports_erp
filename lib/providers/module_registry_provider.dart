@@ -9,6 +9,7 @@ import 'package:mq_sports_erp/screens/catalog/products_screen.dart';
 import 'package:mq_sports_erp/screens/logs/activity_logs_screen.dart';
 import 'package:mq_sports_erp/screens/parties/customers_screen.dart';
 import 'package:mq_sports_erp/screens/purchasing/purchases_screen.dart';
+import 'package:mq_sports_erp/screens/settings/settings_screen.dart';
 import 'package:mq_sports_erp/screens/sales/orders_screen.dart';
 import 'package:mq_sports_erp/screens/stock/stock_screen.dart';
 import 'package:mq_sports_erp/screens/parties/vendors_screen.dart';
@@ -93,6 +94,17 @@ final Provider<List<ErpModule>> erpModulesProvider =
       icon: Icons.history_outlined,
       allowedRoles: const <UserRole>{UserRole.admin},
       builder: (BuildContext context) => const ActivityLogsScreen(),
+    ),
+    ErpModule(
+      id: 'settings',
+      title: 'Settings',
+      icon: Icons.settings_outlined,
+      allowedRoles: const <UserRole>{
+        UserRole.admin,
+        UserRole.manager,
+        UserRole.staff,
+      },
+      builder: (BuildContext context) => const SettingsScreen(),
     ),
     ErpModule(
       id: 'users',

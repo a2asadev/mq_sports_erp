@@ -19,6 +19,7 @@ class CustomerModel implements SyncableModel {
     this.creditLimit = 0,
     this.openingBalance = 0,
     this.isActive = true,
+    this.photoUrl = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -38,6 +39,9 @@ class CustomerModel implements SyncableModel {
   final double creditLimit;
   final double openingBalance;
   final bool isActive;
+
+  /// Address of the photo ('' = none). Changed with the photo upload, never by saving the form.
+  final String photoUrl;
   final DateTime createdAt;
 
   @override
@@ -58,6 +62,7 @@ class CustomerModel implements SyncableModel {
       'creditLimit': creditLimit,
       'openingBalance': openingBalance,
       'isActive': isActive,
+      'photoUrl': photoUrl,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -77,6 +82,7 @@ class CustomerModel implements SyncableModel {
       creditLimit: (map['creditLimit'] as num?)?.toDouble() ?? 0,
       openingBalance: (map['openingBalance'] as num?)?.toDouble() ?? 0,
       isActive: map['isActive'] as bool? ?? true,
+      photoUrl: map['photoUrl'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -95,6 +101,7 @@ class CustomerModel implements SyncableModel {
     double? creditLimit,
     double? openingBalance,
     bool? isActive,
+    String? photoUrl,
     DateTime? updatedAt,
   }) {
     return CustomerModel(
@@ -110,6 +117,7 @@ class CustomerModel implements SyncableModel {
       creditLimit: creditLimit ?? this.creditLimit,
       openingBalance: openingBalance ?? this.openingBalance,
       isActive: isActive ?? this.isActive,
+      photoUrl: photoUrl ?? this.photoUrl,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

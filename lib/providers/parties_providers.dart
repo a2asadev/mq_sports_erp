@@ -364,6 +364,7 @@ final Provider<List<PartyListItem>> vendorItemsProvider =
         balance: v.openingBalance + (totals[v.id] ?? 0),
         creditLimit: 0,
         isActive: v.isActive,
+        photoUrl: v.photoUrl,
         searchText: _joinNonEmpty(
           <String>[v.name, v.contactPerson, v.phone, v.email, v.city, v.address],
           ' ',
@@ -389,6 +390,7 @@ final Provider<List<PartyListItem>> customerItemsProvider =
         balance: c.openingBalance + (totals[c.id] ?? 0),
         creditLimit: c.creditLimit,
         isActive: c.isActive,
+        photoUrl: c.photoUrl,
         searchText: _joinNonEmpty(
           <String>[c.name, c.contactPerson, c.phone, c.email, c.city, c.address],
           ' ',

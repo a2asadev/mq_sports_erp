@@ -19,6 +19,7 @@ class Users extends Table {
   TextColumn get phoneNumber => text().withDefault(const Constant(''))();
   TextColumn get role => text().withDefault(const Constant('staff'))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  TextColumn get photoUrl => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -33,6 +34,7 @@ class Categories extends Table {
   TextColumn get parentId => text().withDefault(const Constant(''))();
   TextColumn get description => text().withDefault(const Constant(''))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  TextColumn get photoUrl => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -49,6 +51,8 @@ class Products extends Table {
   TextColumn get brand => text().withDefault(const Constant(''))();
   TextColumn get description => text().withDefault(const Constant(''))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  /// The photos as a JSON list (see ProductImage).
+  TextColumn get imagesJson => text().withDefault(const Constant('[]'))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -92,6 +96,7 @@ class Vendors extends Table {
   TextColumn get notes => text().withDefault(const Constant(''))();
   RealColumn get openingBalance => real().withDefault(const Constant(0))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  TextColumn get photoUrl => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -113,6 +118,7 @@ class Customers extends Table {
   RealColumn get creditLimit => real().withDefault(const Constant(0))();
   RealColumn get openingBalance => real().withDefault(const Constant(0))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  TextColumn get photoUrl => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
