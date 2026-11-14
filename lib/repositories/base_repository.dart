@@ -3,6 +3,7 @@ import 'package:mq_sports_erp/core/utils/map_diff.dart';
 import 'package:mq_sports_erp/models/activity_log_model.dart';
 import 'package:mq_sports_erp/models/pending_change.dart';
 import 'package:mq_sports_erp/models/syncable_model.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/services/activity_logger.dart';
 import 'package:mq_sports_erp/services/firestore_service.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
@@ -45,7 +46,8 @@ abstract class SyncableRepository {
 /// Local-first repository. Reads and writes only touch Hive; every write is
 /// also logged as a pending change. Nothing talks to Firestore here except
 /// when the sync coordinator calls [pullFromCloud].
-class BaseRepository<T extends SyncableModel> implements SyncableRepository {
+class BaseRepository<T extends SyncableModel>
+    implements SyncableRepository, Repository<T> {
   BaseRepository({
     required this.collectionName,
     required this.entityLabel,
@@ -75,12 +77,15 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
   final Future<String?> Function(String id)? _deleteGuard;
   final ActivityLogger? _logger;
 
+  @override
   Future<List<T>> getLocal() => _local.getAll();
 
+  @override
   Future<T?> getLocalById(String id) => _local.getById(id);
 
   /// Saves to Hive and logs the pending change. If logging fails, the Hive
   /// write is undone.
+  @override
   Future<void> save(T item, {String groupId = ''}) async {
     final T? previous = await _local.getById(item.id);
     await _local.put(item);
@@ -162,6 +167,7 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
     }
   }
 
+  @override
   Future<void> delete(String id) async {
     final T? previous = await _local.getById(id);
     await _local.delete(id);
@@ -288,4 +294,13 @@ class BaseRepository<T extends SyncableModel> implements SyncableRepository {
     final T? item = await _local.getById(id);
     return item?.toMap();
   }
+}
+
+/// The local-first repository behind a [Repository]. Used where a repository
+/// takes part in sync, which only runs in local-first mode.
+BaseRepository<T> asNative<T extends SyncableModel>(Repository<T> repository) {
+  if (repository is BaseRepository<T>) {
+    return repository;
+  }
+  throw StateError('Local-first storage is not available in online-only mode.');
 }

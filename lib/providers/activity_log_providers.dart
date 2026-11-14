@@ -6,7 +6,11 @@ import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/activity_log_model.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
+import 'package:mq_sports_erp/online/api_client.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/remote_store.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/services/activity_log_store.dart';
 import 'package:mq_sports_erp/services/activity_logger.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
@@ -47,6 +51,9 @@ Future<LogActor> _resolveActor() async {
 
 final Provider<ActivityLogger> activityLoggerProvider =
     Provider<ActivityLogger>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return ActivityLogger.disabled();
+  }
   return ActivityLogger(
     store: ref.watch(activityLogStoreProvider),
     resolveActor: _resolveActor,
@@ -96,6 +103,9 @@ class ActivityLogsNotifier extends AutoDisposeAsyncNotifier<ActivityLogsState> {
 
   @override
   Future<ActivityLogsState> build() async {
+    if (ref.watch(dataModeProvider).isOnline) {
+      return _loadOnline(200);
+    }
     final ActivityLogStore store = ref.watch(activityLogStoreProvider);
     final StreamSubscription<void> sub = store.changes.listen((void _) {
       unawaited(reload());
@@ -121,8 +131,31 @@ class ActivityLogsNotifier extends AutoDisposeAsyncNotifier<ActivityLogsState> {
     );
   }
 
+  /// Online: the server keeps the logs (written when each action happens), so
+  /// nothing is stored on this device. Admins read the latest ones from the API.
+  Future<ActivityLogsState> _loadOnline(int limit) async {
+    final ApiResponse response = await ref.read(apiClientProvider).get(
+      '/v1/logs',
+      query: <String, String>{'limit': '$limit'},
+    );
+    final List<ActivityLogModel> logs = response.asList
+        .whereType<Map<String, dynamic>>()
+        .map((Map<String, dynamic> map) =>
+            ActivityLogModel.fromMap(normalizeDates(map)))
+        .toList();
+    return ActivityLogsState(logs: logs, cloudLoaded: true);
+  }
+
   Future<void> reload() async {
     final ActivityLogsState? current = state.valueOrNull;
+    if (ref.read(dataModeProvider).isOnline) {
+      try {
+        state = AsyncData<ActivityLogsState>(await _loadOnline(200));
+      } on AppException catch (e, st) {
+        state = AsyncError<ActivityLogsState>(e, st);
+      }
+      return;
+    }
     try {
       final ActivityLogsState fresh = await _load(ref.read(activityLogStoreProvider));
       state = AsyncData<ActivityLogsState>(fresh.copyWith(
@@ -143,6 +176,18 @@ class ActivityLogsNotifier extends AutoDisposeAsyncNotifier<ActivityLogsState> {
     }
     state = AsyncData<ActivityLogsState>(
         current.copyWith(isLoadingCloud: true, clearMessage: true));
+    if (ref.read(dataModeProvider).isOnline) {
+      try {
+        final ActivityLogsState fresh = await _loadOnline(cloudLogLimit);
+        state = AsyncData<ActivityLogsState>(fresh.copyWith(
+          message: 'Loaded ${fresh.logs.length} log(s).',
+        ));
+      } on AppException catch (e) {
+        state = AsyncData<ActivityLogsState>(
+            current.copyWith(isLoadingCloud: false, message: e.message));
+      }
+      return;
+    }
     try {
       final List<Map<String, dynamic>> maps =
           await ref.read(firestoreServiceProvider).fetchRecentLogs(cloudLogLimit);

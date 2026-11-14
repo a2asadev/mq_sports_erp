@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/providers/auth_controller.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/providers/sync_coordinator.dart';
 
 /// App bar action that signs the user out after a confirmation dialog.
@@ -9,7 +10,9 @@ class LogoutButton extends ConsumerWidget {
   const LogoutButton({super.key});
 
   Future<void> _onPressed(BuildContext context, WidgetRef ref) async {
-    final int pendingCount = ref.read(syncCoordinatorProvider).pending.length;
+    final int pendingCount = ref.read(dataModeProvider).isOnline
+        ? 0
+        : ref.read(syncCoordinatorProvider).pending.length;
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {

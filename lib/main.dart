@@ -50,11 +50,15 @@ class _ErrorLogger {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // Hive is the single local cache, so Firestore's own cache is disabled.
-  FirebaseFirestore.instance.settings =
-      const Settings(persistenceEnabled: false);
+  if (!kIsWeb) {
+    // The web build is online-only: no local database and no Firebase, it talks
+    // to the API (see lib/online).
+    await Hive.initFlutter();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    // Hive is the single local cache, so Firestore's own cache is disabled.
+    FirebaseFirestore.instance.settings =
+        const Settings(persistenceEnabled: false);
+  }
 
   final ProviderContainer container = ProviderContainer();
   final _ErrorLogger errorLogger = _ErrorLogger(container);

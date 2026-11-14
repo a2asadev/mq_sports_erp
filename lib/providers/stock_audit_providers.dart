@@ -1,4 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/online_repositories.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/activity_log_model.dart';
@@ -30,8 +35,14 @@ final Provider<bool> canAuditStockProvider = Provider<bool>((Ref ref) {
 const String _noPermissionMessage =
     'Only admins and managers can count and adjust stock.';
 
-final Provider<StockAuditRepository> stockAuditRepositoryProvider =
-    Provider<StockAuditRepository>((Ref ref) {
+final Provider<StockAuditOperations> stockAuditRepositoryProvider =
+    Provider<StockAuditOperations>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineStockAuditRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   return StockAuditRepository(
     local: HiveLocalRepository<StockAuditModel>(
       boxName: StorageKeys.stockAudits,
@@ -39,7 +50,7 @@ final Provider<StockAuditRepository> stockAuditRepositoryProvider =
     ),
     pendingStore: ref.watch(pendingChangeStoreProvider),
     logger: ref.watch(activityLoggerProvider),
-    stockRepository: ref.watch(stockLedgerRepositoryProvider),
+    stockRepository: asNative(ref.watch(stockLedgerRepositoryProvider)),
   );
 });
 
@@ -53,7 +64,7 @@ class CountedVariant {
 
 class StockAuditsNotifier extends BaseListNotifier<StockAuditModel> {
   @override
-  StockAuditRepository get repository => ref.read(stockAuditRepositoryProvider);
+  StockAuditOperations get repository => ref.read(stockAuditRepositoryProvider);
 
   String _newAuditNo(DateTime date) {
     String two(int n) => n.toString().padLeft(2, '0');

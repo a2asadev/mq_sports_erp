@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/erp_module.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/providers/module_registry_provider.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/dashboard/dashboard_panel.dart';
 import 'package:mq_sports_erp/widgets/logout_button.dart';
+import 'package:mq_sports_erp/widgets/online_status_chip.dart';
 import 'package:mq_sports_erp/widgets/sync_status_chip.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -29,9 +31,12 @@ class HomeScreen extends ConsumerWidget {
               ),
           ],
         ),
-        actions: const <Widget>[
-          SyncStatusChip(),
-          LogoutButton(),
+        actions: <Widget>[
+          if (ref.watch(dataModeProvider).isOnline)
+            const OnlineStatusChip()
+          else
+            const SyncStatusChip(),
+          const LogoutButton(),
         ],
       ),
       body: CustomScrollView(

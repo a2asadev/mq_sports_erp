@@ -6,6 +6,7 @@ import 'package:mq_sports_erp/models/party_enums.dart';
 import 'package:mq_sports_erp/models/pending_change.dart';
 import 'package:mq_sports_erp/models/stock_ledger_model.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/services/activity_logger.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
 import 'package:mq_sports_erp/services/pending_change_store.dart';
@@ -20,7 +21,8 @@ import 'package:uuid/uuid.dart';
 /// ones already written). They all carry the same pending-change group id,
 /// so the sync uploads them in ONE atomic Firestore transaction. Cancelling
 /// an order does the reverse in the same way.
-class OrderRepository extends BaseRepository<OrderModel> {
+class OrderRepository extends BaseRepository<OrderModel>
+    implements OrderOperations {
   OrderRepository({
     required HiveLocalRepository<OrderModel> local,
     required PendingChangeStore pendingStore,
@@ -54,6 +56,7 @@ class OrderRepository extends BaseRepository<OrderModel> {
     }
   }
 
+  @override
   Future<void> confirm(OrderModel order, {required double paidNow}) async {
     final String groupId = const Uuid().v4();
     final List<Future<void> Function()> undo = <Future<void> Function()>[];
@@ -130,6 +133,7 @@ class OrderRepository extends BaseRepository<OrderModel> {
   /// stock and reverses the ledger charge, all as one group. The reversal is
   /// a customer ledger payment, the same way payments are recorded for
   /// vendors. Money already paid stays on the ledger as customer credit.
+  @override
   Future<void> cancel(OrderModel cancelled, {required DateTime when}) async {
     final String groupId = await _groupIdFor(cancelled.id);
     final List<Future<void> Function()> undo = <Future<void> Function()>[];

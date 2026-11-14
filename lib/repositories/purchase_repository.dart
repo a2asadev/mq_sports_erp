@@ -5,6 +5,7 @@ import 'package:mq_sports_erp/models/party_enums.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_ledger_model.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/services/activity_logger.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
 import 'package:mq_sports_erp/services/pending_change_store.dart';
@@ -18,7 +19,8 @@ import 'package:uuid/uuid.dart';
 /// Locally all records are written in Hive or none are (a failure undoes the
 /// ones already written). They all carry the same pending-change group id,
 /// so the sync uploads them in ONE atomic Firestore transaction.
-class PurchaseRepository extends BaseRepository<PurchaseModel> {
+class PurchaseRepository extends BaseRepository<PurchaseModel>
+    implements PurchaseOperations {
   PurchaseRepository({
     required HiveLocalRepository<PurchaseModel> local,
     required PendingChangeStore pendingStore,
@@ -40,6 +42,7 @@ class PurchaseRepository extends BaseRepository<PurchaseModel> {
   final BaseRepository<StockLedgerModel> _stock;
   final BaseRepository<LedgerModel> _ledger;
 
+  @override
   Future<void> confirm(PurchaseModel purchase, {required double paidNow}) async {
     final String groupId = const Uuid().v4();
     final List<Future<void> Function()> undo = <Future<void> Function()>[];

@@ -3,6 +3,7 @@ import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
 import 'package:mq_sports_erp/models/stock_ledger_model.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/services/activity_logger.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
 import 'package:mq_sports_erp/services/pending_change_store.dart';
@@ -15,7 +16,8 @@ import 'package:uuid/uuid.dart';
 /// Locally all records are written in Hive or none are (a failure undoes the
 /// ones already written). They all carry the same pending-change group id,
 /// so the sync uploads them in ONE atomic Firestore transaction.
-class StockAuditRepository extends BaseRepository<StockAuditModel> {
+class StockAuditRepository extends BaseRepository<StockAuditModel>
+    implements StockAuditOperations {
   StockAuditRepository({
     required HiveLocalRepository<StockAuditModel> local,
     required PendingChangeStore pendingStore,
@@ -34,6 +36,7 @@ class StockAuditRepository extends BaseRepository<StockAuditModel> {
 
   final BaseRepository<StockLedgerModel> _stock;
 
+  @override
   Future<void> confirm(StockAuditModel audit) async {
     final String groupId = const Uuid().v4();
     final List<Future<void> Function()> undo = <Future<void> Function()>[];

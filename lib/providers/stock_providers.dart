@@ -1,4 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/online_repositories.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/models/stock_ledger_model.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
@@ -7,8 +11,14 @@ import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
 
-final Provider<BaseRepository<StockLedgerModel>> stockLedgerRepositoryProvider =
-    Provider<BaseRepository<StockLedgerModel>>((Ref ref) {
+final Provider<Repository<StockLedgerModel>> stockLedgerRepositoryProvider =
+    Provider<Repository<StockLedgerModel>>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineStockLedgerRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   return BaseRepository<StockLedgerModel>(
     collectionName: StorageKeys.stockLedgers,
     entityLabel: 'Stock entry',
@@ -28,7 +38,7 @@ final Provider<BaseRepository<StockLedgerModel>> stockLedgerRepositoryProvider =
 /// (for example a confirmed purchase) together with their own records.
 class StockLedgerNotifier extends BaseListNotifier<StockLedgerModel> {
   @override
-  BaseRepository<StockLedgerModel> get repository =>
+  Repository<StockLedgerModel> get repository =>
       ref.read(stockLedgerRepositoryProvider);
 }
 

@@ -1,4 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/online_repositories.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
@@ -27,8 +31,14 @@ final Provider<bool> canManagePartiesProvider = Provider<bool>((Ref ref) {
 const String _noPermissionMessage =
     'Only admins and managers can change vendors, customers and ledgers.';
 
-final Provider<BaseRepository<LedgerModel>> ledgerRepositoryProvider =
-    Provider<BaseRepository<LedgerModel>>((Ref ref) {
+final Provider<Repository<LedgerModel>> ledgerRepositoryProvider =
+    Provider<Repository<LedgerModel>>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineLedgerRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   return BaseRepository<LedgerModel>(
     collectionName: StorageKeys.ledgers,
     entityLabel: 'Ledger entry',
@@ -62,8 +72,14 @@ Future<String?> _partyDeleteReason(
   return null;
 }
 
-final Provider<BaseRepository<VendorModel>> vendorRepositoryProvider =
-    Provider<BaseRepository<VendorModel>>((Ref ref) {
+final Provider<Repository<VendorModel>> vendorRepositoryProvider =
+    Provider<Repository<VendorModel>>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineVendorRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   final HiveLocalRepository<VendorModel> local =
       HiveLocalRepository<VendorModel>(
     boxName: StorageKeys.vendors,
@@ -84,8 +100,14 @@ final Provider<BaseRepository<VendorModel>> vendorRepositoryProvider =
   );
 });
 
-final Provider<BaseRepository<CustomerModel>> customerRepositoryProvider =
-    Provider<BaseRepository<CustomerModel>>((Ref ref) {
+final Provider<Repository<CustomerModel>> customerRepositoryProvider =
+    Provider<Repository<CustomerModel>>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineCustomerRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   final HiveLocalRepository<CustomerModel> local =
       HiveLocalRepository<CustomerModel>(
     boxName: StorageKeys.customers,
@@ -122,7 +144,7 @@ final Provider<BaseRepository<CustomerModel>> customerRepositoryProvider =
 
 class VendorsNotifier extends BaseListNotifier<VendorModel> {
   @override
-  BaseRepository<VendorModel> get repository =>
+  Repository<VendorModel> get repository =>
       ref.read(vendorRepositoryProvider);
 
   List<VendorModel> get _items => state.valueOrNull ?? <VendorModel>[];
@@ -195,7 +217,7 @@ final AsyncNotifierProvider<VendorsNotifier, List<VendorModel>>
 
 class CustomersNotifier extends BaseListNotifier<CustomerModel> {
   @override
-  BaseRepository<CustomerModel> get repository =>
+  Repository<CustomerModel> get repository =>
       ref.read(customerRepositoryProvider);
 
   List<CustomerModel> get _items => state.valueOrNull ?? <CustomerModel>[];
@@ -266,7 +288,7 @@ final AsyncNotifierProvider<CustomersNotifier, List<CustomerModel>>
 
 class LedgerNotifier extends BaseListNotifier<LedgerModel> {
   @override
-  BaseRepository<LedgerModel> get repository =>
+  Repository<LedgerModel> get repository =>
       ref.read(ledgerRepositoryProvider);
 
   Future<bool> addEntry(LedgerModel entry) async {

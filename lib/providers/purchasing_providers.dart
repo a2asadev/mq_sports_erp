@@ -1,4 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/online_repositories.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/activity_log_model.dart';
@@ -31,8 +36,14 @@ final Provider<bool> canManagePurchasesProvider = Provider<bool>((Ref ref) {
 const String _noPermissionMessage =
     'Only admins and managers can record purchases.';
 
-final Provider<PurchaseRepository> purchaseRepositoryProvider =
-    Provider<PurchaseRepository>((Ref ref) {
+final Provider<PurchaseOperations> purchaseRepositoryProvider =
+    Provider<PurchaseOperations>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlinePurchaseRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   return PurchaseRepository(
     local: HiveLocalRepository<PurchaseModel>(
       boxName: StorageKeys.purchases,
@@ -40,14 +51,14 @@ final Provider<PurchaseRepository> purchaseRepositoryProvider =
     ),
     pendingStore: ref.watch(pendingChangeStoreProvider),
     logger: ref.watch(activityLoggerProvider),
-    stockRepository: ref.watch(stockLedgerRepositoryProvider),
-    ledgerRepository: ref.watch(ledgerRepositoryProvider),
+    stockRepository: asNative(ref.watch(stockLedgerRepositoryProvider)),
+    ledgerRepository: asNative(ref.watch(ledgerRepositoryProvider)),
   );
 });
 
 class PurchasesNotifier extends BaseListNotifier<PurchaseModel> {
   @override
-  PurchaseRepository get repository => ref.read(purchaseRepositoryProvider);
+  PurchaseOperations get repository => ref.read(purchaseRepositoryProvider);
 
   Future<void> _logAction({
     required String action,

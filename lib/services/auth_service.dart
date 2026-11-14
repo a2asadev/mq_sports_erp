@@ -19,18 +19,35 @@ class AuthUserData {
   final String photoUrl;
 }
 
+/// What the app needs from sign-in, whichever service does it (Firebase on
+/// mobile and desktop, the API on the web).
+abstract class AuthService {
+  /// Uid of the currently signed-in user, or null when signed out.
+  String? get currentUid;
+
+  /// Data of the signed-in user, or null when signed out.
+  AuthUserData? get currentUser;
+
+  /// Emits the signed-in user's uid, or null when signed out.
+  Stream<String?> uidChanges();
+
+  Future<void> signIn({required String email, required String password});
+
+  Future<void> signOut();
+}
+
 /// Firebase Authentication gateway (email + password only).
 /// There is intentionally no registration: accounts are created by an
 /// administrator in the Firebase console.
-class AuthService {
-  AuthService(this._auth);
+class FirebaseAuthService implements AuthService {
+  FirebaseAuthService(this._auth);
 
   final FirebaseAuth _auth;
 
-  /// Uid of the currently signed-in user, or null when signed out.
+  @override
   String? get currentUid => _auth.currentUser?.uid;
 
-  /// Data of the signed-in user, or null when signed out.
+  @override
   AuthUserData? get currentUser {
     final User? user = _auth.currentUser;
     if (user == null) {
@@ -45,11 +62,12 @@ class AuthService {
     );
   }
 
-  /// Emits the signed-in user's uid, or null when signed out.
+  @override
   Stream<String?> uidChanges() {
     return _auth.authStateChanges().map((User? user) => user?.uid);
   }
 
+  @override
   Future<void> signIn({required String email, required String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -58,6 +76,7 @@ class AuthService {
     }
   }
 
+  @override
   Future<void> signOut() async {
     try {
       await _auth.signOut();

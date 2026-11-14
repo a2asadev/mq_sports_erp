@@ -21,8 +21,14 @@ class ActivityLogger {
   })  : _store = store,
         _resolveActor = resolveActor;
 
-  final ActivityLogStore _store;
-  final Future<LogActor> Function() _resolveActor;
+  /// Records nothing. Used by the online app: the server writes the activity
+  /// log itself, with the signed-in user taken from the login (not the device).
+  ActivityLogger.disabled()
+      : _store = null,
+        _resolveActor = null;
+
+  final ActivityLogStore? _store;
+  final Future<LogActor> Function()? _resolveActor;
 
   Future<void> record({
     required LogKind kind,
@@ -36,9 +42,14 @@ class ActivityLogger {
     String groupId = '',
     LogActor? actor,
   }) async {
+    final ActivityLogStore? store = _store;
+    final Future<LogActor> Function()? resolveActor = _resolveActor;
+    if (store == null || resolveActor == null) {
+      return;
+    }
     try {
-      final LogActor who = actor ?? await _resolveActor();
-      await _store.add(ActivityLogModel(
+      final LogActor who = actor ?? await resolveActor();
+      await store.add(ActivityLogModel(
         level: level,
         kind: kind,
         action: action,

@@ -6,7 +6,7 @@ import 'package:mq_sports_erp/models/activity_log_model.dart';
 import 'package:mq_sports_erp/models/syncable_model.dart';
 import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
 
 /// Base `AsyncNotifier` for every entity list.
 ///
@@ -16,7 +16,7 @@ import 'package:mq_sports_erp/repositories/base_repository.dart';
 ///   local write fails, exposing the error through `AsyncValue.error`.
 abstract class BaseListNotifier<T extends SyncableModel>
     extends AsyncNotifier<List<T>> {
-  BaseRepository<T> get repository;
+  Repository<T> get repository;
 
   bool _isDisposed = false;
 

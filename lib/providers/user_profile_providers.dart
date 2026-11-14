@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/models/user_profile_model.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/repositories/user_profile_repository.dart';
 import 'package:mq_sports_erp/services/auth_service.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
@@ -23,7 +24,7 @@ class CurrentUserProfileNotifier extends AsyncNotifier<UserProfileModel?> {
   @override
   Future<UserProfileModel?> build() async {
     final String? uid = await ref.watch(authUidProvider.future);
-    if (uid == null) {
+    if (uid == null || ref.watch(dataModeProvider).isOnline) {
       return null;
     }
     final AuthUserData? authUser = ref.read(authServiceProvider).currentUser;

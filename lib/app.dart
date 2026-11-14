@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/providers/sync_coordinator.dart';
 import 'package:mq_sports_erp/providers/user_profile_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
@@ -15,9 +16,12 @@ class MqSportsApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Keeps the sync coordinator (and its metadata listener) alive.
-    ref.listen<SyncState>(syncCoordinatorProvider,
-        (SyncState? previous, SyncState next) {});
+    // Keeps the sync coordinator (and its metadata listener) alive. The online
+    // app has nothing to sync: every action goes straight to the server.
+    if (!ref.watch(dataModeProvider).isOnline) {
+      ref.listen<SyncState>(syncCoordinatorProvider,
+          (SyncState? previous, SyncState next) {});
+    }
     return MaterialApp(
       title: 'MQ Sports ERP',
       debugShowCheckedModeBanner: false,

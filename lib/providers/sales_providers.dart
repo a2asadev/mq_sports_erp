@@ -1,4 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/online_repositories.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/activity_log_model.dart';
@@ -41,8 +46,14 @@ const String _noPermissionMessage = 'You are not allowed to change orders.';
 const String _noCancelPermissionMessage =
     'Only admins and managers can cancel orders.';
 
-final Provider<OrderRepository> orderRepositoryProvider =
-    Provider<OrderRepository>((Ref ref) {
+final Provider<OrderOperations> orderRepositoryProvider =
+    Provider<OrderOperations>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineOrderRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   return OrderRepository(
     local: HiveLocalRepository<OrderModel>(
       boxName: StorageKeys.orders,
@@ -50,14 +61,14 @@ final Provider<OrderRepository> orderRepositoryProvider =
     ),
     pendingStore: ref.watch(pendingChangeStoreProvider),
     logger: ref.watch(activityLoggerProvider),
-    stockRepository: ref.watch(stockLedgerRepositoryProvider),
-    ledgerRepository: ref.watch(ledgerRepositoryProvider),
+    stockRepository: asNative(ref.watch(stockLedgerRepositoryProvider)),
+    ledgerRepository: asNative(ref.watch(ledgerRepositoryProvider)),
   );
 });
 
 class OrdersNotifier extends BaseListNotifier<OrderModel> {
   @override
-  OrderRepository get repository => ref.read(orderRepositoryProvider);
+  OrderOperations get repository => ref.read(orderRepositoryProvider);
 
   String _newOrderNo(DateTime date) {
     String two(int n) => n.toString().padLeft(2, '0');

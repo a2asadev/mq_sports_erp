@@ -2,11 +2,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 
+/// Creates logins on behalf of an admin.
+abstract class AuthAdminService {
+  /// Creates the login, then runs [onCreated] with its id (used to save the
+  /// user record). If [onCreated] throws, the just-created login is removed
+  /// again where the service can (Firebase), so no orphan login is left behind.
+  Future<void> createAccount({
+    required String email,
+    required String password,
+    required String displayName,
+    required Future<void> Function(String uid) onCreated,
+  });
+}
+
 /// Creates Firebase Auth accounts on behalf of an admin.
 ///
 /// The account is created through a temporary secondary Firebase app, so the
 /// admin's own session on the default app is never replaced.
-class AuthAdminService {
+class FirebaseAuthAdminService implements AuthAdminService {
   static const String _appName = 'mq_user_creation';
 
   Future<FirebaseApp> _secondaryApp() async {
@@ -23,6 +36,7 @@ class AuthAdminService {
   /// Creates the login, then runs [onCreated] with its uid (used to write the
   /// Firestore user record). If [onCreated] throws, the just-created login is
   /// deleted again so no orphan account is left behind.
+  @override
   Future<void> createAccount({
     required String email,
     required String password,

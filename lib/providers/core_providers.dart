@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/services/auth_admin_service.dart';
 import 'package:mq_sports_erp/services/auth_service.dart';
 import 'package:mq_sports_erp/services/firestore_service.dart';
@@ -13,14 +15,21 @@ final Provider<FirestoreService> firestoreServiceProvider =
   return FirestoreService(FirebaseFirestore.instance);
 });
 
+/// Sign-in: the API on the web, Firebase everywhere else.
 final Provider<AuthService> authServiceProvider =
     Provider<AuthService>((Ref ref) {
-  return AuthService(FirebaseAuth.instance);
+  if (ref.watch(dataModeProvider).isOnline) {
+    return ref.watch(apiAuthServiceProvider);
+  }
+  return FirebaseAuthService(FirebaseAuth.instance);
 });
 
 final Provider<AuthAdminService> authAdminServiceProvider =
     Provider<AuthAdminService>((Ref ref) {
-  return AuthAdminService();
+  if (ref.watch(dataModeProvider).isOnline) {
+    return ref.watch(apiAuthAdminServiceProvider);
+  }
+  return FirebaseAuthAdminService();
 });
 
 /// Current user uid, or null when signed out.

@@ -6,10 +6,15 @@ import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
 import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/online_repositories.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/repositories/user_repository.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
 
-final Provider<UserRepository> userRepositoryProvider =
+/// The local-first (Hive + Firestore) user repository. Mobile and desktop only.
+final Provider<UserRepository> nativeUserRepositoryProvider =
     Provider<UserRepository>((Ref ref) {
   return UserRepository(
     local: HiveLocalRepository<UserModel>(
@@ -21,6 +26,18 @@ final Provider<UserRepository> userRepositoryProvider =
     logger: ref.watch(activityLoggerProvider),
     resolveCurrentUser: () => ref.read(currentUserProvider.future),
   );
+});
+
+/// Users: from the API on the web, from the device elsewhere.
+final Provider<Repository<UserModel>> userRepositoryProvider =
+    Provider<Repository<UserModel>>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineUserRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
+  return ref.watch(nativeUserRepositoryProvider);
 });
 
 /// The `users` record of the signed-in login: it carries the role and the
@@ -35,7 +52,11 @@ class CurrentUserNotifier extends AsyncNotifier<UserModel?> {
     if (uid == null) {
       return null;
     }
-    final UserRepository repository = ref.read(userRepositoryProvider);
+    if (ref.watch(dataModeProvider).isOnline) {
+      // The server knows the role and whether the account is active.
+      return ref.read(apiAuthServiceProvider).fetchCurrentUser();
+    }
+    final UserRepository repository = ref.read(nativeUserRepositoryProvider);
     final UserModel? local = await repository.getLocalById(uid);
     if (local != null) {
       return local;
@@ -58,7 +79,7 @@ final AsyncNotifierProvider<CurrentUserNotifier, UserModel?>
 /// user is an active admin (Firestore rules enforce the same on the server).
 class UsersNotifier extends BaseListNotifier<UserModel> {
   @override
-  UserRepository get repository => ref.read(userRepositoryProvider);
+  Repository<UserModel> get repository => ref.read(userRepositoryProvider);
 
   UserModel? _activeAdmin() {
     final UserModel? actor = ref.read(currentUserProvider).valueOrNull;

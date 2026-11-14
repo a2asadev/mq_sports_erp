@@ -1,4 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/repositories/repository.dart';
+import 'package:mq_sports_erp/providers/data_mode.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/online/online_repositories.dart';
 import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
@@ -16,8 +20,14 @@ import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/repositories/base_repository.dart';
 import 'package:mq_sports_erp/services/hive_local_repository.dart';
 
-final Provider<BaseRepository<CategoryModel>> categoryRepositoryProvider =
-    Provider<BaseRepository<CategoryModel>>((Ref ref) {
+final Provider<Repository<CategoryModel>> categoryRepositoryProvider =
+    Provider<Repository<CategoryModel>>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineCategoryRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   final HiveLocalRepository<CategoryModel> local =
       HiveLocalRepository<CategoryModel>(
     boxName: StorageKeys.categories,
@@ -47,8 +57,14 @@ final Provider<BaseRepository<CategoryModel>> categoryRepositoryProvider =
   );
 });
 
-final Provider<BaseRepository<ProductModel>> productRepositoryProvider =
-    Provider<BaseRepository<ProductModel>>((Ref ref) {
+final Provider<Repository<ProductModel>> productRepositoryProvider =
+    Provider<Repository<ProductModel>>((Ref ref) {
+  if (ref.watch(dataModeProvider).isOnline) {
+    return OnlineProductRepository(
+      ref.watch(apiClientProvider),
+      ref.watch(remoteStoreProvider),
+    );
+  }
   return BaseRepository<ProductModel>(
     collectionName: StorageKeys.products,
     entityLabel: 'Product',
@@ -84,7 +100,7 @@ const String _noPermissionMessage =
 
 class CategoriesNotifier extends BaseListNotifier<CategoryModel> {
   @override
-  BaseRepository<CategoryModel> get repository =>
+  Repository<CategoryModel> get repository =>
       ref.read(categoryRepositoryProvider);
 
   List<CategoryModel> get _items => state.valueOrNull ?? <CategoryModel>[];
@@ -180,7 +196,7 @@ final AsyncNotifierProvider<CategoriesNotifier, List<CategoryModel>>
 
 class ProductsNotifier extends BaseListNotifier<ProductModel> {
   @override
-  BaseRepository<ProductModel> get repository =>
+  Repository<ProductModel> get repository =>
       ref.read(productRepositoryProvider);
 
   List<ProductModel> get _items => state.valueOrNull ?? <ProductModel>[];
