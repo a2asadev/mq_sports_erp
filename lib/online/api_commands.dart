@@ -4,6 +4,8 @@ import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:mq_sports_erp/models/party_enums.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
@@ -201,6 +203,10 @@ class ApiCommands {
         'entryDate': _utc(item.entryDate),
         'description': item.description,
         'reference': item.reference,
+        if (item.partyType == PartyType.customer && PaymentMethod.fromName(item.paymentMethod) != null)
+          'paymentMethod': item.paymentMethod,
+        if (item.partyType == PartyType.customer && item.paymentRef.trim().isNotEmpty)
+          'paymentRef': item.paymentRef.trim(),
       },
     );
   }
@@ -210,7 +216,15 @@ class ApiCommands {
   }
 
   Future<void> orderPayment(LedgerModel item, {String? key}) async {
-    await api.post('/v1/orders/${item.orderId}/payments', body: _payment(item), idempotencyKey: key);
+    await api.post(
+      '/v1/orders/${item.orderId}/payments',
+      body: <String, dynamic>{
+        ..._payment(item),
+        if (PaymentMethod.fromName(item.paymentMethod) != null) 'paymentMethod': item.paymentMethod,
+        if (item.paymentRef.trim().isNotEmpty) 'paymentRef': item.paymentRef.trim(),
+      },
+      idempotencyKey: key,
+    );
   }
 
   // ---- purchases ----------------------------------------------------------
@@ -247,6 +261,7 @@ class ApiCommands {
   Future<void> confirmOrder(
     OrderModel order,
     double paidNow, {
+    List<PaymentLine> payments = const <PaymentLine>[],
     bool recordedOffline = false,
     String? key,
   }) async {
@@ -259,9 +274,19 @@ class ApiCommands {
         'customerId': order.customerId,
         'saleType': order.saleType.name,
         'orderDate': _utc(order.orderDate),
+        'channel': order.channel,
         'notes': order.notes,
         'discount': _money(order.discount),
-        'paidNow': _money(paidNow),
+        if (payments.isEmpty)
+          'paidNow': _money(paidNow)
+        else
+          'payments': payments
+              .map((PaymentLine p) => <String, dynamic>{
+                    'method': p.method.name,
+                    'amount': _money(p.amount),
+                    if (p.reference.trim().isNotEmpty) 'reference': p.reference.trim(),
+                  })
+              .toList(),
         if (recordedOffline) 'recordedOffline': true,
         'items': order.items
             .map((OrderItem i) => <String, dynamic>{

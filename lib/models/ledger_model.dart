@@ -14,6 +14,8 @@ class LedgerModel implements SyncableModel {
     DateTime? entryDate,
     this.description = '',
     this.reference = '',
+    this.paymentMethod = '',
+    this.paymentRef = '',
     this.purchaseId = '',
     this.orderId = '',
     DateTime? createdAt,
@@ -34,6 +36,12 @@ class LedgerModel implements SyncableModel {
   final DateTime entryDate;
   final String description;
   final String reference;
+
+  /// How a payment was made ('' = not recorded): cash, bank, easypaisa, jazzcash.
+  final String paymentMethod;
+
+  /// Transaction number or bank name of a non-cash payment.
+  final String paymentRef;
 
   /// Id of the purchase this entry belongs to (empty for general entries).
   final String purchaseId;
@@ -60,6 +68,8 @@ class LedgerModel implements SyncableModel {
       'entryDate': entryDate.toIso8601String(),
       'description': description,
       'reference': reference,
+      'paymentMethod': paymentMethod,
+      'paymentRef': paymentRef,
       'purchaseId': purchaseId,
       'orderId': orderId,
       'createdAt': createdAt.toIso8601String(),
@@ -77,6 +87,8 @@ class LedgerModel implements SyncableModel {
       entryDate: DateTime.tryParse(map['entryDate'] as String? ?? ''),
       description: map['description'] as String? ?? '',
       reference: map['reference'] as String? ?? '',
+      paymentMethod: map['paymentMethod'] as String? ?? '',
+      paymentRef: map['paymentRef'] as String? ?? '',
       purchaseId: map['purchaseId'] as String? ?? '',
       orderId: map['orderId'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
@@ -91,6 +103,8 @@ class LedgerModel implements SyncableModel {
     DateTime? entryDate,
     String? description,
     String? reference,
+    String? paymentMethod,
+    String? paymentRef,
     DateTime? updatedAt,
   }) {
     return LedgerModel(
@@ -102,6 +116,8 @@ class LedgerModel implements SyncableModel {
       entryDate: entryDate ?? this.entryDate,
       description: description ?? this.description,
       reference: reference ?? this.reference,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      paymentRef: paymentRef ?? this.paymentRef,
       purchaseId: purchaseId,
       orderId: orderId,
       createdAt: createdAt,

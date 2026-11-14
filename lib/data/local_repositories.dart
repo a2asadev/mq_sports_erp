@@ -6,6 +6,7 @@ import 'package:mq_sports_erp/data/outbox_store.dart';
 import 'package:mq_sports_erp/data/pending_effects.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
 import 'package:mq_sports_erp/models/stock_ledger_model.dart';
@@ -221,13 +222,21 @@ class LocalOrderRepository extends LocalRepository<OrderModel> implements OrderO
         );
 
   @override
-  Future<void> confirm(OrderModel order, {required double paidNow}) async {
+  Future<void> confirm(
+    OrderModel order, {
+    required double paidNow,
+    List<PaymentLine> payments = const <PaymentLine>[],
+  }) async {
     await outbox.enqueue(
       OutboxKind.orderConfirm,
       collection: collectionName,
       entityId: order.id,
       label: 'Order ${order.orderNo}',
-      payload: <String, dynamic>{'order': order.toMap(), 'paidNow': paidNow},
+      payload: <String, dynamic>{
+        'order': order.toMap(),
+        'paidNow': paidNow,
+        if (payments.isNotEmpty) 'payments': payments.map((PaymentLine p) => p.toMap()).toList(),
+      },
     );
   }
 

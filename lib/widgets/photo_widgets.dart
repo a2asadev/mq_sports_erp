@@ -381,3 +381,9 @@ class _ProductPhotosEditorState extends ConsumerState<ProductPhotosEditor> {
     );
   }
 }
+
+/// Disposes a controller that a dialog was using, after the dialog's closing
+/// animation has finished (disposing at once makes the fading dialog throw).
+void disposeControllerLater(TextEditingController controller) {
+  Future<void>.delayed(const Duration(milliseconds: 500), controller.dispose);
+}

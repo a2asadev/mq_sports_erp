@@ -4,6 +4,7 @@ import 'package:mq_sports_erp/data/pending_effects.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
 import 'package:mq_sports_erp/models/party_enums.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
@@ -240,6 +241,45 @@ void main() {
       expect(stock.where((StockLedgerModel m) => m.variantId == 'v2'), isEmpty);
       expect(stock.last.note, 'AUD-1: shelf');
       expect(overlayAudits(<StockAuditModel>[], entries).single.id, 'a1');
+    });
+  });
+  group('a POS sale paid by several methods, offline', () {
+    final OrderModel order = sampleOrder(); // 3 x 100 = 300
+    final OutboxEntry confirm = entry(
+      OutboxKind.orderConfirm,
+      <String, dynamic>{
+        'order': order.toMap(),
+        'paidNow': 300,
+        'payments': <Map<String, dynamic>>[
+          const PaymentLine(method: PaymentMethod.cash, amount: 120).toMap(),
+          const PaymentLine(method: PaymentMethod.easypaisa, amount: 180, reference: 'EP-1').toMap(),
+        ],
+      },
+      entityId: 'o1',
+      opId: 'op-pos',
+    );
+
+    test('one payment per method shows at once, with its reference', () {
+      final List<LedgerModel> ledger = overlayLedgers(<LedgerModel>[], <OutboxEntry>[confirm]);
+      final List<LedgerModel> payments = ledger.where((LedgerModel e) => e.entryType == LedgerEntryType.payment).toList()
+        ..sort((LedgerModel a, LedgerModel b) => a.amount.compareTo(b.amount));
+      expect(payments.map((LedgerModel p) => '${p.paymentMethod}:${p.amount}:${p.paymentRef}'), <String>['cash:120.0:', 'easypaisa:180.0:EP-1']);
+      expect(payments.map((LedgerModel p) => p.id).toSet(), hasLength(2));
+      expect(ledger.where((LedgerModel e) => e.entryType == LedgerEntryType.charge).single.amount, 300);
+      // Paid in full: nothing owed.
+      expect(owed(ledger, 'cust'), 0);
+    });
+
+    test('the same ids every time, and nothing twice once the server has the order', () {
+      List<String> ids() => overlayLedgers(<LedgerModel>[], <OutboxEntry>[confirm]).map((LedgerModel e) => e.id).toList()..sort();
+      expect(ids(), ids());
+      final List<LedgerModel> serverLedger = <LedgerModel>[
+        LedgerModel(id: 'server-c', partyType: PartyType.customer, partyId: 'cust', entryType: LedgerEntryType.charge, amount: 300, orderId: 'o1', description: 'Order ORD-1', createdAt: _t, updatedAt: _t),
+        LedgerModel(id: 'server-p1', partyType: PartyType.customer, partyId: 'cust', entryType: LedgerEntryType.payment, amount: 120, orderId: 'o1', paymentMethod: 'cash', createdAt: _t, updatedAt: _t),
+        LedgerModel(id: 'server-p2', partyType: PartyType.customer, partyId: 'cust', entryType: LedgerEntryType.payment, amount: 180, orderId: 'o1', paymentMethod: 'easypaisa', createdAt: _t, updatedAt: _t),
+      ];
+      final List<OutboxEntry> sent = <OutboxEntry>[confirm.copyWith(state: OutboxState.sent)];
+      expect(overlayLedgers(serverLedger, sent), hasLength(3));
     });
   });
 }

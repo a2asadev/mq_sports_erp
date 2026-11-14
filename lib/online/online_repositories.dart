@@ -4,6 +4,7 @@ import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
@@ -201,9 +202,13 @@ class OnlineOrderRepository extends OnlineRepository<OrderModel> implements Orde
       : super(api: api, store: store, collectionName: StorageKeys.orders, fromMap: OrderModel.fromMap);
 
   @override
-  Future<void> confirm(OrderModel order, {required double paidNow}) async {
+  Future<void> confirm(
+    OrderModel order, {
+    required double paidNow,
+    List<PaymentLine> payments = const <PaymentLine>[],
+  }) async {
     await store.ensureLoaded();
-    await commands.confirmOrder(order, paidNow, key: 'order-${order.id}');
+    await commands.confirmOrder(order, paidNow, payments: payments, key: 'order-${order.id}');
     await refreshAfterWrite();
   }
 

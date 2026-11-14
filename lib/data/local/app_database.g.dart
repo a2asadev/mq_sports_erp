@@ -3435,6 +3435,22 @@ class $LedgerEntriesTable extends LedgerEntries
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant(''));
+  static const VerificationMeta _paymentMethodMeta =
+      const VerificationMeta('paymentMethod');
+  @override
+  late final GeneratedColumn<String> paymentMethod = GeneratedColumn<String>(
+      'payment_method', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _paymentRefMeta =
+      const VerificationMeta('paymentRef');
+  @override
+  late final GeneratedColumn<String> paymentRef = GeneratedColumn<String>(
+      'payment_ref', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   static const VerificationMeta _purchaseIdMeta =
       const VerificationMeta('purchaseId');
   @override
@@ -3473,6 +3489,8 @@ class $LedgerEntriesTable extends LedgerEntries
         entryDate,
         description,
         reference,
+        paymentMethod,
+        paymentRef,
         purchaseId,
         orderId,
         createdAt,
@@ -3533,6 +3551,18 @@ class $LedgerEntriesTable extends LedgerEntries
       context.handle(_referenceMeta,
           reference.isAcceptableOrUnknown(data['reference']!, _referenceMeta));
     }
+    if (data.containsKey('payment_method')) {
+      context.handle(
+          _paymentMethodMeta,
+          paymentMethod.isAcceptableOrUnknown(
+              data['payment_method']!, _paymentMethodMeta));
+    }
+    if (data.containsKey('payment_ref')) {
+      context.handle(
+          _paymentRefMeta,
+          paymentRef.isAcceptableOrUnknown(
+              data['payment_ref']!, _paymentRefMeta));
+    }
     if (data.containsKey('purchase_id')) {
       context.handle(
           _purchaseIdMeta,
@@ -3580,6 +3610,10 @@ class $LedgerEntriesTable extends LedgerEntries
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       reference: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}reference'])!,
+      paymentMethod: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}payment_method'])!,
+      paymentRef: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}payment_ref'])!,
       purchaseId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}purchase_id'])!,
       orderId: attachedDatabase.typeMapping
@@ -3606,6 +3640,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
   final DateTime entryDate;
   final String description;
   final String reference;
+  final String paymentMethod;
+  final String paymentRef;
   final String purchaseId;
   final String orderId;
   final DateTime createdAt;
@@ -3619,6 +3655,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       required this.entryDate,
       required this.description,
       required this.reference,
+      required this.paymentMethod,
+      required this.paymentRef,
       required this.purchaseId,
       required this.orderId,
       required this.createdAt,
@@ -3634,6 +3672,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
     map['entry_date'] = Variable<DateTime>(entryDate);
     map['description'] = Variable<String>(description);
     map['reference'] = Variable<String>(reference);
+    map['payment_method'] = Variable<String>(paymentMethod);
+    map['payment_ref'] = Variable<String>(paymentRef);
     map['purchase_id'] = Variable<String>(purchaseId);
     map['order_id'] = Variable<String>(orderId);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -3651,6 +3691,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       entryDate: Value(entryDate),
       description: Value(description),
       reference: Value(reference),
+      paymentMethod: Value(paymentMethod),
+      paymentRef: Value(paymentRef),
       purchaseId: Value(purchaseId),
       orderId: Value(orderId),
       createdAt: Value(createdAt),
@@ -3670,6 +3712,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       entryDate: serializer.fromJson<DateTime>(json['entryDate']),
       description: serializer.fromJson<String>(json['description']),
       reference: serializer.fromJson<String>(json['reference']),
+      paymentMethod: serializer.fromJson<String>(json['paymentMethod']),
+      paymentRef: serializer.fromJson<String>(json['paymentRef']),
       purchaseId: serializer.fromJson<String>(json['purchaseId']),
       orderId: serializer.fromJson<String>(json['orderId']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -3688,6 +3732,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       'entryDate': serializer.toJson<DateTime>(entryDate),
       'description': serializer.toJson<String>(description),
       'reference': serializer.toJson<String>(reference),
+      'paymentMethod': serializer.toJson<String>(paymentMethod),
+      'paymentRef': serializer.toJson<String>(paymentRef),
       'purchaseId': serializer.toJson<String>(purchaseId),
       'orderId': serializer.toJson<String>(orderId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -3704,6 +3750,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
           DateTime? entryDate,
           String? description,
           String? reference,
+          String? paymentMethod,
+          String? paymentRef,
           String? purchaseId,
           String? orderId,
           DateTime? createdAt,
@@ -3717,6 +3765,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
         entryDate: entryDate ?? this.entryDate,
         description: description ?? this.description,
         reference: reference ?? this.reference,
+        paymentMethod: paymentMethod ?? this.paymentMethod,
+        paymentRef: paymentRef ?? this.paymentRef,
         purchaseId: purchaseId ?? this.purchaseId,
         orderId: orderId ?? this.orderId,
         createdAt: createdAt ?? this.createdAt,
@@ -3733,6 +3783,11 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       description:
           data.description.present ? data.description.value : this.description,
       reference: data.reference.present ? data.reference.value : this.reference,
+      paymentMethod: data.paymentMethod.present
+          ? data.paymentMethod.value
+          : this.paymentMethod,
+      paymentRef:
+          data.paymentRef.present ? data.paymentRef.value : this.paymentRef,
       purchaseId:
           data.purchaseId.present ? data.purchaseId.value : this.purchaseId,
       orderId: data.orderId.present ? data.orderId.value : this.orderId,
@@ -3752,6 +3807,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
           ..write('entryDate: $entryDate, ')
           ..write('description: $description, ')
           ..write('reference: $reference, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('paymentRef: $paymentRef, ')
           ..write('purchaseId: $purchaseId, ')
           ..write('orderId: $orderId, ')
           ..write('createdAt: $createdAt, ')
@@ -3770,6 +3827,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       entryDate,
       description,
       reference,
+      paymentMethod,
+      paymentRef,
       purchaseId,
       orderId,
       createdAt,
@@ -3786,6 +3845,8 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
           other.entryDate == this.entryDate &&
           other.description == this.description &&
           other.reference == this.reference &&
+          other.paymentMethod == this.paymentMethod &&
+          other.paymentRef == this.paymentRef &&
           other.purchaseId == this.purchaseId &&
           other.orderId == this.orderId &&
           other.createdAt == this.createdAt &&
@@ -3801,6 +3862,8 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
   final Value<DateTime> entryDate;
   final Value<String> description;
   final Value<String> reference;
+  final Value<String> paymentMethod;
+  final Value<String> paymentRef;
   final Value<String> purchaseId;
   final Value<String> orderId;
   final Value<DateTime> createdAt;
@@ -3815,6 +3878,8 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
     this.entryDate = const Value.absent(),
     this.description = const Value.absent(),
     this.reference = const Value.absent(),
+    this.paymentMethod = const Value.absent(),
+    this.paymentRef = const Value.absent(),
     this.purchaseId = const Value.absent(),
     this.orderId = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -3830,6 +3895,8 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
     required DateTime entryDate,
     this.description = const Value.absent(),
     this.reference = const Value.absent(),
+    this.paymentMethod = const Value.absent(),
+    this.paymentRef = const Value.absent(),
     this.purchaseId = const Value.absent(),
     this.orderId = const Value.absent(),
     required DateTime createdAt,
@@ -3852,6 +3919,8 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
     Expression<DateTime>? entryDate,
     Expression<String>? description,
     Expression<String>? reference,
+    Expression<String>? paymentMethod,
+    Expression<String>? paymentRef,
     Expression<String>? purchaseId,
     Expression<String>? orderId,
     Expression<DateTime>? createdAt,
@@ -3867,6 +3936,8 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
       if (entryDate != null) 'entry_date': entryDate,
       if (description != null) 'description': description,
       if (reference != null) 'reference': reference,
+      if (paymentMethod != null) 'payment_method': paymentMethod,
+      if (paymentRef != null) 'payment_ref': paymentRef,
       if (purchaseId != null) 'purchase_id': purchaseId,
       if (orderId != null) 'order_id': orderId,
       if (createdAt != null) 'created_at': createdAt,
@@ -3884,6 +3955,8 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
       Value<DateTime>? entryDate,
       Value<String>? description,
       Value<String>? reference,
+      Value<String>? paymentMethod,
+      Value<String>? paymentRef,
       Value<String>? purchaseId,
       Value<String>? orderId,
       Value<DateTime>? createdAt,
@@ -3898,6 +3971,8 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
       entryDate: entryDate ?? this.entryDate,
       description: description ?? this.description,
       reference: reference ?? this.reference,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      paymentRef: paymentRef ?? this.paymentRef,
       purchaseId: purchaseId ?? this.purchaseId,
       orderId: orderId ?? this.orderId,
       createdAt: createdAt ?? this.createdAt,
@@ -3933,6 +4008,12 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
     if (reference.present) {
       map['reference'] = Variable<String>(reference.value);
     }
+    if (paymentMethod.present) {
+      map['payment_method'] = Variable<String>(paymentMethod.value);
+    }
+    if (paymentRef.present) {
+      map['payment_ref'] = Variable<String>(paymentRef.value);
+    }
     if (purchaseId.present) {
       map['purchase_id'] = Variable<String>(purchaseId.value);
     }
@@ -3962,6 +4043,8 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
           ..write('entryDate: $entryDate, ')
           ..write('description: $description, ')
           ..write('reference: $reference, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('paymentRef: $paymentRef, ')
           ..write('purchaseId: $purchaseId, ')
           ..write('orderId: $orderId, ')
           ..write('createdAt: $createdAt, ')
@@ -10552,6 +10635,8 @@ typedef $$LedgerEntriesTableCreateCompanionBuilder = LedgerEntriesCompanion
   required DateTime entryDate,
   Value<String> description,
   Value<String> reference,
+  Value<String> paymentMethod,
+  Value<String> paymentRef,
   Value<String> purchaseId,
   Value<String> orderId,
   required DateTime createdAt,
@@ -10568,6 +10653,8 @@ typedef $$LedgerEntriesTableUpdateCompanionBuilder = LedgerEntriesCompanion
   Value<DateTime> entryDate,
   Value<String> description,
   Value<String> reference,
+  Value<String> paymentMethod,
+  Value<String> paymentRef,
   Value<String> purchaseId,
   Value<String> orderId,
   Value<DateTime> createdAt,
@@ -10607,6 +10694,12 @@ class $$LedgerEntriesTableFilterComposer
 
   ColumnFilters<String> get reference => $composableBuilder(
       column: $table.reference, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get paymentMethod => $composableBuilder(
+      column: $table.paymentMethod, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get paymentRef => $composableBuilder(
+      column: $table.paymentRef, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get purchaseId => $composableBuilder(
       column: $table.purchaseId, builder: (column) => ColumnFilters(column));
@@ -10654,6 +10747,13 @@ class $$LedgerEntriesTableOrderingComposer
   ColumnOrderings<String> get reference => $composableBuilder(
       column: $table.reference, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get paymentMethod => $composableBuilder(
+      column: $table.paymentMethod,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get paymentRef => $composableBuilder(
+      column: $table.paymentRef, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get purchaseId => $composableBuilder(
       column: $table.purchaseId, builder: (column) => ColumnOrderings(column));
 
@@ -10700,6 +10800,12 @@ class $$LedgerEntriesTableAnnotationComposer
   GeneratedColumn<String> get reference =>
       $composableBuilder(column: $table.reference, builder: (column) => column);
 
+  GeneratedColumn<String> get paymentMethod => $composableBuilder(
+      column: $table.paymentMethod, builder: (column) => column);
+
+  GeneratedColumn<String> get paymentRef => $composableBuilder(
+      column: $table.paymentRef, builder: (column) => column);
+
   GeneratedColumn<String> get purchaseId => $composableBuilder(
       column: $table.purchaseId, builder: (column) => column);
 
@@ -10744,6 +10850,8 @@ class $$LedgerEntriesTableTableManager extends RootTableManager<
             Value<DateTime> entryDate = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<String> reference = const Value.absent(),
+            Value<String> paymentMethod = const Value.absent(),
+            Value<String> paymentRef = const Value.absent(),
             Value<String> purchaseId = const Value.absent(),
             Value<String> orderId = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
@@ -10759,6 +10867,8 @@ class $$LedgerEntriesTableTableManager extends RootTableManager<
             entryDate: entryDate,
             description: description,
             reference: reference,
+            paymentMethod: paymentMethod,
+            paymentRef: paymentRef,
             purchaseId: purchaseId,
             orderId: orderId,
             createdAt: createdAt,
@@ -10774,6 +10884,8 @@ class $$LedgerEntriesTableTableManager extends RootTableManager<
             required DateTime entryDate,
             Value<String> description = const Value.absent(),
             Value<String> reference = const Value.absent(),
+            Value<String> paymentMethod = const Value.absent(),
+            Value<String> paymentRef = const Value.absent(),
             Value<String> purchaseId = const Value.absent(),
             Value<String> orderId = const Value.absent(),
             required DateTime createdAt,
@@ -10789,6 +10901,8 @@ class $$LedgerEntriesTableTableManager extends RootTableManager<
             entryDate: entryDate,
             description: description,
             reference: reference,
+            paymentMethod: paymentMethod,
+            paymentRef: paymentRef,
             purchaseId: purchaseId,
             orderId: orderId,
             createdAt: createdAt,

@@ -1,0 +1,184 @@
+import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/core/utils/pos_payment_plan.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
+
+/// What the customer paid, as chosen in the payment dialog.
+class PosPaymentResult {
+  const PosPaymentResult({required this.lines, required this.change});
+
+  final List<PaymentLine> lines;
+
+  /// Cash to hand back.
+  final double change;
+}
+
+/// Asks how the customer pays: one or several payments by cash, Easypaisa,
+/// JazzCash or bank transfer. With [allowCredit] (a named customer) the sale
+/// may be left partly or fully unpaid; a walk-in customer must pay in full.
+Future<PosPaymentResult?> showPosPaymentDialog(
+  BuildContext context, {
+  required double total,
+  required bool allowCredit,
+}) {
+  return showDialog<PosPaymentResult>(
+    context: context,
+    builder: (BuildContext context) => _PaymentDialog(total: total, allowCredit: allowCredit),
+  );
+}
+
+class _PaymentDialog extends StatefulWidget {
+  const _PaymentDialog({required this.total, required this.allowCredit});
+
+  final double total;
+  final bool allowCredit;
+
+  @override
+  State<_PaymentDialog> createState() => _PaymentDialogState();
+}
+
+class _PaymentDialogState extends State<_PaymentDialog> {
+  late final PosPaymentPlan _plan = PosPaymentPlan(widget.total);
+  late final TextEditingController _amount = TextEditingController(text: _fmt(widget.total));
+  final TextEditingController _reference = TextEditingController();
+  PaymentMethod _method = PaymentMethod.cash;
+  String _error = '';
+
+  static String _fmt(double v) => v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
+
+  @override
+  void dispose() {
+    _amount.dispose();
+    _reference.dispose();
+    super.dispose();
+  }
+
+  void _resetAmount() {
+    _amount.text = _plan.remaining > 0 ? _fmt(_plan.remaining) : '';
+    _reference.clear();
+  }
+
+  void _addPayment() {
+    final double? entered = double.tryParse(_amount.text.trim());
+    final String? problem = _plan.add(_method, entered ?? 0, reference: _reference.text);
+    setState(() {
+      _error = problem ?? '';
+      if (problem == null) {
+        _resetAmount();
+      }
+    });
+  }
+
+  void _finish() {
+    Navigator.of(context).pop(PosPaymentResult(lines: _plan.lines, change: _plan.change));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final bool paid = _plan.isFullyPaid;
+    return AlertDialog(
+      title: Text('Pay Rs ${_fmt(widget.total)}'),
+      content: SizedBox(
+        width: 420,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              for (int i = 0; i < _plan.lines.length; i++)
+                ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.check_circle, color: Colors.green),
+                  title: Text('${_plan.lines[i].method.label}  Rs ${_fmt(_plan.lines[i].amount)}'),
+                  subtitle: _plan.lines[i].reference.isEmpty ? null : Text(_plan.lines[i].reference),
+                  trailing: IconButton(
+                    tooltip: 'Remove this payment',
+                    icon: const Icon(Icons.close),
+                    onPressed: () => setState(() {
+                      _plan.removeAt(i);
+                      _resetAmount();
+                    }),
+                  ),
+                ),
+              if (_plan.lines.isNotEmpty) const Divider(),
+              if (!paid) ...<Widget>[
+                Text('Left to pay: Rs ${_fmt(_plan.remaining)}', style: theme.textTheme.titleMedium),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  children: <Widget>[
+                    for (final PaymentMethod m in PaymentMethod.values)
+                      ChoiceChip(
+                        label: Text(m.label),
+                        selected: _method == m,
+                        onSelected: (_) => setState(() {
+                          _method = m;
+                          _error = '';
+                        }),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: _amount,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: _method == PaymentMethod.cash ? 'Cash received' : 'Amount',
+                    prefixText: 'Rs ',
+                    border: const OutlineInputBorder(),
+                    suffixIcon: TextButton(
+                      onPressed: () => setState(() => _amount.text = _fmt(_plan.remaining)),
+                      child: const Text('Exact'),
+                    ),
+                  ),
+                  onSubmitted: (_) => _addPayment(),
+                ),
+                if (_method.hasReference) ...<Widget>[
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _reference,
+                    decoration: InputDecoration(
+                      labelText: _method == PaymentMethod.bank ? 'Bank and transaction no.' : 'Transaction no.',
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ],
+                if (_error.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(_error, style: TextStyle(color: theme.colorScheme.error)),
+                  ),
+                const SizedBox(height: 12),
+                FilledButton.tonalIcon(
+                  onPressed: _addPayment,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add payment'),
+                ),
+              ] else ...<Widget>[
+                Text('Fully paid', style: theme.textTheme.titleMedium?.copyWith(color: Colors.green.shade700)),
+                if (_plan.change > 0.005)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text('Give change: Rs ${_fmt(_plan.change)}', style: theme.textTheme.headlineSmall),
+                  ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Back')),
+        if (!paid && widget.allowCredit)
+          OutlinedButton(
+            onPressed: _finish,
+            child: Text(_plan.lines.isEmpty ? 'Sell on credit' : 'Sell with Rs ${_fmt(_plan.remaining)} due'),
+          ),
+        FilledButton(
+          onPressed: paid ? _finish : null,
+          child: const Text('Complete sale'),
+        ),
+      ],
+    );
+  }
+}

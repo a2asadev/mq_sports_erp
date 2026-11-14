@@ -7,6 +7,7 @@ import 'package:mq_sports_erp/data/outbox_entry.dart';
 import 'package:mq_sports_erp/data/outbox_store.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
 import 'package:mq_sports_erp/online/api_client.dart';
@@ -222,6 +223,7 @@ class SyncEngine {
         await _commands.confirmOrder(
           OrderModel.fromMap(p['order'] as Map<String, dynamic>),
           (p['paidNow'] as num?)?.toDouble() ?? 0,
+          payments: PaymentLine.listFrom(p['payments']),
           recordedOffline: true,
           key: key,
         );

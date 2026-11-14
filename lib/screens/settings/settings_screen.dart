@@ -256,7 +256,7 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
         ],
       ),
     );
-    to.dispose();
+    disposeControllerLater(to);
     if (address == null || address.isEmpty || !mounted) {
       return;
     }

@@ -124,5 +124,6 @@ void main() {
     await tester.tap(find.text('Send'));
     await tester.pumpAndSettle();
     expect(find.textContaining('not set up on the server'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1)); // the dialog's controller is released after it fades
   });
 }

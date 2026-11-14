@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/utils/receipt.dart';
 import 'package:mq_sports_erp/core/utils/whatsapp.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
+import 'package:mq_sports_erp/providers/pos_providers.dart';
+import 'package:mq_sports_erp/widgets/receipt_actions.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
 import 'package:mq_sports_erp/providers/shop_name_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,11 +20,13 @@ import 'package:mq_sports_erp/widgets/order_status_chip.dart';
 import 'package:mq_sports_erp/widgets/purchase_status_chip.dart';
 
 class _PaymentDraft {
-  const _PaymentDraft(this.amount, this.date, this.note);
+  const _PaymentDraft(this.amount, this.date, this.note, this.method, this.reference);
 
   final double amount;
   final DateTime date;
   final String note;
+  final PaymentMethod method;
+  final String reference;
 }
 
 /// One order: pipeline progress, status history, items, totals and payments.
@@ -82,6 +88,8 @@ class OrderDetailScreen extends ConsumerWidget {
           amount: draft.amount,
           date: draft.date,
           note: draft.note,
+          method: draft.method,
+          paymentRef: draft.reference,
         );
   }
 
@@ -371,6 +379,18 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
             ),
           const SizedBox(height: 16),
+          Text('Receipt', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          ReceiptActions(
+            receipt: ReceiptData.fromOrder(
+              order,
+              ledger: ledger,
+              shopName: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).name,
+              shopPhone: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).phone,
+            ),
+            phone: _phoneFor(ref, order),
+          ),
+          const SizedBox(height: 16),
           Text('Payments', style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           if (payments.isEmpty)
@@ -384,7 +404,11 @@ class OrderDetailScreen extends ConsumerWidget {
                 child: ListTile(
                   leading: const Icon(Icons.payments_outlined),
                   title: Text(payment.description),
-                  subtitle: Text(formatDate(payment.entryDate)),
+                  subtitle: Text(<String>[
+                    formatDate(payment.entryDate),
+                    if (payment.paymentMethod.isNotEmpty) PaymentMethod.labelOf(payment.paymentMethod),
+                    if (payment.paymentRef.isNotEmpty) payment.paymentRef,
+                  ].join(' · ')),
                   trailing: Text(formatAmount(payment.amount),
                       style: const TextStyle(fontWeight: FontWeight.w600)),
                 ),
@@ -416,6 +440,8 @@ class _PaymentDialogState extends State<_PaymentDialog> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final TextEditingController _amountController;
   final TextEditingController _noteController = TextEditingController();
+  final TextEditingController _refController = TextEditingController();
+  PaymentMethod _method = PaymentMethod.cash;
   DateTime _date = DateTime.now();
 
   @override
@@ -428,6 +454,7 @@ class _PaymentDialogState extends State<_PaymentDialog> {
   void dispose() {
     _amountController.dispose();
     _noteController.dispose();
+    _refController.dispose();
     super.dispose();
   }
 
@@ -452,6 +479,8 @@ class _PaymentDialogState extends State<_PaymentDialog> {
       double.parse(_amountController.text.trim()),
       _date,
       _noteController.text.trim(),
+      _method,
+      _refController.text.trim(),
     ));
   }
 
@@ -484,6 +513,26 @@ class _PaymentDialogState extends State<_PaymentDialog> {
                 return null;
               },
             ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              children: <Widget>[
+                for (final PaymentMethod m in PaymentMethod.values)
+                  ChoiceChip(
+                    label: Text(m.label),
+                    selected: _method == m,
+                    onSelected: (_) => setState(() => _method = m),
+                  ),
+              ],
+            ),
+            if (_method.hasReference)
+              TextFormField(
+                controller: _refController,
+                decoration: InputDecoration(
+                  labelText: _method == PaymentMethod.bank ? 'Bank and transaction no.' : 'Transaction no.',
+                ),
+                validator: (String? v) => (v == null || v.trim().isEmpty) ? 'Enter the transaction number.' : null,
+              ),
             const SizedBox(height: 8),
             ListTile(
               contentPadding: EdgeInsets.zero,

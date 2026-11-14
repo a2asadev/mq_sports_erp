@@ -2,6 +2,7 @@ import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/data/outbox_entry.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
 import 'package:mq_sports_erp/models/party_enums.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
@@ -266,7 +267,8 @@ List<LedgerModel> overlayLedgers(List<LedgerModel> base, List<OutboxEntry> entri
         if (serverHasOrder(order.id)) {
           continue;
         }
-        final double paid = _paidNow(entry.payload);
+        final List<PaymentLine> lines = PaymentLine.listFrom(entry.payload['payments']);
+        final double paid = lines.isEmpty ? _paidNow(entry.payload) : PaymentLine.total(lines);
         if (order.totalAmount > 0) {
           final String id = _derived(entry.opId, 'charge');
           byId[id] = LedgerModel(
@@ -284,20 +286,27 @@ List<LedgerModel> overlayLedgers(List<LedgerModel> base, List<OutboxEntry> entri
           );
         }
         if (paid > 0) {
-          final String id = _derived(entry.opId, 'payment');
-          byId[id] = LedgerModel(
-            id: id,
-            partyType: PartyType.customer,
-            partyId: order.customerId,
-            entryType: LedgerEntryType.payment,
-            amount: paid,
-            entryDate: order.orderDate,
-            description: 'Payment for ${order.orderNo}',
-            reference: order.orderNo,
-            orderId: order.id,
-            createdAt: entry.createdAt,
-            updatedAt: entry.createdAt,
-          );
+          // One payment per method; a plain amount is one payment of no recorded method.
+          final List<PaymentLine?> parts = lines.isEmpty ? <PaymentLine?>[null] : lines;
+          for (int i = 0; i < parts.length; i++) {
+            final PaymentLine? line = parts[i];
+            final String id = _derived(entry.opId, lines.isEmpty ? 'payment' : 'payment$i');
+            byId[id] = LedgerModel(
+              id: id,
+              partyType: PartyType.customer,
+              partyId: order.customerId,
+              entryType: LedgerEntryType.payment,
+              amount: line?.amount ?? paid,
+              entryDate: order.orderDate,
+              description: 'Payment for ${order.orderNo}',
+              reference: order.orderNo,
+              paymentMethod: line?.method.name ?? '',
+              paymentRef: line?.reference ?? '',
+              orderId: order.id,
+              createdAt: entry.createdAt,
+              updatedAt: entry.createdAt,
+            );
+          }
         }
       case OutboxKind.orderCancel:
         final OrderModel order = _order(entry.payload);

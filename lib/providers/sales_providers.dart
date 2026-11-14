@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
 import 'package:mq_sports_erp/data/local_repositories.dart';
 import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/repositories/repository.dart';
@@ -63,6 +64,9 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
   @override
   OrderOperations get repository => ref.read(orderRepositoryProvider);
 
+  /// The order confirmed last (the POS prints its receipt from it).
+  OrderModel? lastConfirmed;
+
   String _newOrderNo(DateTime date) {
     String two(int n) => n.toString().padLeft(2, '0');
     final String day = '${date.year}${two(date.month)}${two(date.day)}';
@@ -92,6 +96,8 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
     required List<OrderItem> items,
     required double orderDiscount,
     required double paidNow,
+    String channel = 'admin',
+    List<PaymentLine> payments = const <PaymentLine>[],
   }) async {
     if (!ref.read(canCreateOrdersProvider)) {
       return reportFailure(const PermissionDeniedException(_noPermissionMessage));
@@ -117,12 +123,21 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       }
     }
 
+    // Paid by method (the POS) or as one amount (the order form).
+    final double paid = payments.isEmpty ? paidNow : PaymentLine.total(payments);
+    for (final PaymentLine line in payments) {
+      if (line.amount <= 0) {
+        return reportFailure(const ValidationException('Every payment must be more than zero.'));
+      }
+    }
+
     final OrderModel order = OrderModel(
       orderNo: _newOrderNo(orderDate),
       customerId: customer.id,
       customerName: customer.name,
       orderDate: orderDate,
       saleType: saleType,
+      channel: channel,
       items: items,
       discount: orderDiscount,
       notes: notes,
@@ -132,7 +147,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       return reportFailure(const ValidationException(
           'The order discount must be between 0 and the order subtotal.'));
     }
-    if (paidNow < 0 || paidNow > order.totalAmount + 0.005) {
+    if (paid < 0 || paid > order.totalAmount + 0.005) {
       return reportFailure(const ValidationException(
           'The amount paid must be between 0 and the order total.'));
     }
@@ -185,7 +200,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
             .where((LedgerModel e) => e.partyId == customer.id)
             .fold<double>(0, (double s, LedgerModel e) => s + e.signedAmount);
         final double balanceAfter =
-            customer.openingBalance + ledgerSum + order.totalAmount - paidNow;
+            customer.openingBalance + ledgerSum + order.totalAmount - paid;
         if (balanceAfter > customer.creditLimit + 0.005) {
           return reportFailure(ValidationException(
               'This order would take ${customer.name} over the credit limit '
@@ -200,7 +215,8 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
     final List<OrderModel> previous = state.valueOrNull ?? <OrderModel>[];
     state = AsyncData<List<OrderModel>>(<OrderModel>[...previous, order]);
     try {
-      await repository.confirm(order, paidNow: paidNow);
+      await repository.confirm(order, paidNow: paid, payments: payments);
+      lastConfirmed = order;
       await _logAction(
         action: 'order_confirmed',
         order: order,
@@ -208,7 +224,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
             '${order.items.length} item(s), ${order.totalUnits} unit(s), '
             '${order.saleType.label.toLowerCase()} sale, total '
             '${order.totalAmount.toStringAsFixed(2)}, paid now '
-            '${paidNow.toStringAsFixed(2)}. Stock taken out and the customer '
+            '${paid.toStringAsFixed(2)}. Stock taken out and the customer '
             'ledger charged.',
       );
       // Stock, ledger and order lists reload from Hive.
@@ -323,6 +339,8 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
     required double amount,
     required DateTime date,
     required String note,
+    PaymentMethod? method,
+    String paymentRef = '',
   }) async {
     if (!ref.read(canCreateOrdersProvider)) {
       return reportFailure(const PermissionDeniedException(_noPermissionMessage));
@@ -349,6 +367,8 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       entryDate: date,
       description: note.isEmpty ? 'Payment for ${order.orderNo}' : note,
       reference: order.orderNo,
+      paymentMethod: method?.name ?? '',
+      paymentRef: paymentRef.trim(),
       orderId: order.id,
     );
     try {

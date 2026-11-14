@@ -31,11 +31,16 @@ class AppDatabase extends _$AppDatabase {
   factory AppDatabase.open(String userId) => AppDatabase(driftDatabase(name: 'mq_erp_$userId'));
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 4) {
+            // How each payment was made (cash, bank, Easypaisa, JazzCash).
+            await m.addColumn(ledgerEntries, ledgerEntries.paymentMethod);
+            await m.addColumn(ledgerEntries, ledgerEntries.paymentRef);
+          }
           if (from < 3) {
             // Photos of users, categories, customers, vendors and products.
             await m.addColumn(users, users.photoUrl);

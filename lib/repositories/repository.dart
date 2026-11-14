@@ -1,4 +1,5 @@
 import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:mq_sports_erp/models/payment_method.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/models/stock_audit_model.dart';
 import 'package:mq_sports_erp/models/syncable_model.dart';
@@ -36,7 +37,8 @@ abstract class PurchaseOperations implements Repository<PurchaseModel> {
 
 /// An order is confirmed, and cancelled, as one action.
 abstract class OrderOperations implements Repository<OrderModel> {
-  Future<void> confirm(OrderModel order, {required double paidNow});
+  /// [payments] (by method) replace [paidNow] when given; [paidNow] is then their sum.
+  Future<void> confirm(OrderModel order, {required double paidNow, List<PaymentLine> payments = const <PaymentLine>[]});
 
   Future<void> cancel(OrderModel cancelled, {required DateTime when});
 }
