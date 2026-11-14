@@ -192,13 +192,14 @@ class ApiClient {
   Future<ApiResponse> post(String path, {Object? body, String? idempotencyKey}) =>
       send('POST', path, body: body, idempotencyKey: idempotencyKey);
 
-  Future<ApiResponse> put(String path, {Object? body}) =>
-      send('PUT', path, body: body);
+  Future<ApiResponse> put(String path, {Object? body, String? idempotencyKey}) =>
+      send('PUT', path, body: body, idempotencyKey: idempotencyKey);
 
-  Future<ApiResponse> patch(String path, {Object? body}) =>
-      send('PATCH', path, body: body);
+  Future<ApiResponse> patch(String path, {Object? body, String? idempotencyKey}) =>
+      send('PATCH', path, body: body, idempotencyKey: idempotencyKey);
 
-  Future<ApiResponse> delete(String path) => send('DELETE', path);
+  Future<ApiResponse> delete(String path, {String? idempotencyKey}) =>
+      send('DELETE', path, idempotencyKey: idempotencyKey);
 
   /// Sends a request. [idempotencyKey] makes a repeat of the same write safe:
   /// the server answers the retry with the first answer instead of doing the

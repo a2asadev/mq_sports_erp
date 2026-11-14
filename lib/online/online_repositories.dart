@@ -10,31 +10,26 @@ import 'package:mq_sports_erp/models/stock_audit_model.dart';
 import 'package:mq_sports_erp/models/stock_ledger_model.dart';
 import 'package:mq_sports_erp/models/syncable_model.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
 import 'package:mq_sports_erp/models/vendor_model.dart';
 import 'package:mq_sports_erp/online/api_client.dart';
+import 'package:mq_sports_erp/online/api_commands.dart';
 import 'package:mq_sports_erp/online/remote_store.dart';
 import 'package:mq_sports_erp/repositories/repository.dart';
 
-/// Times go to the server in UTC (the server's own clock is not the user's).
-String _utc(DateTime time) => time.toUtc().toIso8601String();
-
-/// Amounts have two decimals on the server; a Dart double such as
-/// 0.1 + 0.2 must not be sent as 0.30000000000000004.
-double _money(double amount) => (amount * 100).round() / 100;
-
-/// The base of every online repository. Reads come from the in-memory copy of
-/// the server's data; a write goes to the server and then the copy is brought
-/// up to date, so what the screens show is what the server saved.
+/// The base of every online repository (the web app). Reads come from the
+/// in-memory copy of the server's data; a write goes to the server and then the
+/// copy is brought up to date, so what the screens show is what the server saved.
 abstract class OnlineRepository<T extends SyncableModel> implements Repository<T> {
   OnlineRepository({
-    required this.api,
+    required ApiClient api,
     required this.store,
     required this.collectionName,
     required this.fromMap,
-  });
+  })  : api = api,
+        commands = ApiCommands(api);
 
   final ApiClient api;
+  final ApiCommands commands;
   final RemoteStore store;
   final T Function(JsonMap map) fromMap;
 
@@ -94,153 +89,50 @@ abstract class OnlineRepository<T extends SyncableModel> implements Repository<T
 
 class OnlineCategoryRepository extends OnlineRepository<CategoryModel> {
   OnlineCategoryRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.categories,
-          fromMap: CategoryModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.categories, fromMap: CategoryModel.fromMap);
 
   @override
-  Future<void> write(CategoryModel item, {required bool exists}) async {
-    final Map<String, dynamic> body = <String, dynamic>{
-      'name': item.name,
-      'parentId': item.parentId,
-      'description': item.description,
-      'isActive': item.isActive,
-    };
-    if (exists) {
-      await api.patch('/v1/categories/${item.id}', body: body);
-    } else {
-      await api.post('/v1/categories', body: <String, dynamic>{'id': item.id, ...body});
-    }
-  }
+  Future<void> write(CategoryModel item, {required bool exists}) =>
+      commands.upsertCategory(item, isNew: !exists);
 
   @override
-  Future<void> remove(String id) async {
-    await api.delete('/v1/categories/$id');
-  }
+  Future<void> remove(String id) => commands.deleteRecord(StorageKeys.categories, id);
 }
 
 class OnlineProductRepository extends OnlineRepository<ProductModel> {
   OnlineProductRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.products,
-          fromMap: ProductModel.fromMap,
-        );
-
-  static Map<String, dynamic> variantBody(VariantModel v) => <String, dynamic>{
-        'id': v.id,
-        'sku': v.sku,
-        'name': v.name,
-        'barcode': v.barcode,
-        'attributes': v.attributes,
-        'costPrice': _money(v.costPrice),
-        'salePrice': _money(v.salePrice),
-        'isWholesale': v.isWholesale,
-        'wholesalePrice': _money(v.wholesalePrice),
-        'alertThreshold': v.alertThreshold,
-        'isActive': v.isActive,
-      };
+      : super(api: api, store: store, collectionName: StorageKeys.products, fromMap: ProductModel.fromMap);
 
   @override
-  Future<void> write(ProductModel item, {required bool exists}) async {
-    final Map<String, dynamic> body = <String, dynamic>{
-      'id': item.id,
-      'name': item.name,
-      'categoryId': item.categoryId,
-      'brand': item.brand,
-      'description': item.description,
-      'isActive': item.isActive,
-      'variants': item.variants.map(variantBody).toList(),
-    };
-    if (exists) {
-      // The server replaces the product with its variants in one transaction.
-      await api.put('/v1/products/${item.id}', body: body);
-    } else {
-      await api.post('/v1/products', body: body);
-    }
-  }
+  Future<void> write(ProductModel item, {required bool exists}) =>
+      commands.upsertProduct(item, isNew: !exists);
 
   @override
-  Future<void> remove(String id) async {
-    await api.delete('/v1/products/$id');
-  }
+  Future<void> remove(String id) => commands.deleteRecord(StorageKeys.products, id);
 }
 
 class OnlineVendorRepository extends OnlineRepository<VendorModel> {
   OnlineVendorRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.vendors,
-          fromMap: VendorModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.vendors, fromMap: VendorModel.fromMap);
 
   @override
-  Future<void> write(VendorModel item, {required bool exists}) async {
-    final Map<String, dynamic> body = <String, dynamic>{
-      'name': item.name,
-      'type': item.type.name,
-      'contactPerson': item.contactPerson,
-      'phone': item.phone,
-      'email': item.email,
-      'address': item.address,
-      'city': item.city,
-      'notes': item.notes,
-      'openingBalance': _money(item.openingBalance),
-      'isActive': item.isActive,
-    };
-    if (exists) {
-      await api.patch('/v1/vendors/${item.id}', body: body);
-    } else {
-      await api.post('/v1/vendors', body: <String, dynamic>{'id': item.id, ...body});
-    }
-  }
+  Future<void> write(VendorModel item, {required bool exists}) =>
+      commands.upsertVendor(item, isNew: !exists);
 
   @override
-  Future<void> remove(String id) async {
-    await api.delete('/v1/vendors/$id');
-  }
+  Future<void> remove(String id) => commands.deleteRecord(StorageKeys.vendors, id);
 }
 
 class OnlineCustomerRepository extends OnlineRepository<CustomerModel> {
   OnlineCustomerRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.customers,
-          fromMap: CustomerModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.customers, fromMap: CustomerModel.fromMap);
 
   @override
-  Future<void> write(CustomerModel item, {required bool exists}) async {
-    final Map<String, dynamic> body = <String, dynamic>{
-      'name': item.name,
-      'type': item.type.name,
-      'contactPerson': item.contactPerson,
-      'phone': item.phone,
-      'email': item.email,
-      'address': item.address,
-      'city': item.city,
-      'notes': item.notes,
-      'creditLimit': _money(item.creditLimit),
-      'openingBalance': _money(item.openingBalance),
-      'isActive': item.isActive,
-    };
-    if (exists) {
-      await api.patch('/v1/customers/${item.id}', body: body);
-    } else {
-      await api.post('/v1/customers', body: <String, dynamic>{'id': item.id, ...body});
-    }
-  }
+  Future<void> write(CustomerModel item, {required bool exists}) =>
+      commands.upsertCustomer(item, isNew: !exists);
 
   @override
-  Future<void> remove(String id) async {
-    await api.delete('/v1/customers/$id');
-  }
+  Future<void> remove(String id) => commands.deleteRecord(StorageKeys.customers, id);
 }
 
 /// Ledger entries. Entries that belong to a purchase or an order are payments
@@ -248,62 +140,32 @@ class OnlineCustomerRepository extends OnlineRepository<CustomerModel> {
 /// action (it checks the amount against what is still due).
 class OnlineLedgerRepository extends OnlineRepository<LedgerModel> {
   OnlineLedgerRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.ledgers,
-          fromMap: LedgerModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.ledgers, fromMap: LedgerModel.fromMap);
 
   @override
-  Future<void> write(LedgerModel item, {required bool exists}) async {
+  Future<void> write(LedgerModel item, {required bool exists}) {
     if (exists) {
       throw unsupported('Ledger entries cannot be edited. Delete the entry and add it again.');
     }
-    final String defaultNote = 'Payment for ${item.reference}';
-    final bool customNote = item.description.trim().isNotEmpty && item.description != defaultNote;
-    final Map<String, dynamic> payment = <String, dynamic>{
-      'id': item.id,
-      'amount': _money(item.amount),
-      'date': _utc(item.entryDate),
-      if (customNote) 'note': item.description,
-    };
     if (item.purchaseId.isNotEmpty) {
-      await api.post('/v1/purchases/${item.purchaseId}/payments', body: payment);
-    } else if (item.orderId.isNotEmpty) {
-      await api.post('/v1/orders/${item.orderId}/payments', body: payment);
-    } else {
-      await api.post('/v1/ledger', body: <String, dynamic>{
-        'id': item.id,
-        'partyType': item.partyType.name,
-        'partyId': item.partyId,
-        'entryType': item.entryType.name,
-        'amount': _money(item.amount),
-        'entryDate': _utc(item.entryDate),
-        'description': item.description,
-        'reference': item.reference,
-      });
+      return commands.purchasePayment(item);
     }
+    if (item.orderId.isNotEmpty) {
+      return commands.orderPayment(item);
+    }
+    return commands.ledgerEntry(item);
   }
 
   @override
-  Future<void> remove(String id) async {
-    await api.delete('/v1/ledger/$id');
-  }
+  Future<void> remove(String id) => commands.deleteRecord(StorageKeys.ledgers, id);
 }
 
 /// Stock movements are only ever created by purchases, sales and stock counts.
 class OnlineStockLedgerRepository extends OnlineRepository<StockLedgerModel> {
   OnlineStockLedgerRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.stockLedgers,
-          fromMap: StockLedgerModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.stockLedgers, fromMap: StockLedgerModel.fromMap);
 
-  static const String _message =
-      'Stock changes only through purchases, sales and stock counts.';
+  static const String _message = 'Stock changes only through purchases, sales and stock counts.';
 
   @override
   Future<void> write(StockLedgerModel item, {required bool exists}) =>
@@ -313,109 +175,51 @@ class OnlineStockLedgerRepository extends OnlineRepository<StockLedgerModel> {
   Future<void> remove(String id) => Future<void>.error(unsupported(_message));
 }
 
-class OnlinePurchaseRepository extends OnlineRepository<PurchaseModel>
-    implements PurchaseOperations {
+class OnlinePurchaseRepository extends OnlineRepository<PurchaseModel> implements PurchaseOperations {
   OnlinePurchaseRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.purchases,
-          fromMap: PurchaseModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.purchases, fromMap: PurchaseModel.fromMap);
 
   @override
   Future<void> confirm(PurchaseModel purchase, {required double paidNow}) async {
     await store.ensureLoaded();
-    await api.post(
-      '/v1/purchases/confirm',
-      // The id as the key: a repeat after a dropped connection is not a second purchase.
-      idempotencyKey: 'purchase-${purchase.id}',
-      body: <String, dynamic>{
-        'id': purchase.id,
-        'purchaseNo': purchase.purchaseNo,
-        'vendorId': purchase.vendorId,
-        'purchaseDate': _utc(purchase.purchaseDate),
-        'invoiceNo': purchase.invoiceNo,
-        'notes': purchase.notes,
-        'paidNow': _money(paidNow),
-        'items': purchase.items
-            .map((PurchaseItem i) => <String, dynamic>{
-                  'id': i.id,
-                  'productId': i.productId,
-                  'variantId': i.variantId,
-                  'quantity': i.quantity,
-                  'unitCost': _money(i.unitCost),
-                })
-            .toList(),
-      },
-    );
+    // The id as the key: a repeat after a dropped connection is not a second purchase.
+    await commands.confirmPurchase(purchase, paidNow, key: 'purchase-${purchase.id}');
     await refreshAfterWrite();
   }
 
   @override
-  Future<void> write(PurchaseModel item, {required bool exists}) => Future<void>.error(
-      unsupported('A confirmed purchase cannot be changed.'));
+  Future<void> write(PurchaseModel item, {required bool exists}) =>
+      Future<void>.error(unsupported('A confirmed purchase cannot be changed.'));
 
   @override
   Future<void> remove(String id) =>
       Future<void>.error(unsupported('A confirmed purchase cannot be deleted.'));
 }
 
-class OnlineOrderRepository extends OnlineRepository<OrderModel>
-    implements OrderOperations {
+class OnlineOrderRepository extends OnlineRepository<OrderModel> implements OrderOperations {
   OnlineOrderRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.orders,
-          fromMap: OrderModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.orders, fromMap: OrderModel.fromMap);
 
   @override
   Future<void> confirm(OrderModel order, {required double paidNow}) async {
     await store.ensureLoaded();
-    await api.post(
-      '/v1/orders/confirm',
-      idempotencyKey: 'order-${order.id}',
-      body: <String, dynamic>{
-        'id': order.id,
-        'orderNo': order.orderNo,
-        'customerId': order.customerId,
-        'saleType': order.saleType.name,
-        'orderDate': _utc(order.orderDate),
-        'notes': order.notes,
-        'discount': _money(order.discount),
-        'paidNow': _money(paidNow),
-        'items': order.items
-            .map((OrderItem i) => <String, dynamic>{
-                  'id': i.id,
-                  'productId': i.productId,
-                  'variantId': i.variantId,
-                  'quantity': i.quantity,
-                  'unitPrice': _money(i.unitPrice),
-                  'discount': _money(i.discount),
-                })
-            .toList(),
-      },
-    );
+    await commands.confirmOrder(order, paidNow, key: 'order-${order.id}');
     await refreshAfterWrite();
   }
 
   @override
   Future<void> cancel(OrderModel cancelled, {required DateTime when}) async {
-    await api.post('/v1/orders/${cancelled.id}/cancel');
+    await commands.cancelOrder(cancelled.id);
     await refreshAfterWrite();
   }
 
   /// The only edit of an existing order is moving it along the pipeline.
   @override
-  Future<void> write(OrderModel item, {required bool exists}) async {
+  Future<void> write(OrderModel item, {required bool exists}) {
     if (!exists) {
       throw unsupported('An order is created by confirming it.');
     }
-    await api.post('/v1/orders/${item.id}/status', body: <String, dynamic>{
-      'status': item.status.name,
-    });
+    return commands.setOrderStatus(item.id, item.status);
   }
 
   @override
@@ -426,34 +230,12 @@ class OnlineOrderRepository extends OnlineRepository<OrderModel>
 class OnlineStockAuditRepository extends OnlineRepository<StockAuditModel>
     implements StockAuditOperations {
   OnlineStockAuditRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.stockAudits,
-          fromMap: StockAuditModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.stockAudits, fromMap: StockAuditModel.fromMap);
 
-  /// The server measures each count against the stock at that moment, so only
-  /// what was counted is sent.
   @override
   Future<void> confirm(StockAuditModel audit) async {
     await store.ensureLoaded();
-    await api.post(
-      '/v1/stock-audits/confirm',
-      idempotencyKey: 'audit-${audit.id}',
-      body: <String, dynamic>{
-        'id': audit.id,
-        'auditNo': audit.auditNo,
-        'auditDate': _utc(audit.auditDate),
-        'note': audit.note,
-        'counts': audit.items
-            .map((StockAuditItem i) => <String, dynamic>{
-                  'variantId': i.variantId,
-                  'countedQuantity': i.countedQuantity,
-                })
-            .toList(),
-      },
-    );
+    await commands.confirmAudit(audit, key: 'audit-${audit.id}');
     await refreshAfterWrite();
   }
 
@@ -471,28 +253,16 @@ class OnlineStockAuditRepository extends OnlineRepository<StockAuditModel>
 /// "delete" turns the login off, which has the same effect for the person.
 class OnlineUserRepository extends OnlineRepository<UserModel> {
   OnlineUserRepository(ApiClient api, RemoteStore store)
-      : super(
-          api: api,
-          store: store,
-          collectionName: StorageKeys.users,
-          fromMap: UserModel.fromMap,
-        );
+      : super(api: api, store: store, collectionName: StorageKeys.users, fromMap: UserModel.fromMap);
 
   @override
-  Future<void> write(UserModel item, {required bool exists}) async {
+  Future<void> write(UserModel item, {required bool exists}) {
     if (!exists) {
       throw unsupported('Users are created with a login (email and password).');
     }
-    await api.patch('/v1/users/${item.id}', body: <String, dynamic>{
-      'displayName': item.displayName,
-      'phoneNumber': item.phoneNumber,
-      'role': item.role.name,
-      'isActive': item.isActive,
-    });
+    return commands.updateUser(item);
   }
 
   @override
-  Future<void> remove(String id) async {
-    await api.patch('/v1/users/$id', body: <String, dynamic>{'isActive': false});
-  }
+  Future<void> remove(String id) => commands.deleteRecord(StorageKeys.users, id);
 }

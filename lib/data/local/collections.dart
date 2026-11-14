@@ -35,6 +35,17 @@ abstract class LocalCollection<T extends SyncableModel> {
 
   /// Removes records (and their lines). Ids that are not there are ignored.
   Future<void> deleteIds(List<String> ids);
+
+  /// A record from the server's JSON.
+  T fromMap(Map<String, dynamic> map);
+
+  /// Adds or replaces records given as the server's JSON.
+  Future<void> upsertMaps(List<Map<String, dynamic>> maps) =>
+      upsertAll(maps.map(fromMap).toList());
+
+  /// Removes everything (used to download everything again).
+  Future<void> clear() async =>
+      deleteIds((await all()).map((T item) => item.id).toList());
 }
 
 /// The ten collections of the app, by name.
@@ -88,13 +99,16 @@ Map<String, List<R>> _group<R>(Iterable<R> rows, String Function(R row) parentOf
 
 // ---- users -----------------------------------------------------------------
 
-class UsersCollection implements LocalCollection<UserModel> {
+class UsersCollection extends LocalCollection<UserModel> {
   UsersCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.users;
+
+  @override
+  UserModel fromMap(Map<String, dynamic> map) => UserModel.fromMap(map);
 
   UserModel _model(UserRow r) => UserModel(
         id: r.id,
@@ -141,13 +155,16 @@ class UsersCollection implements LocalCollection<UserModel> {
 
 // ---- categories ------------------------------------------------------------
 
-class CategoriesCollection implements LocalCollection<CategoryModel> {
+class CategoriesCollection extends LocalCollection<CategoryModel> {
   CategoriesCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.categories;
+
+  @override
+  CategoryModel fromMap(Map<String, dynamic> map) => CategoryModel.fromMap(map);
 
   CategoryModel _model(CategoryRow r) => CategoryModel(
         id: r.id,
@@ -193,13 +210,16 @@ class CategoriesCollection implements LocalCollection<CategoryModel> {
 
 // ---- products (with variants) ----------------------------------------------
 
-class ProductsCollection implements LocalCollection<ProductModel> {
+class ProductsCollection extends LocalCollection<ProductModel> {
   ProductsCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.products;
+
+  @override
+  ProductModel fromMap(Map<String, dynamic> map) => ProductModel.fromMap(map);
 
   VariantModel _variant(VariantRow r) {
     final Object? decoded = jsonDecode(r.attributesJson);
@@ -306,13 +326,16 @@ class ProductsCollection implements LocalCollection<ProductModel> {
 
 // ---- vendors ---------------------------------------------------------------
 
-class VendorsCollection implements LocalCollection<VendorModel> {
+class VendorsCollection extends LocalCollection<VendorModel> {
   VendorsCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.vendors;
+
+  @override
+  VendorModel fromMap(Map<String, dynamic> map) => VendorModel.fromMap(map);
 
   VendorModel _model(VendorRow r) => VendorModel(
         id: r.id,
@@ -369,13 +392,16 @@ class VendorsCollection implements LocalCollection<VendorModel> {
 
 // ---- customers -------------------------------------------------------------
 
-class CustomersCollection implements LocalCollection<CustomerModel> {
+class CustomersCollection extends LocalCollection<CustomerModel> {
   CustomersCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.customers;
+
+  @override
+  CustomerModel fromMap(Map<String, dynamic> map) => CustomerModel.fromMap(map);
 
   CustomerModel _model(CustomerRow r) => CustomerModel(
         id: r.id,
@@ -435,13 +461,16 @@ class CustomersCollection implements LocalCollection<CustomerModel> {
 
 // ---- ledger entries --------------------------------------------------------
 
-class LedgersCollection implements LocalCollection<LedgerModel> {
+class LedgersCollection extends LocalCollection<LedgerModel> {
   LedgersCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.ledgers;
+
+  @override
+  LedgerModel fromMap(Map<String, dynamic> map) => LedgerModel.fromMap(map);
 
   LedgerModel _model(LedgerRow r) => LedgerModel(
         id: r.id,
@@ -497,13 +526,16 @@ class LedgersCollection implements LocalCollection<LedgerModel> {
 
 // ---- purchases (with items) ------------------------------------------------
 
-class PurchasesCollection implements LocalCollection<PurchaseModel> {
+class PurchasesCollection extends LocalCollection<PurchaseModel> {
   PurchasesCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.purchases;
+
+  @override
+  PurchaseModel fromMap(Map<String, dynamic> map) => PurchaseModel.fromMap(map);
 
   PurchaseModel _model(PurchaseRow r, List<PurchaseItemRow> items) => PurchaseModel(
         id: r.id,
@@ -598,13 +630,16 @@ class PurchasesCollection implements LocalCollection<PurchaseModel> {
 
 // ---- stock movements -------------------------------------------------------
 
-class StockMovementsCollection implements LocalCollection<StockLedgerModel> {
+class StockMovementsCollection extends LocalCollection<StockLedgerModel> {
   StockMovementsCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.stockLedgers;
+
+  @override
+  StockLedgerModel fromMap(Map<String, dynamic> map) => StockLedgerModel.fromMap(map);
 
   StockLedgerModel _model(StockMovementRow r) => StockLedgerModel(
         id: r.id,
@@ -674,13 +709,16 @@ class StockMovementsCollection implements LocalCollection<StockLedgerModel> {
 
 // ---- stock audits (with items) ---------------------------------------------
 
-class StockAuditsCollection implements LocalCollection<StockAuditModel> {
+class StockAuditsCollection extends LocalCollection<StockAuditModel> {
   StockAuditsCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.stockAudits;
+
+  @override
+  StockAuditModel fromMap(Map<String, dynamic> map) => StockAuditModel.fromMap(map);
 
   StockAuditModel _model(StockAuditRow r, List<StockAuditItemRow> items) => StockAuditModel(
         id: r.id,
@@ -770,13 +808,16 @@ class StockAuditsCollection implements LocalCollection<StockAuditModel> {
 
 // ---- orders (with items and status history) --------------------------------
 
-class OrdersCollection implements LocalCollection<OrderModel> {
+class OrdersCollection extends LocalCollection<OrderModel> {
   OrdersCollection(this._db);
 
   final AppDatabase _db;
 
   @override
   String get name => StorageKeys.orders;
+
+  @override
+  OrderModel fromMap(Map<String, dynamic> map) => OrderModel.fromMap(map);
 
   OrderModel _model(OrderRow r, List<OrderItemRow> items, List<OrderStatusRow> history) => OrderModel(
         id: r.id,
