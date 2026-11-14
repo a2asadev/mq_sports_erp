@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # Times are stored as ISO text (not whole seconds), so milliseconds survive.
+          store_date_time_values_as_text: true
+          # Dart names are camelCase (as in the models), SQL names snake_case.
+          case_from_dart_to_sql: snake_case
