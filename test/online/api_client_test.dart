@@ -110,6 +110,72 @@ void main() {
     });
   });
 
+  group('opening the app without a connection', () {
+    test('continues as the saved user, and renews the token once the server is back', () async {
+      final MemoryTokenStore store = MemoryTokenStore();
+      await store.saveRefreshToken('saved-refresh');
+      await store.saveUserJson(_userJson);
+      bool serverUp = false;
+      final List<String> authorization = <String>[];
+      final ApiClient api = _client(MockClient((http.Request request) async {
+        if (!serverUp) {
+          throw http.ClientException('no network');
+        }
+        if (request.url.path == '/v1/auth/refresh') {
+          return _json(200, _tokens('fresh-access', 'next-refresh'));
+        }
+        authorization.add(request.headers['Authorization'] ?? '');
+        return request.headers['Authorization'] == 'Bearer fresh-access'
+            ? _json(200, '{"ok":true}')
+            : _json(401, '{"message":"no token"}');
+      }), store);
+      final List<UserModel?> announced = <UserModel?>[];
+      api.sessionChanges.listen(announced.add);
+
+      final UserModel? restored = await api.restoreSession();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(restored?.email, 'a@b.c');
+      expect(restored?.role.name, 'manager');
+      expect(api.isSignedIn, isTrue);
+      expect(announced.single?.id, 'u1');
+      // Nothing was forgotten: the session can still be renewed later.
+      expect(await store.readRefreshToken(), 'saved-refresh');
+
+      serverUp = true;
+      final ApiResponse response = await api.get('/v1/things');
+      expect(response.asMap['ok'], true);
+      expect(authorization, <String>['', 'Bearer fresh-access']); // tried without a token, renewed, repeated
+      expect(await store.readRefreshToken(), 'next-refresh');
+    });
+
+    test('with no saved user the connection problem is reported, and the session is kept', () async {
+      final MemoryTokenStore store = MemoryTokenStore();
+      await store.saveRefreshToken('saved-refresh');
+      final ApiClient api = _client(MockClient((http.Request _) async => throw http.ClientException('x')), store);
+      await expectLater(api.restoreSession(), throwsA(isA<RemoteSyncException>()));
+      expect(await store.readRefreshToken(), 'saved-refresh');
+    });
+
+    test('a refresh token the server no longer accepts still ends the session, offline user or not', () async {
+      final MemoryTokenStore store = MemoryTokenStore();
+      await store.saveRefreshToken('revoked');
+      await store.saveUserJson(_userJson);
+      final ApiClient api = _client(MockClient((http.Request _) async => _json(401, '{"message":"used"}')), store);
+      expect(await api.restoreSession(), isNull);
+      expect(await store.readRefreshToken(), isNull);
+      expect(await store.readUserJson(), isNull);
+      expect(api.isSignedIn, isFalse);
+    });
+
+    test('signing in saves the user for the next time', () async {
+      final MemoryTokenStore store = MemoryTokenStore();
+      final ApiClient api = _client(MockClient((http.Request _) async => _json(200, _tokens('a', 'r'))), store);
+      await api.login('a@b.c', 'x');
+      expect(jsonDecode((await store.readUserJson())!), containsPair('email', 'a@b.c'));
+    });
+  });
+
   group('expired access tokens', () {
     test('are refreshed once and the request is repeated', () async {
       int refreshes = 0;

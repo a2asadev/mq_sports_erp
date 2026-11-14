@@ -1,15 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/data/local_repositories.dart';
+import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
 import 'package:mq_sports_erp/online/online_repositories.dart';
-import 'package:mq_sports_erp/core/constants/storage_keys.dart';
 import 'package:mq_sports_erp/models/stock_ledger_model.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
-import 'package:mq_sports_erp/providers/activity_log_providers.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/repositories/base_repository.dart';
-import 'package:mq_sports_erp/services/hive_local_repository.dart';
 
 final Provider<Repository<StockLedgerModel>> stockLedgerRepositoryProvider =
     Provider<Repository<StockLedgerModel>>((Ref ref) {
@@ -19,18 +16,9 @@ final Provider<Repository<StockLedgerModel>> stockLedgerRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  return BaseRepository<StockLedgerModel>(
-    collectionName: StorageKeys.stockLedgers,
-    entityLabel: 'Stock entry',
-    local: HiveLocalRepository<StockLedgerModel>(
-      boxName: StorageKeys.stockLedgers,
-      fromMap: StockLedgerModel.fromMap,
-    ),
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    fromMap: StockLedgerModel.fromMap,
-    labelOf: (StockLedgerModel entry) =>
-        '${entry.sku} ${entry.quantity >= 0 ? '+' : ''}${entry.quantity}',
+  return LocalStockLedgerRepository(
+    collection: ref.watch(localCollectionsProvider).stockLedgers,
+    outbox: ref.watch(outboxStoreProvider),
   );
 });
 

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/data/local_repositories.dart';
+import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
@@ -19,8 +20,6 @@ import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/stock_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/repositories/stock_audit_repository.dart';
-import 'package:mq_sports_erp/services/hive_local_repository.dart';
 import 'package:uuid/uuid.dart';
 
 /// Adjusting stock changes what the business owns, so only admins and
@@ -43,14 +42,9 @@ final Provider<StockAuditOperations> stockAuditRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  return StockAuditRepository(
-    local: HiveLocalRepository<StockAuditModel>(
-      boxName: StorageKeys.stockAudits,
-      fromMap: StockAuditModel.fromMap,
-    ),
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    stockRepository: asNative(ref.watch(stockLedgerRepositoryProvider)),
+  return LocalStockAuditRepository(
+    collection: ref.watch(localCollectionsProvider).stockAudits,
+    outbox: ref.watch(outboxStoreProvider),
   );
 });
 

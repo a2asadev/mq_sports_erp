@@ -67,7 +67,8 @@ class ApiClient {
 
   UserModel? get currentUser => _user;
 
-  bool get isSignedIn => _accessToken != null;
+  /// Signed in, possibly without a connection (the saved session of a previous visit).
+  bool get isSignedIn => _user != null;
 
   // ---- session -------------------------------------------------------------
 
@@ -110,6 +111,31 @@ class ApiClient {
     } on AuthFailureException {
       await _endSession();
       return null;
+    } on RemoteSyncException {
+      // No connection (or the server is down). The refresh token is still the
+      // one we saved, so carry on as the user who was signed in: work is saved
+      // on the device and uploaded later. The first request that does get
+      // through renews the access token by itself.
+      final UserModel? saved = await _savedUser();
+      if (saved == null) {
+        rethrow;
+      }
+      _user = saved;
+      _sessionChanges.add(saved);
+      return saved;
+    }
+  }
+
+  Future<UserModel?> _savedUser() async {
+    final String? json = await _tokens.readUserJson();
+    if (json == null) {
+      return null;
+    }
+    try {
+      final Object? decoded = jsonDecode(json);
+      return decoded is Map<String, dynamic> ? UserModel.fromMap(decoded) : null;
+    } on FormatException {
+      return null;
     }
   }
 
@@ -139,6 +165,7 @@ class ApiClient {
     }
     _accessToken = access;
     await _tokens.saveRefreshToken(refresh);
+    await _tokens.saveUserJson(jsonEncode(user));
     final UserModel model = UserModel.fromMap(user);
     // Announce a different person only: a token refresh is not a new sign-in.
     final bool newPerson = _user?.id != model.id;

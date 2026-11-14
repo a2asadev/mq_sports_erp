@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/repositories/base_repository.dart';
+import 'package:mq_sports_erp/data/local_repositories.dart';
+import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
@@ -23,8 +24,6 @@ import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/parties_providers.dart';
 import 'package:mq_sports_erp/providers/stock_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/repositories/order_repository.dart';
-import 'package:mq_sports_erp/services/hive_local_repository.dart';
 import 'package:uuid/uuid.dart';
 
 /// Every active user (admin, manager and staff) may create orders, move them
@@ -54,15 +53,9 @@ final Provider<OrderOperations> orderRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  return OrderRepository(
-    local: HiveLocalRepository<OrderModel>(
-      boxName: StorageKeys.orders,
-      fromMap: OrderModel.fromMap,
-    ),
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    stockRepository: asNative(ref.watch(stockLedgerRepositoryProvider)),
-    ledgerRepository: asNative(ref.watch(ledgerRepositoryProvider)),
+  return LocalOrderRepository(
+    collection: ref.watch(localCollectionsProvider).orders,
+    outbox: ref.watch(outboxStoreProvider),
   );
 });
 

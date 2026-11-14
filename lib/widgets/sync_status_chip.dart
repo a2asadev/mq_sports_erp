@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/providers/sync_coordinator.dart';
+import 'package:mq_sports_erp/providers/sync_controller.dart';
 import 'package:mq_sports_erp/screens/sync_screen.dart';
 
 /// App bar button showing the sync status. Tapping it opens the sync screen.
@@ -10,35 +9,32 @@ class SyncStatusChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final SyncState sync = ref.watch(syncCoordinatorProvider);
-    final bool isOnline = ref.watch(isOnlineProvider).valueOrNull ?? true;
+    final SyncSummary summary = ref.watch(syncSummaryProvider);
     final ColorScheme colors = Theme.of(context).colorScheme;
 
-    final (IconData icon, String label, Color? color) = switch (sync.status) {
+    final (IconData icon, String label, Color? color) = switch (summary.status) {
       SyncStatus.syncing => (Icons.sync, 'Syncing', null),
-      SyncStatus.pending => (
-          Icons.cloud_upload_outlined,
-          '${sync.pending.length} to upload',
-          colors.tertiaryContainer,
-        ),
-      SyncStatus.outOfDate => (
-          Icons.cloud_download_outlined,
-          'Out of sync',
+      SyncStatus.needsAttention => (
+          Icons.error_outline,
+          '${summary.failed} need attention',
           colors.errorContainer,
         ),
-      SyncStatus.connecting => (
-          isOnline ? Icons.cloud_queue : Icons.cloud_off_outlined,
-          isOnline ? 'Checking' : 'Offline',
-          null,
+      SyncStatus.offline => (
+          Icons.cloud_off_outlined,
+          summary.waiting > 0 ? '${summary.waiting} waiting (offline)' : 'Offline',
+          summary.waiting > 0 ? colors.tertiaryContainer : null,
+        ),
+      SyncStatus.pending => (
+          Icons.cloud_upload_outlined,
+          '${summary.waiting} to upload',
+          colors.tertiaryContainer,
         ),
       SyncStatus.upToDate => (Icons.cloud_done_outlined, 'Synced', null),
     };
 
     return ActionChip(
       avatar: Icon(icon, size: 18),
-      label: Text(!isOnline && sync.status == SyncStatus.pending
-          ? '$label (offline)'
-          : label),
+      label: Text(label),
       backgroundColor: color,
       visualDensity: VisualDensity.compact,
       onPressed: () => Navigator.of(context).push(

@@ -7,6 +7,13 @@ abstract class TokenStore {
 
   Future<void> saveRefreshToken(String token);
 
+  /// The signed-in user as JSON (name, role, active flag). Kept so the app can
+  /// open without a connection and still know who is signed in.
+  Future<String?> readUserJson();
+
+  Future<void> saveUserJson(String json);
+
+  /// Forgets the session (token and user).
   Future<void> clear();
 }
 
@@ -17,6 +24,7 @@ abstract class TokenStore {
 /// an httpOnly cookie set by the API.
 class SharedPrefsTokenStore implements TokenStore {
   static const String _key = 'mq_refresh_token';
+  static const String _userKey = 'mq_user';
 
   @override
   Future<String?> readRefreshToken() async {
@@ -31,15 +39,29 @@ class SharedPrefsTokenStore implements TokenStore {
   }
 
   @override
+  Future<String?> readUserJson() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_userKey);
+  }
+
+  @override
+  Future<void> saveUserJson(String json) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userKey, json);
+  }
+
+  @override
   Future<void> clear() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);
+    await prefs.remove(_userKey);
   }
 }
 
 /// Keeps the token in memory only (tests).
 class MemoryTokenStore implements TokenStore {
   String? _token;
+  String? _user;
 
   @override
   Future<String?> readRefreshToken() async => _token;
@@ -50,7 +72,16 @@ class MemoryTokenStore implements TokenStore {
   }
 
   @override
+  Future<String?> readUserJson() async => _user;
+
+  @override
+  Future<void> saveUserJson(String json) async {
+    _user = json;
+  }
+
+  @override
   Future<void> clear() async {
     _token = null;
+    _user = null;
   }
 }

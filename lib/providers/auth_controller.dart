@@ -5,8 +5,6 @@ import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/activity_log_model.dart';
 import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/providers/sync_coordinator.dart';
 
 /// Drives the login and logout actions. Its `AsyncValue` reflects the latest
 /// action: loading while running, error with a clean message on failure.
@@ -28,11 +26,6 @@ class AuthController extends AsyncNotifier<void> {
             module: 'session',
             summary: 'Signed in',
           );
-      // Login is the one moment the whole data set is downloaded (local-first
-      // mode). Online, the data loads when the first screen asks for it.
-      if (!ref.read(dataModeProvider).isOnline) {
-        unawaited(ref.read(syncCoordinatorProvider.notifier).syncOnLogin());
-      }
     } on AppException catch (e, st) {
       state = AsyncError<void>(e, st);
     }

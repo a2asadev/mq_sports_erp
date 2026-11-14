@@ -47,7 +47,8 @@ class ApiAuthService implements AuthService {
   @override
   Future<void> signOut() => _api.logout();
 
-  /// The signed-in user's own record (role and active flag), from the server.
+  /// The signed-in user's own record (role and active flag): the server's
+  /// answer when it can be reached, otherwise the one saved at the last sign-in.
   Future<UserModel?> fetchCurrentUser() async {
     if (!_api.isSignedIn) {
       return null;
@@ -57,6 +58,8 @@ class ApiAuthService implements AuthService {
       return UserModel.fromMap(normalizeDates(response.asMap));
     } on AuthFailureException {
       return null;
+    } on RemoteSyncException {
+      return _api.currentUser;
     }
   }
 }
@@ -66,10 +69,13 @@ class ApiAuthService implements AuthService {
 /// and phone number, so a failure in between leaves the safest account, not an
 /// over-privileged one.
 class ApiAuthAdminService implements AuthAdminService {
-  ApiAuthAdminService(this._api, this._store);
+  ApiAuthAdminService(this._api, this._bringUsersUpToDate);
 
   final ApiClient _api;
-  final RemoteStore _store;
+
+  /// Fetches the server's users onto this device (web: refresh the in-memory
+  /// copy; mobile and desktop: download), so the new user is known before it is saved.
+  final Future<void> Function() _bringUsersUpToDate;
 
   @override
   Future<void> createAccount({
@@ -93,7 +99,7 @@ class ApiAuthAdminService implements AuthAdminService {
     // The new user must be in the local copy so the next save updates it
     // instead of trying to create it again.
     try {
-      await _store.refresh();
+      await _bringUsersUpToDate();
     } on AppException {
       // The periodic refresh will catch up.
     }

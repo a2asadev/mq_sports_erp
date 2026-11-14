@@ -1,4 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/data/local_repositories.dart';
+import 'package:mq_sports_erp/data/outbox_entry.dart';
+import 'package:mq_sports_erp/data/pending_effects.dart';
+import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
@@ -14,11 +18,7 @@ import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/models/vendor_model.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
-import 'package:mq_sports_erp/providers/activity_log_providers.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/repositories/base_repository.dart';
-import 'package:mq_sports_erp/services/hive_local_repository.dart';
 
 /// Admins and managers may change vendors, customers and ledgers.
 final Provider<bool> canManagePartiesProvider = Provider<bool>((Ref ref) {
@@ -39,18 +39,9 @@ final Provider<Repository<LedgerModel>> ledgerRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  return BaseRepository<LedgerModel>(
-    collectionName: StorageKeys.ledgers,
-    entityLabel: 'Ledger entry',
-    local: HiveLocalRepository<LedgerModel>(
-      boxName: StorageKeys.ledgers,
-      fromMap: LedgerModel.fromMap,
-    ),
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    fromMap: LedgerModel.fromMap,
-    labelOf: (LedgerModel entry) =>
-        '${entry.entryType.name} ${entry.amount.toStringAsFixed(2)}',
+  return LocalLedgerRepository(
+    collection: ref.watch(localCollectionsProvider).ledgers,
+    outbox: ref.watch(outboxStoreProvider),
   );
 });
 
@@ -80,21 +71,21 @@ final Provider<Repository<VendorModel>> vendorRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  final HiveLocalRepository<VendorModel> local =
-      HiveLocalRepository<VendorModel>(
-    boxName: StorageKeys.vendors,
-    fromMap: VendorModel.fromMap,
-  );
-  return BaseRepository<VendorModel>(
-    collectionName: StorageKeys.vendors,
+  return LocalRepository<VendorModel>(
+    collection: ref.watch(localCollectionsProvider).vendors,
+    outbox: ref.watch(outboxStoreProvider),
     entityLabel: 'Vendor',
-    local: local,
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    fromMap: VendorModel.fromMap,
     labelOf: (VendorModel vendor) => vendor.name,
+    overlay: (List<VendorModel> base, List<OutboxEntry> entries) =>
+        overlayRecords<VendorModel>(
+      collection: StorageKeys.vendors,
+      base: base,
+      entries: entries,
+      fromMap: VendorModel.fromMap,
+    ),
     deleteGuard: (String id) async {
-      final VendorModel? vendor = await local.getById(id);
+      final VendorModel? vendor =
+          await ref.read(vendorRepositoryProvider).getLocalById(id);
       return _partyDeleteReason(ref, id, vendor?.openingBalance);
     },
   );
@@ -108,33 +99,33 @@ final Provider<Repository<CustomerModel>> customerRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  final HiveLocalRepository<CustomerModel> local =
-      HiveLocalRepository<CustomerModel>(
-    boxName: StorageKeys.customers,
-    fromMap: CustomerModel.fromMap,
-  );
-  return BaseRepository<CustomerModel>(
-    collectionName: StorageKeys.customers,
+  return LocalRepository<CustomerModel>(
+    collection: ref.watch(localCollectionsProvider).customers,
+    outbox: ref.watch(outboxStoreProvider),
     entityLabel: 'Customer',
-    local: local,
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    fromMap: CustomerModel.fromMap,
     labelOf: (CustomerModel customer) => customer.name,
+    overlay: (List<CustomerModel> base, List<OutboxEntry> entries) =>
+        overlayRecords<CustomerModel>(
+      collection: StorageKeys.customers,
+      base: base,
+      entries: entries,
+      fromMap: CustomerModel.fromMap,
+    ),
     deleteGuard: (String id) async {
-      final CustomerModel? customer = await local.getById(id);
+      final CustomerModel? customer =
+          await ref.read(customerRepositoryProvider).getLocalById(id);
       final String? reason =
           await _partyDeleteReason(ref, id, customer?.openingBalance);
       if (reason != null) {
         return reason;
       }
-      // Orders are read from their Hive box directly: the order providers
-      // depend on this file, so importing them here would be circular. An
-      // order with a zero total has no ledger entry, so it is checked here.
-      final List<OrderModel> orders = await HiveLocalRepository<OrderModel>(
-        boxName: StorageKeys.orders,
-        fromMap: OrderModel.fromMap,
-      ).getAll();
+      // An order with a zero total has no ledger entry, so orders are checked
+      // too. They are read here, not through the order providers, which depend
+      // on this file.
+      final List<OrderModel> orders = overlayOrders(
+        await ref.read(localCollectionsProvider).orders.all(),
+        await ref.read(outboxStoreProvider).all(),
+      );
       return orders.any((OrderModel o) => o.customerId == id)
           ? 'it has orders'
           : null;

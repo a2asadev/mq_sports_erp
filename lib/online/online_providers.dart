@@ -61,8 +61,3 @@ final Provider<RemoteStore> remoteStoreProvider = Provider<RemoteStore>((Ref ref
 final Provider<ApiAuthService> apiAuthServiceProvider =
     Provider<ApiAuthService>((Ref ref) => ApiAuthService(ref.watch(apiClientProvider)));
 
-final Provider<ApiAuthAdminService> apiAuthAdminServiceProvider =
-    Provider<ApiAuthAdminService>((Ref ref) => ApiAuthAdminService(
-          ref.watch(apiClientProvider),
-          ref.watch(remoteStoreProvider),
-        ));

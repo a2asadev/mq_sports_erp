@@ -27,8 +27,8 @@ part 'app_database.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
 
-  /// The database file in the app's own folder.
-  factory AppDatabase.open() => AppDatabase(driftDatabase(name: 'mq_erp'));
+  /// The database file of one user, in the app's own folder.
+  factory AppDatabase.open(String userId) => AppDatabase(driftDatabase(name: 'mq_erp_$userId'));
 
   @override
   int get schemaVersion => 1;

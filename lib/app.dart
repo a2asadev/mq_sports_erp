@@ -4,8 +4,7 @@ import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/providers/sync_coordinator.dart';
-import 'package:mq_sports_erp/providers/user_profile_providers.dart';
+import 'package:mq_sports_erp/providers/sync_controller.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/access_denied_screen.dart';
 import 'package:mq_sports_erp/screens/home_screen.dart';
@@ -16,12 +15,6 @@ class MqSportsApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Keeps the sync coordinator (and its metadata listener) alive. The online
-    // app has nothing to sync: every action goes straight to the server.
-    if (!ref.watch(dataModeProvider).isOnline) {
-      ref.listen<SyncState>(syncCoordinatorProvider,
-          (SyncState? previous, SyncState next) {});
-    }
     return MaterialApp(
       title: 'MQ Sports ERP',
       debugShowCheckedModeBanner: false,
@@ -71,8 +64,11 @@ class _AccessGate extends ConsumerWidget {
             message: 'Your account is inactive. Contact your administrator.',
           );
         }
-        // Keeps the personal profile (last login, account details) in sync.
-        ref.watch(currentUserProfileProvider);
+        // Keeps this device in step with the server while someone is signed in
+        // (mobile and desktop; the web app has nothing to sync).
+        if (!ref.watch(dataModeProvider).isOnline) {
+          ref.watch(syncControllerProvider);
+        }
         return const HomeScreen();
       },
       loading: () => const Scaffold(

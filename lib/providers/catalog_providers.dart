@@ -1,4 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/data/local_repositories.dart';
+import 'package:mq_sports_erp/data/outbox_entry.dart';
+import 'package:mq_sports_erp/data/pending_effects.dart';
+import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/repositories/repository.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
@@ -13,12 +17,8 @@ import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
-import 'package:mq_sports_erp/providers/activity_log_providers.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/stock_providers.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/repositories/base_repository.dart';
-import 'package:mq_sports_erp/services/hive_local_repository.dart';
 
 final Provider<Repository<CategoryModel>> categoryRepositoryProvider =
     Provider<Repository<CategoryModel>>((Ref ref) {
@@ -28,23 +28,22 @@ final Provider<Repository<CategoryModel>> categoryRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  final HiveLocalRepository<CategoryModel> local =
-      HiveLocalRepository<CategoryModel>(
-    boxName: StorageKeys.categories,
-    fromMap: CategoryModel.fromMap,
-  );
-  return BaseRepository<CategoryModel>(
-    collectionName: StorageKeys.categories,
+  return LocalRepository<CategoryModel>(
+    collection: ref.watch(localCollectionsProvider).categories,
+    outbox: ref.watch(outboxStoreProvider),
     entityLabel: 'Category',
-    local: local,
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    fromMap: CategoryModel.fromMap,
     labelOf: (CategoryModel category) => category.name,
+    overlay: (List<CategoryModel> base, List<OutboxEntry> entries) =>
+        overlayRecords<CategoryModel>(
+      collection: StorageKeys.categories,
+      base: base,
+      entries: entries,
+      fromMap: CategoryModel.fromMap,
+    ),
     // A category may only be deleted while nothing on this device uses it.
-    // Also re-checked after a sync downloads other users' changes.
     deleteGuard: (String id) async {
-      final List<CategoryModel> categories = await local.getAll();
+      final List<CategoryModel> categories =
+          await ref.read(categoryRepositoryProvider).getLocal();
       if (categories.any((CategoryModel c) => c.parentId == id)) {
         return 'it has subcategories';
       }
@@ -65,17 +64,18 @@ final Provider<Repository<ProductModel>> productRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  return BaseRepository<ProductModel>(
-    collectionName: StorageKeys.products,
+  return LocalRepository<ProductModel>(
+    collection: ref.watch(localCollectionsProvider).products,
+    outbox: ref.watch(outboxStoreProvider),
     entityLabel: 'Product',
-    local: HiveLocalRepository<ProductModel>(
-      boxName: StorageKeys.products,
+    labelOf: (ProductModel product) => product.name,
+    overlay: (List<ProductModel> base, List<OutboxEntry> entries) =>
+        overlayRecords<ProductModel>(
+      collection: StorageKeys.products,
+      base: base,
+      entries: entries,
       fromMap: ProductModel.fromMap,
     ),
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    fromMap: ProductModel.fromMap,
-    labelOf: (ProductModel product) => product.name,
     // A product with stock history can only be deactivated, not deleted.
     deleteGuard: (String id) async {
       final List<StockLedgerModel> entries =

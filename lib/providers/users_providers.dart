@@ -1,32 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/constants/storage_keys.dart';
+import 'package:mq_sports_erp/data/local_repositories.dart';
+import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/providers/base_list_notifier.dart';
-import 'package:mq_sports_erp/providers/activity_log_providers.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
 import 'package:mq_sports_erp/online/online_repositories.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/repositories/repository.dart';
-import 'package:mq_sports_erp/repositories/user_repository.dart';
-import 'package:mq_sports_erp/services/hive_local_repository.dart';
 
-/// The local-first (Hive + Firestore) user repository. Mobile and desktop only.
-final Provider<UserRepository> nativeUserRepositoryProvider =
-    Provider<UserRepository>((Ref ref) {
-  return UserRepository(
-    local: HiveLocalRepository<UserModel>(
-      boxName: StorageKeys.users,
-      fromMap: UserModel.fromMap,
-    ),
-    remote: ref.watch(firestoreServiceProvider),
-    pendingStore: ref.watch(pendingChangeStoreProvider),
-    logger: ref.watch(activityLoggerProvider),
-    resolveCurrentUser: () => ref.read(currentUserProvider.future),
-  );
-});
 
 /// Users: from the API on the web, from the device elsewhere.
 final Provider<Repository<UserModel>> userRepositoryProvider =
@@ -37,14 +21,17 @@ final Provider<Repository<UserModel>> userRepositoryProvider =
       ref.watch(remoteStoreProvider),
     );
   }
-  return ref.watch(nativeUserRepositoryProvider);
+  return LocalUserRepository(
+    collection: ref.watch(localCollectionsProvider).users,
+    outbox: ref.watch(outboxStoreProvider),
+  );
 });
 
-/// The `users` record of the signed-in login: it carries the role and the
-/// active flag. Null when signed out or when the login has no user record.
+/// The record of the signed-in login: it carries the role and the active flag.
+/// Null when signed out.
 ///
-/// Read from Hive. Only when this device has no copy yet (first login) is it
-/// downloaded once; after that it changes only through a sync.
+/// The server's answer when it can be reached; without a connection, the record
+/// saved at the last sign-in, so the app opens and works offline.
 class CurrentUserNotifier extends AsyncNotifier<UserModel?> {
   @override
   Future<UserModel?> build() async {
@@ -52,20 +39,7 @@ class CurrentUserNotifier extends AsyncNotifier<UserModel?> {
     if (uid == null) {
       return null;
     }
-    if (ref.watch(dataModeProvider).isOnline) {
-      // The server knows the role and whether the account is active.
-      return ref.read(apiAuthServiceProvider).fetchCurrentUser();
-    }
-    final UserRepository repository = ref.read(nativeUserRepositoryProvider);
-    final UserModel? local = await repository.getLocalById(uid);
-    if (local != null) {
-      return local;
-    }
-    final UserModel? remote = await repository.fetchRemote(uid);
-    if (remote != null) {
-      await repository.storeLocal(remote);
-    }
-    return remote;
+    return ref.read(apiAuthServiceProvider).fetchCurrentUser();
   }
 }
 

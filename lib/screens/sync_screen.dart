@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/models/pending_change.dart';
+import 'package:mq_sports_erp/data/outbox_entry.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/providers/sync_coordinator.dart';
+import 'package:mq_sports_erp/providers/local_data_providers.dart';
+import 'package:mq_sports_erp/providers/sync_controller.dart';
 
-/// Shows what is not synced yet and lets the user sync manually.
+/// Shows what has not reached the server yet, and lets the user sync on demand.
+///
+/// Syncing normally happens by itself (when there is a connection, a few
+/// seconds after something is saved, and every minute); this screen is for
+/// seeing what is going on and for the rare case that needs the user.
 class SyncScreen extends ConsumerWidget {
   const SyncScreen({super.key});
 
@@ -14,182 +19,191 @@ class SyncScreen extends ConsumerWidget {
     return '${two(local.day)}/${two(local.month)} ${two(local.hour)}:${two(local.minute)}';
   }
 
-  IconData _iconFor(PendingChangeType type) {
-    switch (type) {
-      case PendingChangeType.create:
-        return Icons.add_circle_outline;
-      case PendingChangeType.update:
-        return Icons.edit_outlined;
-      case PendingChangeType.delete:
+  IconData _iconFor(OutboxEntry entry) {
+    if (entry.state == OutboxState.failed) {
+      return Icons.error_outline;
+    }
+    if (entry.state == OutboxState.sent) {
+      return Icons.check_circle_outline;
+    }
+    switch (entry.kind) {
+      case OutboxKind.upsert:
+        return entry.isNew ? Icons.add_circle_outline : Icons.edit_outlined;
+      case OutboxKind.delete:
         return Icons.delete_outline;
+      case OutboxKind.orderCancel:
+        return Icons.cancel_outlined;
+      default:
+        return Icons.receipt_long_outlined;
+    }
+  }
+
+  String _stateText(OutboxEntry entry) {
+    switch (entry.state) {
+      case OutboxState.pending:
+        return 'Waiting to upload · ${_formatTime(entry.createdAt)}';
+      case OutboxState.sent:
+        return 'Uploaded, waiting for the server\'s copy';
+      case OutboxState.failed:
+        return 'Refused: ${entry.error}';
+    }
+  }
+
+  Future<void> _confirmDownloadAgain(BuildContext context, WidgetRef ref) async {
+    final bool? ok = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext dialogContext) => AlertDialog(
+        title: const Text('Download everything again?'),
+        content: const Text(
+          'This replaces this device\'s copy of the data with the server\'s. '
+          'Changes that are waiting to be uploaded are kept.',
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Download again'),
+          ),
+        ],
+      ),
+    );
+    if (ok == true) {
+      await ref.read(syncControllerProvider.notifier).downloadEverythingAgain();
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final SyncState sync = ref.watch(syncCoordinatorProvider);
+    final SyncSummary summary = ref.watch(syncSummaryProvider);
+    final SyncUiState sync = ref.watch(syncControllerProvider);
+    final List<OutboxEntry> entries =
+        ref.watch(outboxEntriesProvider).valueOrNull ?? <OutboxEntry>[];
     final bool isOnline = ref.watch(isOnlineProvider).valueOrNull ?? true;
     final ThemeData theme = Theme.of(context);
-    final List<String> stale = sync.staleCollections;
-    final bool hasPending = sync.pending.isNotEmpty;
-    final bool hasStale = stale.isNotEmpty;
-    final bool hasPendingDeletes = sync.pending
-        .any((PendingChange c) => c.type == PendingChangeType.delete);
 
     final String statusTitle;
     final String statusDetail;
     final IconData statusIcon;
-    switch (sync.status) {
+    switch (summary.status) {
       case SyncStatus.syncing:
         statusTitle = 'Syncing…';
         statusDetail = 'Please keep the app open.';
         statusIcon = Icons.sync;
+      case SyncStatus.needsAttention:
+        statusTitle = '${summary.failed} change(s) need attention';
+        statusDetail = 'The server refused them. Retry them, or discard them below.';
+        statusIcon = Icons.error_outline;
+      case SyncStatus.offline:
+        statusTitle = isOnline ? 'The server cannot be reached' : 'You are offline';
+        statusDetail = summary.waiting > 0
+            ? '${summary.waiting} change(s) are saved on this device and are '
+                'uploaded automatically when the connection is back.'
+            : 'Everything you do is saved on this device and uploaded later.';
+        statusIcon = Icons.cloud_off_outlined;
       case SyncStatus.pending:
-        statusTitle = '${sync.pending.length} change(s) not uploaded';
-        statusDetail = 'These exist only on this device until you sync.';
+        statusTitle = '${summary.waiting} change(s) to upload';
+        statusDetail = 'They are uploaded automatically in a few seconds.';
         statusIcon = Icons.cloud_upload_outlined;
-      case SyncStatus.outOfDate:
-        statusTitle = 'Out of sync';
-        statusDetail = 'The cloud has newer data than this device.';
-        statusIcon = Icons.cloud_download_outlined;
-      case SyncStatus.connecting:
-        statusTitle = isOnline ? 'Checking the cloud…' : 'You are offline';
-        statusDetail = isOnline
-            ? 'Waiting for the cloud version information.'
-            : 'Everything you do is saved on this device.';
-        statusIcon = isOnline ? Icons.cloud_queue : Icons.cloud_off_outlined;
       case SyncStatus.upToDate:
-        statusTitle = 'Synced';
-        statusDetail = 'This device matches the cloud.';
+        statusTitle = 'In step with the server';
+        statusDetail = sync.lastSyncedAt == null
+            ? 'Nothing is waiting.'
+            : 'Last checked ${_formatTime(sync.lastSyncedAt!)}.';
         statusIcon = Icons.cloud_done_outlined;
     }
 
-    final String buttonLabel = hasPendingDeletes && hasStale
-        ? 'Download updates first'
-        : hasPending && hasStale
-        ? 'Sync now'
-        : hasPending
-            ? 'Upload ${sync.pending.length} change(s)'
-            : hasStale
-                ? 'Download updates'
-                : 'Up to date';
-    final bool canSync = isOnline &&
-        sync.metadataLoaded &&
-        !sync.isWorking &&
-        (hasPending || hasStale);
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Sync')),
-      body: Column(
+      appBar: AppBar(
+        title: const Text('Sync'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            tooltip: 'More',
+            onSelected: (String value) {
+              if (value == 'again') {
+                _confirmDownloadAgain(context, ref);
+              }
+            },
+            itemBuilder: (BuildContext context) => const <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'again',
+                child: Text('Download everything again'),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
         children: <Widget>[
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: <Widget>[
-                Card(
-                  child: ListTile(
-                    leading: Icon(statusIcon, size: 32),
-                    title: Text(statusTitle),
-                    subtitle: Text(statusDetail),
-                  ),
-                ),
-                if (sync.message != null)
-                  Card(
-                    color: sync.messageIsError
-                        ? theme.colorScheme.errorContainer
-                        : theme.colorScheme.secondaryContainer,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Text(sync.message!),
-                    ),
-                  ),
-                if (hasPendingDeletes && hasStale)
-                  const Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text(
-                        'You have deletions waiting, and the cloud has newer '
-                        'data. Deletions are only uploaded after you download '
-                        'the updates, so the app can check they are still safe.',
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 16),
-                Text('Waiting to upload (${sync.pending.length})',
-                    style: theme.textTheme.titleMedium),
-                const SizedBox(height: 8),
-                if (!hasPending)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Text('Nothing is waiting to be uploaded.'),
-                  )
-                else
-                  for (final PendingChange change in sync.pending)
-                    Card(
-                      child: ListTile(
-                        leading: Icon(_iconFor(change.type)),
-                        title: Text('${change.entityLabel}: ${change.itemLabel}'),
-                        subtitle: Text(
-                            '${change.type.label} · ${_formatTime(change.changedAt)}'),
-                      ),
-                    ),
-                const SizedBox(height: 16),
-                Text('Cloud collections', style: theme.textTheme.titleMedium),
-                const SizedBox(height: 8),
-                for (final String collection in sync.collections)
-                  Card(
-                    child: ListTile(
-                      title: Text(collection),
-                      subtitle: Text(
-                        'This device: ${sync.localVersionOf(collection) < 0 ? 'not downloaded' : 'v${sync.localVersionOf(collection)}'}'
-                        ' · Cloud: ${sync.metadataLoaded ? 'v${sync.remoteVersionOf(collection)}' : '…'}'
-                        '${sync.remote[collection]?.updatedAt == null ? '' : '\nCloud updated ${_formatTime(sync.remote[collection]!.updatedAt!)}'}',
-                      ),
-                      trailing: Icon(
-                        !sync.metadataLoaded
-                            ? Icons.hourglass_empty
-                            : stale.contains(collection)
-                                ? Icons.cloud_download_outlined
-                                : Icons.check_circle_outline,
-                      ),
-                    ),
-                  ),
-              ],
+          Card(
+            child: ListTile(
+              leading: Icon(statusIcon, size: 32),
+              title: Text(statusTitle),
+              subtitle: Text(statusDetail),
             ),
           ),
-          SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  if (!isOnline)
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        'Connect to the internet to sync.',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  FilledButton.icon(
-                    onPressed: canSync
-                        ? () => ref.read(syncCoordinatorProvider.notifier).syncNow()
-                        : null,
-                    icon: sync.isWorking
-                        ? const SizedBox(
-                            height: 18,
-                            width: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.sync),
-                    label: Text(buttonLabel),
-                  ),
-                ],
+          if (sync.message != null) ...<Widget>[
+            const SizedBox(height: 8),
+            Card(
+              color: sync.messageIsError
+                  ? theme.colorScheme.errorContainer
+                  : theme.colorScheme.surfaceContainerHighest,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Text(sync.message!),
               ),
             ),
+          ],
+          const SizedBox(height: 12),
+          FilledButton.icon(
+            onPressed: sync.isSyncing
+                ? null
+                : () => ref.read(syncControllerProvider.notifier).syncNow(manual: true),
+            icon: const Icon(Icons.sync),
+            label: Text(sync.isSyncing ? 'Syncing…' : 'Sync now'),
           ),
+          const SizedBox(height: 20),
+          if (entries.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Center(
+                child: Text('Nothing is waiting to be uploaded.', style: theme.textTheme.bodyMedium),
+              ),
+            )
+          else ...<Widget>[
+            Text('Waiting for the server (${entries.length})', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
+            for (final OutboxEntry entry in entries)
+              Card(
+                child: ListTile(
+                  leading: Icon(
+                    _iconFor(entry),
+                    color: entry.state == OutboxState.failed ? theme.colorScheme.error : null,
+                  ),
+                  title: Text(entry.label),
+                  subtitle: Text(_stateText(entry)),
+                  isThreeLine: entry.state == OutboxState.failed,
+                  trailing: entry.state == OutboxState.failed
+                      ? Wrap(
+                          spacing: 4,
+                          children: <Widget>[
+                            TextButton(
+                              onPressed: () => ref.read(syncControllerProvider.notifier).retry(entry.opId),
+                              child: const Text('Retry'),
+                            ),
+                            TextButton(
+                              onPressed: () => ref.read(syncControllerProvider.notifier).discard(entry.opId),
+                              child: const Text('Discard'),
+                            ),
+                          ],
+                        )
+                      : null,
+                ),
+              ),
+          ],
         ],
       ),
     );
