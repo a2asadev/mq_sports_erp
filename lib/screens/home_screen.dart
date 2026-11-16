@@ -10,7 +10,7 @@ import 'package:mq_sports_erp/providers/module_registry_provider.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/dashboard/dashboard_page.dart';
 import 'package:mq_sports_erp/screens/onboarding/onboarding_screen.dart';
-import 'package:mq_sports_erp/widgets/brand_logo.dart';
+import 'package:mq_sports_erp/widgets/business_brand.dart';
 import 'package:mq_sports_erp/widgets/logout_button.dart';
 import 'package:mq_sports_erp/widgets/online_status_chip.dart';
 import 'package:mq_sports_erp/widgets/photo_widgets.dart';
@@ -168,6 +168,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ),
                       ),
                       Expanded(child: _page(modules)),
+                      const PoweredByFooter(),
                     ],
                   ),
                 ),
@@ -216,7 +217,7 @@ class _TopBar extends StatelessWidget {
               if (showMenu) ...<Widget>[
                 IconButton(onPressed: onMenu, icon: const Icon(Icons.menu), tooltip: 'Menu'),
                 const SizedBox(width: 4),
-                const BrandLogo(height: 36),
+                const Flexible(child: BusinessLockup(markHeight: 30)),
               ] else
                 Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
               const Spacer(),
@@ -356,16 +357,7 @@ class _NavHeader extends StatelessWidget {
         padding: const EdgeInsets.only(top: 14, bottom: 4),
         child: Column(
           children: <Widget>[
-            Container(
-              width: 40,
-              height: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(10)),
-              child: const Text(
-                'MQ',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14),
-              ),
-            ),
+            const BusinessLogo(height: 34),
             const SizedBox(height: 6),
             toggle,
           ],
@@ -376,7 +368,7 @@ class _NavHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 6, 8),
       child: Row(
         children: <Widget>[
-          const Expanded(child: Align(alignment: Alignment.centerLeft, child: BrandLogo(height: 56))),
+          const Expanded(child: Align(alignment: Alignment.centerLeft, child: BusinessLockup(markHeight: 38))),
           toggle,
         ],
       ),

@@ -20,12 +20,15 @@ class MqSportsApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Amounts are written with the business's currency in many places that do
     // not watch anything, so a change of currency starts the screens afresh.
+    // The same goes for the accent colour. (Watching the provider also sets
+    // MoneyFormat and AppColors, which the theme below reads.)
     final String currency = ref.watch(businessProvider.select((BusinessInfo b) => b.currency));
+    final String brand = ref.watch(businessProvider.select((BusinessInfo b) => b.brandColor));
     return MaterialApp(
-      title: 'MQ Sports ERP',
+      title: 'A2 Stocks',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: KeyedSubtree(key: ValueKey<String>(currency), child: const _AuthGate()),
+      home: KeyedSubtree(key: ValueKey<String>('$currency|$brand'), child: const _AuthGate()),
     );
   }
 }
@@ -61,7 +64,7 @@ class _AccessGate extends ConsumerWidget {
       data: (UserModel? user) {
         if (user == null) {
           return const AccessDeniedScreen(
-            message: 'Your account is not registered in MQ Sports ERP. '
+            message: 'Your account is not registered in A2 Stocks. '
                 'Contact your administrator.',
           );
         }

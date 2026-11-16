@@ -56,7 +56,8 @@ void main() {
         );
       }
       if (r.url.path == '/v1/business' && r.method == 'PUT') {
-        return _json(200, jsonEncode(<String, dynamic>{'id': 't2', 'name': 'Ali Traders', 'currency': (jsonDecode(r.body) as Map<String, dynamic>)['currency']}));
+        final Map<String, dynamic> sent = jsonDecode(r.body) as Map<String, dynamic>;
+        return _json(200, jsonEncode(<String, dynamic>{'id': 't2', 'name': 'Ali Traders', ...sent}));
       }
       return _json(200, '{}');
     });
@@ -175,5 +176,83 @@ void main() {
     await pumpSettings(tester, role: UserRole.staff, business: _withStore);
     expect(find.text('Online store'), findsNothing);
     expect(find.text('Shop details'), findsNothing);
+  });
+
+  testWidgets('picking a brand colour saves just the colour', (WidgetTester tester) async {
+    await pumpSettings(tester, role: UserRole.admin, business: _withStore);
+    await tester.tap(find.text('Shop details'));
+    await tester.pumpAndSettle();
+    expect(find.text('Brand colour'), findsOneWidget);
+    expect(find.byType(BrandSwatch), findsNWidgets(brandChoices.length));
+
+    await tester.tap(find.byTooltip('Blue'));
+    await tester.pump();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    final http.Request put = calls.singleWhere((http.Request r) => r.method == 'PUT');
+    expect(put.url.path, '/v1/business');
+    expect(jsonDecode(put.body), <String, dynamic>{'brandColor': '#2563EB'});
+    expect(find.text('Saved.'), findsOneWidget);
+  });
+
+  testWidgets('going back to the A2 Stocks teal sends an empty colour', (WidgetTester tester) async {
+    await pumpSettings(
+      tester,
+      role: UserRole.admin,
+      business: const BusinessInfo(id: 't1', name: 'MQ Sports', walkInCustomerId: 'w1', brandColor: '#2563EB'),
+    );
+    await tester.tap(find.text('Shop details'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('A2 Stocks teal'));
+    await tester.pump();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(jsonDecode(calls.singleWhere((http.Request r) => r.method == 'PUT').body), <String, dynamic>{'brandColor': ''});
+  });
+
+  testWidgets('currency and colour changed together go in one request', (WidgetTester tester) async {
+    await pumpSettings(tester, role: UserRole.admin, business: _withStore);
+    await tester.tap(find.text('Shop details'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Green'));
+    await tester.tap(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('AED · UAE dirham (AED)').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    final List<http.Request> puts = calls.where((http.Request r) => r.method == 'PUT').toList();
+    expect(puts, hasLength(1));
+    expect(jsonDecode(puts.single.body), <String, dynamic>{'currency': 'AED', 'brandColor': '#16A34A'});
+  });
+
+  testWidgets('the logo can be changed by an admin only', (WidgetTester tester) async {
+    await pumpSettings(tester, role: UserRole.admin, business: _withStore);
+    await tester.tap(find.text('Shop details'));
+    await tester.pumpAndSettle();
+    expect(find.text('Logo'), findsOneWidget);
+    expect(find.text('Save'), findsOneWidget);
+  });
+
+  testWidgets('a manager cannot change the logo or the colour', (WidgetTester tester) async {
+    await pumpSettings(tester, role: UserRole.manager, business: _withStore);
+    await tester.tap(find.text('Shop details'));
+    await tester.pumpAndSettle();
+    expect(find.text('Save'), findsNothing);
+    // A manager's tap on a colour changes nothing that can be saved.
+    await tester.tap(find.byTooltip('Blue'));
+    await tester.pump();
+    expect(calls.where((http.Request r) => r.method == 'PUT'), isEmpty);
+  });
+
+  testWidgets('Help & guide says what this software is and who made it', (WidgetTester tester) async {
+    await pumpSettings(tester, role: UserRole.staff, business: _withStore);
+    await tester.tap(find.text('Help & guide'));
+    await tester.pumpAndSettle();
+    expect(find.text('A2 Stocks'), findsOneWidget);
+    expect(find.text('POS & Inventory Software'), findsOneWidget);
+    expect(find.text('Crafted with love by A2 Devs.'), findsOneWidget);
+    expect(find.text('Welcome guide'), findsOneWidget);
   });
 }

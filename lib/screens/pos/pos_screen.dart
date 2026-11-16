@@ -28,7 +28,7 @@ import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/pos/held_sales_dialog.dart';
 import 'package:mq_sports_erp/screens/pos/pos_payment_dialog.dart';
 import 'package:mq_sports_erp/screens/sales/orders_screen.dart';
-import 'package:mq_sports_erp/widgets/brand_logo.dart';
+import 'package:mq_sports_erp/widgets/business_brand.dart';
 import 'package:mq_sports_erp/widgets/online_status_chip.dart';
 import 'package:mq_sports_erp/widgets/party_picker.dart';
 import 'package:mq_sports_erp/widgets/photo_widgets.dart';
@@ -273,6 +273,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
       shopName: shop.name,
       walkInCustomerId: ref.read(businessProvider).walkInCustomerId,
       shopPhone: shop.phone,
+      logoUrl: shop.logoUrl,
       cashier: me == null ? '' : (me.displayName.isNotEmpty ? me.displayName : me.email),
       change: payment.change,
     );
@@ -478,7 +479,7 @@ class _TopBar extends ConsumerWidget {
       child: Row(
         children: <Widget>[
           if (!wide) IconButton(onPressed: onDashboard, icon: const Icon(Icons.arrow_back), tooltip: 'Back'),
-          BrandLogo(height: wide ? 46 : 36),
+          Flexible(child: BusinessLockup(markHeight: wide ? 34 : 30, showName: wide)),
           if (wide) ...<Widget>[const SizedBox(width: 20), const _Clock()],
           const Spacer(),
           if (wide) ...<Widget>[
@@ -501,7 +502,7 @@ class _TopBar extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  const Icon(Icons.storefront_outlined, size: 18, color: AppColors.primary),
+                  Icon(Icons.storefront_outlined, size: 18, color: AppColors.primary),
                   const SizedBox(width: 8),
                   Text(shop.name, style: const TextStyle(fontWeight: FontWeight.w600)),
                 ],
@@ -614,7 +615,7 @@ class _BottomBar extends StatelessWidget {
           _button('View Orders', Icons.receipt_long_outlined, AppColors.navy, onOrders),
           _button('Hold', Icons.pause_circle_outline, AppColors.amber, hasItems ? onHold : null),
           _button(heldCount > 0 ? 'Held ($heldCount)' : 'Held', Icons.history, AppColors.violet, onHeld),
-          _button('Void', Icons.delete_outline, AppColors.primary, hasItems ? onVoid : null),
+          _button('Void', Icons.delete_outline, AppColors.danger, hasItems ? onVoid : null),
           _button('Payment', Icons.payments_outlined, AppColors.teal, enabled ? onPayment : null),
         ],
       ),
@@ -952,7 +953,7 @@ class _ProductCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: out ? AppColors.primary : AppColors.textMuted,
+                        color: out ? AppColors.danger : AppColors.textMuted,
                       ),
                     ),
                   ],
@@ -1104,7 +1105,7 @@ class _SalePanel extends ConsumerWidget {
               tooltip: 'Clear sale',
               visualDensity: VisualDensity.compact,
               onPressed: cart.isEmpty ? null : onClear,
-              icon: const Icon(Icons.delete_outline, color: AppColors.primary, size: 20),
+              icon: const Icon(Icons.delete_outline, color: AppColors.danger, size: 20),
             ),
           ],
         ),
@@ -1147,8 +1148,8 @@ class _SalePanel extends ConsumerWidget {
 
     // The products added: scrolls when there are many.
     final Widget itemsBody = cart.isEmpty
-        ? const Padding(
-            padding: EdgeInsets.symmetric(vertical: 28),
+        ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 28),
             child: Column(
               children: <Widget>[
                 CircleAvatar(
@@ -1156,8 +1157,8 @@ class _SalePanel extends ConsumerWidget {
                   backgroundColor: AppColors.primarySoft,
                   child: Icon(Icons.shopping_cart_outlined, size: 30, color: AppColors.primary),
                 ),
-                SizedBox(height: 10),
-                Text('No Products Selected', style: TextStyle(color: AppColors.textMuted)),
+                const SizedBox(height: 10),
+                const Text('No Products Selected', style: TextStyle(color: AppColors.textMuted)),
               ],
             ),
           )
@@ -1203,7 +1204,7 @@ class _SalePanel extends ConsumerWidget {
         _summaryRow(
           'Discount',
           cart.effectiveOrderDiscount > 0 ? '-${MoneyFormat.prefix}${_fmt(cart.effectiveOrderDiscount)}' : '${MoneyFormat.prefix}0',
-          color: AppColors.primary,
+          color: AppColors.danger,
           edit: InkWell(
             onTap: cart.isEmpty ? null : () => _editDiscount(context, ref),
             child: const Icon(Icons.edit_outlined, size: 15, color: AppColors.textMuted),
@@ -1430,7 +1431,7 @@ class _CartLine extends StatelessWidget {
                 children: <Widget>[
                   _small(Icons.edit_outlined, onDiscount),
                   const SizedBox(width: 4),
-                  _small(Icons.delete_outline, onRemove, color: AppColors.primary),
+                  _small(Icons.delete_outline, onRemove, color: AppColors.danger),
                 ],
               ),
             ],

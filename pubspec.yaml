@@ -24,6 +24,7 @@ dependencies:
   printing: ^5.15.1
   fl_chart: ^0.69.2
   barcode_widget: ^2.0.4
+  image: ^4.13.1
 
 dev_dependencies:
   flutter_test:
@@ -35,7 +36,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/mq_logo.png
+    - assets/images/a2stocks_logo.png
+    - assets/images/a2stocks_mark.png
   fonts:
     # Inter (SIL Open Font License, see assets/fonts/Inter-LICENSE.txt).
     - family: Inter

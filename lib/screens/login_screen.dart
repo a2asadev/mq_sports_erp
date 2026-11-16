@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/providers/auth_controller.dart';
 import 'package:mq_sports_erp/widgets/brand_logo.dart';
+import 'package:mq_sports_erp/widgets/business_brand.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -68,6 +69,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
+      bottomNavigationBar: const PoweredByFooter(),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -80,10 +82,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    const Center(child: BrandLogo(height: 110)),
-                    const SizedBox(height: 8),
+                    const Center(child: BrandLogo(height: 150)),
+                    const SizedBox(height: 12),
                     Text(
-                      'MQ Sports ERP',
+                      'Welcome back',
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.w800),
                       textAlign: TextAlign.center,

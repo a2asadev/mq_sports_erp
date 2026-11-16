@@ -27,7 +27,7 @@ class OrderReceiptCard extends StatelessWidget {
         OrderStatus.processing => AppColors.violet,
         OrderStatus.shipped => AppColors.sky,
         OrderStatus.delivered => AppColors.teal,
-        OrderStatus.cancelled => AppColors.primary,
+        OrderStatus.cancelled => AppColors.danger,
       };
 
   String get _channel => switch (order.channel) {
@@ -45,10 +45,10 @@ class OrderReceiptCard extends StatelessWidget {
     final int more = order.items.length - shown.length;
 
     final (String, Color) payment = cancelled
-        ? ('Cancelled', AppColors.primary)
+        ? ('Cancelled', AppColors.danger)
         : due <= 0.005
             ? ('Paid', AppColors.teal)
-            : (paid > 0.005 ? ('Partly paid', AppColors.amber) : ('Unpaid', AppColors.primary));
+            : (paid > 0.005 ? ('Partly paid', AppColors.amber) : ('Unpaid', AppColors.danger));
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -174,7 +174,7 @@ class OrderReceiptCard extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 3),
                           child: Text(
                             'Due ${formatMoney(due)}',
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary),
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.danger),
                           ),
                         ),
                     ],

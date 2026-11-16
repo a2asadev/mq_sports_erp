@@ -22,7 +22,7 @@ class LogoutButton extends ConsumerWidget {
               ? 'You have $pendingCount change(s) that were not uploaded. '
                   'They stay on this device and are uploaded when you sign in '
                   'again with a connection. Sign out anyway?'
-              : 'Do you want to sign out of MQ Sports ERP?'),
+              : 'Do you want to sign out of A2 Stocks?'),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),

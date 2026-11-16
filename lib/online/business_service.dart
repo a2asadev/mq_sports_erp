@@ -8,11 +8,18 @@ class BusinessService {
 
   final ApiClient _api;
 
-  /// Sets the business's currency. Admin only (the server refuses anyone else).
-  /// Amounts already recorded are not converted. Returns the business as the
-  /// server now describes it.
-  Future<BusinessInfo?> saveCurrency(String code) async {
-    final ApiResponse response = await _api.put('/v1/business', body: <String, dynamic>{'currency': code});
+  /// Changes the currency and/or the accent colour; pass only what changes.
+  /// [brandColor] is "#RRGGBB", or '' to go back to the default A2 Stocks theme.
+  /// Admin only (the server refuses anyone else). Amounts already recorded are
+  /// not converted when the currency changes. Returns the business as the server
+  /// now describes it.
+  Future<BusinessInfo?> update({String? currency, String? brandColor}) async {
+    final ApiResponse response = await _api.put('/v1/business', body: <String, dynamic>{
+      if (currency != null) 'currency': currency,
+      if (brandColor != null) 'brandColor': brandColor,
+    });
     return BusinessInfo.tryFromMap(response.asMap);
   }
+
+  Future<BusinessInfo?> saveCurrency(String code) => update(currency: code);
 }

@@ -137,7 +137,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
               ),
               StatItem(
                 icon: Icons.remove_shopping_cart_outlined,
-                color: stats.outCount > 0 ? AppColors.primary : AppColors.textMuted,
+                color: stats.outCount > 0 ? AppColors.danger : AppColors.textMuted,
                 label: 'Out of stock',
                 value: '${stats.outCount}',
               ),

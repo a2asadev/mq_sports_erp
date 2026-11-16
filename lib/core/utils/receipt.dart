@@ -54,6 +54,7 @@ class ReceiptData {
     required this.total,
     required this.payments,
     this.change = 0,
+    this.logoUrl = '',
   });
 
   final String shopName;
@@ -78,6 +79,9 @@ class ReceiptData {
   /// Cash handed back to the customer.
   final double change;
 
+  /// Public address of the business's logo; '' prints none.
+  final String logoUrl;
+
   double get paid => PaymentLine.total(
         payments.map((ReceiptPayment p) => PaymentLine(method: PaymentMethod.cash, amount: p.amount)),
       );
@@ -95,6 +99,7 @@ class ReceiptData {
     required String shopName,
     required String walkInCustomerId,
     String shopPhone = '',
+    String logoUrl = '',
     String cashier = '',
     double change = 0,
   }) {
@@ -116,6 +121,7 @@ class ReceiptData {
       shopName: shopName,
       walkInCustomerId: walkInCustomerId,
       shopPhone: shopPhone,
+      logoUrl: logoUrl,
       cashier: cashier,
       change: change,
     );
@@ -130,12 +136,14 @@ class ReceiptData {
     /// The business's walk-in customer: a sale to it prints no customer name.
     required String walkInCustomerId,
     String shopPhone = '',
+    String logoUrl = '',
     String cashier = '',
     double change = 0,
   }) {
     return ReceiptData(
       shopName: shopName,
       shopPhone: shopPhone,
+      logoUrl: logoUrl,
       orderNo: order.orderNo,
       date: order.orderDate,
       cashier: cashier,

@@ -38,7 +38,7 @@ Color _kindColor(LogKind kind) {
     case LogKind.action:
       return AppColors.teal;
     case LogKind.failure:
-      return AppColors.primary;
+      return AppColors.danger;
     case LogKind.sync:
       return AppColors.violet;
     case LogKind.session:

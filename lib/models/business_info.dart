@@ -13,6 +13,8 @@ class BusinessInfo {
     this.phone = '',
     this.hasOnlineStore = true,
     this.currency = 'PKR',
+    this.logoUrl = '',
+    this.brandColor = '',
   });
 
   /// The tenant id on the server.
@@ -29,6 +31,12 @@ class BusinessInfo {
 
   /// ISO 4217 code of the business's money ("PKR"); see `CurrencyInfo`.
   final String currency;
+
+  /// Public address of the business's logo; '' when it has none.
+  final String logoUrl;
+
+  /// The business's accent colour as "#RRGGBB"; '' for the default A2 Stocks teal.
+  final String brandColor;
 
   /// The customer record behind counter sales to people who just walk in. Empty
   /// when the business has none.
@@ -60,6 +68,8 @@ class BusinessInfo {
     final Object? walkIn = map['walkInCustomerId'];
     final Object? store = map['hasOnlineStore'];
     final Object? currency = map['currency'];
+    final Object? logo = map['logoUrl'];
+    final Object? color = map['brandColor'];
     return BusinessInfo(
       id: id,
       name: name.trim(),
@@ -67,16 +77,27 @@ class BusinessInfo {
       walkInCustomerId: walkIn is String ? walkIn : '',
       hasOnlineStore: store is bool ? store : true,
       currency: currency is String && RegExp(r'^[A-Z]{3}$').hasMatch(currency) ? currency : 'PKR',
+      logoUrl: logo is String ? logo : '',
+      brandColor: color is String && RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(color) ? color.toUpperCase() : '',
     );
   }
 
-  BusinessInfo copyWith({String? name, String? phone, String? currency}) => BusinessInfo(
+  BusinessInfo copyWith({
+    String? name,
+    String? phone,
+    String? currency,
+    String? logoUrl,
+    String? brandColor,
+  }) =>
+      BusinessInfo(
         id: id,
         name: name ?? this.name,
         phone: phone ?? this.phone,
         walkInCustomerId: walkInCustomerId,
         hasOnlineStore: hasOnlineStore,
         currency: currency ?? this.currency,
+        logoUrl: logoUrl ?? this.logoUrl,
+        brandColor: brandColor ?? this.brandColor,
       );
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -86,6 +107,8 @@ class BusinessInfo {
         'walkInCustomerId': walkInCustomerId,
         'hasOnlineStore': hasOnlineStore,
         'currency': currency,
+        'logoUrl': logoUrl,
+        'brandColor': brandColor,
       };
 
   @override
@@ -96,8 +119,10 @@ class BusinessInfo {
       other.phone == phone &&
       other.walkInCustomerId == walkInCustomerId &&
       other.hasOnlineStore == hasOnlineStore &&
-      other.currency == currency;
+      other.currency == currency &&
+      other.logoUrl == logoUrl &&
+      other.brandColor == brandColor;
 
   @override
-  int get hashCode => Object.hash(id, name, phone, walkInCustomerId, hasOnlineStore, currency);
+  int get hashCode => Object.hash(id, name, phone, walkInCustomerId, hasOnlineStore, currency, logoUrl, brandColor);
 }

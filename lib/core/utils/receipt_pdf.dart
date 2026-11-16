@@ -1,27 +1,27 @@
 import 'dart:typed_data';
 
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:mq_sports_erp/core/utils/receipt.dart';
+import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 /// The receipt as a PDF on an 80 mm roll (the usual thermal-printer width), so
 /// the same file prints on a receipt printer, an A4 printer or is shared. The
-/// layout follows the on-screen receipt (`ReceiptView`): logo, shop, customer
+/// layout follows the on-screen receipt (`ReceiptView`): shop, customer
 /// and number, items table, totals, bar code of the receipt number, thank you.
 ///
 /// The built-in PDF font covers Latin letters; names in other scripts (for
 /// example Urdu) are not drawn yet.
-Future<Uint8List> buildReceiptPdf(ReceiptData r) async {
+///
+/// The business's logo is downloaded when there is one ([fetchLogo] is for
+/// tests); a logo that cannot be fetched or read is simply left off.
+Future<Uint8List> buildReceiptPdf(
+  ReceiptData r, {
+  Future<Uint8List?> Function(String url)? fetchLogo,
+}) async {
   final pw.Document doc = pw.Document(title: 'Receipt ${r.orderNo}', author: r.shopName);
-
-  pw.MemoryImage? logo;
-  try {
-    final ByteData data = await rootBundle.load('assets/images/mq_logo.png');
-    logo = pw.MemoryImage(data.buffer.asUint8List());
-  } catch (_) {
-    logo = null; // The receipt is still complete without the logo.
-  }
+  final pw.MemoryImage? logo = await _logoImage(r.logoUrl, fetchLogo ?? _downloadLogo);
 
   const PdfColor muted = PdfColor.fromInt(0xFF4B5563);
   const PdfColor navy = PdfColor.fromInt(0xFF12304D);
@@ -77,8 +77,10 @@ Future<Uint8List> buildReceiptPdf(ReceiptData r) async {
       build: (pw.Context context) => pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
         children: <pw.Widget>[
-          if (logo != null) pw.Center(child: pw.Image(logo, height: 46)),
-          pw.SizedBox(height: 3),
+          if (logo != null) ...<pw.Widget>[
+            pw.Center(child: pw.Image(logo, height: 44)),
+            pw.SizedBox(height: 4),
+          ],
           pw.Center(
             child: pw.Text(
               r.shopName,
@@ -192,4 +194,32 @@ Future<Uint8List> buildReceiptPdf(ReceiptData r) async {
     ),
   );
   return doc.save();
+}
+
+Future<Uint8List?> _downloadLogo(String url) async {
+  try {
+    final http.Response response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 4));
+    return response.statusCode == 200 ? response.bodyBytes : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+/// The logo as an image the PDF can embed. The server keeps logos as WebP, which
+/// the PDF library cannot draw, so it is decoded and written again as PNG
+/// (keeping its transparency). Null when there is none or it cannot be read.
+Future<pw.MemoryImage?> _logoImage(String url, Future<Uint8List?> Function(String url) fetch) async {
+  if (url.isEmpty) {
+    return null;
+  }
+  try {
+    final Uint8List? bytes = await fetch(url);
+    if (bytes == null) {
+      return null;
+    }
+    final img.Image? decoded = img.decodeImage(bytes);
+    return decoded == null ? null : pw.MemoryImage(Uint8List.fromList(img.encodePng(decoded)));
+  } catch (_) {
+    return null;
+  }
 }

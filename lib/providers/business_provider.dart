@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/currency.dart';
 import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
@@ -15,8 +16,8 @@ final StateProvider<int> _businessRevisionProvider = StateProvider<int>((Ref ref
 /// Until the server has said (a session saved before businesses existed), it is
 /// MQ Sports, the only business there was.
 ///
-/// Reading it also points [MoneyFormat] at the business's currency, so every
-/// amount the app writes uses it.
+/// Reading it also points [MoneyFormat] at the business's currency, and
+/// [AppColors] at its accent colour, so every amount and every button uses them.
 final Provider<BusinessInfo> businessProvider = Provider<BusinessInfo>((Ref ref) {
   // Re-read whenever the signed-in user is (a new sign-in, or a fresh `/v1/auth/me`),
   // and whenever the app itself changed the business.
@@ -24,6 +25,7 @@ final Provider<BusinessInfo> businessProvider = Provider<BusinessInfo>((Ref ref)
   ref.watch(_businessRevisionProvider);
   final BusinessInfo business = ref.watch(apiClientProvider).currentBusiness ?? BusinessInfo.mqSports;
   MoneyFormat.use(business.currency);
+  AppColors.useBrand(AppColors.tryParseHex(business.brandColor));
   return business;
 });
 

@@ -206,13 +206,16 @@ final NotifierProvider<PosCartNotifier, PosCart> posCartProvider =
 /// The shop's name and phone for receipts and messages: those of the business
 /// the user works for (named by the server at sign-in, so it works offline).
 class ShopInfo {
-  const ShopInfo({this.name = 'MQ Sports', this.phone = ''});
+  const ShopInfo({this.name = 'MQ Sports', this.phone = '', this.logoUrl = ''});
 
   final String name;
   final String phone;
+
+  /// Public address of the business's logo, or ''.
+  final String logoUrl;
 }
 
 final FutureProvider<ShopInfo> shopInfoProvider = FutureProvider<ShopInfo>((Ref ref) async {
   final BusinessInfo business = ref.watch(businessProvider);
-  return ShopInfo(name: business.name, phone: business.phone);
+  return ShopInfo(name: business.name, phone: business.phone, logoUrl: business.logoUrl);
 });

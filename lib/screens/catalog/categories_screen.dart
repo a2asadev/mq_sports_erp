@@ -595,7 +595,7 @@ class _SubcategoriesTable extends StatelessWidget {
           DataCell(Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Icon(Icons.folder_outlined, size: 20, color: AppColors.primary),
+              Icon(Icons.folder_outlined, size: 20, color: AppColors.primary),
               const SizedBox(width: 10),
               Text(head.category.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
               const SizedBox(width: 10),

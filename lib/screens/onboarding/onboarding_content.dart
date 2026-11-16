@@ -40,7 +40,7 @@ const OnboardingStep _profile = OnboardingStep(
 List<OnboardingStep> _staff() => const <OnboardingStep>[
       OnboardingStep(
         icon: Icons.waving_hand_outlined,
-        title: 'Welcome to MQ Sports ERP',
+        title: 'Welcome to A2 Stocks',
         body: 'You are signed in as Staff. This quick tour shows what you can do. It takes a minute.',
       ),
       OnboardingStep(
@@ -74,7 +74,7 @@ List<OnboardingStep> _staff() => const <OnboardingStep>[
 List<OnboardingStep> _manager() => const <OnboardingStep>[
       OnboardingStep(
         icon: Icons.waving_hand_outlined,
-        title: 'Welcome to MQ Sports ERP',
+        title: 'Welcome to A2 Stocks',
         body: 'You are signed in as Manager: you run the shop day to day. This tour shows where things are.',
       ),
       OnboardingStep(
@@ -114,7 +114,7 @@ List<OnboardingStep> _manager() => const <OnboardingStep>[
 List<OnboardingStep> _admin() => const <OnboardingStep>[
       OnboardingStep(
         icon: Icons.waving_hand_outlined,
-        title: 'Welcome to MQ Sports ERP',
+        title: 'Welcome to A2 Stocks',
         body: 'You are signed in as Admin: you can see and change everything. Here is how to get the shop ready.',
       ),
       OnboardingStep(

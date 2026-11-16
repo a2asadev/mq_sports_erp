@@ -1,28 +1,110 @@
 import 'package:flutter/material.dart';
 
-/// Brand colours taken from the MQ Sports logo: the red of the lettering and
-/// ball, the sky blue of the athlete, and a deep navy for strong surfaces.
+/// Brand colours taken from the A2 Stocks logo: the teal of the lettering, the
+/// emerald green and bright blue of the gradient "A", the steel and dark blue of
+/// the bars. The accent (`primary`) can be replaced per business; the other
+/// colours are the same for everyone. Red is kept apart as `danger`: it only ever means something is
+/// wrong (cancelled, unpaid, out of stock, delete).
 class AppColors {
   const AppColors._();
 
-  static const Color primary = Color(0xFFC4414E);
-  static const Color primaryDark = Color(0xFFA23440);
-  static const Color primarySoft = Color(0xFFF4E6E8);
-  static const Color sky = Color(0xFF4A8FB5);
-  static const Color skySoft = Color(0xFFE4EDF2);
-  static const Color navy = Color(0xFF2B3A4D);
-  static const Color teal = Color(0xFF4A8C80);
-  static const Color tealSoft = Color(0xFFE3EEEB);
+  /// The teal of the "A2STOCKS" lettering: the default accent.
+  static const Color a2Primary = Color(0xFF008293);
+  static const Color _a2PrimaryDark = Color(0xFF00697A);
+  static const Color _a2PrimarySoft = Color(0xFFE0F1F4);
+
+  static Color _primary = a2Primary;
+  static Color _primaryDark = _a2PrimaryDark;
+  static Color _primarySoft = _a2PrimarySoft;
+
+  /// The accent of the business using the app: buttons, selection, charts. It is
+  /// the A2 Stocks teal until the business picks its own colour (see [useBrand]).
+  /// Not a constant, because it changes with the business.
+  static Color get primary => _primary;
+  static Color get primaryDark => _primaryDark;
+  static Color get primarySoft => _primarySoft;
+
+  /// Switches the accent to a business's own colour, or back to the A2 Stocks
+  /// teal with null. A colour too light for white text is darkened until it is
+  /// readable; the darker and softer shades are derived from it.
+  static void useBrand(Color? brand) {
+    if (brand == null) {
+      _primary = a2Primary;
+      _primaryDark = _a2PrimaryDark;
+      _primarySoft = _a2PrimarySoft;
+      return;
+    }
+    final Color readable = readableOnWhite(brand);
+    _primary = readable;
+    _primaryDark = _shade(readable, -0.12);
+    _primarySoft = Color.alphaBlend(readable.withValues(alpha: 0.12), surface);
+  }
+
+  /// [color], darkened until white text on it has a contrast of at least 4.5:1.
+  static Color readableOnWhite(Color color) {
+    Color c = color;
+    for (int i = 0; i < 20 && _contrastWithWhite(c) < 4.5; i++) {
+      c = _shade(c, -0.03);
+    }
+    return c;
+  }
+
+  static double _contrastWithWhite(Color c) => 1.05 / (c.computeLuminance() + 0.05);
+
+  static Color _shade(Color c, double lightnessChange) {
+    final HSLColor hsl = HSLColor.fromColor(c);
+    return hsl.withLightness((hsl.lightness + lightnessChange).clamp(0.0, 1.0)).toColor();
+  }
+
+  /// Reads "#RRGGBB" (the server's form); null when it is not one.
+  static Color? tryParseHex(String? hex) {
+    if (hex == null || !RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(hex)) {
+      return null;
+    }
+    return Color(0xFF000000 | int.parse(hex.substring(1), radix: 16));
+  }
+
+  /// The colour as "#RRGGBB".
+  static String toHex(Color color) {
+    final int rgb = color.toARGB32() & 0xFFFFFF;
+    return '#${rgb.toRadixString(16).padLeft(6, '0').toUpperCase()}';
+  }
+
+  /// The steel blue of the bars and arrow.
+  static const Color sky = Color(0xFF2D8BBA);
+  static const Color skySoft = Color(0xFFE2EFF6);
+
+  /// The bright blue at the foot of the logo's "A".
+  static const Color blue = Color(0xFF3B82F6);
+
+  /// The dark blue bar: strong surfaces, tooltips, headings.
+  static const Color navy = Color(0xFF2F5F98);
+
+  /// The emerald green at the top of the logo's "A": success, growth, "new".
+  static const Color teal = Color(0xFF10B981);
+  static const Color tealSoft = Color(0xFFDDF5EC);
+
+  /// Something is wrong or removed. Not a brand colour.
+  static const Color danger = Color(0xFFC4414E);
+  static const Color dangerSoft = Color(0xFFF4E6E8);
+
   static const Color amber = Color(0xFFC08A3E);
   static const Color amberSoft = Color(0xFFF3EADB);
   static const Color violet = Color(0xFF6E649F);
 
-  static const Color background = Color(0xFFEFF0F2);
-  static const Color surface = Color(0xFFFAFAFA);
-  static const Color border = Color(0xFFDCDEE2);
-  static const Color mutedFill = Color(0xFFE8E9EC);
-  static const Color text = Color(0xFF2A3038);
-  static const Color textMuted = Color(0xFF69717C);
+  static const Color background = Color(0xFFEFF2F4);
+  static const Color surface = Color(0xFFFAFBFB);
+  static const Color border = Color(0xFFDADFE3);
+  static const Color mutedFill = Color(0xFFE7EBEE);
+  static const Color text = Color(0xFF263238);
+  static const Color textMuted = Color(0xFF62707A);
+
+  /// The logo's green-to-blue sweep, for the few places that want a flourish.
+  static const LinearGradient brandGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: <Color>[teal, blue],
+  );
 }
 
 /// The single light theme of the app (mobile, desktop and web).
@@ -49,6 +131,10 @@ class AppTheme {
       secondaryContainer: AppColors.skySoft,
       onSecondaryContainer: AppColors.navy,
       tertiary: AppColors.navy,
+      error: AppColors.danger,
+      onError: Colors.white,
+      errorContainer: AppColors.dangerSoft,
+      onErrorContainer: AppColors.danger,
       surface: AppColors.surface,
       onSurface: AppColors.text,
       onSurfaceVariant: AppColors.textMuted,
@@ -113,7 +199,7 @@ class AppTheme {
         border: inputBorder,
         enabledBorder: inputBorder,
         focusedBorder: inputBorder.copyWith(
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.4),
+          borderSide: BorderSide(color: AppColors.primary, width: 1.4),
         ),
         errorBorder: inputBorder.copyWith(borderSide: BorderSide(color: scheme.error)),
         focusedErrorBorder: inputBorder.copyWith(borderSide: BorderSide(color: scheme.error, width: 1.4)),
@@ -156,15 +242,15 @@ class AppTheme {
       listTileTheme: const ListTileThemeData(
         iconColor: AppColors.textMuted,
       ),
-      navigationBarTheme: const NavigationBarThemeData(
+      navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.surface,
         surfaceTintColor: Colors.transparent,
         indicatorColor: AppColors.primarySoft,
-        labelTextStyle: WidgetStatePropertyAll<TextStyle>(
+        labelTextStyle: const WidgetStatePropertyAll<TextStyle>(
           TextStyle(fontFamily: fontFamily, fontSize: 12, fontWeight: FontWeight.w600),
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
@@ -180,7 +266,7 @@ class AppTheme {
           side: const BorderSide(color: AppColors.border),
         ),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(color: AppColors.primary),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: AppColors.primary),
     );
   }
 }

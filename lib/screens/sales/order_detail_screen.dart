@@ -389,6 +389,7 @@ class OrderDetailScreen extends ConsumerWidget {
               shopName: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).name,
               walkInCustomerId: ref.watch(businessProvider).walkInCustomerId,
               shopPhone: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).phone,
+              logoUrl: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).logoUrl,
             ),
             phone: _phoneFor(ref, order),
           ),

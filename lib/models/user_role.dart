@@ -1,4 +1,4 @@
-/// Roles available in MQ Sports ERP.
+/// Roles available in A2 Stocks.
 enum UserRole {
   admin('Admin'),
   manager('Manager'),

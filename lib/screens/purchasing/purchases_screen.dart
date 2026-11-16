@@ -88,7 +88,7 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
               ),
               StatItem(
                 icon: Icons.account_balance_wallet_outlined,
-                color: stats.due > 0.005 ? AppColors.primary : AppColors.textMuted,
+                color: stats.due > 0.005 ? AppColors.danger : AppColors.textMuted,
                 label: 'Owed to vendors',
                 value: formatMoney(stats.due),
               ),

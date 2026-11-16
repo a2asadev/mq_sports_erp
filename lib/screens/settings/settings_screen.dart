@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/currency.dart';
+import 'package:mq_sports_erp/widgets/brand_logo.dart';
+import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/models/store_settings_model.dart';
 import 'package:mq_sports_erp/online/business_service.dart';
@@ -14,7 +16,6 @@ import 'package:mq_sports_erp/online/photo_service.dart';
 import 'package:mq_sports_erp/online/store_settings_service.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/onboarding/onboarding_screen.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 
 final Provider<BusinessService> businessServiceProvider =
     Provider<BusinessService>((Ref ref) => BusinessService(ref.watch(apiClientProvider)));
@@ -68,16 +69,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       case _SettingsSection.shop:
         return _ShopDetailsCard(canEdit: user.role == UserRole.admin);
       case _SettingsSection.help:
-        return Card(
-          child: ListTile(
-            leading: const Icon(Icons.tour_outlined),
-            title: const Text('Welcome guide'),
-            subtitle: Text('A short tour of what you can do as ${user.role.label}.'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.of(context).push<bool>(
-              MaterialPageRoute<bool>(builder: (BuildContext c) => OnboardingScreen(role: user.role)),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.tour_outlined),
+                title: const Text('Welcome guide'),
+                subtitle: Text('A short tour of what you can do as ${user.role.label}.'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => Navigator.of(context).push<bool>(
+                  MaterialPageRoute<bool>(builder: (BuildContext c) => OnboardingScreen(role: user.role)),
+                ),
+              ),
             ),
-          ),
+            const SizedBox(height: 12),
+            const _AboutCard(),
+          ],
         );
     }
   }
@@ -271,6 +279,7 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
   late final TextEditingController _name = TextEditingController(text: widget.initial?.storeName ?? '');
   late final TextEditingController _phone = TextEditingController(text: widget.initial?.contactPhone ?? '');
   late String _currency = ref.read(businessProvider).currency;
+  late String _brand = ref.read(businessProvider).brandColor;
   bool _busy = false;
   String _message = '';
   bool _failed = false;
@@ -299,10 +308,16 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
         await ref.read(storeSettingsServiceProvider).save(settings.copyWith(storeName: name, contactPhone: phone));
         business = business.copyWith(name: name, phone: phone);
       }
-      if (_currency != business.currency) {
-        // The server's answer decides, then everything is written in the new currency.
-        final BusinessInfo? saved = await ref.read(businessServiceProvider).saveCurrency(_currency);
-        business = business.copyWith(currency: saved?.currency ?? _currency);
+      final String? newCurrency = _currency != business.currency ? _currency : null;
+      final String? newBrand = _brand != business.brandColor ? _brand : null;
+      if (newCurrency != null || newBrand != null) {
+        // The server's answer decides; then amounts, buttons and charts follow it.
+        final BusinessInfo? saved =
+            await ref.read(businessServiceProvider).update(currency: newCurrency, brandColor: newBrand);
+        business = business.copyWith(
+          currency: saved?.currency ?? newCurrency,
+          brandColor: saved?.brandColor ?? newBrand,
+        );
       }
       await ref.read(businessUpdaterProvider)(business);
       if (!mounted) {
@@ -351,6 +366,37 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
+          PhotoEditor(
+            kind: PhotoKind.business,
+            entityId: ref.watch(businessProvider).id,
+            photoUrl: ref.watch(businessProvider).logoUrl,
+            title: 'Logo',
+            enabled: widget.canEdit && !_busy,
+            onChanged: (String url) => ref.read(businessUpdaterProvider)(
+              ref.read(businessProvider).copyWith(logoUrl: url),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text('Brand colour', style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 4),
+          Text(
+            'Buttons, selections and charts. A2 Stocks teal unless you pick your own.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: <Widget>[
+              for (final BrandChoice choice in brandChoices)
+                BrandSwatch(
+                  choice: choice,
+                  selected: _brand == choice.hex,
+                  onTap: locked ? null : () => setState(() => _brand = choice.hex),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
           if (widget.initial != null) ...<Widget>[
             TextFormField(
               controller: _name,
@@ -403,6 +449,97 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// The colours a business can pick as its accent, besides the A2 Stocks default.
+/// Each is darkened by the theme if white text would be hard to read on it.
+class BrandChoice {
+  const BrandChoice(this.label, this.hex);
+
+  final String label;
+
+  /// "#RRGGBB", or '' for the default A2 Stocks teal.
+  final String hex;
+}
+
+const List<BrandChoice> brandChoices = <BrandChoice>[
+  BrandChoice('A2 Stocks teal', ''),
+  BrandChoice('Blue', '#2563EB'),
+  BrandChoice('Violet', '#7C3AED'),
+  BrandChoice('Magenta', '#C026D3'),
+  BrandChoice('Pink', '#DB2777'),
+  BrandChoice('Red', '#DC2626'),
+  BrandChoice('Orange', '#EA580C'),
+  BrandChoice('Gold', '#CA8A04'),
+  BrandChoice('Green', '#16A34A'),
+  BrandChoice('Dark teal', '#0F766E'),
+  BrandChoice('Slate', '#475569'),
+];
+
+/// One round colour choice; the chosen one carries a tick.
+class BrandSwatch extends StatelessWidget {
+  const BrandSwatch({super.key, required this.choice, required this.selected, required this.onTap});
+
+  final BrandChoice choice;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = AppColors.readableOnWhite(AppColors.tryParseHex(choice.hex) ?? AppColors.a2Primary);
+    return Tooltip(
+      message: choice.label,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: Border.all(color: selected ? AppColors.text : Colors.transparent, width: 2.5),
+          ),
+          child: selected ? const Icon(Icons.check, size: 18, color: Colors.white) : null,
+        ),
+      ),
+    );
+  }
+}
+
+/// What this software is and who made it.
+class _AboutCard extends StatelessWidget {
+  const _AboutCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const BrandLogo(height: 44, markOnly: true),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text('A2 Stocks', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  const Text('POS & Inventory Software'),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Crafted with love by A2 Devs.',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

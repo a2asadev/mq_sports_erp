@@ -300,13 +300,13 @@ class _LowStockBannerState extends State<_LowStockBanner> {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.fromLTRB(14, 8, 4, 8),
       decoration: BoxDecoration(
-        color: AppColors.primarySoft,
+        color: AppColors.dangerSoft,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
+        border: Border.all(color: AppColors.danger.withValues(alpha: 0.25)),
       ),
       child: Row(
         children: <Widget>[
-          const Icon(Icons.warning_amber_rounded, color: AppColors.primary, size: 20),
+          const Icon(Icons.warning_amber_rounded, color: AppColors.danger, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text.rich(
@@ -315,7 +315,7 @@ class _LowStockBannerState extends State<_LowStockBanner> {
                   const TextSpan(text: 'Running low: '),
                   TextSpan(
                     text: '${widget.item.productName} ${widget.item.variantLabel}'.trim(),
-                    style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.primaryDark),
+                    style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.primaryDark),
                   ),
                   TextSpan(text: ' has ${widget.item.onHand} left$more. '),
                   WidgetSpan(
@@ -585,7 +585,7 @@ class _SalesChartCardState extends ConsumerState<_SalesChartCard> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const CircleAvatar(radius: 4, backgroundColor: AppColors.primary),
+                CircleAvatar(radius: 4, backgroundColor: AppColors.primary),
                 const SizedBox(width: 8),
                 const Text('Total sales  ', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
                 Text(formatMoney(total), style: const TextStyle(fontWeight: FontWeight.w800)),
@@ -973,7 +973,7 @@ class _TopSellingCardState extends ConsumerState<_TopSellingCard> {
                     leading: CircleAvatar(
                       radius: 16,
                       backgroundColor: AppColors.primarySoft,
-                      child: Text('${i + 1}', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w800)),
+                      child: Text('${i + 1}', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w800)),
                     ),
                     title: sellers[i].productName,
                     subtitle: formatMoney(sellers[i].revenue),
@@ -1013,7 +1013,7 @@ class _LowStockCard extends ConsumerWidget {
                     title: items[i].productName,
                     subtitle: '${items[i].variantLabel} · ${items[i].sku}',
                     trailing: '${items[i].onHand} left',
-                    trailingColor: items[i].onHand <= 0 ? AppColors.primary : AppColors.amber,
+                    trailingColor: items[i].onHand <= 0 ? AppColors.danger : AppColors.amber,
                     last: i == items.length - 1,
                   ),
               ],
@@ -1157,7 +1157,7 @@ class _StatusPill extends StatelessWidget {
       OrderStatus.processing => AppColors.violet,
       OrderStatus.shipped => AppColors.sky,
       OrderStatus.delivered => AppColors.teal,
-      OrderStatus.cancelled => AppColors.primary,
+      OrderStatus.cancelled => AppColors.danger,
     };
     return Container(
       margin: const EdgeInsets.only(top: 2),
@@ -1176,7 +1176,8 @@ class _StatusPill extends StatelessWidget {
 class _TopCategoriesCard extends ConsumerWidget {
   const _TopCategoriesCard();
 
-  static const List<Color> _palette = <Color>[
+  // Not const: the first colour is the business's own accent.
+  static List<Color> get _palette => <Color>[
     AppColors.primary,
     AppColors.navy,
     AppColors.sky,

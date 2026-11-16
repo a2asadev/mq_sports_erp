@@ -109,7 +109,7 @@ class _PartyListViewState extends State<PartyListView> {
       if (customers)
         StatItem(
           icon: Icons.warning_amber_rounded,
-          color: stats.overLimit > 0 ? AppColors.primary : AppColors.textMuted,
+          color: stats.overLimit > 0 ? AppColors.danger : AppColors.textMuted,
           label: 'Over credit limit',
           value: '${stats.overLimit}',
         )
@@ -279,7 +279,7 @@ class PartyCard extends StatelessWidget {
     // Money owed to us (customer) or by us (vendor) is highlighted; a
     // settled party is calm.
     final Color balanceColor = over
-        ? AppColors.primary
+        ? AppColors.danger
         : (item.hasBalance ? AppColors.navy : AppColors.textMuted);
     final double usedShare = item.creditLimit > 0
         ? (item.balance / item.creditLimit).clamp(0.0, 1.0).toDouble()
@@ -342,7 +342,7 @@ class PartyCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: over ? AppColors.primary : AppColors.textMuted,
+                          color: over ? AppColors.danger : AppColors.textMuted,
                         ),
                       ),
                     ),
@@ -360,7 +360,7 @@ class PartyCard extends StatelessWidget {
                       value: usedShare,
                       minHeight: 4,
                       backgroundColor: AppColors.mutedFill,
-                      color: over ? AppColors.primary : AppColors.teal,
+                      color: over ? AppColors.danger : AppColors.teal,
                     ),
                   ),
                 ],

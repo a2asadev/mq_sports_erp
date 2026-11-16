@@ -3,7 +3,7 @@
          by itself; the template only grants it to debug and profile builds. -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="mq_admin"
+        android:label="A2 Stocks"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
