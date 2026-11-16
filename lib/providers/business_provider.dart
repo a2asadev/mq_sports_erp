@@ -1,0 +1,38 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/utils/currency.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
+import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/providers/users_providers.dart';
+
+/// Raised whenever the business is changed from inside the app (a new shop name,
+/// phone or currency), so [businessProvider] reads the session again.
+final StateProvider<int> _businessRevisionProvider = StateProvider<int>((Ref ref) => 0);
+
+/// The business the signed-in user works for: its shop name and phone for
+/// receipts, its own walk-in customer, and its currency. The server names them at
+/// sign-in and the app keeps them with the session, so this also works offline.
+///
+/// Until the server has said (a session saved before businesses existed), it is
+/// MQ Sports, the only business there was.
+///
+/// Reading it also points [MoneyFormat] at the business's currency, so every
+/// amount the app writes uses it.
+final Provider<BusinessInfo> businessProvider = Provider<BusinessInfo>((Ref ref) {
+  // Re-read whenever the signed-in user is (a new sign-in, or a fresh `/v1/auth/me`),
+  // and whenever the app itself changed the business.
+  ref.watch(currentUserProvider);
+  ref.watch(_businessRevisionProvider);
+  final BusinessInfo business = ref.watch(apiClientProvider).currentBusiness ?? BusinessInfo.mqSports;
+  MoneyFormat.use(business.currency);
+  return business;
+});
+
+/// Saves a changed description of the business with the session and applies it
+/// everywhere (receipts, amounts). Call it after the server accepted the change.
+final Provider<Future<void> Function(BusinessInfo business)> businessUpdaterProvider =
+    Provider<Future<void> Function(BusinessInfo business)>((Ref ref) {
+  return (BusinessInfo business) async {
+    await ref.read(apiClientProvider).rememberBusiness(business);
+    ref.read(_businessRevisionProvider.notifier).state++;
+  };
+});

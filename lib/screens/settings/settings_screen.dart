@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/core/theme/app_theme.dart';
+import 'package:mq_sports_erp/core/utils/currency.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/models/store_settings_model.dart';
+import 'package:mq_sports_erp/online/business_service.dart';
+import 'package:mq_sports_erp/providers/business_provider.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
@@ -11,6 +15,9 @@ import 'package:mq_sports_erp/online/store_settings_service.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/onboarding/onboarding_screen.dart';
 import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+
+final Provider<BusinessService> businessServiceProvider =
+    Provider<BusinessService>((Ref ref) => BusinessService(ref.watch(apiClientProvider)));
 
 final Provider<StoreSettingsService> storeSettingsServiceProvider =
     Provider<StoreSettingsService>((Ref ref) => StoreSettingsService(ref.watch(apiClientProvider)));
@@ -27,6 +34,7 @@ String _problemText(Object error) =>
 enum _SettingsSection {
   profile('Profile', Icons.person_outline, 'Your name, e-mail and photo'),
   store('Online store', Icons.storefront_outlined, 'Opening, delivery and alerts'),
+  shop('Shop details', Icons.store_mall_directory_outlined, 'Currency and receipt details'),
   help('Help & guide', Icons.help_outline, 'The welcome tour');
 
   const _SettingsSection(this.title, this.icon, this.subtitle);
@@ -36,8 +44,11 @@ enum _SettingsSection {
   final String subtitle;
 }
 
-/// Settings, grouped into sections: Profile and Help for everyone; the Online
-/// store section for admins and managers (only admins can change it).
+/// Settings, grouped into sections: Profile and Help for everyone. Admins and
+/// managers also see the Online store section if their business runs the online
+/// store (only admins can change it). They also see Shop details: the currency
+/// and, for a business without the online store, the name and phone printed on
+/// its receipts.
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -54,6 +65,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return _ProfileCard(user: user);
       case _SettingsSection.store:
         return _StoreSettingsCard(canEdit: user.role == UserRole.admin, myEmail: user.email);
+      case _SettingsSection.shop:
+        return _ShopDetailsCard(canEdit: user.role == UserRole.admin);
       case _SettingsSection.help:
         return Card(
           child: ListTile(
@@ -75,10 +88,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final bool seesStore = user.role == UserRole.admin || user.role == UserRole.manager;
+    final bool seesBusinessSettings = user.role == UserRole.admin || user.role == UserRole.manager;
+    final bool hasStore = ref.watch(businessProvider).hasOnlineStore;
     final List<_SettingsSection> sections = <_SettingsSection>[
       for (final _SettingsSection s in _SettingsSection.values)
-        if (s != _SettingsSection.store || seesStore) s,
+        if ((s != _SettingsSection.store || (seesBusinessSettings && hasStore)) &&
+            (s != _SettingsSection.shop || seesBusinessSettings))
+          s,
     ];
     final _SettingsSection current = sections.contains(_section) ? _section : sections.first;
     final Widget content = ListView(
@@ -184,6 +200,209 @@ class _ProfileCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Shop details: the currency, and (when the business does not run the online
+/// store, whose settings hold them) the shop's name and phone for receipts.
+class _ShopDetailsCard extends ConsumerWidget {
+  const _ShopDetailsCard({required this.canEdit});
+
+  final bool canEdit;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool hasStore = ref.watch(businessProvider).hasOnlineStore;
+    if (hasStore) {
+      // The name and phone are edited under Online store; only the currency lives here.
+      return Card(
+        child: Padding(padding: const EdgeInsets.all(16), child: ShopDetailsForm(initial: null, canEdit: canEdit)),
+      );
+    }
+    final AsyncValue<StoreSettingsModel> settings = ref.watch(storeSettingsProvider);
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: settings.when(
+          loading: () => const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator())),
+          error: (Object error, StackTrace stack) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Shop details', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 8),
+              Text(
+                '${_problemText(error)}\nThe shop details need a connection to the server.',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () => ref.invalidate(storeSettingsProvider),
+                icon: const Icon(Icons.refresh),
+                label: const Text('Try again'),
+              ),
+            ],
+          ),
+          data: (StoreSettingsModel value) => ShopDetailsForm(initial: value, canEdit: canEdit),
+        ),
+      ),
+    );
+  }
+}
+
+/// The shop details as a form. Public so it can be tested alone.
+///
+/// With [initial] it edits the shop's name and phone too, through the same
+/// server record as the online store's settings (every other value in it is left
+/// as it was). Without it, only the currency.
+class ShopDetailsForm extends ConsumerStatefulWidget {
+  const ShopDetailsForm({super.key, required this.initial, required this.canEdit});
+
+  final StoreSettingsModel? initial;
+  final bool canEdit;
+
+  @override
+  ConsumerState<ShopDetailsForm> createState() => _ShopDetailsFormState();
+}
+
+class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final TextEditingController _name = TextEditingController(text: widget.initial?.storeName ?? '');
+  late final TextEditingController _phone = TextEditingController(text: widget.initial?.contactPhone ?? '');
+  late String _currency = ref.read(businessProvider).currency;
+  bool _busy = false;
+  String _message = '';
+  bool _failed = false;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _phone.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _message = '';
+    });
+    try {
+      BusinessInfo business = ref.read(businessProvider);
+      final StoreSettingsModel? settings = widget.initial;
+      if (settings != null) {
+        final String name = _name.text.trim();
+        final String phone = _phone.text.trim();
+        await ref.read(storeSettingsServiceProvider).save(settings.copyWith(storeName: name, contactPhone: phone));
+        business = business.copyWith(name: name, phone: phone);
+      }
+      if (_currency != business.currency) {
+        // The server's answer decides, then everything is written in the new currency.
+        final BusinessInfo? saved = await ref.read(businessServiceProvider).saveCurrency(_currency);
+        business = business.copyWith(currency: saved?.currency ?? _currency);
+      }
+      await ref.read(businessUpdaterProvider)(business);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _failed = false;
+        _message = 'Saved.';
+      });
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _failed = true;
+          _message = _problemText(error);
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool locked = _busy || !widget.canEdit;
+    final List<CurrencyInfo> choices = <CurrencyInfo>[
+      ...CurrencyInfo.supported,
+      // A currency the app does not list (set elsewhere) stays selectable, as itself.
+      if (!CurrencyInfo.supported.any((CurrencyInfo c) => c.code == _currency)) CurrencyInfo.byCode(_currency),
+    ];
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text('Shop details', style: Theme.of(context).textTheme.titleLarge),
+          Padding(
+            padding: const EdgeInsets.only(top: 4, bottom: 16),
+            child: Text(
+              widget.canEdit
+                  ? (widget.initial == null
+                      ? 'The currency every amount in the app is written in.'
+                      : 'Printed at the top of your receipts and in messages to customers.')
+                  : 'Only an admin can change these.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          if (widget.initial != null) ...<Widget>[
+            TextFormField(
+              controller: _name,
+              enabled: !locked,
+              decoration: const InputDecoration(labelText: 'Shop name', border: OutlineInputBorder()),
+              validator: (String? v) => (v == null || v.trim().isEmpty) ? 'Enter the shop name.' : null,
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _phone,
+              enabled: !locked,
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(labelText: 'Phone', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 12),
+          ],
+          DropdownButtonFormField<String>(
+            initialValue: _currency,
+            decoration: const InputDecoration(
+              labelText: 'Currency',
+              border: OutlineInputBorder(),
+              helperText: 'Amounts already recorded are not converted: they keep their numbers.',
+              helperMaxLines: 2,
+            ),
+            items: <DropdownMenuItem<String>>[
+              for (final CurrencyInfo c in choices)
+                DropdownMenuItem<String>(value: c.code, child: Text('${c.code} · ${c.name} (${c.symbol})')),
+            ],
+            onChanged: locked ? null : (String? code) => setState(() => _currency = code ?? _currency),
+          ),
+          if (_message.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(
+                _message,
+                style: TextStyle(color: _failed ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary),
+              ),
+            ),
+          if (widget.canEdit) ...<Widget>[
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FilledButton.icon(
+                onPressed: _busy ? null : _save,
+                icon: _busy
+                    ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.save_outlined),
+                label: const Text('Save'),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -301,6 +520,13 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
               lowStockBelow: int.tryParse(_low.text.trim()) ?? 5,
             ),
           );
+      if (!mounted) {
+        return;
+      }
+      // Receipts print the shop's name and phone: keep them in step with the settings.
+      await ref.read(businessUpdaterProvider)(
+        ref.read(businessProvider).copyWith(name: saved.storeName.trim(), phone: saved.contactPhone.trim()),
+      );
       if (!mounted) {
         return;
       }

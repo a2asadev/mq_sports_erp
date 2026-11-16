@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mq_sports_erp/core/constants/walk_in.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/core/utils/pos_payment_plan.dart';
 import 'package:mq_sports_erp/core/utils/receipt.dart';
 import 'package:mq_sports_erp/core/utils/receipt_pdf.dart';
@@ -60,8 +61,8 @@ void main() {
       final PosCart cart = const PosCart().withCustomer(ali).add(p, p.variants[0]);
       expect(cart.customer?.name, 'Ali');
       expect(cart.withCustomer(null).customer, isNull);
-      expect(isWalkIn(walkInCustomerId), isTrue);
-      expect(isWalkIn('c1'), isFalse);
+      expect(BusinessInfo.mqSports.isWalkIn(mqSportsWalkInCustomerId), isTrue);
+      expect(BusinessInfo.mqSports.isWalkIn('c1'), isFalse);
     });
 
     test('becomes order items with the prices and discounts', () {
@@ -160,7 +161,7 @@ void main() {
   group('receipts', () {
     final OrderModel order = OrderModel(
       orderNo: 'ORD-20261117-AB12',
-      customerId: walkInCustomerId,
+      customerId: mqSportsWalkInCustomerId,
       customerName: 'Walk-in customer',
       orderDate: DateTime(2026, 11, 17, 14, 5),
       channel: 'pos',
@@ -179,6 +180,7 @@ void main() {
                 ReceiptPayment(label: 'Easypaisa', amount: 1000, reference: 'EP-9'),
               ],
           shopName: 'MQ Sports',
+          walkInCustomerId: mqSportsWalkInCustomerId,
           shopPhone: '0300 1112223',
           cashier: 'Sara',
           change: change,
@@ -218,7 +220,7 @@ void main() {
         LedgerModel(partyType: PartyType.customer, partyId: 'x', entryType: LedgerEntryType.payment, amount: 7, orderId: 'other-order'),
         LedgerModel(partyType: PartyType.customer, partyId: 'x', entryType: LedgerEntryType.payment, amount: 2800.5, orderId: order.id, description: 'Cancelled order ORD'),
       ];
-      final ReceiptData r = ReceiptData.fromOrder(order, ledger: ledger, shopName: 'Shop');
+      final ReceiptData r = ReceiptData.fromOrder(order, ledger: ledger, shopName: 'Shop', walkInCustomerId: mqSportsWalkInCustomerId);
       expect(r.payments.map((ReceiptPayment p) => '${p.label}:${p.amount}'), <String>['JazzCash:500.0', 'Payment:100.0']);
       expect(r.due, 2200.5);
     });
@@ -232,7 +234,7 @@ void main() {
         shippingFee: 250,
         items: <OrderItem>[OrderItem(productId: 'p', variantId: 'v', productName: 'Bat', variantLabel: 'S', sku: 'B', quantity: 1, unitPrice: 1000)],
       );
-      final ReceiptData r = ReceiptData.fromParts(web, payments: const <ReceiptPayment>[], shopName: 'Shop');
+      final ReceiptData r = ReceiptData.fromParts(web, payments: const <ReceiptPayment>[], shopName: 'Shop', walkInCustomerId: mqSportsWalkInCustomerId);
       expect(r.customerName, 'Bilal');
       expect(r.total, 1250);
       expect(r.toText(), contains('Delivery: Rs 250'));

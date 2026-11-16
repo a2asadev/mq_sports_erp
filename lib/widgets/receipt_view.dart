@@ -147,19 +147,19 @@ class ReceiptView extends StatelessWidget {
           const SizedBox(height: 6),
           const _Solid(),
           const SizedBox(height: 6),
-          _kv('Sub Total :', ReceiptData.rs(receipt.subtotal)),
-          if (receipt.discount > 0.005) _kv('Discount :', '-${ReceiptData.rs(receipt.discount)}'),
-          if (receipt.shippingFee > 0.005) _kv('Delivery :', ReceiptData.rs(receipt.shippingFee)),
+          _kv('Sub Total :', ReceiptData.money(receipt.subtotal)),
+          if (receipt.discount > 0.005) _kv('Discount :', '-${ReceiptData.money(receipt.discount)}'),
+          if (receipt.shippingFee > 0.005) _kv('Delivery :', ReceiptData.money(receipt.shippingFee)),
           const SizedBox(height: 4),
           const _Solid(),
           const SizedBox(height: 6),
           for (final ReceiptPayment p in receipt.payments)
             _kv(
               '${p.label}${p.reference.isEmpty ? '' : ' (${p.reference})'} :',
-              ReceiptData.rs(p.amount),
+              ReceiptData.money(p.amount),
             ),
-          if (receipt.change > 0.005) _kv('Change :', ReceiptData.rs(receipt.change)),
-          _kv('Due :', ReceiptData.rs(receipt.due)),
+          if (receipt.change > 0.005) _kv('Change :', ReceiptData.money(receipt.change)),
+          _kv('Due :', ReceiptData.money(receipt.due)),
           const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
@@ -168,7 +168,7 @@ class ReceiptView extends StatelessWidget {
               children: <Widget>[
                 const Flexible(child: Text('Total Payable', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800))),
                 Text(
-                  ReceiptData.rs(receipt.total),
+                  ReceiptData.money(receipt.total),
                   style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.navy),
                 ),
               ],

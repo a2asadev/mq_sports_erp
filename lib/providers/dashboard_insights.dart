@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/constants/walk_in.dart';
+import 'package:mq_sports_erp/providers/business_provider.dart';
 import 'package:mq_sports_erp/core/utils/stock_alerts.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
@@ -73,6 +74,10 @@ const List<String> _weekdays = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
 double _round2(double v) => (v * 100).round() / 100;
 
 DateTime _dayOf(DateTime d) => DateTime(d.year, d.month, d.day);
+
+/// Whether a customer id is the business's walk-in customer (a business with none has no match).
+bool _isWalkIn(String walkInCustomerId, String customerId) =>
+    walkInCustomerId.isNotEmpty && customerId == walkInCustomerId;
 
 /// Sales (orders that are not cancelled, at their total) per day for the last
 /// 7 or 30 days, or per month of the current year.
@@ -156,6 +161,7 @@ CustomerMix computeCustomerMix({
   required List<OrderModel> orders,
   required SalesRange range,
   required DateTime now,
+  required String walkInCustomerId,
 }) {
   final DateTime today = _dayOf(now);
   final bool yearly = range == SalesRange.year;
@@ -175,7 +181,7 @@ CustomerMix computeCustomerMix({
 
   final Map<String, DateTime> firstOrder = <String, DateTime>{};
   for (final OrderModel o in orders) {
-    if (o.status == OrderStatus.cancelled || isWalkIn(o.customerId)) {
+    if (o.status == OrderStatus.cancelled || _isWalkIn(walkInCustomerId, o.customerId)) {
       continue;
     }
     final DateTime? known = firstOrder[o.customerId];
@@ -198,7 +204,7 @@ CustomerMix computeCustomerMix({
     if (at == null) {
       continue;
     }
-    if (isWalkIn(o.customerId)) {
+    if (_isWalkIn(walkInCustomerId, o.customerId)) {
       walkInOrders++;
       walkInSales += o.totalAmount;
       continue;
@@ -266,12 +272,16 @@ List<LowStockItem> computeLowStockItems({
 }
 
 /// Named customers by what they spent (walk-in sales are not a customer).
-List<TopCustomer> computeTopCustomers({required List<OrderModel> orders, int limit = 5}) {
+List<TopCustomer> computeTopCustomers({
+  required List<OrderModel> orders,
+  required String walkInCustomerId,
+  int limit = 5,
+}) {
   final Map<String, double> totals = <String, double>{};
   final Map<String, int> counts = <String, int>{};
   final Map<String, String> names = <String, String>{};
   for (final OrderModel o in orders) {
-    if (o.status == OrderStatus.cancelled || isWalkIn(o.customerId)) {
+    if (o.status == OrderStatus.cancelled || _isWalkIn(walkInCustomerId, o.customerId)) {
       continue;
     }
     totals[o.customerId] = (totals[o.customerId] ?? 0) + o.totalAmount;
@@ -343,6 +353,7 @@ final ProviderFamily<CustomerMix, SalesRange> customerMixProvider =
     orders: ref.watch(ordersProvider).valueOrNull ?? <OrderModel>[],
     range: range,
     now: DateTime.now(),
+    walkInCustomerId: ref.watch(businessProvider).walkInCustomerId,
   );
 });
 
@@ -354,7 +365,10 @@ final Provider<List<LowStockItem>> lowStockItemsProvider = Provider<List<LowStoc
 });
 
 final Provider<List<TopCustomer>> topCustomersProvider = Provider<List<TopCustomer>>((Ref ref) {
-  return computeTopCustomers(orders: ref.watch(ordersProvider).valueOrNull ?? <OrderModel>[]);
+  return computeTopCustomers(
+    orders: ref.watch(ordersProvider).valueOrNull ?? <OrderModel>[],
+    walkInCustomerId: ref.watch(businessProvider).walkInCustomerId,
+  );
 });
 
 final Provider<List<CategoryShare>> categorySharesProvider = Provider<List<CategoryShare>>((Ref ref) {
@@ -382,8 +396,9 @@ final Provider<OverallCounts> overallCountsProvider = Provider<OverallCounts>((R
   final List<CustomerModel> customers = ref.watch(customersProvider).valueOrNull ?? <CustomerModel>[];
   final List<VendorModel> vendors = ref.watch(vendorsProvider).valueOrNull ?? <VendorModel>[];
   final List<OrderModel> orders = ref.watch(ordersProvider).valueOrNull ?? <OrderModel>[];
+  final BusinessInfo business = ref.watch(businessProvider);
   return OverallCounts(
-    customers: customers.where((CustomerModel c) => c.isActive && !isWalkIn(c.id)).length,
+    customers: customers.where((CustomerModel c) => c.isActive && !business.isWalkIn(c.id)).length,
     vendors: vendors.where((VendorModel v) => v.isActive).length,
     orders: orders.length,
   );

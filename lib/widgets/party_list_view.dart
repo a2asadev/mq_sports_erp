@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mq_sports_erp/core/utils/currency.dart';
 import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/formatters.dart';
 import 'package:mq_sports_erp/core/utils/page_stats.dart';
@@ -346,7 +347,7 @@ class PartyCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      item.hasBalance ? formatMoney(item.balance.abs()) : 'Rs 0',
+                      item.hasBalance ? formatMoney(item.balance.abs()) : MoneyFormat.withSymbol('0'),
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: balanceColor),
                     ),
                   ],

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:http/http.dart' as http;
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/online/token_store.dart';
 
@@ -68,6 +69,26 @@ class ApiClient {
 
   UserModel? get currentUser => _user;
 
+  BusinessInfo? _business;
+
+  /// The business the signed-in user works for, as the server last described it
+  /// (kept with the saved session, so it is known without a connection). Null
+  /// when signed out, or for a session saved before businesses existed.
+  BusinessInfo? get currentBusiness => _business;
+
+  /// Takes a fresher description of the business (from `/v1/auth/me`) and saves
+  /// it with the session.
+  Future<void> rememberBusiness(BusinessInfo business) async {
+    if (_user == null || _business == business) {
+      return;
+    }
+    _business = business;
+    final Map<String, dynamic>? saved = await _savedSessionMap();
+    if (saved != null) {
+      await _tokens.saveUserJson(jsonEncode(<String, dynamic>{...saved, 'tenant': business.toMap()}));
+    }
+  }
+
   /// Signed in, possibly without a connection (the saved session of a previous visit).
   bool get isSignedIn => _user != null;
 
@@ -122,22 +143,29 @@ class ApiClient {
         rethrow;
       }
       _user = saved;
+      _business = BusinessInfo.tryFromMap((await _savedSessionMap())?['tenant']);
       _sessionChanges.add(saved);
       return saved;
     }
   }
 
-  Future<UserModel?> _savedUser() async {
+  /// The saved session: the user's map, with the business under `tenant`.
+  Future<Map<String, dynamic>?> _savedSessionMap() async {
     final String? json = await _tokens.readUserJson();
     if (json == null) {
       return null;
     }
     try {
       final Object? decoded = jsonDecode(json);
-      return decoded is Map<String, dynamic> ? UserModel.fromMap(decoded) : null;
+      return decoded is Map<String, dynamic> ? decoded : null;
     } on FormatException {
       return null;
     }
+  }
+
+  Future<UserModel?> _savedUser() async {
+    final Map<String, dynamic>? saved = await _savedSessionMap();
+    return saved == null ? null : UserModel.fromMap(saved);
   }
 
   Future<void> logout() async {
@@ -165,8 +193,12 @@ class ApiClient {
       throw const AuthFailureException('The server sent an unexpected sign-in answer.');
     }
     _accessToken = access;
+    final BusinessInfo? business = BusinessInfo.tryFromMap(tokens['tenant']);
     await _tokens.saveRefreshToken(refresh);
-    await _tokens.saveUserJson(jsonEncode(user));
+    await _tokens.saveUserJson(
+      jsonEncode(<String, dynamic>{...user, if (business != null) 'tenant': business.toMap()}),
+    );
+    _business = business;
     final UserModel model = UserModel.fromMap(user);
     // Announce a different person only: a token refresh is not a new sign-in.
     final bool newPerson = _user?.id != model.id;
@@ -181,6 +213,7 @@ class ApiClient {
     final bool wasSignedIn = _user != null || _accessToken != null;
     _accessToken = null;
     _user = null;
+    _business = null;
     await _tokens.clear();
     if (wasSignedIn) {
       _sessionChanges.add(null);

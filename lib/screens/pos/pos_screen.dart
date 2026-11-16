@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'package:mq_sports_erp/core/utils/currency.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/constants/walk_in.dart';
+import 'package:mq_sports_erp/providers/business_provider.dart';
 import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
@@ -133,7 +134,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                 enabled: (stock[v.id] ?? 0) > 0,
                 title: Text(v.label),
                 subtitle: Text('${stock[v.id] ?? 0} in stock'),
-                trailing: Text('Rs ${_fmt(v.salePrice)}', style: Theme.of(context).textTheme.titleMedium),
+                trailing: Text('${MoneyFormat.prefix}${_fmt(v.salePrice)}', style: Theme.of(context).textTheme.titleMedium),
                 onTap: () => Navigator.of(context).pop(v),
               ),
           ],
@@ -181,7 +182,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
 
   CustomerModel? _walkIn() {
     final List<CustomerModel> customers = ref.read(customersProvider).valueOrNull ?? <CustomerModel>[];
-    return customers.where((CustomerModel c) => c.id == walkInCustomerId).firstOrNull;
+    return customers.where((CustomerModel c) => c.id == ref.read(businessProvider).walkInCustomerId).firstOrNull;
   }
 
   Future<void> _chooseCustomer() async {
@@ -190,7 +191,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
       context,
       title: 'Customer',
       partyType: PartyType.customer,
-      items: items.where((PartyListItem i) => i.id != walkInCustomerId && i.isActive).toList(),
+      items: items.where((PartyListItem i) => i.id != ref.read(businessProvider).walkInCustomerId && i.isActive).toList(),
       typeOptions: <MapEntry<String, String>>[
         for (final CustomerType t in CustomerType.values) MapEntry<String, String>(t.name, t.label),
       ],
@@ -270,6 +271,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
           ReceiptPayment(label: p.method.label, amount: p.amount, reference: p.reference),
       ],
       shopName: shop.name,
+      walkInCustomerId: ref.read(businessProvider).walkInCustomerId,
       shopPhone: shop.phone,
       cashier: me == null ? '' : (me.displayName.isNotEmpty ? me.displayName : me.email),
       change: payment.change,
@@ -295,8 +297,8 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                 children: <Widget>[
                   const Text('Sale complete', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
                   if (payment.change > 0.005)
-                    Text('Give change: Rs ${_fmt(payment.change)}', style: const TextStyle(fontWeight: FontWeight.w700)),
-                  if (receipt.due > 0.005) Text('Balance due: Rs ${_fmt(receipt.due)}'),
+                    Text('Give change: ${MoneyFormat.prefix}${_fmt(payment.change)}', style: const TextStyle(fontWeight: FontWeight.w700)),
+                  if (receipt.due > 0.005) Text('Balance due: ${MoneyFormat.prefix}${_fmt(receipt.due)}'),
                 ],
               ),
             ),
@@ -439,7 +441,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                         label: Text('${cart.units}'),
                         child: const Icon(Icons.shopping_bag_outlined),
                       ),
-                      label: cart.isEmpty ? 'Sale' : 'Sale · Rs ${_fmt(cart.total)}',
+                      label: cart.isEmpty ? 'Sale' : 'Sale · ${MoneyFormat.prefix}${_fmt(cart.total)}',
                     ),
                   ],
                 ),
@@ -860,7 +862,7 @@ class _Catalog extends ConsumerWidget {
                           product: p,
                           category: categoryName[p.categoryId] ?? '',
                           onHand: onHand,
-                          priceText: low == high ? 'Rs ${_fmt(low)}' : 'Rs ${_fmt(low)}+',
+                          priceText: low == high ? '${MoneyFormat.prefix}${_fmt(low)}' : '${MoneyFormat.prefix}${_fmt(low)}+',
                           inCart: inCart,
                           onAdd: () => onAdd(p),
                           onRemove: () => onRemove(p),
@@ -1023,7 +1025,7 @@ class _SalePanel extends ConsumerWidget {
           controller: controller,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(labelText: 'Amount', prefixText: 'Rs '),
+          decoration: InputDecoration(labelText: 'Amount', prefixText: MoneyFormat.prefix),
           onSubmitted: (String t) => Navigator.of(context).pop(double.tryParse(t.trim()) ?? 0),
         ),
         actions: <Widget>[
@@ -1197,10 +1199,10 @@ class _SalePanel extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         const Divider(height: 24),
-        _summaryRow('Sub Total', 'Rs ${_fmt(cart.subtotal)}'),
+        _summaryRow('Sub Total', '${MoneyFormat.prefix}${_fmt(cart.subtotal)}'),
         _summaryRow(
           'Discount',
-          cart.effectiveOrderDiscount > 0 ? '-Rs ${_fmt(cart.effectiveOrderDiscount)}' : 'Rs 0',
+          cart.effectiveOrderDiscount > 0 ? '-${MoneyFormat.prefix}${_fmt(cart.effectiveOrderDiscount)}' : '${MoneyFormat.prefix}0',
           color: AppColors.primary,
           edit: InkWell(
             onTap: cart.isEmpty ? null : () => _editDiscount(context, ref),
@@ -1213,7 +1215,7 @@ class _SalePanel extends ConsumerWidget {
             const Text('Total Payable', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
             const Spacer(),
             Text(
-              'Rs ${_fmt(cart.total)}',
+              '${MoneyFormat.prefix}${_fmt(cart.total)}',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.navy),
             ),
           ],
@@ -1293,7 +1295,7 @@ class _SalePanel extends ConsumerWidget {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
                     : const Icon(Icons.shopping_bag_outlined, size: 18),
-                label: Text(cart.isEmpty ? 'Place Order' : 'Place Order · Rs ${_fmt(cart.total)}'),
+                label: Text(cart.isEmpty ? 'Place Order' : 'Place Order · ${MoneyFormat.prefix}${_fmt(cart.total)}'),
               ),
             ),
           ],
@@ -1401,14 +1403,14 @@ class _CartLine extends StatelessWidget {
               children: <Widget>[
                 Text(line.productName, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                 Text(
-                  '${line.variantLabel.isEmpty ? '' : '${line.variantLabel} · '}Rs ${_fmt(line.unitPrice)}'
+                  '${line.variantLabel.isEmpty ? '' : '${line.variantLabel} · '}${MoneyFormat.prefix}${_fmt(line.unitPrice)}'
                   '${line.discount > 0 ? ' · −${_fmt(line.discount)}' : ''}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
                 ),
                 const SizedBox(height: 2),
-                Text('Rs ${_fmt(line.total)}', style: const TextStyle(color: AppColors.teal, fontWeight: FontWeight.w800)),
+                Text('${MoneyFormat.prefix}${_fmt(line.total)}', style: const TextStyle(color: AppColors.teal, fontWeight: FontWeight.w800)),
               ],
             ),
           ),

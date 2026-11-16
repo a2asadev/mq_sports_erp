@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
+import 'package:mq_sports_erp/providers/business_provider.dart';
 
 double _round2(double v) => (v * 100).round() / 100;
 
@@ -202,9 +203,8 @@ class PosCartNotifier extends Notifier<PosCart> {
 final NotifierProvider<PosCartNotifier, PosCart> posCartProvider =
     NotifierProvider<PosCartNotifier, PosCart>(PosCartNotifier.new);
 
-/// The shop's name and phone for receipts and messages: the public store
-/// settings (every role may read them). Without a connection, or while the
-/// store is closed, the defaults are used.
+/// The shop's name and phone for receipts and messages: those of the business
+/// the user works for (named by the server at sign-in, so it works offline).
 class ShopInfo {
   const ShopInfo({this.name = 'MQ Sports', this.phone = ''});
 
@@ -213,15 +213,6 @@ class ShopInfo {
 }
 
 final FutureProvider<ShopInfo> shopInfoProvider = FutureProvider<ShopInfo>((Ref ref) async {
-  try {
-    final Map<String, dynamic> map = (await ref.read(apiClientProvider).get('/v1/store/settings')).asMap;
-    final Object? name = map['storeName'];
-    final Object? phone = map['contactPhone'];
-    return ShopInfo(
-      name: name is String && name.trim().isNotEmpty ? name.trim() : 'MQ Sports',
-      phone: phone is String ? phone.trim() : '',
-    );
-  } catch (_) {
-    return const ShopInfo();
-  }
+  final BusinessInfo business = ref.watch(businessProvider);
+  return ShopInfo(name: business.name, phone: business.phone);
 });

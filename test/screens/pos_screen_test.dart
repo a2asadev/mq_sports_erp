@@ -71,7 +71,7 @@ void main() {
             CategoryModel(id: 'c1', name: 'Cricket'),
             CategoryModel(id: 'c2', name: 'Other'),
           ])),
-      customersProvider.overrideWith(() => _Customers(<CustomerModel>[CustomerModel(id: walkInCustomerId, name: 'Walk-in customer')])),
+      customersProvider.overrideWith(() => _Customers(<CustomerModel>[CustomerModel(id: mqSportsWalkInCustomerId, name: 'Walk-in customer')])),
       stockOnHandProvider.overrideWithValue(<String, int>{'v1': 2, 'v2': 5, 'v3': 10, 'v4': 0}),
       canCreateOrdersProvider.overrideWithValue(true),
       syncSummaryProvider.overrideWithValue(const SyncSummary(status: SyncStatus.upToDate, waiting: 0, failed: 0)),

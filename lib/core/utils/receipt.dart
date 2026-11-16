@@ -1,5 +1,5 @@
-import 'package:mq_sports_erp/core/constants/walk_in.dart';
 import 'package:mq_sports_erp/models/ledger_model.dart';
+import 'package:mq_sports_erp/core/utils/currency.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
 import 'package:mq_sports_erp/models/party_enums.dart';
 import 'package:mq_sports_erp/models/payment_method.dart';
@@ -93,6 +93,7 @@ class ReceiptData {
     OrderModel order, {
     required List<LedgerModel> ledger,
     required String shopName,
+    required String walkInCustomerId,
     String shopPhone = '',
     String cashier = '',
     double change = 0,
@@ -113,6 +114,7 @@ class ReceiptData {
       order,
       payments: payments,
       shopName: shopName,
+      walkInCustomerId: walkInCustomerId,
       shopPhone: shopPhone,
       cashier: cashier,
       change: change,
@@ -124,6 +126,9 @@ class ReceiptData {
     OrderModel order, {
     required List<ReceiptPayment> payments,
     required String shopName,
+
+    /// The business's walk-in customer: a sale to it prints no customer name.
+    required String walkInCustomerId,
     String shopPhone = '',
     String cashier = '',
     double change = 0,
@@ -134,7 +139,7 @@ class ReceiptData {
       orderNo: order.orderNo,
       date: order.orderDate,
       cashier: cashier,
-      customerName: isWalkIn(order.customerId) ? '' : order.customerName,
+      customerName: walkInCustomerId.isNotEmpty && order.customerId == walkInCustomerId ? '' : order.customerName,
       lines: <ReceiptLine>[
         for (final OrderItem i in order.items)
           ReceiptLine(
@@ -158,8 +163,9 @@ class ReceiptData {
   /// An amount without the currency, for table columns ("1250", "99.5").
   static String plain(double amount) => _money(amount);
 
-  /// "Rs 1,250" style amounts without thousands separators (simple and printable anywhere).
-  static String rs(double amount) => 'Rs ${_money(amount)}';
+  /// "Rs 1250" style amounts, in the business's currency, without thousands
+  /// separators (simple and printable anywhere).
+  static String money(double amount) => MoneyFormat.withSymbol(_money(amount));
 
   /// The receipt as plain text: what the WhatsApp button sends.
   String toText() {
@@ -174,25 +180,25 @@ class ReceiptData {
     out.writeln('--------------------------');
     for (final ReceiptLine l in lines) {
       out.writeln('${l.quantity} x ${l.name}${l.label.isEmpty ? '' : ' (${l.label})'}');
-      out.writeln('   ${rs(l.unitPrice)} = ${rs(l.total)}${l.discount > 0.005 ? '  (discount ${rs(l.discount)})' : ''}');
+      out.writeln('   ${money(l.unitPrice)} = ${money(l.total)}${l.discount > 0.005 ? '  (discount ${money(l.discount)})' : ''}');
     }
     out.writeln('--------------------------');
     if (discount > 0.005) {
-      out.writeln('Items: ${rs(subtotal)}');
-      out.writeln('Discount: -${rs(discount)}');
+      out.writeln('Items: ${money(subtotal)}');
+      out.writeln('Discount: -${money(discount)}');
     }
     if (shippingFee > 0.005) {
-      out.writeln('Delivery: ${rs(shippingFee)}');
+      out.writeln('Delivery: ${money(shippingFee)}');
     }
-    out.writeln('*Total: ${rs(total)}*');
+    out.writeln('*Total: ${money(total)}*');
     for (final ReceiptPayment p in payments) {
-      out.writeln('${p.label}: ${rs(p.amount)}${p.reference.isEmpty ? '' : ' (${p.reference})'}');
+      out.writeln('${p.label}: ${money(p.amount)}${p.reference.isEmpty ? '' : ' (${p.reference})'}');
     }
     if (change > 0.005) {
-      out.writeln('Change: ${rs(change)}');
+      out.writeln('Change: ${money(change)}');
     }
     if (due > 0.005) {
-      out.writeln('Balance due: ${rs(due)}');
+      out.writeln('Balance due: ${money(due)}');
     }
     out.writeln('');
     out.write('Thank you for shopping with us!');

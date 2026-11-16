@@ -75,19 +75,19 @@ void main() {
       ],
     });
     try {
-      await api.post('/v1/customers', body: <String, dynamic>{'id': walkInCustomerId, 'name': 'Walk-in customer'});
+      await api.post('/v1/customers', body: <String, dynamic>{'id': mqSportsWalkInCustomerId, 'name': 'Walk-in customer'});
     } catch (_) {
       // Already there (created by the migration).
     }
 
     await app.read(remoteStoreProvider).refresh();
     await _until(() => (app.read(productsProvider).valueOrNull ?? <ProductModel>[]).isNotEmpty, 'the products');
-    await _until(() => (app.read(customersProvider).valueOrNull ?? <CustomerModel>[]).any((CustomerModel c) => c.id == walkInCustomerId), 'the customers');
+    await _until(() => (app.read(customersProvider).valueOrNull ?? <CustomerModel>[]).any((CustomerModel c) => c.id == mqSportsWalkInCustomerId), 'the customers');
     await _until(() => app.read(stockOnHandProvider)[variantId] == 10, 'the stock');
 
     final ProductModel bat = app.read(productsProvider).requireValue.firstWhere((ProductModel p) => p.name == 'Test Bat');
     final VariantModel variant = bat.variants.single;
-    final CustomerModel walkIn = app.read(customersProvider).requireValue.firstWhere((CustomerModel c) => c.id == walkInCustomerId);
+    final CustomerModel walkIn = app.read(customersProvider).requireValue.firstWhere((CustomerModel c) => c.id == mqSportsWalkInCustomerId);
 
     // 2 x 1000 - 100 line discount - 50 sale discount = 1850
     final PosCart cart = const PosCart().add(bat, variant, quantity: 2).setLineDiscount(variant.id, 100).withOrderDiscount(50);
@@ -127,7 +127,7 @@ void main() {
       'the ledger',
     );
     final List<LedgerModel> ledger = app.read(ledgerEntriesProvider).requireValue;
-    final ReceiptData receipt = ReceiptData.fromOrder(saved, ledger: ledger, shopName: 'Shop');
+    final ReceiptData receipt = ReceiptData.fromOrder(saved, ledger: ledger, shopName: 'Shop', walkInCustomerId: mqSportsWalkInCustomerId);
     expect(receipt.paid, 1850);
     expect(receipt.due, 0);
     expect(receipt.payments.map((ReceiptPayment p) => '${p.label}:${p.amount}:${p.reference}').toList()..sort(), <String>[
@@ -137,6 +137,6 @@ void main() {
     ]);
     expect(receipt.customerName, '');
     // Paid in full: the walk-in owes nothing.
-    expect(app.read(ledgerTotalsProvider)[walkInCustomerId] ?? 0, 0);
+    expect(app.read(ledgerTotalsProvider)[mqSportsWalkInCustomerId] ?? 0, 0);
   }, skip: _run ? false : 'Needs the real API (see the top of this file).');
 }

@@ -145,21 +145,21 @@ Future<Uint8List> buildReceiptPdf(ReceiptData r) async {
           ],
           pw.SizedBox(height: 2),
           solid(),
-          kv('Sub Total :', ReceiptData.rs(r.subtotal)),
-          if (r.discount > 0.005) kv('Discount :', '-${ReceiptData.rs(r.discount)}'),
-          if (r.shippingFee > 0.005) kv('Delivery :', ReceiptData.rs(r.shippingFee)),
+          kv('Sub Total :', ReceiptData.money(r.subtotal)),
+          if (r.discount > 0.005) kv('Discount :', '-${ReceiptData.money(r.discount)}'),
+          if (r.shippingFee > 0.005) kv('Delivery :', ReceiptData.money(r.shippingFee)),
           solid(),
           for (final ReceiptPayment p in r.payments)
-            kv('${p.label}${p.reference.isEmpty ? '' : ' (${p.reference})'} :', ReceiptData.rs(p.amount)),
-          if (r.change > 0.005) kv('Change :', ReceiptData.rs(r.change)),
-          kv('Due :', ReceiptData.rs(r.due)),
+            kv('${p.label}${p.reference.isEmpty ? '' : ' (${p.reference})'} :', ReceiptData.money(p.amount)),
+          if (r.change > 0.005) kv('Change :', ReceiptData.money(r.change)),
+          kv('Due :', ReceiptData.money(r.due)),
           pw.SizedBox(height: 4),
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: <pw.Widget>[
               pw.Text('Total Payable', style: const pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
               pw.Text(
-                ReceiptData.rs(r.total),
+                ReceiptData.money(r.total),
                 style: const pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold, color: navy),
               ),
             ],

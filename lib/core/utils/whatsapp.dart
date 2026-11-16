@@ -1,4 +1,5 @@
 import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:mq_sports_erp/core/utils/currency.dart';
 
 /// The free WhatsApp option: a `wa.me` link that opens a chat with a ready
 /// message. A person still presses send; nothing is sent automatically.
@@ -40,6 +41,6 @@ class WhatsApp {
       OrderStatus.delivered => 'has been delivered. Thank you for shopping with us!',
       OrderStatus.cancelled => 'has been cancelled',
     };
-    return 'Hello$who, your order ${order.orderNo} (Rs $total) $status. - $shopName';
+    return 'Hello$who, your order ${order.orderNo} (${MoneyFormat.withSymbol(total)}) $status. - $shopName';
   }
 }

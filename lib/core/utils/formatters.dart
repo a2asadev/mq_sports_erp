@@ -1,3 +1,5 @@
+import 'package:mq_sports_erp/core/utils/currency.dart';
+
 /// dd/MM/yyyy
 String formatDate(DateTime date) {
   final DateTime local = date.toLocal();
@@ -8,8 +10,8 @@ String formatDate(DateTime date) {
 /// Amount with two decimals, no currency symbol.
 String formatAmount(double amount) => amount.toStringAsFixed(2);
 
-/// "Rs 12,500" or "Rs 12,500.50": thousands separators, decimals only when
-/// there are some.
+/// "Rs 12,500" or "Rs 12,500.50" (the business's currency in front): thousands
+/// separators, decimals only when there are some.
 String formatMoney(double amount) {
   final bool negative = amount < 0;
   final double abs = amount.abs();
@@ -20,7 +22,7 @@ String formatMoney(double amount) {
     (Match m) => ',',
   );
   final String decimals = parts[1] == '00' ? '' : '.${parts[1]}';
-  return '${negative ? '-' : ''}Rs $whole$decimals';
+  return '${negative ? '-' : ''}${MoneyFormat.withSymbol('$whole$decimals')}';
 }
 
 /// Short form for chart axes: 1.2K, 3.4M.

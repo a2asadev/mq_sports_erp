@@ -1,4 +1,5 @@
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/online/api_client.dart';
 import 'package:mq_sports_erp/online/remote_store.dart';
@@ -55,6 +56,11 @@ class ApiAuthService implements AuthService {
     }
     try {
       final ApiResponse response = await _api.get('/v1/auth/me');
+      // The business may have been renamed (or its phone changed) since sign-in.
+      final BusinessInfo? business = BusinessInfo.tryFromMap(response.asMap['tenant']);
+      if (business != null) {
+        await _api.rememberBusiness(business);
+      }
       return UserModel.fromMap(normalizeDates(response.asMap));
     } on AuthFailureException {
       return null;

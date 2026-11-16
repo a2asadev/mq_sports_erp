@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/utils/receipt.dart';
 import 'package:mq_sports_erp/core/utils/whatsapp.dart';
 import 'package:mq_sports_erp/models/payment_method.dart';
+import 'package:mq_sports_erp/providers/business_provider.dart';
 import 'package:mq_sports_erp/providers/pos_providers.dart';
 import 'package:mq_sports_erp/widgets/receipt_actions.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
@@ -386,6 +387,7 @@ class OrderDetailScreen extends ConsumerWidget {
               order,
               ledger: ledger,
               shopName: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).name,
+              walkInCustomerId: ref.watch(businessProvider).walkInCustomerId,
               shopPhone: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).phone,
             ),
             phone: _phoneFor(ref, order),

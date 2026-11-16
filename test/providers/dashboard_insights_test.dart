@@ -39,15 +39,40 @@ void main() {
     OrderModel sale(DateTime date, String customerId, {OrderStatus status = OrderStatus.delivered, double price = 100}) =>
         _order(date, <OrderItem>[_item('a', 1, price)], customerId: customerId, status: status);
 
+    test('uses the business\'s own walk-in customer: another business\'s id is just a customer', () {
+      final List<OrderModel> orders = <OrderModel>[
+        sale(DateTime(2026, 11, 12), 'walk-ali', price: 40),
+        sale(DateTime(2026, 11, 12), mqSportsWalkInCustomerId), // a normal customer here
+      ];
+      final CustomerMix mix = computeCustomerMix(
+        walkInCustomerId: 'walk-ali',
+        orders: orders,
+        range: SalesRange.week,
+        now: now,
+      );
+      expect(mix.walkInOrders, 1);
+      expect(mix.walkInSales, 40);
+      expect(mix.newCustomers, 1);
+      expect(
+        computeTopCustomers(walkInCustomerId: 'walk-ali', orders: orders).map((TopCustomer c) => c.orders),
+        <int>[1],
+      );
+      // A business with no walk-in customer set treats nobody as walk-in.
+      final CustomerMix none = computeCustomerMix(walkInCustomerId: '', orders: orders, range: SalesRange.week, now: now);
+      expect(none.walkInOrders, 0);
+      expect(none.newCustomers, 2);
+    });
+
     test('new = first order inside the period; returning = bought before it; walk-in kept apart', () {
       final CustomerMix mix = computeCustomerMix(
+        walkInCustomerId: mqSportsWalkInCustomerId,
         orders: <OrderModel>[
           sale(DateTime(2026, 10, 1), 'old'), // first bought long ago
           sale(DateTime(2026, 11, 11), 'old'), // ...and again this week: returning
           sale(DateTime(2026, 11, 10), 'fresh'), // first order this week: new
           sale(DateTime(2026, 11, 12), 'fresh'), // buys again the same week: still new
-          sale(DateTime(2026, 11, 12), walkInCustomerId, price: 250),
-          sale(DateTime(2026, 11, 12), walkInCustomerId, price: 50),
+          sale(DateTime(2026, 11, 12), mqSportsWalkInCustomerId, price: 250),
+          sale(DateTime(2026, 11, 12), mqSportsWalkInCustomerId, price: 50),
           sale(DateTime(2026, 11, 12), 'ghost', status: OrderStatus.cancelled), // cancelled: nobody
         ],
         range: SalesRange.week,
@@ -68,6 +93,7 @@ void main() {
 
     test('a customer whose only order was cancelled earlier is new when they really buy', () {
       final CustomerMix mix = computeCustomerMix(
+        walkInCustomerId: mqSportsWalkInCustomerId,
         orders: <OrderModel>[
           sale(DateTime(2026, 9, 1), 'c', status: OrderStatus.cancelled),
           sale(DateTime(2026, 11, 12), 'c'),
@@ -81,6 +107,7 @@ void main() {
 
     test('year groups by month and an empty shop gives zeros', () {
       final CustomerMix year = computeCustomerMix(
+        walkInCustomerId: mqSportsWalkInCustomerId,
         orders: <OrderModel>[sale(DateTime(2026, 3, 5), 'a'), sale(DateTime(2026, 6, 5), 'a')],
         range: SalesRange.year,
         now: now,
@@ -90,7 +117,8 @@ void main() {
       expect(year.buckets[2].newCustomers, 1);
       expect(year.buckets[5].returningCustomers, 1);
 
-      final CustomerMix none = computeCustomerMix(orders: const <OrderModel>[], range: SalesRange.month, now: now);
+      final CustomerMix none = computeCustomerMix(
+        walkInCustomerId: mqSportsWalkInCustomerId,orders: const <OrderModel>[], range: SalesRange.month, now: now);
       expect(none.customers, 0);
       expect(none.returningPercent, 0);
       expect(none.buckets.length, 30);
@@ -152,11 +180,12 @@ void main() {
   });
 
   test('computeTopCustomers ranks named customers and skips walk-in and cancelled sales', () {
-    final List<TopCustomer> top = computeTopCustomers(orders: <OrderModel>[
+    final List<TopCustomer> top = computeTopCustomers(
+        walkInCustomerId: mqSportsWalkInCustomerId,orders: <OrderModel>[
       _order(now, <OrderItem>[_item('a', 1, 100)], customerId: 'c1', customerName: 'Ali'),
       _order(now, <OrderItem>[_item('a', 1, 300)], customerId: 'c2', customerName: 'Sara'),
       _order(now, <OrderItem>[_item('a', 1, 50)], customerId: 'c1', customerName: 'Ali'),
-      _order(now, <OrderItem>[_item('a', 1, 9999)], customerId: walkInCustomerId, customerName: 'Walk-in'),
+      _order(now, <OrderItem>[_item('a', 1, 9999)], customerId: mqSportsWalkInCustomerId, customerName: 'Walk-in'),
       _order(now, <OrderItem>[_item('a', 1, 9999)], customerId: 'c3', customerName: 'Zed', status: OrderStatus.cancelled),
     ]);
     expect(top.map((TopCustomer c) => c.name), <String>['Sara', 'Ali']);

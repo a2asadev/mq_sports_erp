@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/online/api_client.dart';
 import 'package:mq_sports_erp/online/token_store.dart';
@@ -107,6 +108,64 @@ void main() {
           _json(401, '{"message":"Refresh token was already used"}')), store);
       expect(await revoked.restoreSession(), isNull);
       expect(await store.readRefreshToken(), isNull);
+    });
+  });
+
+  group('the business the user works for', () {
+    const String ali =
+        '{"id":"t-ali","name":"Ali Traders","phone":"0300-1","walkInCustomerId":"walk-ali"}';
+    String withBusiness(String business) =>
+        '{"accessToken":"a","refreshToken":"r","user":$_userJson,"tenant":$business}';
+
+    test('sign-in keeps the business with the session, and logout forgets it', () async {
+      final MemoryTokenStore store = MemoryTokenStore();
+      final ApiClient api = _client(MockClient((http.Request _) async => _json(200, withBusiness(ali))), store);
+      expect(api.currentBusiness, isNull);
+
+      await api.login('a@b.c', 'x');
+      expect(api.currentBusiness?.name, 'Ali Traders');
+      expect(api.currentBusiness?.walkInCustomerId, 'walk-ali');
+      // Saved next to the user, so the app knows it without a connection.
+      expect((jsonDecode((await store.readUserJson())!) as Map<String, dynamic>)['tenant'], containsPair('id', 't-ali'));
+
+      await api.logout();
+      expect(api.currentBusiness, isNull);
+    });
+
+    test('opening offline brings back the saved business', () async {
+      final MemoryTokenStore store = MemoryTokenStore();
+      await _client(MockClient((http.Request _) async => _json(200, withBusiness(ali))), store).login('a@b.c', 'x');
+
+      final ApiClient offline = _client(MockClient((http.Request _) async => throw http.ClientException('no network')), store);
+      expect((await offline.restoreSession())?.email, 'a@b.c');
+      expect(offline.currentBusiness?.walkInCustomerId, 'walk-ali');
+    });
+
+    test('a session saved before businesses existed has none, and an answer without one clears it', () async {
+      final MemoryTokenStore store = MemoryTokenStore();
+      await store.saveRefreshToken('saved');
+      await store.saveUserJson(_userJson); // no "tenant"
+      final ApiClient offline = _client(MockClient((http.Request _) async => throw http.ClientException('x')), store);
+      await offline.restoreSession();
+      expect(offline.currentBusiness, isNull);
+
+      final ApiClient api = _client(MockClient((http.Request _) async => _json(200, _tokens('a', 'r'))));
+      await api.login('a@b.c', 'x');
+      expect(api.currentBusiness, isNull);
+    });
+
+    test('a fresher description (renamed shop, new phone) replaces and is saved', () async {
+      final MemoryTokenStore store = MemoryTokenStore();
+      final ApiClient api = _client(MockClient((http.Request _) async => _json(200, withBusiness(ali))), store);
+      await api.login('a@b.c', 'x');
+
+      await api.rememberBusiness(BusinessInfo.tryFromMap(<String, dynamic>{
+        'id': 't-ali', 'name': 'Ali Store', 'phone': '0300-9', 'walkInCustomerId': 'walk-ali',
+      })!);
+      expect(api.currentBusiness?.name, 'Ali Store');
+      final Map<String, dynamic> saved = jsonDecode((await store.readUserJson())!) as Map<String, dynamic>;
+      expect(saved['tenant'], containsPair('name', 'Ali Store'));
+      expect(saved['email'], 'a@b.c'); // the user is still there
     });
   });
 

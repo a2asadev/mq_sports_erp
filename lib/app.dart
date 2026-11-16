@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/core/theme/app_theme.dart';
+import 'package:mq_sports_erp/models/business_info.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
+import 'package:mq_sports_erp/providers/business_provider.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/providers/sync_controller.dart';
@@ -16,11 +18,14 @@ class MqSportsApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Amounts are written with the business's currency in many places that do
+    // not watch anything, so a change of currency starts the screens afresh.
+    final String currency = ref.watch(businessProvider.select((BusinessInfo b) => b.currency));
     return MaterialApp(
       title: 'MQ Sports ERP',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      home: const _AuthGate(),
+      home: KeyedSubtree(key: ValueKey<String>(currency), child: const _AuthGate()),
     );
   }
 }

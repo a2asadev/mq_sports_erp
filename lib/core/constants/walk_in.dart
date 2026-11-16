@@ -1,6 +1,6 @@
-/// The one customer record that stands for "someone who walked in and paid".
-/// The server creates it (same id everywhere), so every device has it after
-/// its first sync, and staff who cannot create customers can still sell.
-const String walkInCustomerId = '00000000-0000-4000-8000-000000000001';
-
-bool isWalkIn(String customerId) => customerId == walkInCustomerId;
+/// The walk-in customer of MQ Sports, the first business on the server. It is
+/// the same id the server's migration created, and what an app saved before
+/// businesses existed still has. Other businesses have their own walk-in
+/// customer, which the server names at sign-in (`BusinessInfo.walkInCustomerId`):
+/// use `businessProvider`, not this constant, in the app.
+const String mqSportsWalkInCustomerId = '00000000-0000-4000-8000-000000000001';
