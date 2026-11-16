@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/online/api_auth_service.dart';
 import 'package:mq_sports_erp/online/online_providers.dart';
 import 'package:mq_sports_erp/online/photo_service.dart';
+import 'package:mq_sports_erp/online/starter_pack_service.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
 import 'package:mq_sports_erp/providers/local_data_providers.dart';
 import 'package:mq_sports_erp/services/auth_admin_service.dart';
@@ -44,6 +45,27 @@ final Provider<PhotoService> photoServiceProvider = Provider<PhotoService>((Ref 
         }
       } catch (_) {
         // The photo is saved; the next sync brings it to this device.
+      }
+    },
+  );
+});
+
+/// Starter category packs. After a pack is added the new categories are brought
+/// onto this device (the web copy is refreshed; the others pull).
+final Provider<StarterPackService> starterPackServiceProvider = Provider<StarterPackService>((Ref ref) {
+  final bool online = ref.watch(dataModeProvider).isOnline;
+  return StarterPackService(
+    api: ref.watch(apiClientProvider),
+    refresh: () async {
+      try {
+        if (online) {
+          await ref.read(remoteStoreProvider).refresh();
+        } else {
+          await ref.read(syncEngineProvider).pull();
+          ref.read(syncTickProvider.notifier).increment();
+        }
+      } catch (_) {
+        // The categories are saved; the next sync brings them to this device.
       }
     },
   );

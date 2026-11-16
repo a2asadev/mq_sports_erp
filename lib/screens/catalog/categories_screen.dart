@@ -6,7 +6,9 @@ import 'package:mq_sports_erp/core/utils/error_text.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/providers/catalog_providers.dart';
+import 'package:mq_sports_erp/models/starter_pack.dart';
 import 'package:mq_sports_erp/screens/catalog/category_form_screen.dart';
+import 'package:mq_sports_erp/screens/catalog/starter_pack_dialog.dart';
 import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:mq_sports_erp/widgets/stat_strip.dart';
 
@@ -37,6 +39,16 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   void dispose() {
     _search.dispose();
     super.dispose();
+  }
+
+  /// A ready-made set of categories for a type of business.
+  Future<void> _openStarterPacks() async {
+    final StarterPackResult? result = await showStarterPackDialog(context);
+    if (result == null || !mounted) {
+      return;
+    }
+    final String already = result.skipped > 0 ? ' (${result.skipped} you already had were left as they are)' : '';
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added ${result.created} categories$already.')));
   }
 
   void _openForm({CategoryModel? category, String parentId = ''}) {
@@ -118,7 +130,27 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
         child: error != null ? Text(errorMessageOf(error)) : const CircularProgressIndicator(),
       );
     } else if (categories.isEmpty) {
-      body = const Center(child: Text('No categories yet.'));
+      body = Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const Text('No categories yet.'),
+            if (canManage) ...<Widget>[
+              const SizedBox(height: 4),
+              const Text(
+                'Start from a ready-made set for your kind of business, or add them one by one.',
+                style: TextStyle(color: AppColors.textMuted),
+              ),
+              const SizedBox(height: 14),
+              FilledButton.icon(
+                onPressed: _openStarterPacks,
+                icon: const Icon(Icons.auto_awesome_outlined),
+                label: const Text('Start from a template'),
+              ),
+            ],
+          ],
+        ),
+      );
     } else {
       final List<CategoryStat> stats = computeCategoryStats(categories: categories, products: products);
       final int mainCount = stats.where((CategoryStat s) => s.depth == 0).length;
@@ -232,7 +264,18 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Categories')),
+      appBar: AppBar(
+        title: const Text('Categories'),
+        actions: <Widget>[
+          if (canManage)
+            TextButton.icon(
+              onPressed: _openStarterPacks,
+              icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+              label: const Text('Starter packs'),
+            ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: body,
       floatingActionButton: canManage
           ? FloatingActionButton.extended(

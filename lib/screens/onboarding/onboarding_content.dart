@@ -124,7 +124,7 @@ List<OnboardingStep> _admin() => const <OnboardingStep>[
         points: <String>[
           '1. Settings > Online store: store name, phone, delivery fee, free-delivery amount.',
           '2. Settings > Online store > "Send test e-mail" to check that e-mail works.',
-          '3. Categories, then Products with their variants, prices and photos.',
+          '3. Categories (start from a ready-made Starter pack for your kind of business), then Products with their variants, prices and photos.',
           '4. Vendors and Customers; record opening balances if people already owe or are owed.',
           '5. Purchases to put the first stock on the shelf (or a Stock Audit to count what you have).',
           '6. Users: a login for each person, with the right role.',
