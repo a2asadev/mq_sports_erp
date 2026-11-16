@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
 import 'package:mq_sports_erp/core/utils/formatters.dart';
+import 'package:mq_sports_erp/core/utils/page_stats.dart';
+import 'package:mq_sports_erp/widgets/stat_strip.dart';
 import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/providers/purchasing_providers.dart';
 import 'package:mq_sports_erp/screens/purchasing/purchase_detail_screen.dart';
@@ -65,16 +68,38 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
           return byDate != 0 ? byDate : b.createdAt.compareTo(a.createdAt);
         });
 
-      double total = 0;
-      double due = 0;
-      for (final PurchaseModel p in purchases) {
-        total += p.totalAmount;
-        final double remaining = p.totalAmount - (paid[p.id] ?? 0);
-        due += remaining > 0 ? remaining : 0;
-      }
+      final PurchaseStats stats = computePurchaseStats(loaded, paid);
 
       body = Column(
         children: <Widget>[
+          StatStrip(
+            items: <StatItem>[
+              StatItem(
+                icon: Icons.receipt_long_outlined,
+                color: AppColors.sky,
+                label: 'Purchases',
+                value: '${stats.count}',
+              ),
+              StatItem(
+                icon: Icons.shopping_bag_outlined,
+                color: AppColors.navy,
+                label: 'Total purchased',
+                value: formatMoney(stats.total),
+              ),
+              StatItem(
+                icon: Icons.account_balance_wallet_outlined,
+                color: stats.due > 0.005 ? AppColors.primary : AppColors.textMuted,
+                label: 'Owed to vendors',
+                value: formatMoney(stats.due),
+              ),
+              StatItem(
+                icon: Icons.pending_actions_outlined,
+                color: AppColors.amber,
+                label: 'Not fully paid',
+                value: '${stats.unpaidCount}',
+              ),
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
             child: TextField(
@@ -114,22 +139,12 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    '${purchases.length} purchase(s) · Total ${formatAmount(total)}',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ),
-                Text(
-                  'Due ${formatAmount(due)}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: due > 0.005 ? theme.colorScheme.error : null,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '${purchases.length} of ${loaded.length} purchase(s) shown',
+                style: theme.textTheme.bodySmall,
+              ),
             ),
           ),
           Expanded(

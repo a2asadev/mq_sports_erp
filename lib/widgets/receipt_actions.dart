@@ -3,8 +3,51 @@ import 'package:mq_sports_erp/core/utils/receipt.dart';
 import 'package:mq_sports_erp/core/utils/receipt_pdf.dart';
 import 'package:mq_sports_erp/core/utils/whatsapp.dart';
 import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+import 'package:mq_sports_erp/widgets/receipt_view.dart';
 import 'package:printing/printing.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+/// Shows the receipt on screen with its print, share and WhatsApp buttons.
+/// [footer] (for example a "New sale" button) goes under them.
+Future<void> showReceiptDialog(
+  BuildContext context,
+  ReceiptData receipt, {
+  String phone = '',
+  Widget? header,
+  Widget? footer,
+  bool barrierDismissible = true,
+}) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: barrierDismissible,
+    builder: (BuildContext context) => Dialog(
+      clipBehavior: Clip.antiAlias,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 380),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (header != null) header,
+              ReceiptView(receipt: receipt),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Column(
+                  children: <Widget>[
+                    ReceiptActions(receipt: receipt, phone: phone, showView: false),
+                    if (footer != null) ...<Widget>[const SizedBox(height: 8), footer],
+                    if (footer == null)
+                      TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
 
 /// Print, share as PDF, or send a receipt on WhatsApp.
 ///
@@ -13,9 +56,12 @@ import 'package:url_launcher/url_launcher.dart';
 ///   which it can be sent on WhatsApp as a file.
 /// - **WhatsApp**: opens a chat with the receipt as text; a person presses send.
 class ReceiptActions extends StatelessWidget {
-  const ReceiptActions({super.key, required this.receipt, this.phone = ''});
+  const ReceiptActions({super.key, required this.receipt, this.phone = '', this.showView = true});
 
   final ReceiptData receipt;
+
+  /// Offer "View receipt" (not needed where the receipt is already on screen).
+  final bool showView;
 
   /// The customer's phone, if known (asked for when missing).
   final String phone;
@@ -95,12 +141,19 @@ class ReceiptActions extends StatelessWidget {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
+      alignment: WrapAlignment.center,
       children: <Widget>[
-        OutlinedButton.icon(
+        FilledButton.icon(
           onPressed: () => _guard(context, _print),
           icon: const Icon(Icons.print_outlined),
-          label: const Text('Print / save PDF'),
+          label: const Text('Print Receipt'),
         ),
+        if (showView)
+          OutlinedButton.icon(
+            onPressed: () => showReceiptDialog(context, receipt, phone: phone),
+            icon: const Icon(Icons.receipt_long_outlined),
+            label: const Text('View receipt'),
+          ),
         OutlinedButton.icon(
           onPressed: () => _guard(context, _share),
           icon: const Icon(Icons.ios_share),

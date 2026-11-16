@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
 import 'package:mq_sports_erp/core/utils/formatters.dart';
+import 'package:mq_sports_erp/core/utils/page_stats.dart';
+import 'package:mq_sports_erp/widgets/stat_strip.dart';
 import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
 import 'package:mq_sports_erp/providers/sales_providers.dart';
 import 'package:mq_sports_erp/screens/sales/order_detail_screen.dart';
 import 'package:mq_sports_erp/screens/sales/order_form_screen.dart';
-import 'package:mq_sports_erp/widgets/order_status_chip.dart';
-import 'package:mq_sports_erp/widgets/purchase_status_chip.dart';
+import 'package:mq_sports_erp/widgets/order_receipt_card.dart';
 
 /// Order lifecycle list: every order with its pipeline status and payment
 /// state. It reads from this device, so a status change shows up at once;
@@ -70,21 +71,44 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           return byDate != 0 ? byDate : b.createdAt.compareTo(a.createdAt);
         });
 
-      double total = 0;
-      double due = 0;
-      for (final OrderModel o in orders) {
-        if (o.status == OrderStatus.cancelled) {
-          continue;
-        }
-        total += o.totalAmount;
-        final double remaining = o.totalAmount - (paid[o.id] ?? 0);
-        due += remaining > 0 ? remaining : 0;
-      }
+      final OrderStats stats = computeOrderStats(loaded, paid, DateTime.now());
 
       body = Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          StatStrip(
+            items: <StatItem>[
+              StatItem(
+                icon: Icons.today_outlined,
+                color: AppColors.primary,
+                label: 'Sales today',
+                value: formatMoney(stats.todaySales),
+                caption: '${stats.todayCount} order(s)',
+              ),
+              StatItem(
+                icon: Icons.payments_outlined,
+                color: AppColors.teal,
+                label: 'Total sales',
+                value: formatMoney(stats.sales),
+                caption: '${stats.count} order(s)',
+              ),
+              StatItem(
+                icon: Icons.account_balance_wallet_outlined,
+                color: stats.toCollect > 0.005 ? AppColors.amber : AppColors.textMuted,
+                label: 'To collect',
+                value: formatMoney(stats.toCollect),
+              ),
+              StatItem(
+                icon: Icons.pending_actions_outlined,
+                color: AppColors.sky,
+                label: 'Open orders',
+                value: '${stats.openCount}',
+                caption: 'not yet delivered',
+              ),
+            ],
+          ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
             child: TextField(
               decoration: const InputDecoration(
                 hintText: 'Search order no. or customer…',
@@ -97,7 +121,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: <Widget>[
                 Padding(
@@ -124,7 +148,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
             child: Row(
               children: <Widget>[
                 Padding(
@@ -149,23 +173,10 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    '${orders.length} order(s) · Total ${formatAmount(total)}',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ),
-                Text(
-                  'To collect ${formatAmount(due)}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: due > 0.005 ? theme.colorScheme.error : null,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Text(
+              '${orders.length} of ${loaded.length} order(s) shown',
+              style: theme.textTheme.bodySmall,
             ),
           ),
           Expanded(
@@ -175,53 +186,20 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                         ? 'No orders yet.'
                         : 'No orders match your search.'),
                   )
-                : ListView.separated(
+                : GridView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 360,
+                      mainAxisExtent: 318,
+                      mainAxisSpacing: 14,
+                      crossAxisSpacing: 14,
+                    ),
                     itemCount: orders.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(height: 1),
                     itemBuilder: (BuildContext context, int index) {
                       final OrderModel order = orders[index];
-                      final bool cancelled = order.status == OrderStatus.cancelled;
-                      return ListTile(
-                        leading: const CircleAvatar(
-                          child: Icon(Icons.receipt_long_outlined),
-                        ),
-                        title: Text('${order.orderNo} · ${order.customerName}'),
-                        subtitle: Text(
-                          <String>[
-                            formatDate(order.orderDate),
-                            order.saleType.label,
-                            if (order.isWebOrder) 'Online store',
-                            '${order.items.length} item(s)',
-                          ].join(' · '),
-                        ),
-                        trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                            Text(
-                              formatAmount(order.totalAmount),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                decoration:
-                                    cancelled ? TextDecoration.lineThrough : null,
-                              ),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                OrderStatusChip(status: order.status),
-                                if (!cancelled) ...<Widget>[
-                                  const SizedBox(width: 4),
-                                  PurchaseStatusChip(
-                                    status: purchaseStatusFor(
-                                        order.totalAmount, paid[order.id] ?? 0),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ],
-                        ),
+                      return OrderReceiptCard(
+                        order: order,
+                        paid: paid[order.id] ?? 0,
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute<void>(
                             builder: (BuildContext context) =>

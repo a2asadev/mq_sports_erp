@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/formatters.dart';
+import 'package:mq_sports_erp/core/utils/page_stats.dart';
+import 'package:mq_sports_erp/widgets/stat_strip.dart';
 import 'package:mq_sports_erp/core/utils/stock_alerts.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
@@ -57,6 +60,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
           _StockRow(product, variant, stock[variant.id] ?? 0),
     ];
     final int lowCount = allRows.where((_StockRow r) => r.isLow).length;
+    final StockStats stats = computeStockStats(products, stock);
     final List<_StockRow> rows = allRows.where((_StockRow row) {
       switch (_filter) {
         case _StockFilter.lowStock:
@@ -110,6 +114,35 @@ class _StockScreenState extends ConsumerState<StockScreen> {
       ),
       body: Column(
         children: <Widget>[
+          StatStrip(
+            items: <StatItem>[
+              StatItem(
+                icon: Icons.warehouse_outlined,
+                color: AppColors.navy,
+                label: 'Units in stock',
+                value: '${stats.units}',
+                caption: '${stats.items} item(s)',
+              ),
+              StatItem(
+                icon: Icons.payments_outlined,
+                color: AppColors.teal,
+                label: 'Stock value (cost)',
+                value: formatMoney(stats.value),
+              ),
+              StatItem(
+                icon: Icons.notification_important_outlined,
+                color: stats.lowCount > 0 ? AppColors.amber : AppColors.textMuted,
+                label: 'Low stock',
+                value: '${stats.lowCount}',
+              ),
+              StatItem(
+                icon: Icons.remove_shopping_cart_outlined,
+                color: stats.outCount > 0 ? AppColors.primary : AppColors.textMuted,
+                label: 'Out of stock',
+                value: '${stats.outCount}',
+              ),
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
             child: TextField(

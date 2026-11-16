@@ -22,6 +22,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
   return <ErpModule>[
     ErpModule(
       id: 'categories',
+      group: 'Inventory',
       title: 'Categories',
       icon: Icons.category_outlined,
       allowedRoles: const <UserRole>{
@@ -33,6 +34,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'products',
+      group: 'Inventory',
       title: 'Products',
       icon: Icons.inventory_2_outlined,
       allowedRoles: const <UserRole>{
@@ -44,6 +46,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'customers',
+      group: 'Sales',
       title: 'Customers',
       icon: Icons.groups_outlined,
       allowedRoles: const <UserRole>{
@@ -55,6 +58,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'vendors',
+      group: 'Purchasing',
       title: 'Vendors',
       icon: Icons.local_shipping_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
@@ -62,6 +66,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'purchases',
+      group: 'Purchasing',
       title: 'Purchases',
       icon: Icons.shopping_cart_checkout_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
@@ -69,6 +74,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'pos',
+      group: 'Main',
       title: 'POS',
       icon: Icons.point_of_sale,
       allowedRoles: const <UserRole>{
@@ -80,6 +86,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'sales',
+      group: 'Sales',
       title: 'Sales & Orders',
       icon: Icons.point_of_sale_outlined,
       allowedRoles: const <UserRole>{
@@ -91,6 +98,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'stock',
+      group: 'Inventory',
       title: 'Stock',
       icon: Icons.warehouse_outlined,
       allowedRoles: const <UserRole>{
@@ -102,6 +110,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'logs',
+      group: 'System',
       title: 'Activity Logs',
       icon: Icons.history_outlined,
       allowedRoles: const <UserRole>{UserRole.admin},
@@ -109,6 +118,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'settings',
+      group: 'System',
       title: 'Settings',
       icon: Icons.settings_outlined,
       allowedRoles: const <UserRole>{
@@ -120,6 +130,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'users',
+      group: 'System',
       title: 'Users',
       icon: Icons.people_outline,
       allowedRoles: const <UserRole>{UserRole.admin},

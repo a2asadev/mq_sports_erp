@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
 import 'package:mq_sports_erp/core/utils/formatters.dart';
 import 'package:mq_sports_erp/models/activity_log_model.dart';
@@ -23,6 +24,47 @@ Color _levelColor(BuildContext context, LogLevel level) {
       return Colors.orange.shade800;
     case LogLevel.error:
       return Theme.of(context).colorScheme.error;
+  }
+}
+
+/// A short reference for a log entry (first 8 characters of its unique id),
+/// easy to read out or search for; the full id is in the details.
+String _shortId(ActivityLogModel log) => '#${log.id.length > 8 ? log.id.substring(0, 8) : log.id}';
+
+Color _kindColor(LogKind kind) {
+  switch (kind) {
+    case LogKind.record:
+      return AppColors.sky;
+    case LogKind.action:
+      return AppColors.teal;
+    case LogKind.failure:
+      return AppColors.primary;
+    case LogKind.sync:
+      return AppColors.violet;
+    case LogKind.session:
+      return AppColors.amber;
+  }
+}
+
+/// A small coloured label, optionally tappable to filter by it.
+class _Tag extends StatelessWidget {
+  const _Tag({required this.text, required this.color, this.onTap});
+
+  final String text;
+  final Color color;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(6),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(6)),
+        child: Text(text, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600)),
+      ),
+    );
   }
 }
 
@@ -55,7 +97,12 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
   String? _user;
   DateTimeRange? _range;
 
+  /// Shows only the entries written by one action (an order and its stock and
+  /// ledger entries), found through their shared group id.
+  String? _group;
+
   bool get _hasFilters =>
+      _group != null ||
       _query.isNotEmpty ||
       _level != null ||
       _kind != null ||
@@ -71,6 +118,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
       _module = null;
       _user = null;
       _range = null;
+      _group = null;
     });
   }
 
@@ -99,6 +147,9 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
     if (_user != null && log.userName != _user) {
       return false;
     }
+    if (_group != null && log.groupId != _group) {
+      return false;
+    }
     final DateTimeRange? range = _range;
     if (range != null) {
       final DateTime day = log.createdAt.toLocal();
@@ -119,6 +170,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
       log.module,
       log.action,
       log.userName,
+      log.id,
       ...log.changes.map((LogFieldChange c) => '${c.field} ${c.from ?? ''} ${c.to ?? ''}'),
     ].join(' ').toLowerCase().contains(q);
   }
@@ -154,7 +206,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                   _detail('Record', log.entityLabel),
                   _detail('Record id', log.entityId),
                   _detail('Group', log.groupId),
-                  _detail('Log id', log.id),
+                  _detail('Log id', '${_shortId(log)}  ·  ${log.id}'),
                   if (log.changes.isNotEmpty) ...<Widget>[
                     const Divider(height: 24),
                     Text('Changes', style: theme.textTheme.titleSmall),
@@ -188,6 +240,15 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
               icon: const Icon(Icons.copy_outlined),
               label: const Text('Copy'),
             ),
+            if (log.groupId.isNotEmpty)
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                  setState(() => _group = log.groupId);
+                },
+                icon: const Icon(Icons.account_tree_outlined),
+                label: const Text('Show linked'),
+              ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
               child: const Text('Close'),
@@ -276,7 +337,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
             child: TextField(
               decoration: const InputDecoration(
-                hintText: 'Search summary, record, user, field…',
+                hintText: 'Search summary, record, user, field or #id…',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
                 isDense: true,
@@ -338,6 +399,15 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                     onPressed: _pickRange,
                   ),
                 ),
+                if (_group != null)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: InputChip(
+                      avatar: const Icon(Icons.account_tree_outlined, size: 18),
+                      label: const Text('Linked entries'),
+                      onDeleted: () => setState(() => _group = null),
+                    ),
+                  ),
                 if (_hasFilters)
                   TextButton(onPressed: _clearFilters, child: const Text('Clear')),
               ],
@@ -365,27 +435,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                         ? 'No logs on this device yet.'
                         : 'No logs match the filters.'),
                   )
-                : ListView.separated(
-                    itemCount: shown.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const Divider(height: 1),
-                    itemBuilder: (BuildContext context, int index) {
-                      final ActivityLogModel log = shown[index];
-                      return ListTile(
-                        dense: true,
-                        leading: Icon(_levelIcon(log.level),
-                            color: _levelColor(context, log.level)),
-                        title: Text(log.summary, maxLines: 2, overflow: TextOverflow.ellipsis),
-                        subtitle: Text(<String>[
-                          _time(log),
-                          if (log.userName.isNotEmpty) log.userName,
-                          log.module,
-                          if (log.changes.isNotEmpty) '${log.changes.length} change(s)',
-                        ].join(' · ')),
-                        onTap: () => _showDetails(context, log),
-                      );
-                    },
-                  ),
+                : _logList(shown, data.logs),
           ),
         ],
       );
@@ -415,6 +465,100 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
         ],
       ),
       body: body,
+    );
+  }
+
+  /// The list, with a heading for each day and tags on every entry. Tapping
+  /// the type or module tag filters by it.
+  Widget _logList(List<ActivityLogModel> shown, List<ActivityLogModel> all) {
+    final List<Object> rows = <Object>[];
+    String? lastDay;
+    for (final ActivityLogModel log in shown) {
+      final String day = formatDate(log.createdAt);
+      if (day != lastDay) {
+        rows.add(day);
+        lastDay = day;
+      }
+      rows.add(log);
+    }
+    return ListView.builder(
+      itemCount: rows.length,
+      itemBuilder: (BuildContext context, int index) {
+        final Object row = rows[index];
+        if (row is String) {
+          return Container(
+            color: AppColors.mutedFill,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Text(row, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.textMuted)),
+          );
+        }
+        final ActivityLogModel log = row as ActivityLogModel;
+        final int related = log.groupId.isEmpty ? 0 : all.where((ActivityLogModel l) => l.groupId == log.groupId).length;
+        final Color levelColor = _levelColor(context, log.level);
+        return InkWell(
+          onTap: () => _showDetails(context, log),
+          child: Container(
+            decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.border))),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Icon(_levelIcon(log.level), color: levelColor, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(log.summary, maxLines: 2, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 6),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: <Widget>[
+                          _Tag(
+                            text: log.kind.label,
+                            color: _kindColor(log.kind),
+                            onTap: () => setState(() => _kind = log.kind),
+                          ),
+                          _Tag(
+                            text: log.module,
+                            color: AppColors.navy,
+                            onTap: () => setState(() => _module = log.module),
+                          ),
+                          if (log.entityLabel.isNotEmpty) _Tag(text: log.entityLabel, color: AppColors.textMuted),
+                          if (related > 1)
+                            _Tag(
+                              text: '$related linked',
+                              color: AppColors.violet,
+                              onTap: () => setState(() => _group = log.groupId),
+                            ),
+                          Text(
+                            <String>[
+                              _time(log),
+                              if (log.userName.isNotEmpty) log.userName,
+                              if (log.changes.isNotEmpty) '${log.changes.length} change(s)',
+                            ].join(' · '),
+                            style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  _shortId(log),
+                  style: const TextStyle(fontSize: 11, color: AppColors.textMuted, fontFamily: 'monospace'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

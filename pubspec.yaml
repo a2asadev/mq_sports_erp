@@ -22,6 +22,8 @@ dependencies:
   flutter_secure_storage: ^11.2.0
   pdf: ^3.13.1
   printing: ^5.15.1
+  fl_chart: ^0.69.2
+  barcode_widget: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -32,3 +34,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/mq_logo.png
+  fonts:
+    # Inter (SIL Open Font License, see assets/fonts/Inter-LICENSE.txt).
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.otf
+        - asset: assets/fonts/Inter-Medium.otf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.otf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.otf
+          weight: 700

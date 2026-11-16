@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
+import 'package:mq_sports_erp/core/utils/page_stats.dart';
+import 'package:mq_sports_erp/widgets/stat_strip.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/providers/users_providers.dart';
 import 'package:mq_sports_erp/screens/users/user_form_screen.dart';
@@ -83,7 +86,8 @@ class UsersScreen extends ConsumerWidget {
               .compareTo((b.displayName.isNotEmpty ? b.displayName : b.email)
                   .toLowerCase()),
         );
-      body = ListView.separated(
+      final UserStats stats = computeUserStats(loaded);
+      final Widget list = ListView.separated(
         itemCount: users.length,
         separatorBuilder: (BuildContext context, int index) =>
             const Divider(height: 1),
@@ -146,6 +150,41 @@ class UsersScreen extends ConsumerWidget {
             ),
           );
         },
+      );
+      body = Column(
+        children: <Widget>[
+          StatStrip(
+            items: <StatItem>[
+              StatItem(
+                icon: Icons.people_alt_outlined,
+                color: AppColors.primary,
+                label: 'Users',
+                value: '${stats.total}',
+              ),
+              StatItem(
+                icon: Icons.check_circle_outline,
+                color: AppColors.teal,
+                label: 'Active',
+                value: '${stats.active}',
+                caption: stats.total > stats.active ? '${stats.total - stats.active} turned off' : '',
+              ),
+              StatItem(
+                icon: Icons.admin_panel_settings_outlined,
+                color: AppColors.navy,
+                label: 'Admins',
+                value: '${stats.admins}',
+              ),
+              StatItem(
+                icon: Icons.badge_outlined,
+                color: AppColors.sky,
+                label: 'Managers & staff',
+                value: '${stats.managers + stats.staff}',
+                caption: '${stats.managers} manager(s), ${stats.staff} staff',
+              ),
+            ],
+          ),
+          Expanded(child: list),
+        ],
       );
     }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:http/http.dart' as http;
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
@@ -285,9 +286,13 @@ class ApiClient {
     } on TimeoutException {
       throw const RemoteSyncException(
           'The server took too long to answer. Please try again.');
-    } on http.ClientException {
-      throw const RemoteSyncException(
-          'Cannot reach the server. Check your connection and try again.');
+    } on http.ClientException catch (e) {
+      // The address and the reason help to tell a wrong address from a
+      // blocked or stopped server.
+      debugPrint('ApiClient: ${request.method} $uri failed: ${e.message}');
+      throw RemoteSyncException(
+          'Cannot reach the server at $_baseUrl. Check your connection and '
+          'try again. (${e.message})');
     }
   }
 

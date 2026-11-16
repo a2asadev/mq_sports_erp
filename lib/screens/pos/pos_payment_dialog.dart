@@ -19,18 +19,21 @@ Future<PosPaymentResult?> showPosPaymentDialog(
   BuildContext context, {
   required double total,
   required bool allowCredit,
+  PaymentMethod initialMethod = PaymentMethod.cash,
 }) {
   return showDialog<PosPaymentResult>(
     context: context,
-    builder: (BuildContext context) => _PaymentDialog(total: total, allowCredit: allowCredit),
+    builder: (BuildContext context) =>
+        _PaymentDialog(total: total, allowCredit: allowCredit, initialMethod: initialMethod),
   );
 }
 
 class _PaymentDialog extends StatefulWidget {
-  const _PaymentDialog({required this.total, required this.allowCredit});
+  const _PaymentDialog({required this.total, required this.allowCredit, required this.initialMethod});
 
   final double total;
   final bool allowCredit;
+  final PaymentMethod initialMethod;
 
   @override
   State<_PaymentDialog> createState() => _PaymentDialogState();
@@ -40,7 +43,7 @@ class _PaymentDialogState extends State<_PaymentDialog> {
   late final PosPaymentPlan _plan = PosPaymentPlan(widget.total);
   late final TextEditingController _amount = TextEditingController(text: _fmt(widget.total));
   final TextEditingController _reference = TextEditingController();
-  PaymentMethod _method = PaymentMethod.cash;
+  late PaymentMethod _method = widget.initialMethod;
   String _error = '';
 
   static String _fmt(double v) => v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);

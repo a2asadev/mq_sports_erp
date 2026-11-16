@@ -155,6 +155,9 @@ class ReceiptData {
     );
   }
 
+  /// An amount without the currency, for table columns ("1250", "99.5").
+  static String plain(double amount) => _money(amount);
+
   /// "Rs 1,250" style amounts without thousands separators (simple and printable anywhere).
   static String rs(double amount) => 'Rs ${_money(amount)}';
 

@@ -45,6 +45,7 @@ class VendorsScreen extends ConsumerWidget {
             MapEntry<String, String>(t.name, t.label),
         ],
         emptyText: 'No vendors yet.',
+        asCards: true,
         onSelected: (PartyListItem item) => Navigator.of(context).push(
           MaterialPageRoute<void>(
             builder: (BuildContext context) => PartyDetailScreen(

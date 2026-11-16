@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/providers/core_providers.dart';
 import 'package:mq_sports_erp/providers/data_mode.dart';
@@ -18,7 +19,7 @@ class MqSportsApp extends ConsumerWidget {
     return MaterialApp(
       title: 'MQ Sports ERP',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
+      theme: AppTheme.light(),
       home: const _AuthGate(),
     );
   }

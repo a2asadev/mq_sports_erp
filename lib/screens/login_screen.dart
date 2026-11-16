@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
 import 'package:mq_sports_erp/providers/auth_controller.dart';
+import 'package:mq_sports_erp/widgets/brand_logo.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -79,12 +80,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Icon(Icons.sports_cricket,
-                        size: 56, color: theme.colorScheme.primary),
-                    const SizedBox(height: 12),
+                    const Center(child: BrandLogo(height: 110)),
+                    const SizedBox(height: 8),
                     Text(
                       'MQ Sports ERP',
-                      style: theme.textTheme.headlineMedium,
+                      style: theme.textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w800),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),

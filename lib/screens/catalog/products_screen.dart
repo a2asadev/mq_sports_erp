@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mq_sports_erp/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/core/utils/category_tree.dart';
+import 'package:mq_sports_erp/core/utils/page_stats.dart';
+import 'package:mq_sports_erp/widgets/stat_strip.dart';
 import 'package:mq_sports_erp/core/utils/error_text.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/product_model.dart';
@@ -106,8 +109,38 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           .toList()
         ..sort((ProductModel a, ProductModel b) =>
             a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      final ProductStats stats = computeProductStats(loaded);
       body = Column(
         children: <Widget>[
+          StatStrip(
+            items: <StatItem>[
+              StatItem(
+                icon: Icons.inventory_2_outlined,
+                color: AppColors.primary,
+                label: 'Products',
+                value: '${stats.products}',
+              ),
+              StatItem(
+                icon: Icons.check_circle_outline,
+                color: AppColors.teal,
+                label: 'Active',
+                value: '${stats.active}',
+                caption: stats.products > stats.active ? '${stats.products - stats.active} inactive' : '',
+              ),
+              StatItem(
+                icon: Icons.style_outlined,
+                color: AppColors.sky,
+                label: 'Variants',
+                value: '${stats.variants}',
+              ),
+              StatItem(
+                icon: Icons.sell_outlined,
+                color: AppColors.violet,
+                label: 'Brands',
+                value: '${stats.brands}',
+              ),
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.all(12),
             child: TextField(

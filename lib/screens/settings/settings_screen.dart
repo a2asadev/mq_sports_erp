@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:mq_sports_erp/core/theme/app_theme.dart';
 import 'package:mq_sports_erp/models/store_settings_model.dart';
 import 'package:mq_sports_erp/models/user_model.dart';
 import 'package:mq_sports_erp/models/user_role.dart';
@@ -23,52 +24,134 @@ final AutoDisposeFutureProvider<StoreSettingsModel> storeSettingsProvider =
 String _problemText(Object error) =>
     error is AppException ? error.message : 'Something went wrong. Please try again.';
 
-/// Settings for everyone: your profile photo and the welcome guide. Admins and
-/// managers also see the online store's settings (only admins can change them).
-class SettingsScreen extends ConsumerWidget {
+enum _SettingsSection {
+  profile('Profile', Icons.person_outline, 'Your name, e-mail and photo'),
+  store('Online store', Icons.storefront_outlined, 'Opening, delivery and alerts'),
+  help('Help & guide', Icons.help_outline, 'The welcome tour');
+
+  const _SettingsSection(this.title, this.icon, this.subtitle);
+
+  final String title;
+  final IconData icon;
+  final String subtitle;
+}
+
+/// Settings, grouped into sections: Profile and Help for everyone; the Online
+/// store section for admins and managers (only admins can change it).
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  _SettingsSection _section = _SettingsSection.profile;
+
+  Widget _content(UserModel user, _SettingsSection section) {
+    switch (section) {
+      case _SettingsSection.profile:
+        return _ProfileCard(user: user);
+      case _SettingsSection.store:
+        return _StoreSettingsCard(canEdit: user.role == UserRole.admin, myEmail: user.email);
+      case _SettingsSection.help:
+        return Card(
+          child: ListTile(
+            leading: const Icon(Icons.tour_outlined),
+            title: const Text('Welcome guide'),
+            subtitle: Text('A short tour of what you can do as ${user.role.label}.'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push<bool>(
+              MaterialPageRoute<bool>(builder: (BuildContext c) => OnboardingScreen(role: user.role)),
+            ),
+          ),
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
     if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final bool seesStore = user.role == UserRole.admin || user.role == UserRole.manager;
+    final List<_SettingsSection> sections = <_SettingsSection>[
+      for (final _SettingsSection s in _SettingsSection.values)
+        if (s != _SettingsSection.store || seesStore) s,
+    ];
+    final _SettingsSection current = sections.contains(_section) ? _section : sections.first;
+    final Widget content = ListView(
+      padding: const EdgeInsets.all(16),
+      children: <Widget>[
+        Align(
+          alignment: Alignment.topLeft,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 680),
+            child: _content(user, current),
+          ),
+        ),
+      ],
+    );
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: <Widget>[
-            Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 640),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    _ProfileCard(user: user),
-                    const SizedBox(height: 16),
-                    Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.tour_outlined),
-                        title: const Text('Welcome guide'),
-                        subtitle: Text('A short tour of what you can do as ${user.role.label}.'),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () => Navigator.of(context).push<bool>(
-                          MaterialPageRoute<bool>(builder: (BuildContext c) => OnboardingScreen(role: user.role)),
-                        ),
-                      ),
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints box) {
+            if (box.maxWidth >= 800) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    width: 250,
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 0, 16),
+                      children: <Widget>[
+                        for (final _SettingsSection s in sections)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: ListTile(
+                              selected: s == current,
+                              selectedTileColor: AppColors.primarySoft,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              leading: Icon(s.icon),
+                              title: Text(s.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+                              subtitle: Text(s.subtitle, style: const TextStyle(fontSize: 12)),
+                              onTap: () => setState(() => _section = s),
+                            ),
+                          ),
+                      ],
                     ),
-                    if (seesStore) ...<Widget>[
-                      const SizedBox(height: 16),
-                      _StoreSettingsCard(canEdit: user.role == UserRole.admin, myEmail: user.email),
+                  ),
+                  Expanded(child: content),
+                ],
+              );
+            }
+            return Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 56,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    children: <Widget>[
+                      for (final _SettingsSection s in sections)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: ChoiceChip(
+                            avatar: Icon(s.icon, size: 18),
+                            label: Text(s.title),
+                            selected: s == current,
+                            onSelected: (bool _) => setState(() => _section = s),
+                          ),
+                        ),
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ],
+                Expanded(child: content),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -298,6 +381,30 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
     }
   }
 
+  /// A small titled divider that groups the fields under it.
+  static Widget _heading(BuildContext context, String text, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 10),
+      child: Row(
+        children: <Widget>[
+          Icon(icon, size: 18, color: AppColors.textMuted),
+          const SizedBox(width: 8),
+          Text(
+            text.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.6,
+              color: AppColors.textMuted,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(child: Divider(height: 1)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool locked = _busy || !widget.canEdit;
@@ -314,7 +421,7 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
               padding: const EdgeInsets.only(top: 4),
               child: Text('Only an admin can change these.', style: Theme.of(context).textTheme.bodySmall),
             ),
-          const SizedBox(height: 8),
+          _heading(context, 'Status', Icons.power_settings_new),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text('Store is open'),
@@ -322,7 +429,7 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
             value: _enabled,
             onChanged: locked ? null : (bool v) => setState(() => _enabled = v),
           ),
-          const SizedBox(height: 8),
+          _heading(context, 'Contact & alerts', Icons.contact_phone_outlined),
           TextFormField(
             controller: _name,
             enabled: !locked,
@@ -344,7 +451,7 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
             decoration: deco('Send new-order alerts to (e-mail)', helper: 'Leave empty for no alerts.'),
             validator: _email,
           ),
-          const SizedBox(height: 12),
+          _heading(context, 'Checkout & delivery', Icons.local_shipping_outlined),
           TextFormField(
             controller: _note,
             enabled: !locked,
@@ -376,7 +483,7 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          _heading(context, 'Stock display', Icons.inventory_2_outlined),
           TextFormField(
             controller: _low,
             enabled: !locked,

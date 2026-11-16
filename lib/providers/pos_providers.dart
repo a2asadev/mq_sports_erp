@@ -52,6 +52,30 @@ class PosLine {
         imageUrl: imageUrl,
       );
 
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        'productId': productId,
+        'variantId': variantId,
+        'productName': productName,
+        'variantLabel': variantLabel,
+        'sku': sku,
+        'unitPrice': unitPrice,
+        'quantity': quantity,
+        'discount': discount,
+        'imageUrl': imageUrl,
+      };
+
+  factory PosLine.fromMap(Map<String, dynamic> map) => PosLine(
+        productId: map['productId'] as String? ?? '',
+        variantId: map['variantId'] as String? ?? '',
+        productName: map['productName'] as String? ?? '',
+        variantLabel: map['variantLabel'] as String? ?? '',
+        sku: map['sku'] as String? ?? '',
+        unitPrice: (map['unitPrice'] as num?)?.toDouble() ?? 0,
+        quantity: (map['quantity'] as num?)?.toInt() ?? 0,
+        discount: (map['discount'] as num?)?.toDouble() ?? 0,
+        imageUrl: map['imageUrl'] as String? ?? '',
+      );
+
   OrderItem toOrderItem() => OrderItem(
         productId: productId,
         variantId: variantId,

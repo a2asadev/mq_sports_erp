@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mq_sports_erp/core/constants/walk_in.dart';
 import 'package:mq_sports_erp/models/category_model.dart';
 import 'package:mq_sports_erp/models/customer_model.dart';
@@ -8,9 +9,11 @@ import 'package:mq_sports_erp/models/product_model.dart';
 import 'package:mq_sports_erp/models/variant_model.dart';
 import 'package:mq_sports_erp/providers/catalog_providers.dart';
 import 'package:mq_sports_erp/providers/parties_providers.dart';
+import 'package:mq_sports_erp/providers/pos_holds.dart';
 import 'package:mq_sports_erp/providers/pos_providers.dart';
 import 'package:mq_sports_erp/providers/sales_providers.dart';
 import 'package:mq_sports_erp/providers/stock_providers.dart';
+import 'package:mq_sports_erp/providers/sync_controller.dart';
 import 'package:mq_sports_erp/screens/pos/pos_screen.dart';
 
 class _Products extends ProductsNotifier {
@@ -58,6 +61,7 @@ void main() {
   );
 
   Future<ProviderContainer> pump(WidgetTester tester, {Size size = const Size(1200, 900)}) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -70,6 +74,7 @@ void main() {
       customersProvider.overrideWith(() => _Customers(<CustomerModel>[CustomerModel(id: walkInCustomerId, name: 'Walk-in customer')])),
       stockOnHandProvider.overrideWithValue(<String, int>{'v1': 2, 'v2': 5, 'v3': 10, 'v4': 0}),
       canCreateOrdersProvider.overrideWithValue(true),
+      syncSummaryProvider.overrideWithValue(const SyncSummary(status: SyncStatus.upToDate, waiting: 0, failed: 0)),
     ]);
     addTearDown(container.dispose);
     await tester.pumpWidget(UncontrolledProviderScope(
@@ -83,12 +88,12 @@ void main() {
   testWidgets('shows products with prices and stock; sold-out items cannot be added', (WidgetTester tester) async {
     await pump(tester);
     expect(find.text('Cricket Bat'), findsOneWidget);
-    expect(find.text('Rs 1000 - 1500'), findsOneWidget);
+    expect(find.text('Rs 1000+'), findsOneWidget);
     expect(find.text('Leather Ball'), findsOneWidget);
     expect(find.text('Out of stock'), findsOneWidget); // the shoes
     await tester.tap(find.text('Running Shoes'));
     await tester.pumpAndSettle();
-    expect(find.text('Tap a product to add it to the sale.'), findsOneWidget);
+    expect(find.text('No Products Selected'), findsOneWidget);
   });
 
   testWidgets('a single-variant product is added with one tap; the total and units follow', (WidgetTester tester) async {
@@ -100,7 +105,7 @@ void main() {
     final PosCart cart = app.read(posCartProvider);
     expect(cart.quantityOf('v3'), 2);
     expect(cart.total, 1900);
-    expect(find.text('Charge Rs 1900'), findsOneWidget);
+    expect(find.text('Place Order · Rs 1900'), findsOneWidget);
     expect(find.text('Walk-in customer'), findsOneWidget);
   });
 
@@ -146,13 +151,13 @@ void main() {
     expect(find.textContaining('No product with barcode or SKU'), findsOneWidget);
   });
 
-  testWidgets('category chips filter the grid', (WidgetTester tester) async {
+  testWidgets('the category rail filters the grid', (WidgetTester tester) async {
     await pump(tester);
-    await tester.tap(find.widgetWithText(ChoiceChip, 'Cricket'));
+    await tester.tap(find.text('Cricket').first);
     await tester.pumpAndSettle();
     expect(find.text('Cricket Bat'), findsOneWidget);
     expect(find.text('Leather Ball'), findsNothing);
-    await tester.tap(find.widgetWithText(ChoiceChip, 'All'));
+    await tester.tap(find.text('All').first);
     await tester.pumpAndSettle();
     expect(find.text('Leather Ball'), findsOneWidget);
   });
@@ -161,20 +166,20 @@ void main() {
     final ProviderContainer app = await pump(tester);
     await tester.tap(find.text('Leather Ball').first);
     await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.add_circle_outline));
+    await tester.tap(find.byIcon(Icons.add).last);
     await tester.pumpAndSettle();
     expect(app.read(posCartProvider).total, 1900);
 
     // Sale-level discount through its row.
-    await tester.tap(find.text('Add'));
+    await tester.tap(find.byIcon(Icons.edit_outlined).last);
     await tester.pumpAndSettle();
     await tester.enterText(find.widgetWithText(TextField, 'Amount'), '100');
     await tester.tap(find.text('Apply'));
     await tester.pumpAndSettle();
     expect(app.read(posCartProvider).total, 1800);
-    expect(find.text('Charge Rs 1800'), findsOneWidget);
+    expect(find.text('Place Order · Rs 1800'), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.remove_circle_outline));
+    await tester.tap(find.byIcon(Icons.remove).last);
     await tester.pumpAndSettle();
     expect(app.read(posCartProvider).quantityOf('v3'), 1);
   });
@@ -187,7 +192,71 @@ void main() {
     expect(find.text('Sale · Rs 950'), findsOneWidget);
     await tester.tap(find.text('Sale · Rs 950'));
     await tester.pumpAndSettle();
-    expect(find.text('Charge Rs 950'), findsOneWidget);
+    expect(find.text('Place Order · Rs 950'), findsOneWidget);
     expect(app.read(posCartProvider).units, 1);
+  });
+
+  testWidgets('the order panel fits a 1366x768 laptop screen without overflow', (WidgetTester tester) async {
+    await pump(tester, size: const Size(1366, 768));
+    await tester.tap(find.text('Leather Ball').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Place Order · Rs 950'), findsOneWidget);
+    expect(find.text('Hold'), findsWidgets);
+    final Object? problem = tester.takeException();
+    expect(problem, isNull, reason: '$problem');
+  });
+
+  testWidgets('Hold parks the sale; Resume brings it back and parks the one in progress', (WidgetTester tester) async {
+    final ProviderContainer app = await pump(tester);
+    await tester.tap(find.text('Leather Ball').first);
+    await tester.pumpAndSettle();
+    expect(app.read(posCartProvider).units, 1);
+
+    // Hold it (the panel's button).
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Hold'));
+    await tester.pumpAndSettle();
+    expect(app.read(posCartProvider).isEmpty, isTrue);
+    expect(app.read(heldSalesProvider).length, 1);
+    expect(find.text('No Products Selected'), findsOneWidget);
+
+    // Serve someone else, then open the held sales and resume the first one.
+    await tester.tap(find.text('Cricket Bat').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Small'));
+    await tester.pumpAndSettle();
+    expect(app.read(posCartProvider).quantityOf('v1'), 1);
+
+    await tester.tap(find.textContaining('Held (1)').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Held sales'), findsOneWidget);
+    await tester.tap(find.text('Resume'));
+    await tester.pumpAndSettle();
+
+    expect(app.read(posCartProvider).quantityOf('v3'), 1); // the ball is back
+    expect(app.read(posCartProvider).quantityOf('v1'), 0);
+    final List<HeldSale> held = app.read(heldSalesProvider);
+    expect(held.length, 1); // the bat sale is now the one on hold
+    expect(held.single.cart.quantityOf('v1'), 1);
+  });
+
+  test('a held sale survives being written and read back', () {
+    final HeldSale sale = HeldSale(
+      cart: PosCart(
+        lines: const <PosLine>[
+          PosLine(productId: 'p', variantId: 'v', productName: 'Bat', variantLabel: 'S', sku: 'B', unitPrice: 1000, quantity: 2, discount: 50),
+        ],
+        orderDiscount: 100,
+        customer: CustomerModel(id: 'c1', name: 'Ali'),
+      ),
+    );
+    final HeldSale? back = HeldSale.fromMap(sale.toMap());
+    expect(back, isNotNull);
+    expect(back!.id, sale.id);
+    expect(back.cart.lines.single.quantity, 2);
+    expect(back.cart.lines.single.discount, 50);
+    expect(back.cart.orderDiscount, 100);
+    expect(back.cart.customer?.name, 'Ali');
+    expect(back.cart.total, 1850);
+    expect(HeldSale.fromMap('garbage'), isNull);
   });
 }

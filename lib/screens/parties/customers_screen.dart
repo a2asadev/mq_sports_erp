@@ -46,6 +46,7 @@ class CustomersScreen extends ConsumerWidget {
         ],
         showCreditFilter: true,
         emptyText: 'No customers yet.',
+        asCards: true,
         onSelected: (PartyListItem item) => Navigator.of(context).push(
           MaterialPageRoute<void>(
             builder: (BuildContext context) => PartyDetailScreen(
