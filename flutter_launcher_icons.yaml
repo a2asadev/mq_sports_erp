@@ -1,0 +1,24 @@
+# Generates every platform's app icon from the A2 Stocks mark:
+#   dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
+# Sources: assets/icons/app_icon.png (the mark on white) and
+# assets/icons/app_icon_foreground.png (the mark with room around it, for
+# Android's adaptive icon). Linux has no generator; see linux/ if it is needed.
+flutter_launcher_icons:
+  image_path: "assets/icons/app_icon.png"
+  android: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icons/app_icon.png"
+    background_color: "#EFF2F4"
+    theme_color: "#008293"
+  windows:
+    generate: true
+    image_path: "assets/icons/app_icon.png"
+    icon_size: 256
+  macos:
+    generate: true
+    image_path: "assets/icons/app_icon.png"
