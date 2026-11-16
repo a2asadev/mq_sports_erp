@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:mq_sports_erp/models/store_settings_model.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/token_store.dart';
-import 'package:mq_sports_erp/screens/settings/settings_screen.dart';
+import 'package:a2_stocks/models/store_settings_model.dart';
+import 'package:a2_stocks/online/api_client.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/token_store.dart';
+import 'package:a2_stocks/screens/settings/settings_screen.dart';
 
 const String _admin =
     '{"id":"u1","email":"boss@shop.co","displayName":"Boss","phoneNumber":"","role":"admin","isActive":true,'

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/category_tree.dart';
-import 'package:mq_sports_erp/core/utils/page_stats.dart';
-import 'package:mq_sports_erp/widgets/stat_strip.dart';
-import 'package:mq_sports_erp/core/utils/error_text.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/providers/catalog_providers.dart';
-import 'package:mq_sports_erp/screens/catalog/product_form_screen.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/category_tree.dart';
+import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/widgets/stat_strip.dart';
+import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/providers/catalog_providers.dart';
+import 'package:a2_stocks/screens/catalog/product_form_screen.dart';
 
 enum _ProductAction { open, delete }
 

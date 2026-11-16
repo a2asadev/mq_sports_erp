@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/data/local/app_database.dart';
-import 'package:mq_sports_erp/data/local/collections.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
-import 'package:mq_sports_erp/data/outbox_store.dart';
-import 'package:mq_sports_erp/data/sync_engine.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:a2_stocks/data/local/app_database.dart';
+import 'package:a2_stocks/data/local/collections.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/data/outbox_store.dart';
+import 'package:a2_stocks/data/sync_engine.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
 
 /// The database of the signed-in user (mobile and desktop).
 ///

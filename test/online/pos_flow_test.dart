@@ -11,26 +11,26 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/constants/walk_in.dart';
-import 'package:mq_sports_erp/core/utils/receipt.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/token_store.dart';
-import 'package:mq_sports_erp/providers/auth_controller.dart';
-import 'package:mq_sports_erp/providers/catalog_providers.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/providers/parties_providers.dart';
-import 'package:mq_sports_erp/providers/pos_providers.dart';
-import 'package:mq_sports_erp/providers/sales_providers.dart';
-import 'package:mq_sports_erp/providers/stock_providers.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:a2_stocks/core/constants/walk_in.dart';
+import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/payment_method.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/online/api_client.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/token_store.dart';
+import 'package:a2_stocks/providers/auth_controller.dart';
+import 'package:a2_stocks/providers/catalog_providers.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
+import 'package:a2_stocks/providers/data_mode.dart';
+import 'package:a2_stocks/providers/parties_providers.dart';
+import 'package:a2_stocks/providers/pos_providers.dart';
+import 'package:a2_stocks/providers/sales_providers.dart';
+import 'package:a2_stocks/providers/stock_providers.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
 
 const bool _run = bool.fromEnvironment('RUN_API_TESTS');
 

@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-MQ Sports ERP: a Flutter app (package `mq_sports_erp`, folder `mq_admin`) for Android, iOS, Windows, macOS, Linux and the web, talking to the backend API in the sibling repository `c:\src\mq_erp` (NestJS + PostgreSQL; see its `README.md`, `docs/target_stack.md`, `docs/api_design.md`). The **source code is the source of truth**; the markdown specs in this repo's root are partly outdated (see "Doc drift").
+MQ Sports ERP: a Flutter app (package `a2_stocks`, folder `mq_admin`) for Android, iOS, Windows, macOS, Linux and the web, talking to the backend API in the sibling repository `c:\src\mq_erp` (NestJS + PostgreSQL; see its `README.md`, `docs/target_stack.md`, `docs/api_design.md`). The **source code is the source of truth**; the markdown specs in this repo's root are partly outdated (see "Doc drift").
 
 - **Mobile and desktop** are offline-first: a local SQLite database (Drift) plus a queue of unsent actions, synced with the API.
 - **Web** is online-only: no local database, every action is an API call (`docs/web_admin.md`).
@@ -14,7 +14,7 @@ MQ Sports ERP: a Flutter app (package `mq_sports_erp`, folder `mq_admin`) for An
 - `dart run build_runner build` after changing `lib/data/local/tables.dart` (regenerates `app_database.g.dart`, which is committed).
 - `flutter test` runs the unit tests. Two real-server suites are skipped unless asked for (`--dart-define=RUN_API_TESTS=true --dart-define=API_BASE_URL=...`, API on an EMPTY database with one admin login): `test/online/api_flow_test.dart` (web mode) and `test/data/offline_flow_test.dart` (a day without internet with two devices). Commands are at the top of each file.
 - Web: `flutter run -d chrome --web-port 8080 --dart-define=API_BASE_URL=http://localhost:3000` (see `docs/web_admin.md`). Desktop: `flutter run -d windows`.
-- Imports are always absolute: `package:mq_sports_erp/...`.
+- Imports are always absolute: `package:a2_stocks/...`.
 
 ## Development rules
 

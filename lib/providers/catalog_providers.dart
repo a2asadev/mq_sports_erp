@@ -1,24 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/data/local_repositories.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
-import 'package:mq_sports_erp/data/pending_effects.dart';
-import 'package:mq_sports_erp/providers/local_data_providers.dart';
-import 'package:mq_sports_erp/repositories/repository.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/online_repositories.dart';
-import 'package:mq_sports_erp/core/constants/storage_keys.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/core/utils/category_tree.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/stock_ledger_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/providers/base_list_notifier.dart';
-import 'package:mq_sports_erp/providers/stock_providers.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:a2_stocks/data/local_repositories.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/data/pending_effects.dart';
+import 'package:a2_stocks/providers/local_data_providers.dart';
+import 'package:a2_stocks/repositories/repository.dart';
+import 'package:a2_stocks/providers/data_mode.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/online_repositories.dart';
+import 'package:a2_stocks/core/constants/storage_keys.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/core/utils/category_tree.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/stock_ledger_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/providers/base_list_notifier.dart';
+import 'package:a2_stocks/providers/stock_providers.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
 
 final Provider<Repository<CategoryModel>> categoryRepositoryProvider =
     Provider<Repository<CategoryModel>>((Ref ref) {

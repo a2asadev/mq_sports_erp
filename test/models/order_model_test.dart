@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
 
 OrderItem _item(int quantity, double price, {double discount = 0}) {
   return OrderItem(

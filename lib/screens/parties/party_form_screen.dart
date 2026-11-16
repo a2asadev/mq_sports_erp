@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/online/photo_service.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
+import 'package:a2_stocks/online/photo_service.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
+import 'package:a2_stocks/models/party_enums.dart';
 
 /// Values entered in the vendor/customer form.
 class PartyFormData {

@@ -1,24 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/data/local_repositories.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
-import 'package:mq_sports_erp/data/pending_effects.dart';
-import 'package:mq_sports_erp/providers/local_data_providers.dart';
-import 'package:mq_sports_erp/repositories/repository.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/online_repositories.dart';
-import 'package:mq_sports_erp/core/constants/storage_keys.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/party_list_item.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/models/vendor_model.dart';
-import 'package:mq_sports_erp/providers/base_list_notifier.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:a2_stocks/data/local_repositories.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/data/pending_effects.dart';
+import 'package:a2_stocks/providers/local_data_providers.dart';
+import 'package:a2_stocks/repositories/repository.dart';
+import 'package:a2_stocks/providers/data_mode.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/online_repositories.dart';
+import 'package:a2_stocks/core/constants/storage_keys.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/party_list_item.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/models/vendor_model.dart';
+import 'package:a2_stocks/providers/base_list_notifier.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
 
 /// Admins and managers may change vendors, customers and ledgers.
 final Provider<bool> canManagePartiesProvider = Provider<bool>((Ref ref) {

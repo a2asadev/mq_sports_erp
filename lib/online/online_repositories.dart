@@ -1,21 +1,21 @@
-import 'package:mq_sports_erp/core/constants/storage_keys.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
-import 'package:mq_sports_erp/models/stock_audit_model.dart';
-import 'package:mq_sports_erp/models/stock_ledger_model.dart';
-import 'package:mq_sports_erp/models/syncable_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/vendor_model.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
-import 'package:mq_sports_erp/online/api_commands.dart';
-import 'package:mq_sports_erp/online/remote_store.dart';
-import 'package:mq_sports_erp/repositories/repository.dart';
+import 'package:a2_stocks/core/constants/storage_keys.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/payment_method.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
+import 'package:a2_stocks/models/stock_audit_model.dart';
+import 'package:a2_stocks/models/stock_ledger_model.dart';
+import 'package:a2_stocks/models/syncable_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/vendor_model.dart';
+import 'package:a2_stocks/online/api_client.dart';
+import 'package:a2_stocks/online/api_commands.dart';
+import 'package:a2_stocks/online/remote_store.dart';
+import 'package:a2_stocks/repositories/repository.dart';
 
 /// The base of every online repository (the web app). Reads come from the
 /// in-memory copy of the server's data; a write goes to the server and then the

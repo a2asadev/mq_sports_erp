@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/utils/stock_alerts.dart';
-import 'package:mq_sports_erp/models/stock_audit_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
+import 'package:a2_stocks/core/utils/stock_alerts.dart';
+import 'package:a2_stocks/models/stock_audit_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
 
 void main() {
   group('isLowStock', () {

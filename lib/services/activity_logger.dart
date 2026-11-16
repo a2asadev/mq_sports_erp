@@ -1,4 +1,4 @@
-import 'package:mq_sports_erp/models/activity_log_model.dart';
+import 'package:a2_stocks/models/activity_log_model.dart';
 
 /// The app's hook for "something worth logging happened".
 ///

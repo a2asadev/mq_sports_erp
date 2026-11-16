@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
-import 'package:mq_sports_erp/online/api_commands.dart';
-import 'package:mq_sports_erp/online/token_store.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/payment_method.dart';
+import 'package:a2_stocks/online/api_client.dart';
+import 'package:a2_stocks/online/api_commands.dart';
+import 'package:a2_stocks/online/token_store.dart';
 
 const String _user =
     '{"id":"u1","email":"a@b.c","displayName":"Ann","phoneNumber":"","role":"staff","isActive":true,'

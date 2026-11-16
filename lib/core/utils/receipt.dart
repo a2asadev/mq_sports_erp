@@ -1,8 +1,8 @@
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/core/utils/currency.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/core/utils/currency.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/payment_method.dart';
 
 String _money(double amount) {
   final String text = amount.toStringAsFixed(2);

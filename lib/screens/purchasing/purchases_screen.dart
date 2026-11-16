@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/error_text.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/core/utils/page_stats.dart';
-import 'package:mq_sports_erp/widgets/stat_strip.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
-import 'package:mq_sports_erp/providers/purchasing_providers.dart';
-import 'package:mq_sports_erp/screens/purchasing/purchase_detail_screen.dart';
-import 'package:mq_sports_erp/screens/purchasing/purchase_form_screen.dart';
-import 'package:mq_sports_erp/widgets/purchase_status_chip.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/widgets/stat_strip.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
+import 'package:a2_stocks/providers/purchasing_providers.dart';
+import 'package:a2_stocks/screens/purchasing/purchase_detail_screen.dart';
+import 'package:a2_stocks/screens/purchasing/purchase_form_screen.dart';
+import 'package:a2_stocks/widgets/purchase_status_chip.dart';
 
 /// Purchase history with invoice status (Paid, Partial, Pending).
 class PurchasesScreen extends ConsumerStatefulWidget {

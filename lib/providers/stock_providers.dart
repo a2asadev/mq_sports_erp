@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/data/local_repositories.dart';
-import 'package:mq_sports_erp/providers/local_data_providers.dart';
-import 'package:mq_sports_erp/repositories/repository.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/online_repositories.dart';
-import 'package:mq_sports_erp/models/stock_ledger_model.dart';
-import 'package:mq_sports_erp/providers/base_list_notifier.dart';
+import 'package:a2_stocks/data/local_repositories.dart';
+import 'package:a2_stocks/providers/local_data_providers.dart';
+import 'package:a2_stocks/repositories/repository.dart';
+import 'package:a2_stocks/providers/data_mode.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/online_repositories.dart';
+import 'package:a2_stocks/models/stock_ledger_model.dart';
+import 'package:a2_stocks/providers/base_list_notifier.dart';
 
 final Provider<Repository<StockLedgerModel>> stockLedgerRepositoryProvider =
     Provider<Repository<StockLedgerModel>>((Ref ref) {

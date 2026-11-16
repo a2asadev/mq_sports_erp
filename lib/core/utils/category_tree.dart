@@ -1,4 +1,4 @@
-import 'package:mq_sports_erp/models/category_model.dart';
+import 'package:a2_stocks/models/category_model.dart';
 
 /// A category together with its depth in the tree (0 = top level).
 class CategoryNode {

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/models/vendor_model.dart';
-import 'package:mq_sports_erp/providers/purchasing_providers.dart';
-import 'package:mq_sports_erp/providers/stock_providers.dart';
-import 'package:mq_sports_erp/widgets/party_picker.dart';
-import 'package:mq_sports_erp/widgets/purchase_status_chip.dart';
-import 'package:mq_sports_erp/widgets/variant_picker.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/models/vendor_model.dart';
+import 'package:a2_stocks/providers/purchasing_providers.dart';
+import 'package:a2_stocks/providers/stock_providers.dart';
+import 'package:a2_stocks/widgets/party_picker.dart';
+import 'package:a2_stocks/widgets/purchase_status_chip.dart';
+import 'package:a2_stocks/widgets/variant_picker.dart';
 
 /// One editable line of the purchase being entered.
 class _Line {

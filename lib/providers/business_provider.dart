@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/currency.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/currency.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
 
 /// Raised whenever the business is changed from inside the app (a new shop name,
 /// phone or currency), so [businessProvider] reads the session again.

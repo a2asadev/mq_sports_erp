@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/page_stats.dart';
-import 'package:mq_sports_erp/widgets/stat_strip.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/screens/users/user_form_screen.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/widgets/stat_strip.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
+import 'package:a2_stocks/screens/users/user_form_screen.dart';
 
 enum _UserAction { edit, toggleActive, delete }
 

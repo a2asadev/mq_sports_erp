@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/models/party_enums.dart';
 
 /// Values entered in the "Add entry" dialog.
 class LedgerEntryDraft {

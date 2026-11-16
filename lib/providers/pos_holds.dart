@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/providers/pos_providers.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/providers/pos_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 

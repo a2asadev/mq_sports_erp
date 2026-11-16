@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "mq_sports_erp" "\0"
+            VALUE "FileDescription", "a2_stocks" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "mq_sports_erp" "\0"
+            VALUE "InternalName", "a2_stocks" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "mq_sports_erp.exe" "\0"
-            VALUE "ProductName", "mq_sports_erp" "\0"
+            VALUE "OriginalFilename", "a2_stocks.exe" "\0"
+            VALUE "ProductName", "a2_stocks" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

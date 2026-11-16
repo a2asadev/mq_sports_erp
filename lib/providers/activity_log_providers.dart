@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/models/activity_log_model.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/remote_store.dart';
-import 'package:mq_sports_erp/services/activity_logger.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/models/activity_log_model.dart';
+import 'package:a2_stocks/online/api_client.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/remote_store.dart';
+import 'package:a2_stocks/services/activity_logger.dart';
 
 /// How many logs "Refresh" fetches.
 const int cloudLogLimit = 500;

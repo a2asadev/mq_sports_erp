@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/models/product_image.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/models/product_image.dart';
+import 'package:a2_stocks/online/api_client.dart';
 
 /// What a one-photo record can be. The name is the address part the server uses.
 enum PhotoKind {

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/utils/page_stats.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/party_list_item.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/widgets/stat_strip.dart';
+import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/party_list_item.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/widgets/stat_strip.dart';
 
 void main() {
   OrderItem orderItem(double price, {int qty = 1}) => OrderItem(

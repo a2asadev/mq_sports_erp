@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/online/secure_token_store.dart';
+import 'package:a2_stocks/online/secure_token_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeVault implements SecretVault {

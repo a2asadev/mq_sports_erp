@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/providers/pos_providers.dart';
+import 'package:a2_stocks/providers/pos_providers.dart';
 
 /// What the shop is called in messages to customers (see [shopInfoProvider]).
 final FutureProvider<String> shopNameProvider =

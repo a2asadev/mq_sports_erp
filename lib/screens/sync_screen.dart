@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/providers/local_data_providers.dart';
-import 'package:mq_sports_erp/providers/sync_controller.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
+import 'package:a2_stocks/providers/local_data_providers.dart';
+import 'package:a2_stocks/providers/sync_controller.dart';
 
 /// Shows what has not reached the server yet, and lets the user sync on demand.
 ///

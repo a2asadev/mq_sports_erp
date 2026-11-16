@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:http/http.dart' as http;
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/online/token_store.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/online/token_store.dart';
 
 /// A JSON object as the API returns it.
 typedef JsonMap = Map<String, dynamic>;

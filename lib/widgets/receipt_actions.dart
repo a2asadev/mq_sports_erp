@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/utils/receipt.dart';
-import 'package:mq_sports_erp/core/utils/receipt_pdf.dart';
-import 'package:mq_sports_erp/core/utils/whatsapp.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
-import 'package:mq_sports_erp/widgets/receipt_view.dart';
+import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/core/utils/receipt_pdf.dart';
+import 'package:a2_stocks/core/utils/whatsapp.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
+import 'package:a2_stocks/widgets/receipt_view.dart';
 import 'package:printing/printing.dart';
 import 'package:url_launcher/url_launcher.dart';
 

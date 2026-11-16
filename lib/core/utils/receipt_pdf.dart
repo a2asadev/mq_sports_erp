@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:mq_sports_erp/core/utils/receipt.dart';
+import 'package:a2_stocks/core/utils/receipt.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:pdf/pdf.dart';

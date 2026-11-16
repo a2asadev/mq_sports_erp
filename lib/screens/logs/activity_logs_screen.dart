@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/error_text.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/models/activity_log_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/providers/activity_log_providers.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/models/activity_log_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/providers/activity_log_providers.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
 
 String _time(ActivityLogModel log) {
   final DateTime t = log.createdAt.toLocal();

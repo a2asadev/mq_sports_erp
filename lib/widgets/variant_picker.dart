@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/providers/catalog_providers.dart';
-import 'package:mq_sports_erp/providers/stock_providers.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/providers/catalog_providers.dart';
+import 'package:a2_stocks/providers/stock_providers.dart';
 
 /// A product variant chosen in the picker.
 class VariantPick {

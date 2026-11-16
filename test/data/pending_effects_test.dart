@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
-import 'package:mq_sports_erp/data/pending_effects.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
-import 'package:mq_sports_erp/models/stock_audit_model.dart';
-import 'package:mq_sports_erp/models/stock_ledger_model.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/data/pending_effects.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/payment_method.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
+import 'package:a2_stocks/models/stock_audit_model.dart';
+import 'package:a2_stocks/models/stock_ledger_model.dart';
 
 final DateTime _t = DateTime(2026, 11, 14, 10);
 int _seq = 0;

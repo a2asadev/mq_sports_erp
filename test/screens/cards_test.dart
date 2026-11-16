@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/party_list_item.dart';
-import 'package:mq_sports_erp/widgets/order_receipt_card.dart';
-import 'package:mq_sports_erp/widgets/party_list_view.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/party_list_item.dart';
+import 'package:a2_stocks/widgets/order_receipt_card.dart';
+import 'package:a2_stocks/widgets/party_list_view.dart';
 
 void main() {
   Widget host(Widget child, {double width = 340, double height = 330}) => MaterialApp(

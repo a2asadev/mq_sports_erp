@@ -1,5 +1,5 @@
-import 'package:mq_sports_erp/models/syncable_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
+import 'package:a2_stocks/models/syncable_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
 
 /// An application user managed by admins (`users` collection).
 ///

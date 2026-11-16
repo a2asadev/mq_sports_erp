@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/constants/walk_in.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/providers/dashboard_insights.dart';
+import 'package:a2_stocks/core/constants/walk_in.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/providers/dashboard_insights.dart';
 
 OrderItem _item(String productId, int qty, double price) => OrderItem(
       productId: productId,

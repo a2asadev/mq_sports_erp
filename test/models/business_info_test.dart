@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/constants/walk_in.dart';
-import 'package:mq_sports_erp/core/utils/receipt.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:a2_stocks/core/constants/walk_in.dart';
+import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/models/order_model.dart';
 
 void main() {
   test('reads the server\'s tenant object, trimming and tolerating missing optional parts', () {

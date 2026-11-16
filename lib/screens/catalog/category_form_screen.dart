@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/online/photo_service.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+import 'package:a2_stocks/online/photo_service.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/utils/category_tree.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/providers/catalog_providers.dart';
+import 'package:a2_stocks/core/utils/category_tree.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/providers/catalog_providers.dart';
 
 /// Add or edit a category. [initialParentId] pre-selects the parent when
 /// adding a subcategory.

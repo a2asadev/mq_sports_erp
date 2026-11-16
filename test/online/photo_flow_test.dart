@@ -14,11 +14,11 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:mq_sports_erp/models/product_image.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
-import 'package:mq_sports_erp/online/api_config.dart';
-import 'package:mq_sports_erp/online/photo_service.dart';
-import 'package:mq_sports_erp/online/token_store.dart';
+import 'package:a2_stocks/models/product_image.dart';
+import 'package:a2_stocks/online/api_client.dart';
+import 'package:a2_stocks/online/api_config.dart';
+import 'package:a2_stocks/online/photo_service.dart';
+import 'package:a2_stocks/online/token_store.dart';
 
 const bool _run = bool.fromEnvironment('RUN_API_TESTS');
 

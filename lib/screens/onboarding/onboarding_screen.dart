@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/providers/onboarding_providers.dart';
-import 'package:mq_sports_erp/screens/onboarding/onboarding_content.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/providers/onboarding_providers.dart';
+import 'package:a2_stocks/screens/onboarding/onboarding_content.dart';
 
 /// The welcome guide: a few pages for the person's role, shown the first time
 /// they sign in on this device and again from Settings.

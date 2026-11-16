@@ -1,13 +1,13 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/online/api_auth_service.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/photo_service.dart';
-import 'package:mq_sports_erp/online/starter_pack_service.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/providers/local_data_providers.dart';
-import 'package:mq_sports_erp/services/auth_admin_service.dart';
-import 'package:mq_sports_erp/services/auth_service.dart';
+import 'package:a2_stocks/online/api_auth_service.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/photo_service.dart';
+import 'package:a2_stocks/online/starter_pack_service.dart';
+import 'package:a2_stocks/providers/data_mode.dart';
+import 'package:a2_stocks/providers/local_data_providers.dart';
+import 'package:a2_stocks/services/auth_admin_service.dart';
+import 'package:a2_stocks/services/auth_service.dart';
 
 /// Sign-in goes through the API on every platform.
 final Provider<AuthService> authServiceProvider =

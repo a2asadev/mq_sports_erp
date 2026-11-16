@@ -1,5 +1,5 @@
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/starter_pack.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/starter_pack.dart';
 
 /// What adding some groups of a starter pack would do to a business's categories,
 /// worked out on the device the same way the server does it: a category with the

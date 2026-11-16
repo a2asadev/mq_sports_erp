@@ -1,5 +1,5 @@
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/syncable_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/syncable_model.dart';
 import 'package:uuid/uuid.dart';
 
 /// A retail buyer or wholesale shop account. [openingBalance] is what the

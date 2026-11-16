@@ -1,5 +1,5 @@
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/online/api_client.dart';
 
 /// Changes that belong to the business itself (not to the online store). Needs a
 /// connection: the business lives on the server.

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/utils/whatsapp.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:a2_stocks/core/utils/whatsapp.dart';
+import 'package:a2_stocks/models/order_model.dart';
 
 void main() {
   test('Pakistani numbers in any common format become international digits', () {

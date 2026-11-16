@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/providers/onboarding_providers.dart';
-import 'package:mq_sports_erp/screens/onboarding/onboarding_content.dart';
-import 'package:mq_sports_erp/screens/onboarding/onboarding_screen.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/providers/onboarding_providers.dart';
+import 'package:a2_stocks/screens/onboarding/onboarding_content.dart';
+import 'package:a2_stocks/screens/onboarding/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String _allText(UserRole role) => onboardingStepsFor(role)

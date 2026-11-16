@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
-import 'package:mq_sports_erp/data/sync_engine.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/providers/auth_controller.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/providers/local_data_providers.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/data/sync_engine.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/providers/auth_controller.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
+import 'package:a2_stocks/providers/local_data_providers.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
 
 /// How often a signed-in device checks with the server on its own.
 const Duration autoSyncInterval = Duration(seconds: 60);

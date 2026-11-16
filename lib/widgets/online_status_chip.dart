@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
 
 /// The web app's counterpart of the sync chip: there is nothing to upload or
 /// download (every action goes straight to the server), so it only says

@@ -1,4 +1,4 @@
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
 
 /// Clean, user-facing text for any error.
 String errorMessageOf(Object error) {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/utils/currency.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/core/utils/page_stats.dart';
-import 'package:mq_sports_erp/widgets/stat_strip.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/party_list_item.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+import 'package:a2_stocks/core/utils/currency.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/widgets/stat_strip.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/party_list_item.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
 
 /// Searchable, filterable list of vendors or customers. Used by the vendor
 /// and customer screens (as cards) and by the pickers (as a compact list).

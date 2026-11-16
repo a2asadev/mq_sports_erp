@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/utils/price_warnings.dart';
-import 'package:mq_sports_erp/core/utils/sku_generator.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
+import 'package:a2_stocks/core/utils/price_warnings.dart';
+import 'package:a2_stocks/core/utils/sku_generator.dart';
+import 'package:a2_stocks/models/variant_model.dart';
 
 /// Opens the variant editor. Returns the saved variant, or null when the
 /// dialog was cancelled or opened read-only.

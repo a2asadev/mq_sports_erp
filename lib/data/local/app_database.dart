@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
-import 'package:mq_sports_erp/data/local/tables.dart';
+import 'package:a2_stocks/data/local/tables.dart';
 
 part 'app_database.g.dart';
 

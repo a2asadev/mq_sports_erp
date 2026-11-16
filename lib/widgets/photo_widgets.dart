@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/models/product_image.dart';
-import 'package:mq_sports_erp/online/photo_service.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/models/product_image.dart';
+import 'package:a2_stocks/online/photo_service.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
 
 /// A picture from the network that never breaks the screen: a placeholder shows
 /// while it loads, when it is missing, and when there is no connection.

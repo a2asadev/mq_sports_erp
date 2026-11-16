@@ -2,14 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "mq_admin (Windows)",
+      "name": "A2 Stocks (Windows)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
       "deviceId": "windows"
     },
     {
-      "name": "mq_admin (Chrome)",
+      "name": "A2 Stocks (Chrome)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
@@ -17,7 +17,7 @@
       "toolArgs": ["--web-port=8080"]
     },
     {
-      "name": "mq_admin (selected device)",
+      "name": "A2 Stocks (selected device)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart"

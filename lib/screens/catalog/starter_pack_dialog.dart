@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/error_text.dart';
-import 'package:mq_sports_erp/core/utils/starter_pack_plan.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/starter_pack.dart';
-import 'package:mq_sports_erp/providers/catalog_providers.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/core/utils/starter_pack_plan.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/starter_pack.dart';
+import 'package:a2_stocks/providers/catalog_providers.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
 
 /// The server's starter packs (needs a connection).
 final AutoDisposeFutureProvider<List<StarterPack>> starterPacksProvider =

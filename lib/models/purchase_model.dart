@@ -1,4 +1,4 @@
-import 'package:mq_sports_erp/models/syncable_model.dart';
+import 'package:a2_stocks/models/syncable_model.dart';
 import 'package:uuid/uuid.dart';
 
 /// Payment state of a purchase, derived from what was paid so far.

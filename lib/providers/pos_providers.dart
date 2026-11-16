@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/providers/business_provider.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
 
 double _round2(double v) => (v * 100).round() / 100;
 

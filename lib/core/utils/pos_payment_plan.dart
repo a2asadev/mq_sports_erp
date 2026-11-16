@@ -1,4 +1,4 @@
-import 'package:mq_sports_erp/models/payment_method.dart';
+import 'package:a2_stocks/models/payment_method.dart';
 
 /// How the customer pays for a sale: several payments by different methods,
 /// cash that may be more than what is left (the rest is given back as change),

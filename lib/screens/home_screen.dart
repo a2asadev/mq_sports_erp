@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mq_sports_erp/core/erp_module.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/providers/dashboard_providers.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/providers/module_registry_provider.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/screens/dashboard/dashboard_page.dart';
-import 'package:mq_sports_erp/screens/onboarding/onboarding_screen.dart';
-import 'package:mq_sports_erp/widgets/business_brand.dart';
-import 'package:mq_sports_erp/widgets/logout_button.dart';
-import 'package:mq_sports_erp/widgets/online_status_chip.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
-import 'package:mq_sports_erp/widgets/sync_status_chip.dart';
+import 'package:a2_stocks/core/erp_module.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/providers/dashboard_providers.dart';
+import 'package:a2_stocks/providers/data_mode.dart';
+import 'package:a2_stocks/providers/module_registry_provider.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
+import 'package:a2_stocks/screens/dashboard/dashboard_page.dart';
+import 'package:a2_stocks/screens/onboarding/onboarding_screen.dart';
+import 'package:a2_stocks/widgets/business_brand.dart';
+import 'package:a2_stocks/widgets/logout_button.dart';
+import 'package:a2_stocks/widgets/online_status_chip.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
+import 'package:a2_stocks/widgets/sync_status_chip.dart';
 
 /// Id of the dashboard entry in the navigation (it is not an [ErpModule]).
 const String _dashboardId = 'dashboard';

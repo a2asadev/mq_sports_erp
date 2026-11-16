@@ -1,13 +1,13 @@
-import 'package:mq_sports_erp/core/constants/storage_keys.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
-import 'package:mq_sports_erp/models/stock_audit_model.dart';
-import 'package:mq_sports_erp/models/stock_ledger_model.dart';
-import 'package:mq_sports_erp/models/syncable_model.dart';
+import 'package:a2_stocks/core/constants/storage_keys.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/payment_method.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
+import 'package:a2_stocks/models/stock_audit_model.dart';
+import 'package:a2_stocks/models/stock_ledger_model.dart';
+import 'package:a2_stocks/models/syncable_model.dart';
 import 'package:uuid/uuid.dart';
 
 // What the device shows = what the server has confirmed + what the user did and

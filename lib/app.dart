@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/providers/business_provider.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/providers/sync_controller.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/screens/access_denied_screen.dart';
-import 'package:mq_sports_erp/screens/home_screen.dart';
-import 'package:mq_sports_erp/screens/login_screen.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
+import 'package:a2_stocks/providers/data_mode.dart';
+import 'package:a2_stocks/providers/sync_controller.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
+import 'package:a2_stocks/screens/access_denied_screen.dart';
+import 'package:a2_stocks/screens/home_screen.dart';
+import 'package:a2_stocks/screens/login_screen.dart';
 
 class MqSportsApp extends ConsumerWidget {
   const MqSportsApp({super.key});

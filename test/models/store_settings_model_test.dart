@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/product_image.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/store_settings_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/vendor_model.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/product_image.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/store_settings_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/vendor_model.dart';
 
 void main() {
   test('store settings round-trip and fall back to defaults', () {

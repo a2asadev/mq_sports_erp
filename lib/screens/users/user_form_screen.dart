@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/online/photo_service.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+import 'package:a2_stocks/online/photo_service.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
 
 /// Add-user form (when [user] is null) or edit form for an existing user.
 class UserFormScreen extends ConsumerStatefulWidget {

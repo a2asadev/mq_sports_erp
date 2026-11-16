@@ -1,6 +1,6 @@
-import 'package:mq_sports_erp/models/product_image.dart';
-import 'package:mq_sports_erp/models/syncable_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
+import 'package:a2_stocks/models/product_image.dart';
+import 'package:a2_stocks/models/syncable_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
 import 'package:uuid/uuid.dart';
 
 /// A product (aggregate root). Its variants are nested inside it and are

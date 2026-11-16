@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/providers/sync_controller.dart';
-import 'package:mq_sports_erp/screens/sync_screen.dart';
+import 'package:a2_stocks/providers/sync_controller.dart';
+import 'package:a2_stocks/screens/sync_screen.dart';
 
 /// App bar button showing the sync status. Tapping it opens the sync screen.
 class SyncStatusChip extends ConsumerWidget {

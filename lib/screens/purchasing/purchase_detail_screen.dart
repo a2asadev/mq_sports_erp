@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/utils/error_text.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
-import 'package:mq_sports_erp/providers/parties_providers.dart';
-import 'package:mq_sports_erp/providers/purchasing_providers.dart';
-import 'package:mq_sports_erp/widgets/purchase_status_chip.dart';
+import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
+import 'package:a2_stocks/providers/parties_providers.dart';
+import 'package:a2_stocks/providers/purchasing_providers.dart';
+import 'package:a2_stocks/widgets/purchase_status_chip.dart';
 
 class _PaymentDraft {
   const _PaymentDraft(this.amount, this.date, this.note);

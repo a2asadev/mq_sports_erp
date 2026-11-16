@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
 
 void main() {
   // Styles set directly on a theme or button are not merged with the ambient

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/providers/business_provider.dart';
-import 'package:mq_sports_erp/widgets/brand_logo.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
+import 'package:a2_stocks/widgets/brand_logo.dart';
 
 /// The signed-in business's logo; the A2 Stocks mark while it has none (or the
 /// picture cannot be loaded, for example offline).

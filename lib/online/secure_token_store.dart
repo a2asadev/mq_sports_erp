@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mq_sports_erp/online/token_store.dart';
+import 'package:a2_stocks/online/token_store.dart';
 
 /// A place for one small secret that the operating system protects
 /// (Keychain on iOS/macOS, Keystore on Android, Credential Manager on Windows,

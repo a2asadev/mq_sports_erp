@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/utils/category_tree.dart';
-import 'package:mq_sports_erp/core/utils/price_warnings.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/product_image.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/providers/catalog_providers.dart';
-import 'package:mq_sports_erp/screens/catalog/variant_dialog.dart';
+import 'package:a2_stocks/core/utils/category_tree.dart';
+import 'package:a2_stocks/core/utils/price_warnings.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/product_image.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/providers/catalog_providers.dart';
+import 'package:a2_stocks/screens/catalog/variant_dialog.dart';
 
 /// Add, edit or (for staff) view a product with its variants.
 class ProductFormScreen extends ConsumerStatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/app.dart';
+import 'package:a2_stocks/app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

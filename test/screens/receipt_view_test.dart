@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/utils/receipt.dart';
-import 'package:mq_sports_erp/widgets/receipt_view.dart';
+import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/widgets/receipt_view.dart';
 
 void main() {
   final ReceiptData receipt = ReceiptData(

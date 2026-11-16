@@ -1,19 +1,19 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/constants/walk_in.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/core/utils/pos_payment_plan.dart';
-import 'package:mq_sports_erp/core/utils/receipt.dart';
-import 'package:mq_sports_erp/core/utils/receipt_pdf.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/providers/pos_providers.dart';
+import 'package:a2_stocks/core/constants/walk_in.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/core/utils/pos_payment_plan.dart';
+import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/core/utils/receipt_pdf.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/payment_method.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/providers/pos_providers.dart';
 
 ProductModel _bat() => ProductModel(
       id: 'p1',

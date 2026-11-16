@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
-import 'package:mq_sports_erp/models/vendor_model.dart';
-import 'package:mq_sports_erp/providers/catalog_providers.dart';
-import 'package:mq_sports_erp/providers/dashboard_providers.dart';
-import 'package:mq_sports_erp/providers/module_registry_provider.dart';
-import 'package:mq_sports_erp/providers/parties_providers.dart';
-import 'package:mq_sports_erp/providers/sales_providers.dart';
-import 'package:mq_sports_erp/providers/stock_providers.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/screens/dashboard/dashboard_page.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/models/vendor_model.dart';
+import 'package:a2_stocks/providers/catalog_providers.dart';
+import 'package:a2_stocks/providers/dashboard_providers.dart';
+import 'package:a2_stocks/providers/module_registry_provider.dart';
+import 'package:a2_stocks/providers/parties_providers.dart';
+import 'package:a2_stocks/providers/sales_providers.dart';
+import 'package:a2_stocks/providers/stock_providers.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
+import 'package:a2_stocks/screens/dashboard/dashboard_page.dart';
 
 class _Orders extends OrdersNotifier {
   _Orders(this.items);

@@ -1,7 +1,7 @@
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/receipt.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/receipt.dart';
 
 /// The receipt as it looks on screen: shop, customer and number, the
 /// items in a table, the totals, a bar code of the receipt number and a thank

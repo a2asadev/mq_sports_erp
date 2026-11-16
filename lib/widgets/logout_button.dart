@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/providers/auth_controller.dart';
-import 'package:mq_sports_erp/providers/data_mode.dart';
-import 'package:mq_sports_erp/providers/sync_controller.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/providers/auth_controller.dart';
+import 'package:a2_stocks/providers/data_mode.dart';
+import 'package:a2_stocks/providers/sync_controller.dart';
 
 /// App bar action that signs the user out after a confirmation dialog.
 class LogoutButton extends ConsumerWidget {

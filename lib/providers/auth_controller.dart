@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/models/activity_log_model.dart';
-import 'package:mq_sports_erp/providers/activity_log_providers.dart';
-import 'package:mq_sports_erp/providers/core_providers.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/models/activity_log_model.dart';
+import 'package:a2_stocks/providers/activity_log_providers.dart';
+import 'package:a2_stocks/providers/core_providers.dart';
 
 /// Drives the login and logout actions. Its `AsyncValue` reflects the latest
 /// action: loading while running, error with a clean message on failure.

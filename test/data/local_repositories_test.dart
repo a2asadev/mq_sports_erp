@@ -1,18 +1,18 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/data/local/app_database.dart';
-import 'package:mq_sports_erp/data/local/collections.dart';
-import 'package:mq_sports_erp/data/local_repositories.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
-import 'package:mq_sports_erp/data/outbox_store.dart';
-import 'package:mq_sports_erp/data/pending_effects.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/ledger_model.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/stock_audit_model.dart';
-import 'package:mq_sports_erp/models/stock_ledger_model.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/data/local/app_database.dart';
+import 'package:a2_stocks/data/local/collections.dart';
+import 'package:a2_stocks/data/local_repositories.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/data/outbox_store.dart';
+import 'package:a2_stocks/data/pending_effects.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/stock_audit_model.dart';
+import 'package:a2_stocks/models/stock_ledger_model.dart';
 
 final DateTime _t = DateTime(2026, 11, 14, 10);
 

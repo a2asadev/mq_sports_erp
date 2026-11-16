@@ -1,18 +1,18 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/erp_module.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/providers/dashboard_insights.dart';
-import 'package:mq_sports_erp/providers/dashboard_providers.dart';
-import 'package:mq_sports_erp/providers/module_registry_provider.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/screens/sales/orders_screen.dart';
-import 'package:mq_sports_erp/screens/stock/stock_screen.dart';
-import 'package:mq_sports_erp/widgets/photo_widgets.dart';
+import 'package:a2_stocks/core/erp_module.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/providers/dashboard_insights.dart';
+import 'package:a2_stocks/providers/dashboard_providers.dart';
+import 'package:a2_stocks/providers/module_registry_provider.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
+import 'package:a2_stocks/screens/sales/orders_screen.dart';
+import 'package:a2_stocks/screens/stock/stock_screen.dart';
+import 'package:a2_stocks/widgets/photo_widgets.dart';
 
 /// What the shell shows first. Admins and managers get the executive
 /// dashboard; staff get a welcome with shortcuts to what they may open.

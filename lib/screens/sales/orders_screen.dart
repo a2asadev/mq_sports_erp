@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/error_text.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/core/utils/page_stats.dart';
-import 'package:mq_sports_erp/widgets/stat_strip.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/providers/sales_providers.dart';
-import 'package:mq_sports_erp/screens/sales/order_detail_screen.dart';
-import 'package:mq_sports_erp/screens/sales/order_form_screen.dart';
-import 'package:mq_sports_erp/widgets/order_receipt_card.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/widgets/stat_strip.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/providers/sales_providers.dart';
+import 'package:a2_stocks/screens/sales/order_detail_screen.dart';
+import 'package:a2_stocks/screens/sales/order_form_screen.dart';
+import 'package:a2_stocks/widgets/order_receipt_card.dart';
 
 /// Order lifecycle list: every order with its pipeline status and payment
 /// state. It reads from this device, so a status change shows up at once;

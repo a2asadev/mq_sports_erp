@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/models/order_model.dart';
 
 /// An order drawn like a paper receipt: header with number, date and status,
 /// a perforated tear line, the first few items, and a totals footer with the

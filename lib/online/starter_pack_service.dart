@@ -1,5 +1,5 @@
-import 'package:mq_sports_erp/models/starter_pack.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
+import 'package:a2_stocks/models/starter_pack.dart';
+import 'package:a2_stocks/online/api_client.dart';
 
 /// Starter category packs from the server. Needs a connection; admins and
 /// managers only (the server refuses anyone else).

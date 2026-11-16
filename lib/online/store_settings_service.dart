@@ -1,5 +1,5 @@
-import 'package:mq_sports_erp/models/store_settings_model.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
+import 'package:a2_stocks/models/store_settings_model.dart';
+import 'package:a2_stocks/online/api_client.dart';
 
 /// Reads and saves the online store's settings. Needs a connection (the settings
 /// live only on the server).

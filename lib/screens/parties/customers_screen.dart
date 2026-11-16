@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/utils/error_text.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/models/party_list_item.dart';
-import 'package:mq_sports_erp/providers/parties_providers.dart';
-import 'package:mq_sports_erp/screens/parties/customer_form_screen.dart';
-import 'package:mq_sports_erp/screens/parties/party_detail_screen.dart';
-import 'package:mq_sports_erp/widgets/party_list_view.dart';
+import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/models/party_list_item.dart';
+import 'package:a2_stocks/providers/parties_providers.dart';
+import 'package:a2_stocks/screens/parties/customer_form_screen.dart';
+import 'package:a2_stocks/screens/parties/party_detail_screen.dart';
+import 'package:a2_stocks/widgets/party_list_view.dart';
 
 class CustomersScreen extends ConsumerWidget {
   const CustomersScreen({super.key});

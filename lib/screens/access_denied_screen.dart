@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/providers/auth_controller.dart';
+import 'package:a2_stocks/providers/auth_controller.dart';
 
 /// Shown when a login has no active user record.
 class AccessDeniedScreen extends ConsumerWidget {

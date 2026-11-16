@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/models/customer_model.dart';
-import 'package:mq_sports_erp/models/party_enums.dart';
-import 'package:mq_sports_erp/providers/parties_providers.dart';
-import 'package:mq_sports_erp/screens/parties/party_form_screen.dart';
+import 'package:a2_stocks/models/customer_model.dart';
+import 'package:a2_stocks/models/party_enums.dart';
+import 'package:a2_stocks/providers/parties_providers.dart';
+import 'package:a2_stocks/screens/parties/party_form_screen.dart';
 
 class CustomerFormScreen extends ConsumerWidget {
   const CustomerFormScreen({super.key, this.customer});

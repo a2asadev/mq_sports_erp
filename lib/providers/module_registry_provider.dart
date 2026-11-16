@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/erp_module.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/screens/catalog/categories_screen.dart';
-import 'package:mq_sports_erp/screens/catalog/products_screen.dart';
-import 'package:mq_sports_erp/screens/logs/activity_logs_screen.dart';
-import 'package:mq_sports_erp/screens/parties/customers_screen.dart';
-import 'package:mq_sports_erp/screens/pos/pos_screen.dart';
-import 'package:mq_sports_erp/screens/purchasing/purchases_screen.dart';
-import 'package:mq_sports_erp/screens/settings/settings_screen.dart';
-import 'package:mq_sports_erp/screens/sales/orders_screen.dart';
-import 'package:mq_sports_erp/screens/stock/stock_screen.dart';
-import 'package:mq_sports_erp/screens/parties/vendors_screen.dart';
-import 'package:mq_sports_erp/screens/users/users_screen.dart';
+import 'package:a2_stocks/core/erp_module.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
+import 'package:a2_stocks/screens/catalog/categories_screen.dart';
+import 'package:a2_stocks/screens/catalog/products_screen.dart';
+import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
+import 'package:a2_stocks/screens/parties/customers_screen.dart';
+import 'package:a2_stocks/screens/pos/pos_screen.dart';
+import 'package:a2_stocks/screens/purchasing/purchases_screen.dart';
+import 'package:a2_stocks/screens/settings/settings_screen.dart';
+import 'package:a2_stocks/screens/sales/orders_screen.dart';
+import 'package:a2_stocks/screens/stock/stock_screen.dart';
+import 'package:a2_stocks/screens/parties/vendors_screen.dart';
+import 'package:a2_stocks/screens/users/users_screen.dart';
 
 /// Registry of every ERP module. Each new module appends one `ErpModule`.
 final Provider<List<ErpModule>> erpModulesProvider =

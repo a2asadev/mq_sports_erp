@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
 
 /// Colored Paid / Partial / Pending label.
 class PurchaseStatusChip extends StatelessWidget {

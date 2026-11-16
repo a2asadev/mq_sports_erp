@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
+import 'package:a2_stocks/models/user_role.dart';
 
 /// Describes one ERP module shown in the navigation (side bar or drawer). Only
 /// users whose role is in [allowedRoles] see the module. [group] is the

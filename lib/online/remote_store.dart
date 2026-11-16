@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mq_sports_erp/online/api_client.dart';
+import 'package:a2_stocks/online/api_client.dart';
 
 /// The online app's copy of the data, held in memory.
 ///

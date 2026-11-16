@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/utils/currency.dart';
-import 'package:mq_sports_erp/core/utils/pos_payment_plan.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
+import 'package:a2_stocks/core/utils/currency.dart';
+import 'package:a2_stocks/core/utils/pos_payment_plan.dart';
+import 'package:a2_stocks/models/payment_method.dart';
 
 /// What the customer paid, as chosen in the payment dialog.
 class PosPaymentResult {

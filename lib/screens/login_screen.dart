@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/errors/app_exceptions.dart';
-import 'package:mq_sports_erp/providers/auth_controller.dart';
-import 'package:mq_sports_erp/widgets/brand_logo.dart';
-import 'package:mq_sports_erp/widgets/business_brand.dart';
+import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/providers/auth_controller.dart';
+import 'package:a2_stocks/widgets/brand_logo.dart';
+import 'package:a2_stocks/widgets/business_brand.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});

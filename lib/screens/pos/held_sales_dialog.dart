@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/formatters.dart';
-import 'package:mq_sports_erp/providers/pos_holds.dart';
-import 'package:mq_sports_erp/providers/pos_providers.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/providers/pos_holds.dart';
+import 'package:a2_stocks/providers/pos_providers.dart';
 
 /// Lists the sales on hold. Resuming one closes the dialog and returns it;
 /// the caller puts it back on the counter.

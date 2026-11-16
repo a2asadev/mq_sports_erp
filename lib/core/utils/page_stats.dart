@@ -1,11 +1,11 @@
-import 'package:mq_sports_erp/core/utils/stock_alerts.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/party_list_item.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
-import 'package:mq_sports_erp/models/purchase_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/models/variant_model.dart';
+import 'package:a2_stocks/core/utils/stock_alerts.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/party_list_item.dart';
+import 'package:a2_stocks/models/product_model.dart';
+import 'package:a2_stocks/models/purchase_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/models/variant_model.dart';
 
 /// Figures for the strip at the top of the list pages. Pure functions, so they
 /// are easy to test; cancelled orders never count as sales.

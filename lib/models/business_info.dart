@@ -1,4 +1,4 @@
-import 'package:mq_sports_erp/core/constants/walk_in.dart';
+import 'package:a2_stocks/core/constants/walk_in.dart';
 
 /// The business the signed-in person works for, as the server describes it at
 /// sign-in: what to print on receipts, and which customer record is this

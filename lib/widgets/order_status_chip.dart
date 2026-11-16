@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
+import 'package:a2_stocks/models/order_model.dart';
 
 /// Colored pipeline label of an order (Pending ... Delivered, Cancelled).
 class OrderStatusChip extends StatelessWidget {

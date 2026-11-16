@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mq_sports_erp/data/local/app_database.dart';
-import 'package:mq_sports_erp/data/local/tables.dart';
-import 'package:mq_sports_erp/data/outbox_entry.dart';
+import 'package:a2_stocks/data/local/app_database.dart';
+import 'package:a2_stocks/data/local/tables.dart';
+import 'package:a2_stocks/data/outbox_entry.dart';
 import 'package:uuid/uuid.dart';
 
 /// The queue of things the user did that the server has not taken over yet.

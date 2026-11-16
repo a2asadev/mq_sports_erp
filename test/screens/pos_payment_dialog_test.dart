@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mq_sports_erp/models/payment_method.dart';
-import 'package:mq_sports_erp/screens/pos/pos_payment_dialog.dart';
+import 'package:a2_stocks/models/payment_method.dart';
+import 'package:a2_stocks/screens/pos/pos_payment_dialog.dart';
 
 void main() {
   PosPaymentResult? result;

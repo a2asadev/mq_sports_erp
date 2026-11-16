@@ -1,4 +1,4 @@
-import 'package:mq_sports_erp/core/utils/currency.dart';
+import 'package:a2_stocks/core/utils/currency.dart';
 
 /// dd/MM/yyyy
 String formatDate(DateTime date) {

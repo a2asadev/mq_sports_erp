@@ -6,19 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
-import 'package:mq_sports_erp/core/utils/receipt.dart';
-import 'package:mq_sports_erp/core/utils/receipt_pdf.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/models/order_model.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/token_store.dart';
-import 'package:mq_sports_erp/providers/business_provider.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/widgets/brand_logo.dart';
-import 'package:mq_sports_erp/widgets/business_brand.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/core/utils/receipt_pdf.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/online/api_client.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/token_store.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
+import 'package:a2_stocks/widgets/brand_logo.dart';
+import 'package:a2_stocks/widgets/business_brand.dart';
 
 class _FakeCurrentUser extends CurrentUserNotifier {
   @override

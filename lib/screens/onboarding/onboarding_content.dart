@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
+import 'package:a2_stocks/models/user_role.dart';
 
 /// One page of the welcome guide.
 class OnboardingStep {

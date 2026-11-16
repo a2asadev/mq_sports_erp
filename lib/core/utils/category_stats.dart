@@ -1,6 +1,6 @@
-import 'package:mq_sports_erp/core/utils/category_tree.dart';
-import 'package:mq_sports_erp/models/category_model.dart';
-import 'package:mq_sports_erp/models/product_model.dart';
+import 'package:a2_stocks/core/utils/category_tree.dart';
+import 'package:a2_stocks/models/category_model.dart';
+import 'package:a2_stocks/models/product_model.dart';
 
 /// What a category table row shows about one category.
 class CategoryStat {

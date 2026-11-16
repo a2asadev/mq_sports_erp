@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
 
 /// The A2 Stocks logo. The full logo (assets/images/a2stocks_logo.png) has the
 /// name and tagline under the "A"; with [markOnly] it is just the "A" with its

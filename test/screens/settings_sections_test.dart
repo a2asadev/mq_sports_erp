@@ -5,15 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:mq_sports_erp/models/business_info.dart';
-import 'package:mq_sports_erp/models/user_model.dart';
-import 'package:mq_sports_erp/models/user_role.dart';
-import 'package:mq_sports_erp/online/api_client.dart';
-import 'package:mq_sports_erp/online/online_providers.dart';
-import 'package:mq_sports_erp/online/token_store.dart';
-import 'package:mq_sports_erp/providers/business_provider.dart';
-import 'package:mq_sports_erp/providers/users_providers.dart';
-import 'package:mq_sports_erp/screens/settings/settings_screen.dart';
+import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/online/api_client.dart';
+import 'package:a2_stocks/online/online_providers.dart';
+import 'package:a2_stocks/online/token_store.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
+import 'package:a2_stocks/providers/users_providers.dart';
+import 'package:a2_stocks/screens/settings/settings_screen.dart';
 
 class _FakeCurrentUser extends CurrentUserNotifier {
   _FakeCurrentUser(this._user);

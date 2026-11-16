@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mq_sports_erp/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/theme/app_theme.dart';
 
 /// One figure shown above a list: a big value, a label and a tinted icon.
 class StatItem {
