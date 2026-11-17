@@ -42,4 +42,12 @@ final Provider<SyncEngine> syncEngineProvider = Provider<SyncEngine>((Ref ref) {
 
 /// The queue of actions waiting for the server, live.
 final StreamProvider<List<OutboxEntry>> outboxEntriesProvider =
-    StreamProvider<List<OutboxEntry>>((Ref ref) => ref.watch(outboxStoreProvider).watch());
+    StreamProvider<List<OutboxEntry>>((Ref ref) {
+  final String? userId =
+      ref.watch(authUidProvider.select((AsyncValue<String?> value) => value.valueOrNull));
+  if (userId == null) {
+    // Signing out: nobody's queue to show.
+    return Stream<List<OutboxEntry>>.value(const <OutboxEntry>[]);
+  }
+  return ref.watch(outboxStoreProvider).watch();
+});

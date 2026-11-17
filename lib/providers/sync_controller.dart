@@ -70,6 +70,13 @@ class SyncController extends Notifier<SyncUiState> {
   @override
   SyncUiState build() {
     _disposed = false;
+    // On sign-out this rebuilds before the gate leaves the screen: with nobody
+    // signed in there is no database, so stay idle instead of opening one.
+    final String? userId =
+        ref.watch(authUidProvider.select((AsyncValue<String?> value) => value.valueOrNull));
+    if (userId == null) {
+      return const SyncUiState();
+    }
     final SyncEngine engine = ref.watch(syncEngineProvider);
     ref.onDispose(() {
       _disposed = true;

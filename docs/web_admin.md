@@ -1,13 +1,13 @@
 # The web admin (online-only)
 
 The same Flutter app, built for the browser. It has **no local database and no
-Firebase**: every action goes to the backend API (`c:\src\mq_erp`), which
+Firebase**: every action goes to the backend API (`c:\src\a2_stocks_api`), which
 enforces all the rules, and what the screens show is what the server saved.
 Mobile and desktop are unchanged (Hive + Firebase, manual sync) until Phase 3.
 
 ## Run it on your computer
 
-1. Start the backend (see `c:\src\mq_erp\README.md`): `docker compose up -d`, then
+1. Start the backend (see `c:\src\a2_stocks_api\README.md`): `docker compose up -d`, then
    `pnpm api:dev` (it listens on http://localhost:3000). Make sure you have an
    admin login (`pnpm create-admin you@mail.com 'a long password'`).
 2. Run the web app on port 8080, because the API's development settings allow
@@ -27,7 +27,7 @@ flutter build web --release --dart-define=API_BASE_URL=https://api.yourshop.com
 ```
 
 Copy `build/web/*` to the server's `admin-web/` folder (see
-`c:\src\mq_erp\docs\deploy.md`). It is then served at `https://admin.yourshop.com`.
+`c:\src\a2_stocks_api\docs\deploy.md`). It is then served at `https://admin.yourshop.com`.
 The API address is fixed into the build, so build once per environment.
 
 ## How it works

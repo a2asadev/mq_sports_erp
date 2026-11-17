@@ -8,7 +8,7 @@ Architecture: see `CLAUDE.md`. The web admin is different (online-only):
 
 ## Run it
 
-1. Start the backend (`c:\src\mq_erp`): `docker compose up -d`, then `pnpm api:dev`.
+1. Start the backend (`c:\src\a2_stocks_api`): `docker compose up -d`, then `pnpm api:dev`.
    Check http://localhost:3000/v1/health. Dev login: `admin@mq.test` / `DevPass123`.
 2. Run the app and tell it where the API is (`--dart-define=API_BASE_URL=...`):
 
@@ -20,7 +20,7 @@ Architecture: see `CLAUDE.md`. The web admin is different (online-only):
 | iOS simulator | `flutter run --dart-define=API_BASE_URL=http://localhost:3000` |
 
 Plain `http://` works in **debug** builds only. A release build must use `https://`
-(see `c:\src\mq_erp\docs\deploy.md`):
+(see `c:\src\a2_stocks_api\docs\deploy.md`):
 `flutter build apk --release --dart-define=API_BASE_URL=https://api.yourshop.com`.
 
 ## The first time

@@ -1,4 +1,4 @@
-# mq_admin
+# a2_stocks
 
 A new Flutter project.
 
