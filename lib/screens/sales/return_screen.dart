@@ -123,7 +123,9 @@ class _ReturnScreenState extends ConsumerState<ReturnScreen> {
     }
     final ReturnPlan plan = ReturnPlan(order: order, alreadyReturned: already);
     final double value = plan.totalValue(_units);
-    final double overpaid = plan.overpaid(settled: settled, returnedValue: value);
+    final double tax = plan.taxOf(_units);
+    final double credit = plan.creditOf(_units);
+    final double overpaid = plan.overpaid(settled: settled, credit: credit);
     final bool handBack = overpaid > 0.004 && (isWalkIn || _handBack);
     if (!_amountEdited) {
       final String suggested = overpaid > 0.004 ? _text(overpaid) : '';
@@ -147,8 +149,10 @@ class _ReturnScreenState extends ConsumerState<ReturnScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 _row(context.l10n.returnGoodsValue, formatMoney(value), bold: true),
+                if (tax > 0.004)
+                  _row(order.taxInclusive ? context.l10n.returnTaxIncluded : context.l10n.returnTaxGivenBack, formatMoney(tax)),
                 _row(context.l10n.returnSettledSoFar, formatMoney(settled)),
-                if (value > 0 && overpaid <= 0.004) ...<Widget>[
+                if (credit > 0 && overpaid <= 0.004) ...<Widget>[
                   const SizedBox(height: 8),
                   Text(context.l10n.returnLowersDue, style: theme.textTheme.bodySmall),
                 ],

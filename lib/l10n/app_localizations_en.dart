@@ -5092,4 +5092,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get taxAdminOnly => 'Only an admin can change the tax settings.';
+
+  @override
+  String get reportKindTax => 'Tax';
+
+  @override
+  String get reportTaxTitle => 'Tax summary';
+
+  @override
+  String get reportColTax => 'Tax';
+
+  @override
+  String get reportColCollected => 'Collected on sales';
+
+  @override
+  String get reportColGivenBack => 'Given back on returns';
+
+  @override
+  String get reportColTaxOwed => 'To pay';
+
+  @override
+  String get reportTaxSalesWithoutTax =>
+      'Sales before tax (orders that carried tax)';
+
+  @override
+  String get reportTaxOrders => 'Orders with tax';
+
+  @override
+  String get reportTaxReturns => 'Returns with tax';
+
+  @override
+  String get returnTaxGivenBack => 'Tax on these goods (given back too)';
+
+  @override
+  String get returnTaxIncluded => 'Tax inside these prices';
 }

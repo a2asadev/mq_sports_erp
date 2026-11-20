@@ -24,6 +24,12 @@ class ReportsService {
     return ProfitReport.fromMap(r.asMap);
   }
 
+  /// Tax collected, given back with returns and owed, for the days [from] to [to].
+  Future<TaxReport> tax({String? from, String? to}) async {
+    final ApiResponse r = await _api.get('/v1/reports/tax', query: _period(from, to));
+    return TaxReport.fromMap(r.asMap);
+  }
+
   /// Stock that did not sell in the last [days] days.
   Future<StockReport> stock({int days = 90}) async {
     final ApiResponse r = await _api.get('/v1/reports/stock', query: <String, String>{'days': '$days'});

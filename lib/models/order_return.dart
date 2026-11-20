@@ -42,6 +42,8 @@ class OrderReturn {
     required this.orderId,
     required this.returnDate,
     required this.totalValue,
+    this.taxAmount = 0,
+    this.creditAmount = 0,
     required this.refundMethod,
     required this.refundAmount,
     required this.note,
@@ -56,6 +58,11 @@ class OrderReturn {
 
   /// What the goods were worth.
   final double totalValue;
+
+  /// The tax that belonged to these goods, and what the customer was credited (the goods plus the tax when
+  /// it was added on top).
+  final double taxAmount;
+  final double creditAmount;
 
   /// 'credit' (kept on the customer's account) or the method the money went back by.
   final String refundMethod;
@@ -78,6 +85,8 @@ class OrderReturn {
       orderId: '${map['orderId'] ?? ''}',
       returnDate: DateTime.tryParse('${map['returnDate'] ?? ''}')?.toLocal() ?? DateTime.fromMillisecondsSinceEpoch(0),
       totalValue: (map['totalValue'] as num?)?.toDouble() ?? 0,
+      taxAmount: (map['taxAmount'] as num?)?.toDouble() ?? 0,
+      creditAmount: (map['creditAmount'] as num?)?.toDouble() ?? ((map['totalValue'] as num?)?.toDouble() ?? 0),
       refundMethod: '${map['refundMethod'] ?? creditMethod}',
       refundAmount: (map['refundAmount'] as num?)?.toDouble() ?? 0,
       note: '${map['note'] ?? ''}',

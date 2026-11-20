@@ -8053,6 +8053,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Only an admin can change the tax settings.'**
   String get taxAdminOnly;
+
+  /// No description provided for @reportKindTax.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax'**
+  String get reportKindTax;
+
+  /// No description provided for @reportTaxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax summary'**
+  String get reportTaxTitle;
+
+  /// No description provided for @reportColTax.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax'**
+  String get reportColTax;
+
+  /// No description provided for @reportColCollected.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected on sales'**
+  String get reportColCollected;
+
+  /// No description provided for @reportColGivenBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Given back on returns'**
+  String get reportColGivenBack;
+
+  /// No description provided for @reportColTaxOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'To pay'**
+  String get reportColTaxOwed;
+
+  /// No description provided for @reportTaxSalesWithoutTax.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales before tax (orders that carried tax)'**
+  String get reportTaxSalesWithoutTax;
+
+  /// No description provided for @reportTaxOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders with tax'**
+  String get reportTaxOrders;
+
+  /// No description provided for @reportTaxReturns.
+  ///
+  /// In en, this message translates to:
+  /// **'Returns with tax'**
+  String get reportTaxReturns;
+
+  /// No description provided for @returnTaxGivenBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax on these goods (given back too)'**
+  String get returnTaxGivenBack;
+
+  /// No description provided for @returnTaxIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax inside these prices'**
+  String get returnTaxIncluded;
 }
 
 class _AppLocalizationsDelegate

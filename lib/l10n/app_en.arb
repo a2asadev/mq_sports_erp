@@ -3638,5 +3638,16 @@
   "taxSaved": "Tax settings saved.",
   "taxNeedsRate": "Enter a GST or VAT rate above 0.",
   "taxRateInvalid": "A rate is a number from 0 to 100.",
-  "taxAdminOnly": "Only an admin can change the tax settings."
+  "taxAdminOnly": "Only an admin can change the tax settings.",
+  "reportKindTax": "Tax",
+  "reportTaxTitle": "Tax summary",
+  "reportColTax": "Tax",
+  "reportColCollected": "Collected on sales",
+  "reportColGivenBack": "Given back on returns",
+  "reportColTaxOwed": "To pay",
+  "reportTaxSalesWithoutTax": "Sales before tax (orders that carried tax)",
+  "reportTaxOrders": "Orders with tax",
+  "reportTaxReturns": "Returns with tax",
+  "returnTaxGivenBack": "Tax on these goods (given back too)",
+  "returnTaxIncluded": "Tax inside these prices"
 }

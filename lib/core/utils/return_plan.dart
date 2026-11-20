@@ -39,6 +39,34 @@ class ReturnPlan {
     return (_worth(item, before + units) - _worth(item, before)) / 100;
   }
 
+  int get _goodsTotalCents {
+    final int subtotal = order.items.fold<int>(0, (int sum, OrderItem i) => sum + _lineNet(i));
+    final int goods = subtotal - _cents(order.discount);
+    return goods > 0 ? goods : 0;
+  }
+
+  /// The worth, in cents, of the units of every line that were returned before.
+  int get _priorGoodsCents => order.items.fold<int>(0, (int sum, OrderItem i) => sum + _worth(i, _already[i.id] ?? 0));
+
+  /// A share of the order's own tax for goods worth [goodsCents] altogether (cumulative, like the server, so
+  /// several returns never give back more than was charged).
+  int _taxShare(double orderTax, int goodsCents) =>
+      _goodsTotalCents > 0 ? ((_cents(orderTax) * goodsCents) / _goodsTotalCents).round() : 0;
+
+  /// The tax that belongs to the chosen units: the order's own tax, shared by the worth of the goods.
+  double taxOf(Map<String, int> quantities) {
+    final int prior = _priorGoodsCents;
+    final int now = prior + (totalValue(quantities) * 100).round();
+    final int gst = _taxShare(order.gstAmount, now) - _taxShare(order.gstAmount, prior);
+    final int vat = _taxShare(order.vatAmount, now) - _taxShare(order.vatAmount, prior);
+    return (gst + vat) / 100;
+  }
+
+  /// What the customer is credited for the chosen units: the goods plus the tax when it was added on top
+  /// (when the prices include tax, the goods' worth already contains it).
+  double creditOf(Map<String, int> quantities) =>
+      ((totalValue(quantities) + (order.taxInclusive ? 0 : taxOf(quantities))) * 100).round() / 100;
+
   /// What all the chosen units are worth; [quantities] is units per order line id.
   double totalValue(Map<String, int> quantities) {
     double sum = 0;
@@ -51,11 +79,11 @@ class ReturnPlan {
     return (sum * 100).round() / 100;
   }
 
-  /// Money the customer paid beyond what is left of the order once the goods are
-  /// counted: the most that can be handed back. [settled] is what the order has
-  /// settled so far (payments and earlier returns, less refunds).
-  double overpaid({required double settled, required double returnedValue}) {
-    final int cents = _cents(settled) + _cents(returnedValue) - _cents(order.totalAmount);
+  /// Money the customer paid beyond what is left of the order once the credit for the goods (see
+  /// [creditOf]) is counted: the most that can be handed back. [settled] is what the order has settled so
+  /// far (payments and earlier returns, less refunds).
+  double overpaid({required double settled, required double credit}) {
+    final int cents = _cents(settled) + _cents(credit) - _cents(order.totalAmount);
     return cents > 0 ? cents / 100 : 0;
   }
 }

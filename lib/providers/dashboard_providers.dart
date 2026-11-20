@@ -127,13 +127,15 @@ DashboardStats computeDashboardStats({
     }
     final DateTime date = order.orderDate.toLocal();
     if (_sameMonth(date, now)) {
-      salesMonth += order.totalAmount;
+      // Tax is not income: sales are what was sold, before tax.
+      final double sale = order.totalAmount - order.taxAmount;
+      salesMonth += sale;
       for (final OrderItem item in order.items) {
         costOfSalesMonth += item.quantity * (costOf[item.variantId] ?? 0);
       }
       ordersMonth++;
       if (_sameDay(date, now)) {
-        salesToday += order.totalAmount;
+        salesToday += sale;
         ordersToday++;
       }
     }

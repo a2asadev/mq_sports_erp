@@ -8,7 +8,13 @@ import 'package:a2_stocks/core/utils/tax_text.dart';
 import 'package:a2_stocks/data/local/app_database.dart';
 import 'package:a2_stocks/data/local/collections.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/core/utils/report_builders.dart';
+import 'package:a2_stocks/core/utils/report_table.dart';
+import 'package:a2_stocks/core/utils/return_plan.dart';
 import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/models/order_return.dart';
+import 'package:a2_stocks/models/report_models.dart';
+import 'package:a2_stocks/providers/dashboard_providers.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/variant_model.dart';
@@ -198,6 +204,79 @@ void main() {
     expect(BusinessInfo.tryFromMap(on.toMap()), on);
     expect(on.copyWith(gstRate: 5).vatRate, 5.5);
     expect(TaxSettings.of(on).charges, isTrue);
+  });
+
+  group('returns give the tax back', () {
+    OrderModel taxed(TaxSettings settings) {
+      final OrderModel base = OrderModel(id: 'o', orderNo: 'O', customerId: 'c', customerName: 'Ali', status: OrderStatus.delivered, items: <OrderItem>[OrderItem(id: 'a', productId: 'p', variantId: 'v', productName: 'Bat', variantLabel: '', sku: 'BAT', quantity: 3, unitPrice: 100)]);
+      return base.withTax(computeTax(base.subtotal, settings));
+    }
+
+    test('tax added on top is credited with the goods', () {
+      final OrderModel order = taxed(_gst17); // 300 + 51
+      final ReturnPlan plan = ReturnPlan(order: order);
+      expect(plan.totalValue(<String, int>{'a': 1}), 100);
+      expect(plan.taxOf(<String, int>{'a': 1}), 17);
+      expect(plan.creditOf(<String, int>{'a': 1}), 117);
+      // Paid in full (351): handing the credit back is what was paid beyond what is left.
+      expect(plan.overpaid(settled: 351, credit: 117), 117);
+    });
+
+    test('several returns never give back more tax than was charged', () {
+      final OrderModel order = taxed(_gst17);
+      final ReturnPlan second = ReturnPlan(order: order, alreadyReturned: <String, int>{'a': 1});
+      expect(second.taxOf(<String, int>{'a': 2}), 34); // 51 in all
+      expect(second.creditOf(<String, int>{'a': 2}), 234);
+    });
+
+    test('when the prices include the tax the credit is the price, and the tax inside is still told', () {
+      final OrderModel order = taxed(const TaxSettings(enabled: true, gstRate: 17, vatRate: 5, pricesIncludeTax: true));
+      final ReturnPlan plan = ReturnPlan(order: order);
+      expect(plan.creditOf(<String, int>{'a': 1}), 100);
+      expect(plan.taxOf(<String, int>{'a': 1}), 18.03);
+    });
+
+    test('an order without tax is as before', () {
+      final ReturnPlan plan = ReturnPlan(order: taxed(TaxSettings.none));
+      expect(plan.taxOf(<String, int>{'a': 2}), 0);
+      expect(plan.creditOf(<String, int>{'a': 2}), 200);
+    });
+
+    test('a return from the server says its tax and its credit; an older server says neither', () {
+      final OrderReturn r = OrderReturn.fromMap(<String, dynamic>{'id': 'r', 'totalValue': 100, 'taxAmount': 17, 'creditAmount': 117});
+      expect(<double>[r.totalValue, r.taxAmount, r.creditAmount], <double>[100, 17, 117]);
+      final OrderReturn old = OrderReturn.fromMap(<String, dynamic>{'id': 'r', 'totalValue': 100});
+      expect(<double>[old.taxAmount, old.creditAmount], <double>[0, 100]);
+    });
+  });
+
+  test('the dashboard counts sales before tax: tax is not income', () {
+    final OrderModel o = OrderModel(orderNo: 'O', customerId: 'c', customerName: 'A', items: <OrderItem>[_item(3, 100)]).withTax(computeTax(300, _gst17));
+    expect(o.totalAmount, 351);
+    final DashboardStats stats = computeDashboardStats(orders: <OrderModel>[o], products: const <ProductModel>[], onHand: const <String, int>{}, now: DateTime.now());
+    expect(stats.salesToday, 300);
+    expect(stats.salesMonth, 300);
+  });
+
+  test('the tax report is a table of what was collected, given back and owed', () {
+    final TaxReport r = TaxReport.fromMap(<String, dynamic>{
+      'period': <String, dynamic>{'from': '2026-11-01', 'to': '2026-11-22'},
+      'enabled': true,
+      'collected': <String, dynamic>{'gst': 51, 'vat': 15, 'total': 66},
+      'returned': <String, dynamic>{'gst': 17, 'vat': 5, 'total': 22},
+      'net': <String, dynamic>{'gst': 34, 'vat': 10, 'total': 44},
+      'salesWithoutTax': 300,
+      'orders': 1,
+      'returns': 1,
+    });
+    final ReportTable t = taxTable(_l10n, r);
+    expect(t.title, 'Tax summary');
+    expect(t.rows, <List<Object?>>[
+      <Object?>['GST', 51.0, 17.0, 34.0],
+      <Object?>['VAT', 15.0, 5.0, 10.0],
+    ]);
+    expect(t.totals, <Object?>['Total', 66.0, 22.0, 44.0]);
+    expect(t.toCsv(), contains('Total,66.00,22.00,44.00'));
   });
 
   group('the tax settings form', () {

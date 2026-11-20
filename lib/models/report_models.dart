@@ -308,3 +308,60 @@ class AgeingReport {
     );
   }
 }
+
+class TaxAmounts {
+  const TaxAmounts({this.gst = 0, this.vat = 0, this.total = 0});
+
+  final double gst;
+  final double vat;
+  final double total;
+
+  factory TaxAmounts.fromMap(Object? map) {
+    final Map<String, dynamic> m = map is Map<String, dynamic> ? map : const <String, dynamic>{};
+    return TaxAmounts(gst: _d(m['gst']), vat: _d(m['vat']), total: _d(m['total']));
+  }
+}
+
+/// Tax collected on sales, given back on returns, and owed (GST and VAT apart), for a period.
+class TaxReport {
+  const TaxReport({
+    required this.period,
+    required this.enabled,
+    required this.gstRate,
+    required this.vatRate,
+    required this.collected,
+    required this.returned,
+    required this.net,
+    required this.salesWithoutTax,
+    required this.orders,
+    required this.returns,
+  });
+
+  final ReportPeriodDays period;
+
+  /// Tax is switched on now (a period before it was switched on simply shows nothing).
+  final bool enabled;
+  final double gstRate;
+  final double vatRate;
+  final TaxAmounts collected;
+  final TaxAmounts returned;
+
+  /// Collected less given back: what is owed to the tax office.
+  final TaxAmounts net;
+  final double salesWithoutTax;
+  final int orders;
+  final int returns;
+
+  factory TaxReport.fromMap(Map<String, dynamic> m) => TaxReport(
+        period: ReportPeriodDays.fromMap(m['period']),
+        enabled: m['enabled'] == true,
+        gstRate: _d(m['gstRate']),
+        vatRate: _d(m['vatRate']),
+        collected: TaxAmounts.fromMap(m['collected']),
+        returned: TaxAmounts.fromMap(m['returned']),
+        net: TaxAmounts.fromMap(m['net']),
+        salesWithoutTax: _d(m['salesWithoutTax']),
+        orders: _i(m['orders']),
+        returns: _i(m['returns']),
+      );
+}

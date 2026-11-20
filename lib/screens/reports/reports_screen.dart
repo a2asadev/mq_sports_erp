@@ -21,6 +21,8 @@ String _kindLabel(AppLocalizations l10n, ReportKind kind) {
       return l10n.reportKindSales;
     case ReportKind.profit:
       return l10n.reportKindProfit;
+    case ReportKind.tax:
+      return l10n.reportKindTax;
     case ReportKind.stock:
       return l10n.reportKindStock;
     case ReportKind.receivables:
@@ -63,6 +65,9 @@ class ReportsScreen extends ConsumerWidget {
       case ReportKind.profit:
         final ProfitReport? r = ref.watch(profitReportProvider).valueOrNull;
         return r == null ? null : profitTable(l10n, r);
+      case ReportKind.tax:
+        final TaxReport? r = ref.watch(taxReportProvider).valueOrNull;
+        return r == null ? null : taxTable(l10n, r);
       case ReportKind.stock:
         final StockReport? r = ref.watch(stockReportProvider).valueOrNull;
         return r == null ? null : stockTable(l10n, r);
@@ -81,6 +86,8 @@ class ReportsScreen extends ConsumerWidget {
         return ref.watch(salesReportProvider);
       case ReportKind.profit:
         return ref.watch(profitReportProvider);
+      case ReportKind.tax:
+        return ref.watch(taxReportProvider);
       case ReportKind.stock:
         return ref.watch(stockReportProvider);
       case ReportKind.receivables:
@@ -93,6 +100,7 @@ class ReportsScreen extends ConsumerWidget {
   void _refresh(WidgetRef ref) {
     ref.invalidate(salesReportProvider);
     ref.invalidate(profitReportProvider);
+    ref.invalidate(taxReportProvider);
     ref.invalidate(stockReportProvider);
     ref.invalidate(receivablesReportProvider);
     ref.invalidate(payablesReportProvider);
@@ -140,7 +148,7 @@ class ReportsScreen extends ConsumerWidget {
     final ReportPeriod period = ref.watch(reportPeriodProvider);
     final ReportTable? table = _table(ref, l10n, kind);
     final AsyncValue<Object?> state = _state(ref, kind);
-    final bool hasPeriod = kind == ReportKind.sales || kind == ReportKind.profit;
+    final bool hasPeriod = kind == ReportKind.sales || kind == ReportKind.profit || kind == ReportKind.tax;
 
     return Scaffold(
       appBar: AppBar(

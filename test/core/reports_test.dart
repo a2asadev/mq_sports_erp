@@ -51,6 +51,23 @@ class _FakeReports implements ReportsService {
   }
 
   @override
+  Future<TaxReport> tax({String? from, String? to}) async {
+    asked.add('tax');
+    return TaxReport.fromMap(<String, dynamic>{
+      'period': <String, dynamic>{'from': '2026-11-01', 'to': '2026-11-22'},
+      'enabled': true,
+      'gstRate': 17,
+      'vatRate': 5,
+      'collected': <String, dynamic>{'gst': 51, 'vat': 15, 'total': 66},
+      'returned': <String, dynamic>{'gst': 17, 'vat': 5, 'total': 22},
+      'net': <String, dynamic>{'gst': 34, 'vat': 10, 'total': 44},
+      'salesWithoutTax': 300,
+      'orders': 1,
+      'returns': 1,
+    });
+  }
+
+  @override
   Future<StockReport> stock({int days = 90}) async {
     asked.add('stock:$days');
     return StockReport.fromMap(<String, dynamic>{
@@ -205,6 +222,11 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Net profit'), findsOneWidget);
       expect(find.text('Rs 117'), findsWidgets);
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Tax'));
+      await tester.pumpAndSettle();
+      expect(find.text('Rs 44'), findsOneWidget); // the tax to pay
+      expect(find.text('VAT'), findsOneWidget);
 
       await tester.tap(find.widgetWithText(ChoiceChip, 'Stock that does not sell'));
       await tester.pumpAndSettle();

@@ -124,10 +124,10 @@ void main() {
     test('says how much money was paid beyond what is left of the order', () {
       final ReturnPlan plan = ReturnPlan(order: _order());
       // 400 paid, goods worth 100 come back: 100 can be handed back.
-      expect(plan.overpaid(settled: 400, returnedValue: 100), 100);
+      expect(plan.overpaid(settled: 400, credit: 100), 100);
       // 100 paid of 400 and goods worth 100 come back: nothing is paid beyond what is owed.
-      expect(plan.overpaid(settled: 100, returnedValue: 100), 0);
-      expect(plan.overpaid(settled: 0, returnedValue: 100), 0);
+      expect(plan.overpaid(settled: 100, credit: 100), 0);
+      expect(plan.overpaid(settled: 0, credit: 100), 0);
     });
 
     test('earlier returns leave fewer units to come back', () {

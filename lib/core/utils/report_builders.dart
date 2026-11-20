@@ -84,6 +84,28 @@ ReportTable profitTable(AppLocalizations l10n, ProfitReport r) => ReportTable(
       ],
     );
 
+/// Tax collected, given back on returns and owed, GST and VAT apart.
+ReportTable taxTable(AppLocalizations l10n, TaxReport r) => ReportTable(
+      title: l10n.reportTaxTitle,
+      subtitle: _period(r.period),
+      summary: <ReportSummaryLine>[
+        ReportSummaryLine(l10n.reportTaxSalesWithoutTax, r.salesWithoutTax),
+        ReportSummaryLine(l10n.reportTaxOrders, r.orders, type: ReportColumnType.integer),
+        ReportSummaryLine(l10n.reportTaxReturns, r.returns, type: ReportColumnType.integer),
+      ],
+      columns: <ReportColumn>[
+        ReportColumn(l10n.reportColTax, ReportColumnType.text),
+        ReportColumn(l10n.reportColCollected, ReportColumnType.money),
+        ReportColumn(l10n.reportColGivenBack, ReportColumnType.money),
+        ReportColumn(l10n.reportColTaxOwed, ReportColumnType.money),
+      ],
+      rows: <List<Object?>>[
+        <Object?>[l10n.taxNameGst, r.collected.gst, r.returned.gst, r.net.gst],
+        <Object?>[l10n.taxNameVat, r.collected.vat, r.returned.vat, r.net.vat],
+      ],
+      totals: <Object?>[l10n.reportTotal, r.collected.total, r.returned.total, r.net.total],
+    );
+
 String stockStatusLabel(AppLocalizations l10n, StockStatus s) {
   switch (s) {
     case StockStatus.dead:
