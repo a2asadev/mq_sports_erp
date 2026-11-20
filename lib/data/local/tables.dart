@@ -141,6 +141,7 @@ class LedgerEntries extends Table {
   TextColumn get reference => text().withDefault(const Constant(''))();
   TextColumn get paymentMethod => text().withDefault(const Constant(''))();
   TextColumn get paymentRef => text().withDefault(const Constant(''))();
+  TextColumn get kind => text().withDefault(const Constant(''))();
   TextColumn get purchaseId => text().withDefault(const Constant(''))();
   TextColumn get orderId => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();

@@ -4455,4 +4455,133 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get onboardingContentCashRegisterNoRegister =>
       'No register? Leave it off. You can switch it on later in Settings > Shop details.';
+
+  @override
+  String apiErrorReturnsAWalkInCustomerCannotKeepCredit(String amount) {
+    return 'A walk-in customer cannot keep credit: hand back $amount.';
+  }
+
+  @override
+  String get apiErrorReturnsCouldNotGenerateAReturnNumber =>
+      'Could not generate a return number, try again.';
+
+  @override
+  String get apiErrorReturnsOnlyADeliveredOrderCanHave =>
+      'Only a delivered order can have goods returned. Cancel an order that has not been delivered.';
+
+  @override
+  String apiErrorReturnsOnlyCanStillBeReturned(String max, String name) {
+    return 'Only $max of $name can still be returned.';
+  }
+
+  @override
+  String get apiErrorReturnsReturnNotFound => 'Return not found';
+
+  @override
+  String get apiErrorReturnsThatItemIsNotOnThisOrder =>
+      'That item is not on this order.';
+
+  @override
+  String apiErrorReturnsTheRefundCannotBeMoreThan(String max) {
+    return 'The money handed back cannot be more than $max.';
+  }
+
+  @override
+  String get returnButton => 'Return items';
+
+  @override
+  String returnTitle(String orderNo) {
+    return 'Return items · $orderNo';
+  }
+
+  @override
+  String returnDone(String returnNo) {
+    return 'Return $returnNo recorded.';
+  }
+
+  @override
+  String returnSold(int sold, int back) {
+    return 'Sold $sold · returned before $back';
+  }
+
+  @override
+  String get returnFullyReturned => 'All of this was returned already.';
+
+  @override
+  String get returnDamaged => 'Damaged: do not put it back in stock';
+
+  @override
+  String get returnGoodsValue => 'Value of the goods';
+
+  @override
+  String get returnSettledSoFar => 'Settled so far';
+
+  @override
+  String get returnLowersDue => 'This lowers what the customer still owes.';
+
+  @override
+  String returnMoneyTitle(String amount) {
+    return '$amount was paid for goods that are coming back';
+  }
+
+  @override
+  String get returnHandBack => 'Hand the money back';
+
+  @override
+  String get returnKeepCredit => 'Keep it as credit on the customer\'s account';
+
+  @override
+  String get returnWalkInHint =>
+      'A walk-in customer cannot keep credit, so the money is handed back.';
+
+  @override
+  String get returnMethod => 'Paid back by';
+
+  @override
+  String get returnAmount => 'Amount handed back';
+
+  @override
+  String returnUpTo(String amount) {
+    return 'Up to $amount';
+  }
+
+  @override
+  String get returnNote => 'Note (optional)';
+
+  @override
+  String get returnConfirm => 'Return the items';
+
+  @override
+  String get returnNothingChosen => 'Choose how many units come back';
+
+  @override
+  String get orderDetailReturnedGoods => 'Returned goods';
+
+  @override
+  String get orderDetailRefund => 'Refund';
+
+  @override
+  String get registerRefunded => 'Cash handed back for returns';
+
+  @override
+  String get orderDetailReturns => 'Returns';
+
+  @override
+  String orderDetailReturnUnits(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count units',
+      one: '1 unit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String orderDetailReturnRefunded(String amount, String method) {
+    return '$amount handed back by $method';
+  }
+
+  @override
+  String get orderDetailReturnCredit => 'Kept as credit on the account';
 }

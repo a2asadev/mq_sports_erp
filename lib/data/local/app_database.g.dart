@@ -3451,6 +3451,13 @@ class $LedgerEntriesTable extends LedgerEntries
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant(''));
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+      'kind', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   static const VerificationMeta _purchaseIdMeta =
       const VerificationMeta('purchaseId');
   @override
@@ -3491,6 +3498,7 @@ class $LedgerEntriesTable extends LedgerEntries
         reference,
         paymentMethod,
         paymentRef,
+        kind,
         purchaseId,
         orderId,
         createdAt,
@@ -3563,6 +3571,10 @@ class $LedgerEntriesTable extends LedgerEntries
           paymentRef.isAcceptableOrUnknown(
               data['payment_ref']!, _paymentRefMeta));
     }
+    if (data.containsKey('kind')) {
+      context.handle(
+          _kindMeta, kind.isAcceptableOrUnknown(data['kind']!, _kindMeta));
+    }
     if (data.containsKey('purchase_id')) {
       context.handle(
           _purchaseIdMeta,
@@ -3614,6 +3626,8 @@ class $LedgerEntriesTable extends LedgerEntries
           .read(DriftSqlType.string, data['${effectivePrefix}payment_method'])!,
       paymentRef: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}payment_ref'])!,
+      kind: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}kind'])!,
       purchaseId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}purchase_id'])!,
       orderId: attachedDatabase.typeMapping
@@ -3642,6 +3656,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
   final String reference;
   final String paymentMethod;
   final String paymentRef;
+  final String kind;
   final String purchaseId;
   final String orderId;
   final DateTime createdAt;
@@ -3657,6 +3672,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       required this.reference,
       required this.paymentMethod,
       required this.paymentRef,
+      required this.kind,
       required this.purchaseId,
       required this.orderId,
       required this.createdAt,
@@ -3674,6 +3690,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
     map['reference'] = Variable<String>(reference);
     map['payment_method'] = Variable<String>(paymentMethod);
     map['payment_ref'] = Variable<String>(paymentRef);
+    map['kind'] = Variable<String>(kind);
     map['purchase_id'] = Variable<String>(purchaseId);
     map['order_id'] = Variable<String>(orderId);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -3693,6 +3710,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       reference: Value(reference),
       paymentMethod: Value(paymentMethod),
       paymentRef: Value(paymentRef),
+      kind: Value(kind),
       purchaseId: Value(purchaseId),
       orderId: Value(orderId),
       createdAt: Value(createdAt),
@@ -3714,6 +3732,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       reference: serializer.fromJson<String>(json['reference']),
       paymentMethod: serializer.fromJson<String>(json['paymentMethod']),
       paymentRef: serializer.fromJson<String>(json['paymentRef']),
+      kind: serializer.fromJson<String>(json['kind']),
       purchaseId: serializer.fromJson<String>(json['purchaseId']),
       orderId: serializer.fromJson<String>(json['orderId']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -3734,6 +3753,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       'reference': serializer.toJson<String>(reference),
       'paymentMethod': serializer.toJson<String>(paymentMethod),
       'paymentRef': serializer.toJson<String>(paymentRef),
+      'kind': serializer.toJson<String>(kind),
       'purchaseId': serializer.toJson<String>(purchaseId),
       'orderId': serializer.toJson<String>(orderId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -3752,6 +3772,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
           String? reference,
           String? paymentMethod,
           String? paymentRef,
+          String? kind,
           String? purchaseId,
           String? orderId,
           DateTime? createdAt,
@@ -3767,6 +3788,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
         reference: reference ?? this.reference,
         paymentMethod: paymentMethod ?? this.paymentMethod,
         paymentRef: paymentRef ?? this.paymentRef,
+        kind: kind ?? this.kind,
         purchaseId: purchaseId ?? this.purchaseId,
         orderId: orderId ?? this.orderId,
         createdAt: createdAt ?? this.createdAt,
@@ -3788,6 +3810,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
           : this.paymentMethod,
       paymentRef:
           data.paymentRef.present ? data.paymentRef.value : this.paymentRef,
+      kind: data.kind.present ? data.kind.value : this.kind,
       purchaseId:
           data.purchaseId.present ? data.purchaseId.value : this.purchaseId,
       orderId: data.orderId.present ? data.orderId.value : this.orderId,
@@ -3809,6 +3832,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
           ..write('reference: $reference, ')
           ..write('paymentMethod: $paymentMethod, ')
           ..write('paymentRef: $paymentRef, ')
+          ..write('kind: $kind, ')
           ..write('purchaseId: $purchaseId, ')
           ..write('orderId: $orderId, ')
           ..write('createdAt: $createdAt, ')
@@ -3829,6 +3853,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
       reference,
       paymentMethod,
       paymentRef,
+      kind,
       purchaseId,
       orderId,
       createdAt,
@@ -3847,6 +3872,7 @@ class LedgerRow extends DataClass implements Insertable<LedgerRow> {
           other.reference == this.reference &&
           other.paymentMethod == this.paymentMethod &&
           other.paymentRef == this.paymentRef &&
+          other.kind == this.kind &&
           other.purchaseId == this.purchaseId &&
           other.orderId == this.orderId &&
           other.createdAt == this.createdAt &&
@@ -3864,6 +3890,7 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
   final Value<String> reference;
   final Value<String> paymentMethod;
   final Value<String> paymentRef;
+  final Value<String> kind;
   final Value<String> purchaseId;
   final Value<String> orderId;
   final Value<DateTime> createdAt;
@@ -3880,6 +3907,7 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
     this.reference = const Value.absent(),
     this.paymentMethod = const Value.absent(),
     this.paymentRef = const Value.absent(),
+    this.kind = const Value.absent(),
     this.purchaseId = const Value.absent(),
     this.orderId = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -3897,6 +3925,7 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
     this.reference = const Value.absent(),
     this.paymentMethod = const Value.absent(),
     this.paymentRef = const Value.absent(),
+    this.kind = const Value.absent(),
     this.purchaseId = const Value.absent(),
     this.orderId = const Value.absent(),
     required DateTime createdAt,
@@ -3921,6 +3950,7 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
     Expression<String>? reference,
     Expression<String>? paymentMethod,
     Expression<String>? paymentRef,
+    Expression<String>? kind,
     Expression<String>? purchaseId,
     Expression<String>? orderId,
     Expression<DateTime>? createdAt,
@@ -3938,6 +3968,7 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
       if (reference != null) 'reference': reference,
       if (paymentMethod != null) 'payment_method': paymentMethod,
       if (paymentRef != null) 'payment_ref': paymentRef,
+      if (kind != null) 'kind': kind,
       if (purchaseId != null) 'purchase_id': purchaseId,
       if (orderId != null) 'order_id': orderId,
       if (createdAt != null) 'created_at': createdAt,
@@ -3957,6 +3988,7 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
       Value<String>? reference,
       Value<String>? paymentMethod,
       Value<String>? paymentRef,
+      Value<String>? kind,
       Value<String>? purchaseId,
       Value<String>? orderId,
       Value<DateTime>? createdAt,
@@ -3973,6 +4005,7 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
       reference: reference ?? this.reference,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       paymentRef: paymentRef ?? this.paymentRef,
+      kind: kind ?? this.kind,
       purchaseId: purchaseId ?? this.purchaseId,
       orderId: orderId ?? this.orderId,
       createdAt: createdAt ?? this.createdAt,
@@ -4014,6 +4047,9 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
     if (paymentRef.present) {
       map['payment_ref'] = Variable<String>(paymentRef.value);
     }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
     if (purchaseId.present) {
       map['purchase_id'] = Variable<String>(purchaseId.value);
     }
@@ -4045,6 +4081,7 @@ class LedgerEntriesCompanion extends UpdateCompanion<LedgerRow> {
           ..write('reference: $reference, ')
           ..write('paymentMethod: $paymentMethod, ')
           ..write('paymentRef: $paymentRef, ')
+          ..write('kind: $kind, ')
           ..write('purchaseId: $purchaseId, ')
           ..write('orderId: $orderId, ')
           ..write('createdAt: $createdAt, ')
@@ -10637,6 +10674,7 @@ typedef $$LedgerEntriesTableCreateCompanionBuilder = LedgerEntriesCompanion
   Value<String> reference,
   Value<String> paymentMethod,
   Value<String> paymentRef,
+  Value<String> kind,
   Value<String> purchaseId,
   Value<String> orderId,
   required DateTime createdAt,
@@ -10655,6 +10693,7 @@ typedef $$LedgerEntriesTableUpdateCompanionBuilder = LedgerEntriesCompanion
   Value<String> reference,
   Value<String> paymentMethod,
   Value<String> paymentRef,
+  Value<String> kind,
   Value<String> purchaseId,
   Value<String> orderId,
   Value<DateTime> createdAt,
@@ -10700,6 +10739,9 @@ class $$LedgerEntriesTableFilterComposer
 
   ColumnFilters<String> get paymentRef => $composableBuilder(
       column: $table.paymentRef, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get kind => $composableBuilder(
+      column: $table.kind, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get purchaseId => $composableBuilder(
       column: $table.purchaseId, builder: (column) => ColumnFilters(column));
@@ -10754,6 +10796,9 @@ class $$LedgerEntriesTableOrderingComposer
   ColumnOrderings<String> get paymentRef => $composableBuilder(
       column: $table.paymentRef, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get kind => $composableBuilder(
+      column: $table.kind, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get purchaseId => $composableBuilder(
       column: $table.purchaseId, builder: (column) => ColumnOrderings(column));
 
@@ -10806,6 +10851,9 @@ class $$LedgerEntriesTableAnnotationComposer
   GeneratedColumn<String> get paymentRef => $composableBuilder(
       column: $table.paymentRef, builder: (column) => column);
 
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
   GeneratedColumn<String> get purchaseId => $composableBuilder(
       column: $table.purchaseId, builder: (column) => column);
 
@@ -10852,6 +10900,7 @@ class $$LedgerEntriesTableTableManager extends RootTableManager<
             Value<String> reference = const Value.absent(),
             Value<String> paymentMethod = const Value.absent(),
             Value<String> paymentRef = const Value.absent(),
+            Value<String> kind = const Value.absent(),
             Value<String> purchaseId = const Value.absent(),
             Value<String> orderId = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
@@ -10869,6 +10918,7 @@ class $$LedgerEntriesTableTableManager extends RootTableManager<
             reference: reference,
             paymentMethod: paymentMethod,
             paymentRef: paymentRef,
+            kind: kind,
             purchaseId: purchaseId,
             orderId: orderId,
             createdAt: createdAt,
@@ -10886,6 +10936,7 @@ class $$LedgerEntriesTableTableManager extends RootTableManager<
             Value<String> reference = const Value.absent(),
             Value<String> paymentMethod = const Value.absent(),
             Value<String> paymentRef = const Value.absent(),
+            Value<String> kind = const Value.absent(),
             Value<String> purchaseId = const Value.absent(),
             Value<String> orderId = const Value.absent(),
             required DateTime createdAt,
@@ -10903,6 +10954,7 @@ class $$LedgerEntriesTableTableManager extends RootTableManager<
             reference: reference,
             paymentMethod: paymentMethod,
             paymentRef: paymentRef,
+            kind: kind,
             purchaseId: purchaseId,
             orderId: orderId,
             createdAt: createdAt,

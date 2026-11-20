@@ -3265,5 +3265,121 @@
   "registerChoiceHint": "Adds a Cash register page where you count the cash at the end of each day and see whether it matches. You can switch it on or off at any time.",
   "onboardingContentCashRegister": "Do you keep a cash register?",
   "onboardingContentCashRegisterBody": "If cash goes into a drawer or a cash box, A2 Stocks can help you check it at the end of each day: you count the cash and it tells you if anything is missing.",
-  "onboardingContentCashRegisterNoRegister": "No register? Leave it off. You can switch it on later in Settings > Shop details."
+  "onboardingContentCashRegisterNoRegister": "No register? Leave it off. You can switch it on later in Settings > Shop details.",
+  "apiErrorReturnsAWalkInCustomerCannotKeepCredit": "A walk-in customer cannot keep credit: hand back {amount}.",
+  "@apiErrorReturnsAWalkInCustomerCannotKeepCredit": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorReturnsCouldNotGenerateAReturnNumber": "Could not generate a return number, try again.",
+  "apiErrorReturnsOnlyADeliveredOrderCanHave": "Only a delivered order can have goods returned. Cancel an order that has not been delivered.",
+  "apiErrorReturnsOnlyCanStillBeReturned": "Only {max} of {name} can still be returned.",
+  "@apiErrorReturnsOnlyCanStillBeReturned": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorReturnsReturnNotFound": "Return not found",
+  "apiErrorReturnsThatItemIsNotOnThisOrder": "That item is not on this order.",
+  "apiErrorReturnsTheRefundCannotBeMoreThan": "The money handed back cannot be more than {max}.",
+  "@apiErrorReturnsTheRefundCannotBeMoreThan": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "returnButton": "Return items",
+  "@returnButton": {
+    "description": "Button on a delivered order: goods are coming back."
+  },
+  "returnTitle": "Return items · {orderNo}",
+  "@returnTitle": {
+    "placeholders": {
+      "orderNo": {
+        "type": "String"
+      }
+    }
+  },
+  "returnDone": "Return {returnNo} recorded.",
+  "@returnDone": {
+    "placeholders": {
+      "returnNo": {
+        "type": "String"
+      }
+    }
+  },
+  "returnSold": "Sold {sold} · returned before {back}",
+  "@returnSold": {
+    "placeholders": {
+      "sold": {
+        "type": "int"
+      },
+      "back": {
+        "type": "int"
+      }
+    }
+  },
+  "returnFullyReturned": "All of this was returned already.",
+  "returnDamaged": "Damaged: do not put it back in stock",
+  "returnGoodsValue": "Value of the goods",
+  "returnSettledSoFar": "Settled so far",
+  "returnLowersDue": "This lowers what the customer still owes.",
+  "returnMoneyTitle": "{amount} was paid for goods that are coming back",
+  "@returnMoneyTitle": {
+    "description": "Heading of the money choice: how much the customer paid beyond what is left of the order.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "returnHandBack": "Hand the money back",
+  "returnKeepCredit": "Keep it as credit on the customer's account",
+  "returnWalkInHint": "A walk-in customer cannot keep credit, so the money is handed back.",
+  "returnMethod": "Paid back by",
+  "returnAmount": "Amount handed back",
+  "returnUpTo": "Up to {amount}",
+  "@returnUpTo": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "returnNote": "Note (optional)",
+  "returnConfirm": "Return the items",
+  "returnNothingChosen": "Choose how many units come back",
+  "orderDetailReturnedGoods": "Returned goods",
+  "orderDetailRefund": "Refund",
+  "registerRefunded": "Cash handed back for returns",
+  "orderDetailReturns": "Returns",
+  "orderDetailReturnUnits": "{count, plural, =1{1 unit} other{{count} units}}",
+  "@orderDetailReturnUnits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "orderDetailReturnRefunded": "{amount} handed back by {method}",
+  "@orderDetailReturnRefunded": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "orderDetailReturnCredit": "Kept as credit on the account"
 }

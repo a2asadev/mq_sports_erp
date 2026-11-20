@@ -110,11 +110,16 @@ class ReceiptData {
       for (final LedgerModel e in ledger)
         if (e.orderId == order.id &&
             e.partyType == PartyType.customer &&
-            e.entryType == LedgerEntryType.payment &&
+            (e.entryType == LedgerEntryType.payment || e.isRefund) &&
             !e.description.startsWith(ServerText.cancelledOrderLedgerPrefix))
           ReceiptPayment(
-            label: e.paymentMethod.isEmpty ? L10n.current.paymentMethodUnknown : paymentMethodLabelOf(e.paymentMethod),
-            amount: e.amount,
+            label: e.isReturn
+                ? L10n.current.orderDetailReturnedGoods
+                : (e.isRefund
+                    ? L10n.current.orderDetailRefund
+                    : (e.paymentMethod.isEmpty ? L10n.current.paymentMethodUnknown : paymentMethodLabelOf(e.paymentMethod))),
+            // Money handed back takes away from what was paid.
+            amount: e.orderSettlement,
             reference: e.paymentRef,
           ),
     ];

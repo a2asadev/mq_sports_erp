@@ -198,6 +198,20 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorStarterPacksNotInThisPack(_text(params, 'names'));
     case 'starter_packs.there_is_no_such_starter_pack':
       return l10n.apiErrorStarterPacksThereIsNoSuchStarterPack;
+    case 'returns.a_walk_in_customer_cannot_keep_credit':
+      return l10n.apiErrorReturnsAWalkInCustomerCannotKeepCredit(_text(params, 'amount'));
+    case 'returns.could_not_generate_a_return_number':
+      return l10n.apiErrorReturnsCouldNotGenerateAReturnNumber;
+    case 'returns.only_a_delivered_order_can_have':
+      return l10n.apiErrorReturnsOnlyADeliveredOrderCanHave;
+    case 'returns.only_can_still_be_returned':
+      return l10n.apiErrorReturnsOnlyCanStillBeReturned(_text(params, 'max'), _text(params, 'name'));
+    case 'returns.return_not_found':
+      return l10n.apiErrorReturnsReturnNotFound;
+    case 'returns.that_item_is_not_on_this_order':
+      return l10n.apiErrorReturnsThatItemIsNotOnThisOrder;
+    case 'returns.the_refund_cannot_be_more_than':
+      return l10n.apiErrorReturnsTheRefundCannotBeMoreThan(_text(params, 'max'));
     case 'stock.not_enough_stock_for_on_hand':
       return l10n.apiErrorStockNotEnoughStockForOnHand(_text(params, 'name'), _text(params, 'quantity'), _text(params, 'needed'));
     case 'register.the_day_has_not_started_yet':

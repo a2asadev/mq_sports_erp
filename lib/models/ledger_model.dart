@@ -16,6 +16,7 @@ class LedgerModel implements SyncableModel {
     this.reference = '',
     this.paymentMethod = '',
     this.paymentRef = '',
+    this.kind = '',
     this.purchaseId = '',
     this.orderId = '',
     DateTime? createdAt,
@@ -42,6 +43,20 @@ class LedgerModel implements SyncableModel {
 
   /// Transaction number or bank name of a non-cash payment.
   final String paymentRef;
+
+  /// '' for an ordinary entry; [returnKind] (the value of goods a customer brought back, a payment that
+  /// settles the order) or [refundKind] (money handed back to a customer, a charge).
+  final String kind;
+
+  static const String returnKind = 'return';
+  static const String refundKind = 'refund';
+
+  bool get isReturn => kind == returnKind;
+  bool get isRefund => kind == refundKind;
+
+  /// What this entry does to the part of an order that is settled: payments and the value of
+  /// returned goods settle it, money handed back undoes some of that.
+  double get orderSettlement => entryType == LedgerEntryType.payment ? amount : (isRefund ? -amount : 0);
 
   /// Id of the purchase this entry belongs to (empty for general entries).
   final String purchaseId;
@@ -70,6 +85,7 @@ class LedgerModel implements SyncableModel {
       'reference': reference,
       'paymentMethod': paymentMethod,
       'paymentRef': paymentRef,
+      'kind': kind,
       'purchaseId': purchaseId,
       'orderId': orderId,
       'createdAt': createdAt.toIso8601String(),
@@ -89,6 +105,7 @@ class LedgerModel implements SyncableModel {
       reference: map['reference'] as String? ?? '',
       paymentMethod: map['paymentMethod'] as String? ?? '',
       paymentRef: map['paymentRef'] as String? ?? '',
+      kind: map['kind'] as String? ?? '',
       purchaseId: map['purchaseId'] as String? ?? '',
       orderId: map['orderId'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
@@ -118,6 +135,7 @@ class LedgerModel implements SyncableModel {
       reference: reference ?? this.reference,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       paymentRef: paymentRef ?? this.paymentRef,
+      kind: kind,
       purchaseId: purchaseId,
       orderId: orderId,
       createdAt: createdAt,

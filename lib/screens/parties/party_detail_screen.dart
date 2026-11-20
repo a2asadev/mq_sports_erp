@@ -361,7 +361,9 @@ class PartyDetailScreen extends ConsumerWidget {
                   subtitle: Text(
                     <String>[
                       formatDate(row.key.entryDate),
-                      row.key.entryType.labelFor(partyType),
+                      row.key.isReturn
+                          ? context.l10n.orderDetailReturnedGoods
+                          : (row.key.isRefund ? context.l10n.orderDetailRefund : row.key.entryType.labelFor(partyType)),
                       if (row.key.reference.isNotEmpty) context.l10n.partyDetailRef(row.key.reference),
                     ].join(' · '),
                   ),

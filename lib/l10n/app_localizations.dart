@@ -6955,6 +6955,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No register? Leave it off. You can switch it on later in Settings > Shop details.'**
   String get onboardingContentCashRegisterNoRegister;
+
+  /// No description provided for @apiErrorReturnsAWalkInCustomerCannotKeepCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'A walk-in customer cannot keep credit: hand back {amount}.'**
+  String apiErrorReturnsAWalkInCustomerCannotKeepCredit(String amount);
+
+  /// No description provided for @apiErrorReturnsCouldNotGenerateAReturnNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not generate a return number, try again.'**
+  String get apiErrorReturnsCouldNotGenerateAReturnNumber;
+
+  /// No description provided for @apiErrorReturnsOnlyADeliveredOrderCanHave.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a delivered order can have goods returned. Cancel an order that has not been delivered.'**
+  String get apiErrorReturnsOnlyADeliveredOrderCanHave;
+
+  /// No description provided for @apiErrorReturnsOnlyCanStillBeReturned.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {max} of {name} can still be returned.'**
+  String apiErrorReturnsOnlyCanStillBeReturned(String max, String name);
+
+  /// No description provided for @apiErrorReturnsReturnNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Return not found'**
+  String get apiErrorReturnsReturnNotFound;
+
+  /// No description provided for @apiErrorReturnsThatItemIsNotOnThisOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'That item is not on this order.'**
+  String get apiErrorReturnsThatItemIsNotOnThisOrder;
+
+  /// No description provided for @apiErrorReturnsTheRefundCannotBeMoreThan.
+  ///
+  /// In en, this message translates to:
+  /// **'The money handed back cannot be more than {max}.'**
+  String apiErrorReturnsTheRefundCannotBeMoreThan(String max);
+
+  /// Button on a delivered order: goods are coming back.
+  ///
+  /// In en, this message translates to:
+  /// **'Return items'**
+  String get returnButton;
+
+  /// No description provided for @returnTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Return items · {orderNo}'**
+  String returnTitle(String orderNo);
+
+  /// No description provided for @returnDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Return {returnNo} recorded.'**
+  String returnDone(String returnNo);
+
+  /// No description provided for @returnSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold {sold} · returned before {back}'**
+  String returnSold(int sold, int back);
+
+  /// No description provided for @returnFullyReturned.
+  ///
+  /// In en, this message translates to:
+  /// **'All of this was returned already.'**
+  String get returnFullyReturned;
+
+  /// No description provided for @returnDamaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Damaged: do not put it back in stock'**
+  String get returnDamaged;
+
+  /// No description provided for @returnGoodsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value of the goods'**
+  String get returnGoodsValue;
+
+  /// No description provided for @returnSettledSoFar.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled so far'**
+  String get returnSettledSoFar;
+
+  /// No description provided for @returnLowersDue.
+  ///
+  /// In en, this message translates to:
+  /// **'This lowers what the customer still owes.'**
+  String get returnLowersDue;
+
+  /// Heading of the money choice: how much the customer paid beyond what is left of the order.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} was paid for goods that are coming back'**
+  String returnMoneyTitle(String amount);
+
+  /// No description provided for @returnHandBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand the money back'**
+  String get returnHandBack;
+
+  /// No description provided for @returnKeepCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it as credit on the customer\'s account'**
+  String get returnKeepCredit;
+
+  /// No description provided for @returnWalkInHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A walk-in customer cannot keep credit, so the money is handed back.'**
+  String get returnWalkInHint;
+
+  /// No description provided for @returnMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid back by'**
+  String get returnMethod;
+
+  /// No description provided for @returnAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount handed back'**
+  String get returnAmount;
+
+  /// No description provided for @returnUpTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {amount}'**
+  String returnUpTo(String amount);
+
+  /// No description provided for @returnNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get returnNote;
+
+  /// No description provided for @returnConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Return the items'**
+  String get returnConfirm;
+
+  /// No description provided for @returnNothingChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how many units come back'**
+  String get returnNothingChosen;
+
+  /// No description provided for @orderDetailReturnedGoods.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned goods'**
+  String get orderDetailReturnedGoods;
+
+  /// No description provided for @orderDetailRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund'**
+  String get orderDetailRefund;
+
+  /// No description provided for @registerRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash handed back for returns'**
+  String get registerRefunded;
+
+  /// No description provided for @orderDetailReturns.
+  ///
+  /// In en, this message translates to:
+  /// **'Returns'**
+  String get orderDetailReturns;
+
+  /// No description provided for @orderDetailReturnUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unit} other{{count} units}}'**
+  String orderDetailReturnUnits(int count);
+
+  /// No description provided for @orderDetailReturnRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} handed back by {method}'**
+  String orderDetailReturnRefunded(String amount, String method);
+
+  /// No description provided for @orderDetailReturnCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'Kept as credit on the account'**
+  String get orderDetailReturnCredit;
 }
 
 class _AppLocalizationsDelegate

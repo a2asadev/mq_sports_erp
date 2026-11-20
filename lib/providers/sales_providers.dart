@@ -14,6 +14,8 @@ import 'package:a2_stocks/models/activity_log_model.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
 import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/order_return.dart';
+import 'package:a2_stocks/online/returns_service.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/stock_ledger_model.dart';
@@ -402,9 +404,19 @@ final Provider<Map<String, double>> orderPaidProvider =
       ref.watch(ledgerEntriesProvider).valueOrNull ?? <LedgerModel>[];
   final Map<String, double> paid = <String, double>{};
   for (final LedgerModel entry in entries) {
-    if (entry.orderId.isNotEmpty && entry.entryType == LedgerEntryType.payment) {
-      paid[entry.orderId] = (paid[entry.orderId] ?? 0) + entry.amount;
+    if (entry.orderId.isNotEmpty && entry.partyType == PartyType.customer && entry.orderSettlement != 0) {
+      paid[entry.orderId] = (paid[entry.orderId] ?? 0) + entry.orderSettlement;
     }
   }
   return paid;
+});
+
+final Provider<ReturnsService> returnsServiceProvider =
+    Provider<ReturnsService>((Ref ref) => ReturnsService(ref.watch(apiClientProvider)));
+
+/// The returns of one order, oldest first (read from the server; needs a connection).
+final AutoDisposeFutureProviderFamily<List<OrderReturn>, String> orderReturnsProvider =
+    FutureProvider.autoDispose.family<List<OrderReturn>, String>((Ref ref, String orderId) {
+  ref.watch(syncTickProvider);
+  return ref.watch(returnsServiceProvider).forOrder(orderId);
 });

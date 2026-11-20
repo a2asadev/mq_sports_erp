@@ -15,10 +15,12 @@ import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
 import 'package:a2_stocks/models/order_model.dart';
+import 'package:a2_stocks/models/order_return.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/purchase_model.dart';
 import 'package:a2_stocks/providers/parties_providers.dart';
 import 'package:a2_stocks/providers/sales_providers.dart';
+import 'package:a2_stocks/screens/sales/return_screen.dart';
 import 'package:a2_stocks/widgets/order_status_chip.dart';
 import 'package:a2_stocks/widgets/purchase_status_chip.dart';
 
@@ -219,15 +221,20 @@ class OrderDetailScreen extends ConsumerWidget {
     }
 
     final bool cancelled = order.status == OrderStatus.cancelled;
+    // Payments, the value of returned goods, and money handed back.
     final List<LedgerModel> payments = ledger
         .where((LedgerModel e) =>
             e.orderId == order.id &&
             e.partyType == PartyType.customer &&
-            e.entryType == LedgerEntryType.payment)
+            (e.entryType == LedgerEntryType.payment || e.isRefund))
         .toList()
       ..sort((LedgerModel a, LedgerModel b) => b.entryDate.compareTo(a.entryDate));
+    // What the order has settled; the part that is returned goods is shown on its own line.
     final double paid =
-        payments.fold<double>(0, (double s, LedgerModel e) => s + e.amount);
+        payments.fold<double>(0, (double s, LedgerModel e) => s + e.orderSettlement);
+    final double returned = payments
+        .where((LedgerModel e) => e.isReturn)
+        .fold<double>(0, (double s, LedgerModel e) => s + e.amount);
     final double total = order.totalAmount;
     final double due = (total - paid) > 0 ? total - paid : 0;
     final OrderStatus? next = order.status.next;
@@ -296,7 +303,8 @@ class OrderDetailScreen extends ConsumerWidget {
                     _amountRow(context.l10n.orderDetailDelivery, formatAmount(order.shippingFee)),
                   _amountRow(context.l10n.orderReceiptCardTotal, formatAmount(total), bold: true),
                   if (!cancelled) ...<Widget>[
-                    _amountRow(context.l10n.purchaseDetailPaid, formatAmount(paid)),
+                    if (returned > 0.005) _amountRow(context.l10n.orderDetailReturnedGoods, '- ${formatAmount(returned)}'),
+                    _amountRow(context.l10n.purchaseDetailPaid, formatAmount(paid - returned)),
                     _amountRow(
                       context.l10n.purchaseDetailDue2,
                       formatAmount(due),
@@ -326,6 +334,16 @@ class OrderDetailScreen extends ConsumerWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: theme.colorScheme.error,
               ),
+            ),
+          ],
+          if (canCancel && order.status == OrderStatus.delivered) ...<Widget>[
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push<bool>(
+                MaterialPageRoute<bool>(builder: (BuildContext context) => ReturnScreen(order: order)),
+              ),
+              icon: const Icon(Icons.assignment_return_outlined),
+              label: Text(context.l10n.returnButton),
             ),
           ],
           const SizedBox(height: 8),
@@ -407,17 +425,23 @@ class OrderDetailScreen extends ConsumerWidget {
             for (final LedgerModel payment in payments)
               Card(
                 child: ListTile(
-                  leading: const Icon(Icons.payments_outlined),
+                  leading: Icon(payment.isReturn
+                      ? Icons.assignment_return_outlined
+                      : (payment.isRefund ? Icons.undo : Icons.payments_outlined)),
                   title: Text(payment.description),
                   subtitle: Text(<String>[
                     formatDate(payment.entryDate),
+                    if (payment.isReturn) context.l10n.orderDetailReturnedGoods,
+                    if (payment.isRefund) context.l10n.orderDetailRefund,
                     if (payment.paymentMethod.isNotEmpty) paymentMethodLabelOf(payment.paymentMethod),
                     if (payment.paymentRef.isNotEmpty) payment.paymentRef,
                   ].join(' · ')),
-                  trailing: Text(formatAmount(payment.amount),
+                  trailing: Text(payment.isRefund ? '- ${formatAmount(payment.amount)}' : formatAmount(payment.amount),
                       style: const TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
+          // The returns come from the server; without a connection this part is simply not shown.
+          ..._returnsSection(context, ref, order),
           const SizedBox(height: 80),
         ],
       ),
@@ -430,6 +454,36 @@ class OrderDetailScreen extends ConsumerWidget {
           : null,
     );
   }
+}
+
+/// The returns of this order, oldest first.
+List<Widget> _returnsSection(BuildContext context, WidgetRef ref, OrderModel order) {
+  final List<OrderReturn> returns = ref.watch(orderReturnsProvider(order.id)).valueOrNull ?? <OrderReturn>[];
+  if (returns.isEmpty) {
+    return const <Widget>[];
+  }
+  return <Widget>[
+    const SizedBox(height: 16),
+    Text(context.l10n.orderDetailReturns, style: Theme.of(context).textTheme.titleMedium),
+    const SizedBox(height: 8),
+    for (final OrderReturn r in returns)
+      Card(
+        child: ListTile(
+          leading: const Icon(Icons.assignment_return_outlined),
+          title: Text(r.returnNo),
+          subtitle: Text(<String>[
+            formatDate(r.returnDate),
+            context.l10n.orderDetailReturnUnits(r.totalUnits),
+            r.handedMoneyBack
+                ? context.l10n.orderDetailReturnRefunded(formatMoney(r.refundAmount), paymentMethodLabelOf(r.refundMethod))
+                : context.l10n.orderDetailReturnCredit,
+            if (r.byName.isNotEmpty) context.l10n.orderDetailBy(r.byName),
+            if (r.note.isNotEmpty) r.note,
+          ].join(' · ')),
+          trailing: Text(formatMoney(r.totalValue), style: const TextStyle(fontWeight: FontWeight.w600)),
+        ),
+      ),
+  ];
 }
 
 class _PaymentDialog extends StatefulWidget {
