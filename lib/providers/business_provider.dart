@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/currency.dart';
 import 'package:a2_stocks/models/business_info.dart';
+import 'package:a2_stocks/online/business_service.dart';
 import 'package:a2_stocks/online/online_providers.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 
@@ -38,3 +39,7 @@ final Provider<Future<void> Function(BusinessInfo business)> businessUpdaterProv
     ref.read(_businessRevisionProvider.notifier).state++;
   };
 });
+
+/// Changes to the business itself (currency, colour, cash register). Needs a connection.
+final Provider<BusinessService> businessServiceProvider =
+    Provider<BusinessService>((Ref ref) => BusinessService(ref.watch(apiClientProvider)));

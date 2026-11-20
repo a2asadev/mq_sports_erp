@@ -4318,4 +4318,141 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notifSettingsTestNotAllowed =>
       'Sound played, but notifications are not allowed for this app yet. Switch the option on again to allow them.';
+
+  @override
+  String get apiErrorRegisterTheDayHasNotStartedYet =>
+      'This day has not started yet, so it cannot be closed.';
+
+  @override
+  String get apiErrorRegisterTheRegisterIsSwitchedOff =>
+      'The cash register is switched off for this business. An admin can switch it on in Settings.';
+
+  @override
+  String get moduleCashRegister => 'Cash register';
+
+  @override
+  String get registerRefresh => 'Refresh';
+
+  @override
+  String get registerCancel => 'Cancel';
+
+  @override
+  String get registerToday => 'Today';
+
+  @override
+  String get registerClosed => 'Closed';
+
+  @override
+  String get registerOpen => 'Open';
+
+  @override
+  String get registerShouldHave => 'Cash that should be in the drawer';
+
+  @override
+  String get registerOpening => 'Opening cash';
+
+  @override
+  String get registerOpeningHint =>
+      'The cash that was in the drawer when the day began. Change it if it is not right.';
+
+  @override
+  String get registerFromCustomers => 'Cash from customers';
+
+  @override
+  String get registerToVendors => 'Cash paid to vendors';
+
+  @override
+  String get registerNotCash => 'Also received, not in cash';
+
+  @override
+  String registerSalesLine(int count, String amount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sales',
+      one: '1 sale',
+      zero: 'No sales',
+    );
+    return '$_temp0 · $amount';
+  }
+
+  @override
+  String get registerCounted => 'Cash counted';
+
+  @override
+  String get registerCountedHint =>
+      'Count the cash in the drawer and type the total.';
+
+  @override
+  String get registerNote => 'Note (optional)';
+
+  @override
+  String get registerCloseDay => 'Close the day';
+
+  @override
+  String get registerCountAgain => 'Count again';
+
+  @override
+  String get registerDayClosed => 'The day is closed.';
+
+  @override
+  String get registerBalanced => 'The cash matches';
+
+  @override
+  String get registerBalancedShort => 'Matches';
+
+  @override
+  String registerShort(String amount) {
+    return '$amount short';
+  }
+
+  @override
+  String registerOver(String amount) {
+    return '$amount over';
+  }
+
+  @override
+  String registerCountedAmount(String amount) {
+    return '$amount counted';
+  }
+
+  @override
+  String registerClosedBy(String name, String date) {
+    return 'Closed by $name on $date';
+  }
+
+  @override
+  String registerUnsent(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count actions',
+      one: '1 action',
+    );
+    return '$_temp0 on this device not sent to the server yet. Wait for them to sync, so the cash of the day is complete.';
+  }
+
+  @override
+  String get registerHistory => 'Days closed before';
+
+  @override
+  String get registerHistoryEmpty => 'No day has been closed yet.';
+
+  @override
+  String get registerChoiceTitle => 'I use a cash register';
+
+  @override
+  String get registerChoiceHint =>
+      'Adds a Cash register page where you count the cash at the end of each day and see whether it matches. You can switch it on or off at any time.';
+
+  @override
+  String get onboardingContentCashRegister => 'Do you keep a cash register?';
+
+  @override
+  String get onboardingContentCashRegisterBody =>
+      'If cash goes into a drawer or a cash box, A2 Stocks can help you check it at the end of each day: you count the cash and it tells you if anything is missing.';
+
+  @override
+  String get onboardingContentCashRegisterNoRegister =>
+      'No register? Leave it off. You can switch it on later in Settings > Shop details.';
 }

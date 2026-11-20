@@ -38,6 +38,7 @@ class ErpModule {
     required this.allowedRoles,
     required this.builder,
     this.group = ModuleGroup.main,
+    this.needsRegister = false,
   });
 
   final String id;
@@ -46,4 +47,7 @@ class ErpModule {
   final Set<UserRole> allowedRoles;
   final WidgetBuilder builder;
   final ModuleGroup group;
+
+  /// Listed only for a business that keeps a cash register (see `BusinessInfo.usesRegister`).
+  final bool needsRegister;
 }

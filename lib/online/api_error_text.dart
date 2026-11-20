@@ -200,6 +200,10 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorStarterPacksThereIsNoSuchStarterPack;
     case 'stock.not_enough_stock_for_on_hand':
       return l10n.apiErrorStockNotEnoughStockForOnHand(_text(params, 'name'), _text(params, 'quantity'), _text(params, 'needed'));
+    case 'register.the_day_has_not_started_yet':
+      return l10n.apiErrorRegisterTheDayHasNotStartedYet;
+    case 'register.the_register_is_switched_off':
+      return l10n.apiErrorRegisterTheRegisterIsSwitchedOff;
     case 'store.an_account_with_this_email_already':
       return l10n.apiErrorStoreAnAccountWithThisEmailAlready;
     case 'store.an_item_in_your_cart_is':

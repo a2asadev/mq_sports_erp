@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/erp_module.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/catalog/categories_screen.dart';
 import 'package:a2_stocks/screens/catalog/products_screen.dart';
@@ -11,6 +13,7 @@ import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
 import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
 import 'package:a2_stocks/screens/purchasing/purchases_screen.dart';
+import 'package:a2_stocks/screens/register/register_screen.dart';
 import 'package:a2_stocks/screens/settings/settings_screen.dart';
 import 'package:a2_stocks/screens/sales/orders_screen.dart';
 import 'package:a2_stocks/screens/stock/stock_screen.dart';
@@ -110,6 +113,19 @@ final Provider<List<ErpModule>> erpModulesProvider =
       builder: (BuildContext context) => const StockScreen(),
     ),
     ErpModule(
+      id: 'register',
+      group: ModuleGroup.sales,
+      title: (AppLocalizations l10n) => l10n.moduleCashRegister,
+      icon: Icons.account_balance_wallet_outlined,
+      allowedRoles: const <UserRole>{
+        UserRole.admin,
+        UserRole.manager,
+        UserRole.staff,
+      },
+      needsRegister: true,
+      builder: (BuildContext context) => const RegisterScreen(),
+    ),
+    ErpModule(
       id: 'logs',
       group: ModuleGroup.system,
       title: (AppLocalizations l10n) => l10n.moduleActivityLogs,
@@ -147,8 +163,9 @@ final Provider<List<ErpModule>> visibleModulesProvider =
   if (user == null || !user.isActive) {
     return const <ErpModule>[];
   }
+  final bool usesRegister = ref.watch(businessProvider.select((BusinessInfo b) => b.usesRegister));
   return ref
       .watch(erpModulesProvider)
-      .where((ErpModule module) => module.allowedRoles.contains(user.role))
+      .where((ErpModule module) => module.allowedRoles.contains(user.role) && (!module.needsRegister || usesRegister))
       .toList();
 });

@@ -3172,5 +3172,98 @@
   "notifSettingsTestBody": "A new online order will look like this.",
   "notifSettingsTestSent": "Test sent. It shows on your screen when this window is in the background.",
   "notifSettingsTestSoundOnly": "Sound played. Desktop notifications are switched off above.",
-  "notifSettingsTestNotAllowed": "Sound played, but notifications are not allowed for this app yet. Switch the option on again to allow them."
+  "notifSettingsTestNotAllowed": "Sound played, but notifications are not allowed for this app yet. Switch the option on again to allow them.",
+  "apiErrorRegisterTheDayHasNotStartedYet": "This day has not started yet, so it cannot be closed.",
+  "apiErrorRegisterTheRegisterIsSwitchedOff": "The cash register is switched off for this business. An admin can switch it on in Settings.",
+  "moduleCashRegister": "Cash register",
+  "@moduleCashRegister": {
+    "description": "Navigation: the page where the cash is counted at the end of the day."
+  },
+  "registerRefresh": "Refresh",
+  "registerCancel": "Cancel",
+  "registerToday": "Today",
+  "registerClosed": "Closed",
+  "registerOpen": "Open",
+  "registerShouldHave": "Cash that should be in the drawer",
+  "registerOpening": "Opening cash",
+  "registerOpeningHint": "The cash that was in the drawer when the day began. Change it if it is not right.",
+  "registerFromCustomers": "Cash from customers",
+  "registerToVendors": "Cash paid to vendors",
+  "registerNotCash": "Also received, not in cash",
+  "registerSalesLine": "{count, plural, =0{No sales} =1{1 sale} other{{count} sales}} · {amount}",
+  "@registerSalesLine": {
+    "description": "Sales of the day: how many and their total.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "registerCounted": "Cash counted",
+  "registerCountedHint": "Count the cash in the drawer and type the total.",
+  "registerNote": "Note (optional)",
+  "registerCloseDay": "Close the day",
+  "registerCountAgain": "Count again",
+  "registerDayClosed": "The day is closed.",
+  "registerBalanced": "The cash matches",
+  "registerBalancedShort": "Matches",
+  "registerShort": "{amount} short",
+  "@registerShort": {
+    "description": "The counted cash is less than it should be.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "registerOver": "{amount} over",
+  "@registerOver": {
+    "description": "The counted cash is more than it should be.",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "registerCountedAmount": "{amount} counted",
+  "@registerCountedAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "registerClosedBy": "Closed by {name} on {date}",
+  "@registerClosedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "registerUnsent": "{count, plural, =1{1 action} other{{count} actions}} on this device not sent to the server yet. Wait for them to sync, so the cash of the day is complete.",
+  "@registerUnsent": {
+    "description": "Shown while the device still has unsent work; the day cannot be closed meanwhile.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "registerHistory": "Days closed before",
+  "registerHistoryEmpty": "No day has been closed yet.",
+  "registerChoiceTitle": "I use a cash register",
+  "@registerChoiceTitle": {
+    "description": "Switch in Settings and in the welcome guide."
+  },
+  "registerChoiceHint": "Adds a Cash register page where you count the cash at the end of each day and see whether it matches. You can switch it on or off at any time.",
+  "onboardingContentCashRegister": "Do you keep a cash register?",
+  "onboardingContentCashRegisterBody": "If cash goes into a drawer or a cash box, A2 Stocks can help you check it at the end of each day: you count the cash and it tells you if anything is missing.",
+  "onboardingContentCashRegisterNoRegister": "No register? Leave it off. You can switch it on later in Settings > Shop details."
 }

@@ -15,6 +15,7 @@ class BusinessInfo {
     this.currency = 'PKR',
     this.logoUrl = '',
     this.brandColor = '',
+    this.usesRegister = false,
   });
 
   /// The tenant id on the server.
@@ -37,6 +38,10 @@ class BusinessInfo {
 
   /// The business's accent colour as "#RRGGBB"; '' for the default A2 Stocks teal.
   final String brandColor;
+
+  /// Whether the business keeps a cash register and closes its day (set by an admin in
+  /// Settings or in the welcome guide). Off until said: the Cash register page is hidden.
+  final bool usesRegister;
 
   /// The customer record behind counter sales to people who just walk in. Empty
   /// when the business has none.
@@ -70,6 +75,7 @@ class BusinessInfo {
     final Object? currency = map['currency'];
     final Object? logo = map['logoUrl'];
     final Object? color = map['brandColor'];
+    final Object? register = map['usesRegister'];
     return BusinessInfo(
       id: id,
       name: name.trim(),
@@ -79,6 +85,7 @@ class BusinessInfo {
       currency: currency is String && RegExp(r'^[A-Z]{3}$').hasMatch(currency) ? currency : 'PKR',
       logoUrl: logo is String ? logo : '',
       brandColor: color is String && RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(color) ? color.toUpperCase() : '',
+      usesRegister: register is bool ? register : false,
     );
   }
 
@@ -88,6 +95,7 @@ class BusinessInfo {
     String? currency,
     String? logoUrl,
     String? brandColor,
+    bool? usesRegister,
   }) =>
       BusinessInfo(
         id: id,
@@ -98,6 +106,7 @@ class BusinessInfo {
         currency: currency ?? this.currency,
         logoUrl: logoUrl ?? this.logoUrl,
         brandColor: brandColor ?? this.brandColor,
+        usesRegister: usesRegister ?? this.usesRegister,
       );
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -109,6 +118,7 @@ class BusinessInfo {
         'currency': currency,
         'logoUrl': logoUrl,
         'brandColor': brandColor,
+        'usesRegister': usesRegister,
       };
 
   @override
@@ -121,8 +131,9 @@ class BusinessInfo {
       other.hasOnlineStore == hasOnlineStore &&
       other.currency == currency &&
       other.logoUrl == logoUrl &&
-      other.brandColor == brandColor;
+      other.brandColor == brandColor &&
+      other.usesRegister == usesRegister;
 
   @override
-  int get hashCode => Object.hash(id, name, phone, walkInCustomerId, hasOnlineStore, currency, logoUrl, brandColor);
+  int get hashCode => Object.hash(id, name, phone, walkInCustomerId, hasOnlineStore, currency, logoUrl, brandColor, usesRegister);
 }

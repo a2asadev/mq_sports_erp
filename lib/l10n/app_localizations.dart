@@ -6745,6 +6745,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sound played, but notifications are not allowed for this app yet. Switch the option on again to allow them.'**
   String get notifSettingsTestNotAllowed;
+
+  /// No description provided for @apiErrorRegisterTheDayHasNotStartedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'This day has not started yet, so it cannot be closed.'**
+  String get apiErrorRegisterTheDayHasNotStartedYet;
+
+  /// No description provided for @apiErrorRegisterTheRegisterIsSwitchedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'The cash register is switched off for this business. An admin can switch it on in Settings.'**
+  String get apiErrorRegisterTheRegisterIsSwitchedOff;
+
+  /// Navigation: the page where the cash is counted at the end of the day.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash register'**
+  String get moduleCashRegister;
+
+  /// No description provided for @registerRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get registerRefresh;
+
+  /// No description provided for @registerCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get registerCancel;
+
+  /// No description provided for @registerToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get registerToday;
+
+  /// No description provided for @registerClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get registerClosed;
+
+  /// No description provided for @registerOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get registerOpen;
+
+  /// No description provided for @registerShouldHave.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash that should be in the drawer'**
+  String get registerShouldHave;
+
+  /// No description provided for @registerOpening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening cash'**
+  String get registerOpening;
+
+  /// No description provided for @registerOpeningHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The cash that was in the drawer when the day began. Change it if it is not right.'**
+  String get registerOpeningHint;
+
+  /// No description provided for @registerFromCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash from customers'**
+  String get registerFromCustomers;
+
+  /// No description provided for @registerToVendors.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash paid to vendors'**
+  String get registerToVendors;
+
+  /// No description provided for @registerNotCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Also received, not in cash'**
+  String get registerNotCash;
+
+  /// Sales of the day: how many and their total.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No sales} =1{1 sale} other{{count} sales}} · {amount}'**
+  String registerSalesLine(int count, String amount);
+
+  /// No description provided for @registerCounted.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash counted'**
+  String get registerCounted;
+
+  /// No description provided for @registerCountedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Count the cash in the drawer and type the total.'**
+  String get registerCountedHint;
+
+  /// No description provided for @registerNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get registerNote;
+
+  /// No description provided for @registerCloseDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the day'**
+  String get registerCloseDay;
+
+  /// No description provided for @registerCountAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Count again'**
+  String get registerCountAgain;
+
+  /// No description provided for @registerDayClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'The day is closed.'**
+  String get registerDayClosed;
+
+  /// No description provided for @registerBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'The cash matches'**
+  String get registerBalanced;
+
+  /// No description provided for @registerBalancedShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Matches'**
+  String get registerBalancedShort;
+
+  /// The counted cash is less than it should be.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} short'**
+  String registerShort(String amount);
+
+  /// The counted cash is more than it should be.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} over'**
+  String registerOver(String amount);
+
+  /// No description provided for @registerCountedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} counted'**
+  String registerCountedAmount(String amount);
+
+  /// No description provided for @registerClosedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed by {name} on {date}'**
+  String registerClosedBy(String name, String date);
+
+  /// Shown while the device still has unsent work; the day cannot be closed meanwhile.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 action} other{{count} actions}} on this device not sent to the server yet. Wait for them to sync, so the cash of the day is complete.'**
+  String registerUnsent(int count);
+
+  /// No description provided for @registerHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Days closed before'**
+  String get registerHistory;
+
+  /// No description provided for @registerHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No day has been closed yet.'**
+  String get registerHistoryEmpty;
+
+  /// Switch in Settings and in the welcome guide.
+  ///
+  /// In en, this message translates to:
+  /// **'I use a cash register'**
+  String get registerChoiceTitle;
+
+  /// No description provided for @registerChoiceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds a Cash register page where you count the cash at the end of each day and see whether it matches. You can switch it on or off at any time.'**
+  String get registerChoiceHint;
+
+  /// No description provided for @onboardingContentCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you keep a cash register?'**
+  String get onboardingContentCashRegister;
+
+  /// No description provided for @onboardingContentCashRegisterBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If cash goes into a drawer or a cash box, A2 Stocks can help you check it at the end of each day: you count the cash and it tells you if anything is missing.'**
+  String get onboardingContentCashRegisterBody;
+
+  /// No description provided for @onboardingContentCashRegisterNoRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'No register? Leave it off. You can switch it on later in Settings > Shop details.'**
+  String get onboardingContentCashRegisterNoRegister;
 }
 
 class _AppLocalizationsDelegate

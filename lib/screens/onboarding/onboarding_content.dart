@@ -9,6 +9,7 @@ class OnboardingStep {
     required this.title,
     required this.body,
     this.points = const <String>[],
+    this.asksRegister = false,
   });
 
   final IconData icon;
@@ -17,6 +18,9 @@ class OnboardingStep {
 
   /// Short bullet lines under the text.
   final List<String> points;
+
+  /// Shows the "I use a cash register" switch under the text (the admin's guide).
+  final bool asksRegister;
 }
 
 OnboardingStep _offline(AppLocalizations l10n) => OnboardingStep(
@@ -128,6 +132,13 @@ List<OnboardingStep> _admin(AppLocalizations l10n) => <OnboardingStep>[
           l10n.onboardingContent5PurchasesToPut,
           l10n.onboardingContent6UsersALogin,
         ],
+      ),
+      OnboardingStep(
+        icon: Icons.account_balance_wallet_outlined,
+        title: l10n.onboardingContentCashRegister,
+        body: l10n.onboardingContentCashRegisterBody,
+        points: <String>[l10n.onboardingContentCashRegisterNoRegister],
+        asksRegister: true,
       ),
       OnboardingStep(
         icon: Icons.people_outline,

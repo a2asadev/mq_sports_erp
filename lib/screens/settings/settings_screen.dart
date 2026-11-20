@@ -9,7 +9,6 @@ import 'package:a2_stocks/widgets/brand_logo.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/models/store_settings_model.dart';
-import 'package:a2_stocks/online/business_service.dart';
 import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
@@ -18,10 +17,8 @@ import 'package:a2_stocks/online/photo_service.dart';
 import 'package:a2_stocks/online/store_settings_service.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/onboarding/onboarding_screen.dart';
+import 'package:a2_stocks/screens/register/register_choice.dart';
 import 'package:a2_stocks/screens/settings/notification_settings_card.dart';
-
-final Provider<BusinessService> businessServiceProvider =
-    Provider<BusinessService>((Ref ref) => BusinessService(ref.watch(apiClientProvider)));
 
 final Provider<StoreSettingsService> storeSettingsServiceProvider =
     Provider<StoreSettingsService>((Ref ref) => StoreSettingsService(ref.watch(apiClientProvider)));
@@ -430,7 +427,9 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
+          RegisterChoiceTile(enabled: widget.canEdit && !_busy),
+          const SizedBox(height: 8),
           if (widget.initial != null) ...<Widget>[
             TextFormField(
               controller: _name,
