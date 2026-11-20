@@ -3381,5 +3381,104 @@
       }
     }
   },
-  "orderDetailReturnCredit": "Kept as credit on the account"
+  "orderDetailReturnCredit": "Kept as credit on the account",
+  "apiErrorExpensesACategoryNamedAlreadyExists": "An expense category named \"{name}\" already exists.",
+  "@apiErrorExpensesACategoryNamedAlreadyExists": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorExpensesCategoryNameIsRequired": "The category name is required.",
+  "apiErrorExpensesCategoryNotFound": "Expense category not found",
+  "apiErrorExpensesExpenseNotFound": "Expense not found",
+  "apiErrorExpensesThisCategoryIsSwitchedOff": "This expense category is switched off. Choose another one.",
+  "apiErrorExpensesThisExpenseWasAlreadyVoided": "This expense was already voided.",
+  "moduleExpenses": "Expenses",
+  "@moduleExpenses": {
+    "description": "Navigation: money spent that is not stock (rent, salaries, electricity...)."
+  },
+  "expensesAdd": "Add expense",
+  "expensesCancel": "Cancel",
+  "expensesCategories": "Categories",
+  "expensesPreviousMonth": "Previous month",
+  "expensesNextMonth": "Next month",
+  "expensesAllCategories": "All categories",
+  "expensesSpent": "Spent",
+  "expensesCountLabel": "Expenses",
+  "expensesByCategory": "By category",
+  "expensesNone": "No expenses recorded for this month yet.",
+  "expensesVoid": "Void",
+  "expensesVoided": "Voided",
+  "expensesVoidTitle": "Void this expense?",
+  "expensesVoidBody": "{amount} under {category} stays in the list but no longer counts. If it was a mistake, enter it again.",
+  "@expensesVoidBody": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "expensesVoidReason": "Reason (optional)",
+  "expensesVoidDone": "Expense voided.",
+  "expensesSaved": "Expense recorded.",
+  "expenseFormTitle": "Add expense",
+  "expenseFormCategory": "Category",
+  "expenseFormAmount": "Amount",
+  "expenseFormEnterAmount": "Enter an amount above zero",
+  "expenseFormMethod": "Paid by",
+  "expenseFormReference": "Transaction number or bank",
+  "expenseFormPayee": "Paid to (optional)",
+  "expenseFormNote": "Note (optional)",
+  "expenseFormNoCategories": "There are no expense categories yet. Add some first (Rent, Salaries, Electricity...) with the categories button.",
+  "expenseFormSave": "Save expense",
+  "expenseCatTitle": "Expense categories",
+  "expenseCatNew": "New category",
+  "expenseCatAdd": "Add",
+  "expenseCatAddCommon": "Add the usual ones",
+  "expenseCatRename": "Rename",
+  "expenseCatSave": "Save",
+  "expenseCatDone": "Done",
+  "expenseCatCount": "{count, plural, =0{No expenses} =1{1 expense} other{{count} expenses}}",
+  "@expenseCatCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "expenseCatCommonAdded": "{count, plural, =0{All the usual categories are already there.} =1{1 category added.} other{{count} categories added.}}",
+  "@expenseCatCommonAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "expenseCommonRent": "Rent",
+  "expenseCommonSalaries": "Salaries",
+  "expenseCommonElectricity": "Electricity",
+  "expenseCommonWaterGas": "Water and gas",
+  "expenseCommonInternetPhone": "Internet and phone",
+  "expenseCommonTransport": "Transport and fuel",
+  "expenseCommonRepairs": "Repairs and maintenance",
+  "expenseCommonPackaging": "Packaging",
+  "expenseCommonMarketing": "Marketing",
+  "expenseCommonTeaFood": "Tea and food",
+  "expenseCommonTaxesFees": "Taxes and fees",
+  "expenseCommonOther": "Other",
+  "registerSpent": "Cash spent on expenses",
+  "dashboardExpensesMonth": "Expenses this month ({amount} today)",
+  "@dashboardExpensesMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardEstimatedProfit": "Estimated profit this month (sales less cost of goods and expenses)"
 }

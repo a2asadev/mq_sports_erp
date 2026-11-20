@@ -9,7 +9,9 @@ import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/providers/dashboard_insights.dart';
+import 'package:a2_stocks/models/expense.dart';
 import 'package:a2_stocks/providers/dashboard_providers.dart';
+import 'package:a2_stocks/providers/expense_providers.dart';
 import 'package:a2_stocks/providers/module_registry_provider.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/sales/orders_screen.dart';
@@ -197,6 +199,7 @@ class _ExecutiveDashboard extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 16),
+            _MoneyOut(columns: four, stats: stats),
             _Grid(
               columns: four,
               children: <Widget>[
@@ -263,6 +266,46 @@ class _ExecutiveDashboard extends ConsumerWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// Expenses and the estimated profit of the month. The expenses come from the server, so
+/// without a connection this part is simply not shown.
+class _MoneyOut extends ConsumerWidget {
+  const _MoneyOut({required this.columns, required this.stats});
+
+  final int columns;
+  final DashboardStats stats;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ExpenseSummary? summary = ref.watch(expenseSummaryProvider).valueOrNull;
+    if (summary == null) {
+      return const SizedBox.shrink();
+    }
+    final double profit = stats.grossProfitMonth - summary.month;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: _Grid(
+        columns: columns,
+        children: <Widget>[
+          _SoftStat(
+            icon: Icons.request_quote_outlined,
+            tint: AppColors.dangerSoft,
+            accent: AppColors.danger,
+            value: formatMoney(summary.month),
+            label: context.l10n.dashboardExpensesMonth(formatMoney(summary.today)),
+          ),
+          _SoftStat(
+            icon: profit >= 0 ? Icons.savings_outlined : Icons.trending_down,
+            tint: profit >= 0 ? AppColors.tealSoft : AppColors.dangerSoft,
+            accent: profit >= 0 ? AppColors.teal : AppColors.danger,
+            value: formatMoney(profit),
+            label: context.l10n.dashboardEstimatedProfit,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -4584,4 +4584,207 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orderDetailReturnCredit => 'Kept as credit on the account';
+
+  @override
+  String apiErrorExpensesACategoryNamedAlreadyExists(String name) {
+    return 'An expense category named \"$name\" already exists.';
+  }
+
+  @override
+  String get apiErrorExpensesCategoryNameIsRequired =>
+      'The category name is required.';
+
+  @override
+  String get apiErrorExpensesCategoryNotFound => 'Expense category not found';
+
+  @override
+  String get apiErrorExpensesExpenseNotFound => 'Expense not found';
+
+  @override
+  String get apiErrorExpensesThisCategoryIsSwitchedOff =>
+      'This expense category is switched off. Choose another one.';
+
+  @override
+  String get apiErrorExpensesThisExpenseWasAlreadyVoided =>
+      'This expense was already voided.';
+
+  @override
+  String get moduleExpenses => 'Expenses';
+
+  @override
+  String get expensesAdd => 'Add expense';
+
+  @override
+  String get expensesCancel => 'Cancel';
+
+  @override
+  String get expensesCategories => 'Categories';
+
+  @override
+  String get expensesPreviousMonth => 'Previous month';
+
+  @override
+  String get expensesNextMonth => 'Next month';
+
+  @override
+  String get expensesAllCategories => 'All categories';
+
+  @override
+  String get expensesSpent => 'Spent';
+
+  @override
+  String get expensesCountLabel => 'Expenses';
+
+  @override
+  String get expensesByCategory => 'By category';
+
+  @override
+  String get expensesNone => 'No expenses recorded for this month yet.';
+
+  @override
+  String get expensesVoid => 'Void';
+
+  @override
+  String get expensesVoided => 'Voided';
+
+  @override
+  String get expensesVoidTitle => 'Void this expense?';
+
+  @override
+  String expensesVoidBody(String amount, String category) {
+    return '$amount under $category stays in the list but no longer counts. If it was a mistake, enter it again.';
+  }
+
+  @override
+  String get expensesVoidReason => 'Reason (optional)';
+
+  @override
+  String get expensesVoidDone => 'Expense voided.';
+
+  @override
+  String get expensesSaved => 'Expense recorded.';
+
+  @override
+  String get expenseFormTitle => 'Add expense';
+
+  @override
+  String get expenseFormCategory => 'Category';
+
+  @override
+  String get expenseFormAmount => 'Amount';
+
+  @override
+  String get expenseFormEnterAmount => 'Enter an amount above zero';
+
+  @override
+  String get expenseFormMethod => 'Paid by';
+
+  @override
+  String get expenseFormReference => 'Transaction number or bank';
+
+  @override
+  String get expenseFormPayee => 'Paid to (optional)';
+
+  @override
+  String get expenseFormNote => 'Note (optional)';
+
+  @override
+  String get expenseFormNoCategories =>
+      'There are no expense categories yet. Add some first (Rent, Salaries, Electricity...) with the categories button.';
+
+  @override
+  String get expenseFormSave => 'Save expense';
+
+  @override
+  String get expenseCatTitle => 'Expense categories';
+
+  @override
+  String get expenseCatNew => 'New category';
+
+  @override
+  String get expenseCatAdd => 'Add';
+
+  @override
+  String get expenseCatAddCommon => 'Add the usual ones';
+
+  @override
+  String get expenseCatRename => 'Rename';
+
+  @override
+  String get expenseCatSave => 'Save';
+
+  @override
+  String get expenseCatDone => 'Done';
+
+  @override
+  String expenseCatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count expenses',
+      one: '1 expense',
+      zero: 'No expenses',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseCatCommonAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count categories added.',
+      one: '1 category added.',
+      zero: 'All the usual categories are already there.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get expenseCommonRent => 'Rent';
+
+  @override
+  String get expenseCommonSalaries => 'Salaries';
+
+  @override
+  String get expenseCommonElectricity => 'Electricity';
+
+  @override
+  String get expenseCommonWaterGas => 'Water and gas';
+
+  @override
+  String get expenseCommonInternetPhone => 'Internet and phone';
+
+  @override
+  String get expenseCommonTransport => 'Transport and fuel';
+
+  @override
+  String get expenseCommonRepairs => 'Repairs and maintenance';
+
+  @override
+  String get expenseCommonPackaging => 'Packaging';
+
+  @override
+  String get expenseCommonMarketing => 'Marketing';
+
+  @override
+  String get expenseCommonTeaFood => 'Tea and food';
+
+  @override
+  String get expenseCommonTaxesFees => 'Taxes and fees';
+
+  @override
+  String get expenseCommonOther => 'Other';
+
+  @override
+  String get registerSpent => 'Cash spent on expenses';
+
+  @override
+  String dashboardExpensesMonth(String amount) {
+    return 'Expenses this month ($amount today)';
+  }
+
+  @override
+  String get dashboardEstimatedProfit =>
+      'Estimated profit this month (sales less cost of goods and expenses)';
 }

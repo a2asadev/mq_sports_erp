@@ -52,6 +52,7 @@ class RegisterDay {
     required this.cashReceived,
     required this.cashPaid,
     required this.cashRefunded,
+    this.cashExpenses = 0,
     required this.expectedCash,
     required this.bankReceived,
     required this.easypaisaReceived,
@@ -75,7 +76,10 @@ class RegisterDay {
   /// Cash handed back to customers for returned goods.
   final double cashRefunded;
 
-  /// Opening + received - paid - refunded.
+  /// Cash spent on expenses (rent, salaries...).
+  final double cashExpenses;
+
+  /// Opening + received - paid - refunded - spent.
   final double expectedCash;
   final double bankReceived;
   final double easypaisaReceived;
@@ -100,6 +104,7 @@ class RegisterDay {
       cashReceived: _money(map['cashReceived']),
       cashPaid: _money(map['cashPaid']),
       cashRefunded: _money(map['cashRefunded']),
+      cashExpenses: _money(map['cashExpenses']),
       expectedCash: _money(map['expectedCash']),
       bankReceived: _money(others['bank']),
       easypaisaReceived: _money(others['easypaisa']),

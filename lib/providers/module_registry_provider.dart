@@ -9,6 +9,7 @@ import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/catalog/categories_screen.dart';
 import 'package:a2_stocks/screens/catalog/products_screen.dart';
+import 'package:a2_stocks/screens/expenses/expenses_screen.dart';
 import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
 import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
@@ -75,6 +76,14 @@ final Provider<List<ErpModule>> erpModulesProvider =
       icon: Icons.shopping_cart_checkout_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
       builder: (BuildContext context) => const PurchasesScreen(),
+    ),
+    ErpModule(
+      id: 'expenses',
+      group: ModuleGroup.purchasing,
+      title: (AppLocalizations l10n) => l10n.moduleExpenses,
+      icon: Icons.request_quote_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      builder: (BuildContext context) => const ExpensesScreen(),
     ),
     ErpModule(
       id: 'pos',

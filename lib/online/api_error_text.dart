@@ -76,6 +76,18 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorDbUnexpected;
     case 'db.unique_violation':
       return l10n.apiErrorDbUniqueViolation;
+    case 'expenses.a_category_named_already_exists':
+      return l10n.apiErrorExpensesACategoryNamedAlreadyExists(_text(params, 'name'));
+    case 'expenses.category_name_is_required':
+      return l10n.apiErrorExpensesCategoryNameIsRequired;
+    case 'expenses.category_not_found':
+      return l10n.apiErrorExpensesCategoryNotFound;
+    case 'expenses.expense_not_found':
+      return l10n.apiErrorExpensesExpenseNotFound;
+    case 'expenses.this_category_is_switched_off':
+      return l10n.apiErrorExpensesThisCategoryIsSwitchedOff;
+    case 'expenses.this_expense_was_already_voided':
+      return l10n.apiErrorExpensesThisExpenseWasAlreadyVoided;
     case 'idempotency.a_request_with_this_idempotency_key':
       return l10n.apiErrorIdempotencyARequestWithThisIdempotencyKey;
     case 'idempotency.idempotency_key_is_too_long_200':

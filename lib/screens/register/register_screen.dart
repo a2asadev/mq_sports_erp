@@ -153,7 +153,7 @@ class _DayCardState extends ConsumerState<_DayCard> {
   double get _openingValue => double.tryParse(_opening.text.trim()) ?? widget.day.openingCash;
 
   /// What should be there with the opening cash as typed.
-  double get _expected => _openingValue + widget.day.cashReceived - widget.day.cashPaid - widget.day.cashRefunded;
+  double get _expected => _openingValue + widget.day.cashReceived - widget.day.cashPaid - widget.day.cashRefunded - widget.day.cashExpenses;
 
   Future<void> _close() async {
     final double? counted = _countedValue;
@@ -221,6 +221,8 @@ class _DayCardState extends ConsumerState<_DayCard> {
             _Line(label: context.l10n.registerOpening, value: formatMoney(editing ? _openingValue : closing.openingCash)),
             _Line(label: context.l10n.registerFromCustomers, value: '+ ${formatMoney(day.cashReceived)}', color: AppColors.teal),
             _Line(label: context.l10n.registerToVendors, value: '- ${formatMoney(day.cashPaid)}', color: AppColors.danger),
+            if (day.cashExpenses > 0)
+              _Line(label: context.l10n.registerSpent, value: '- ${formatMoney(day.cashExpenses)}', color: AppColors.danger),
             if (day.cashRefunded > 0)
               _Line(label: context.l10n.registerRefunded, value: '- ${formatMoney(day.cashRefunded)}', color: AppColors.danger),
             const Divider(height: 1),

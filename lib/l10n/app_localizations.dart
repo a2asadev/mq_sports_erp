@@ -7153,6 +7153,354 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Kept as credit on the account'**
   String get orderDetailReturnCredit;
+
+  /// No description provided for @apiErrorExpensesACategoryNamedAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'An expense category named \"{name}\" already exists.'**
+  String apiErrorExpensesACategoryNamedAlreadyExists(String name);
+
+  /// No description provided for @apiErrorExpensesCategoryNameIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'The category name is required.'**
+  String get apiErrorExpensesCategoryNameIsRequired;
+
+  /// No description provided for @apiErrorExpensesCategoryNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense category not found'**
+  String get apiErrorExpensesCategoryNotFound;
+
+  /// No description provided for @apiErrorExpensesExpenseNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense not found'**
+  String get apiErrorExpensesExpenseNotFound;
+
+  /// No description provided for @apiErrorExpensesThisCategoryIsSwitchedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'This expense category is switched off. Choose another one.'**
+  String get apiErrorExpensesThisCategoryIsSwitchedOff;
+
+  /// No description provided for @apiErrorExpensesThisExpenseWasAlreadyVoided.
+  ///
+  /// In en, this message translates to:
+  /// **'This expense was already voided.'**
+  String get apiErrorExpensesThisExpenseWasAlreadyVoided;
+
+  /// Navigation: money spent that is not stock (rent, salaries, electricity...).
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get moduleExpenses;
+
+  /// No description provided for @expensesAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add expense'**
+  String get expensesAdd;
+
+  /// No description provided for @expensesCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get expensesCancel;
+
+  /// No description provided for @expensesCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get expensesCategories;
+
+  /// No description provided for @expensesPreviousMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get expensesPreviousMonth;
+
+  /// No description provided for @expensesNextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get expensesNextMonth;
+
+  /// No description provided for @expensesAllCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'All categories'**
+  String get expensesAllCategories;
+
+  /// No description provided for @expensesSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get expensesSpent;
+
+  /// No description provided for @expensesCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expensesCountLabel;
+
+  /// No description provided for @expensesByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'By category'**
+  String get expensesByCategory;
+
+  /// No description provided for @expensesNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses recorded for this month yet.'**
+  String get expensesNone;
+
+  /// No description provided for @expensesVoid.
+  ///
+  /// In en, this message translates to:
+  /// **'Void'**
+  String get expensesVoid;
+
+  /// No description provided for @expensesVoided.
+  ///
+  /// In en, this message translates to:
+  /// **'Voided'**
+  String get expensesVoided;
+
+  /// No description provided for @expensesVoidTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Void this expense?'**
+  String get expensesVoidTitle;
+
+  /// No description provided for @expensesVoidBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} under {category} stays in the list but no longer counts. If it was a mistake, enter it again.'**
+  String expensesVoidBody(String amount, String category);
+
+  /// No description provided for @expensesVoidReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get expensesVoidReason;
+
+  /// No description provided for @expensesVoidDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense voided.'**
+  String get expensesVoidDone;
+
+  /// No description provided for @expensesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense recorded.'**
+  String get expensesSaved;
+
+  /// No description provided for @expenseFormTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add expense'**
+  String get expenseFormTitle;
+
+  /// No description provided for @expenseFormCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get expenseFormCategory;
+
+  /// No description provided for @expenseFormAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get expenseFormAmount;
+
+  /// No description provided for @expenseFormEnterAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount above zero'**
+  String get expenseFormEnterAmount;
+
+  /// No description provided for @expenseFormMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid by'**
+  String get expenseFormMethod;
+
+  /// No description provided for @expenseFormReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction number or bank'**
+  String get expenseFormReference;
+
+  /// No description provided for @expenseFormPayee.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid to (optional)'**
+  String get expenseFormPayee;
+
+  /// No description provided for @expenseFormNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get expenseFormNote;
+
+  /// No description provided for @expenseFormNoCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no expense categories yet. Add some first (Rent, Salaries, Electricity...) with the categories button.'**
+  String get expenseFormNoCategories;
+
+  /// No description provided for @expenseFormSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save expense'**
+  String get expenseFormSave;
+
+  /// No description provided for @expenseCatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense categories'**
+  String get expenseCatTitle;
+
+  /// No description provided for @expenseCatNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New category'**
+  String get expenseCatNew;
+
+  /// No description provided for @expenseCatAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get expenseCatAdd;
+
+  /// No description provided for @expenseCatAddCommon.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the usual ones'**
+  String get expenseCatAddCommon;
+
+  /// No description provided for @expenseCatRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get expenseCatRename;
+
+  /// No description provided for @expenseCatSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get expenseCatSave;
+
+  /// No description provided for @expenseCatDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get expenseCatDone;
+
+  /// No description provided for @expenseCatCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No expenses} =1{1 expense} other{{count} expenses}}'**
+  String expenseCatCount(int count);
+
+  /// No description provided for @expenseCatCommonAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{All the usual categories are already there.} =1{1 category added.} other{{count} categories added.}}'**
+  String expenseCatCommonAdded(int count);
+
+  /// No description provided for @expenseCommonRent.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get expenseCommonRent;
+
+  /// No description provided for @expenseCommonSalaries.
+  ///
+  /// In en, this message translates to:
+  /// **'Salaries'**
+  String get expenseCommonSalaries;
+
+  /// No description provided for @expenseCommonElectricity.
+  ///
+  /// In en, this message translates to:
+  /// **'Electricity'**
+  String get expenseCommonElectricity;
+
+  /// No description provided for @expenseCommonWaterGas.
+  ///
+  /// In en, this message translates to:
+  /// **'Water and gas'**
+  String get expenseCommonWaterGas;
+
+  /// No description provided for @expenseCommonInternetPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Internet and phone'**
+  String get expenseCommonInternetPhone;
+
+  /// No description provided for @expenseCommonTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport and fuel'**
+  String get expenseCommonTransport;
+
+  /// No description provided for @expenseCommonRepairs.
+  ///
+  /// In en, this message translates to:
+  /// **'Repairs and maintenance'**
+  String get expenseCommonRepairs;
+
+  /// No description provided for @expenseCommonPackaging.
+  ///
+  /// In en, this message translates to:
+  /// **'Packaging'**
+  String get expenseCommonPackaging;
+
+  /// No description provided for @expenseCommonMarketing.
+  ///
+  /// In en, this message translates to:
+  /// **'Marketing'**
+  String get expenseCommonMarketing;
+
+  /// No description provided for @expenseCommonTeaFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Tea and food'**
+  String get expenseCommonTeaFood;
+
+  /// No description provided for @expenseCommonTaxesFees.
+  ///
+  /// In en, this message translates to:
+  /// **'Taxes and fees'**
+  String get expenseCommonTaxesFees;
+
+  /// No description provided for @expenseCommonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get expenseCommonOther;
+
+  /// No description provided for @registerSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash spent on expenses'**
+  String get registerSpent;
+
+  /// No description provided for @dashboardExpensesMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses this month ({amount} today)'**
+  String dashboardExpensesMonth(String amount);
+
+  /// No description provided for @dashboardEstimatedProfit.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated profit this month (sales less cost of goods and expenses)'**
+  String get dashboardEstimatedProfit;
 }
 
 class _AppLocalizationsDelegate

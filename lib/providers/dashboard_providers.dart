@@ -48,6 +48,7 @@ class DashboardStats {
     required this.stockRetailValue,
     required this.stockUnits,
     required this.lowStockCount,
+    this.costOfSalesMonth = 0,
   });
 
   final double salesToday;
@@ -65,6 +66,13 @@ class DashboardStats {
   final double stockRetailValue;
   final int stockUnits;
   final int lowStockCount;
+
+  /// What the goods sold this month cost, at today's catalog cost prices. An estimate: the cost
+  /// price of a product may have changed since, and returned goods are not taken off yet.
+  final double costOfSalesMonth;
+
+  /// Sales less the cost of the goods sold this month, before expenses.
+  double get grossProfitMonth => salesMonth - costOfSalesMonth;
 
   /// What the stock would earn above its cost if sold at the retail price.
   double get potentialMargin => stockRetailValue - stockCostValue;
@@ -93,6 +101,11 @@ DashboardStats computeDashboardStats({
   double salesToday = 0;
   int ordersToday = 0;
   double salesMonth = 0;
+  double costOfSalesMonth = 0;
+  final Map<String, double> costOf = <String, double>{
+    for (final ProductModel p in products)
+      for (final VariantModel v in p.variants) v.id: v.costPrice,
+  };
   int ordersMonth = 0;
   int pending = 0;
   int processing = 0;
@@ -115,6 +128,9 @@ DashboardStats computeDashboardStats({
     final DateTime date = order.orderDate.toLocal();
     if (_sameMonth(date, now)) {
       salesMonth += order.totalAmount;
+      for (final OrderItem item in order.items) {
+        costOfSalesMonth += item.quantity * (costOf[item.variantId] ?? 0);
+      }
       ordersMonth++;
       if (_sameDay(date, now)) {
         salesToday += order.totalAmount;
@@ -155,6 +171,7 @@ DashboardStats computeDashboardStats({
     stockRetailValue: _round2(retail),
     stockUnits: units,
     lowStockCount: low,
+    costOfSalesMonth: _round2(costOfSalesMonth),
   );
 }
 
