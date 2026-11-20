@@ -7501,6 +7501,444 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Estimated profit this month (sales less cost of goods and expenses)'**
   String get dashboardEstimatedProfit;
+
+  /// Navigation: sales, profit, stock and debts for the owner.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get moduleReports;
+
+  /// No description provided for @reportKindSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get reportKindSales;
+
+  /// No description provided for @reportKindProfit.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit'**
+  String get reportKindProfit;
+
+  /// No description provided for @reportKindStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock that does not sell'**
+  String get reportKindStock;
+
+  /// No description provided for @reportKindReceivables.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers who owe'**
+  String get reportKindReceivables;
+
+  /// No description provided for @reportKindPayables.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendors owed'**
+  String get reportKindPayables;
+
+  /// No description provided for @reportRangeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get reportRangeToday;
+
+  /// No description provided for @reportRangeLast7.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get reportRangeLast7;
+
+  /// No description provided for @reportRangeThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get reportRangeThisMonth;
+
+  /// No description provided for @reportRangeLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last month'**
+  String get reportRangeLastMonth;
+
+  /// No description provided for @reportRangeThisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get reportRangeThisYear;
+
+  /// No description provided for @reportRangeCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick days'**
+  String get reportRangeCustom;
+
+  /// No description provided for @reportExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as CSV (for a spreadsheet)'**
+  String get reportExportCsv;
+
+  /// No description provided for @reportExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as PDF'**
+  String get reportExportPdf;
+
+  /// No description provided for @reportSaveAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the report'**
+  String get reportSaveAs;
+
+  /// No description provided for @reportSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Report saved.'**
+  String get reportSaved;
+
+  /// No description provided for @reportNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to show for this report.'**
+  String get reportNothing;
+
+  /// No description provided for @reportDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days'**
+  String reportDays(int count);
+
+  /// No description provided for @reportTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get reportTotal;
+
+  /// No description provided for @reportOnlineStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Online store'**
+  String get reportOnlineStore;
+
+  /// No description provided for @reportNeverSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get reportNeverSold;
+
+  /// No description provided for @reportSalesByProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales by product'**
+  String get reportSalesByProduct;
+
+  /// No description provided for @reportSalesByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales by category'**
+  String get reportSalesByCategory;
+
+  /// No description provided for @reportSalesByCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales by customer'**
+  String get reportSalesByCustomer;
+
+  /// No description provided for @reportSalesByCashier.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales by cashier'**
+  String get reportSalesByCashier;
+
+  /// No description provided for @reportColProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get reportColProduct;
+
+  /// No description provided for @reportColCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get reportColCategory;
+
+  /// No description provided for @reportColCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get reportColCustomer;
+
+  /// No description provided for @reportColVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor'**
+  String get reportColVendor;
+
+  /// No description provided for @reportColCashier.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashier'**
+  String get reportColCashier;
+
+  /// No description provided for @reportColUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'Units'**
+  String get reportColUnits;
+
+  /// No description provided for @reportColOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get reportColOrders;
+
+  /// No description provided for @reportColRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get reportColRevenue;
+
+  /// No description provided for @reportColReturned.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned'**
+  String get reportColReturned;
+
+  /// No description provided for @reportColCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost'**
+  String get reportColCost;
+
+  /// No description provided for @reportColProfit.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit'**
+  String get reportColProfit;
+
+  /// No description provided for @reportColMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'Margin'**
+  String get reportColMargin;
+
+  /// No description provided for @reportColExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get reportColExpenses;
+
+  /// No description provided for @reportColDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get reportColDay;
+
+  /// No description provided for @reportColSku.
+  ///
+  /// In en, this message translates to:
+  /// **'SKU'**
+  String get reportColSku;
+
+  /// No description provided for @reportColOnHand.
+  ///
+  /// In en, this message translates to:
+  /// **'On hand'**
+  String get reportColOnHand;
+
+  /// No description provided for @reportColStockValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value at cost'**
+  String get reportColStockValue;
+
+  /// No description provided for @reportColSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get reportColSold;
+
+  /// No description provided for @reportColLastSold.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sold'**
+  String get reportColLastSold;
+
+  /// No description provided for @reportColStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get reportColStatus;
+
+  /// No description provided for @reportColPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get reportColPhone;
+
+  /// No description provided for @reportColBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Owed'**
+  String get reportColBalance;
+
+  /// No description provided for @reportColAge030.
+  ///
+  /// In en, this message translates to:
+  /// **'0-30 days'**
+  String get reportColAge030;
+
+  /// No description provided for @reportColAge3160.
+  ///
+  /// In en, this message translates to:
+  /// **'31-60 days'**
+  String get reportColAge3160;
+
+  /// No description provided for @reportColAge6190.
+  ///
+  /// In en, this message translates to:
+  /// **'61-90 days'**
+  String get reportColAge6190;
+
+  /// No description provided for @reportColAge90.
+  ///
+  /// In en, this message translates to:
+  /// **'Over 90 days'**
+  String get reportColAge90;
+
+  /// No description provided for @reportColOldestDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest (days)'**
+  String get reportColOldestDays;
+
+  /// No description provided for @reportProfitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit and margin'**
+  String get reportProfitTitle;
+
+  /// No description provided for @reportProfitRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales after discounts'**
+  String get reportProfitRevenue;
+
+  /// No description provided for @reportProfitReturned.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned by customers'**
+  String get reportProfitReturned;
+
+  /// No description provided for @reportProfitNetRevenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Net sales'**
+  String get reportProfitNetRevenue;
+
+  /// No description provided for @reportProfitCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost of the goods sold'**
+  String get reportProfitCost;
+
+  /// No description provided for @reportProfitGross.
+  ///
+  /// In en, this message translates to:
+  /// **'Gross profit'**
+  String get reportProfitGross;
+
+  /// No description provided for @reportProfitMargin.
+  ///
+  /// In en, this message translates to:
+  /// **'Gross margin'**
+  String get reportProfitMargin;
+
+  /// No description provided for @reportProfitExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get reportProfitExpenses;
+
+  /// No description provided for @reportProfitNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Net profit'**
+  String get reportProfitNet;
+
+  /// No description provided for @reportProfitShipping.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivery fees charged (not in the profit)'**
+  String get reportProfitShipping;
+
+  /// No description provided for @reportStockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock that does not sell'**
+  String get reportStockTitle;
+
+  /// No description provided for @reportStockWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking at the last {days} days'**
+  String reportStockWindow(int days);
+
+  /// No description provided for @reportStockDeadLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}} with no sale (money tied up)'**
+  String reportStockDeadLine(int count);
+
+  /// No description provided for @reportStockSlowLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}} selling slowly (money tied up)'**
+  String reportStockSlowLine(int count);
+
+  /// No description provided for @reportStockDead.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales'**
+  String get reportStockDead;
+
+  /// No description provided for @reportStockSlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Slow'**
+  String get reportStockSlow;
+
+  /// No description provided for @reportStockNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get reportStockNew;
+
+  /// No description provided for @reportStockOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Selling'**
+  String get reportStockOk;
+
+  /// No description provided for @reportReceivablesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers who owe money'**
+  String get reportReceivablesTitle;
+
+  /// No description provided for @reportPayablesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendors who are owed money'**
+  String get reportPayablesTitle;
+
+  /// No description provided for @apiErrorReportsTheFirstDayIsAfterTheLastDay.
+  ///
+  /// In en, this message translates to:
+  /// **'The first day is after the last day.'**
+  String get apiErrorReportsTheFirstDayIsAfterTheLastDay;
 }
 
 class _AppLocalizationsDelegate

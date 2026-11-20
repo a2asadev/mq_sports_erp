@@ -210,6 +210,8 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorStarterPacksNotInThisPack(_text(params, 'names'));
     case 'starter_packs.there_is_no_such_starter_pack':
       return l10n.apiErrorStarterPacksThereIsNoSuchStarterPack;
+    case 'reports.the_first_day_is_after_the_last_day':
+      return l10n.apiErrorReportsTheFirstDayIsAfterTheLastDay;
     case 'returns.a_walk_in_customer_cannot_keep_credit':
       return l10n.apiErrorReturnsAWalkInCustomerCannotKeepCredit(_text(params, 'amount'));
     case 'returns.could_not_generate_a_return_number':

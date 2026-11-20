@@ -4787,4 +4787,245 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dashboardEstimatedProfit =>
       'Estimated profit this month (sales less cost of goods and expenses)';
+
+  @override
+  String get moduleReports => 'Reports';
+
+  @override
+  String get reportKindSales => 'Sales';
+
+  @override
+  String get reportKindProfit => 'Profit';
+
+  @override
+  String get reportKindStock => 'Stock that does not sell';
+
+  @override
+  String get reportKindReceivables => 'Customers who owe';
+
+  @override
+  String get reportKindPayables => 'Vendors owed';
+
+  @override
+  String get reportRangeToday => 'Today';
+
+  @override
+  String get reportRangeLast7 => 'Last 7 days';
+
+  @override
+  String get reportRangeThisMonth => 'This month';
+
+  @override
+  String get reportRangeLastMonth => 'Last month';
+
+  @override
+  String get reportRangeThisYear => 'This year';
+
+  @override
+  String get reportRangeCustom => 'Pick days';
+
+  @override
+  String get reportExportCsv => 'Save as CSV (for a spreadsheet)';
+
+  @override
+  String get reportExportPdf => 'Save as PDF';
+
+  @override
+  String get reportSaveAs => 'Save the report';
+
+  @override
+  String get reportSaved => 'Report saved.';
+
+  @override
+  String get reportNothing => 'Nothing to show for this report.';
+
+  @override
+  String reportDays(int count) {
+    return '$count days';
+  }
+
+  @override
+  String get reportTotal => 'Total';
+
+  @override
+  String get reportOnlineStore => 'Online store';
+
+  @override
+  String get reportNeverSold => 'Never';
+
+  @override
+  String get reportSalesByProduct => 'Sales by product';
+
+  @override
+  String get reportSalesByCategory => 'Sales by category';
+
+  @override
+  String get reportSalesByCustomer => 'Sales by customer';
+
+  @override
+  String get reportSalesByCashier => 'Sales by cashier';
+
+  @override
+  String get reportColProduct => 'Product';
+
+  @override
+  String get reportColCategory => 'Category';
+
+  @override
+  String get reportColCustomer => 'Customer';
+
+  @override
+  String get reportColVendor => 'Vendor';
+
+  @override
+  String get reportColCashier => 'Cashier';
+
+  @override
+  String get reportColUnits => 'Units';
+
+  @override
+  String get reportColOrders => 'Orders';
+
+  @override
+  String get reportColRevenue => 'Sales';
+
+  @override
+  String get reportColReturned => 'Returned';
+
+  @override
+  String get reportColCost => 'Cost';
+
+  @override
+  String get reportColProfit => 'Profit';
+
+  @override
+  String get reportColMargin => 'Margin';
+
+  @override
+  String get reportColExpenses => 'Expenses';
+
+  @override
+  String get reportColDay => 'Day';
+
+  @override
+  String get reportColSku => 'SKU';
+
+  @override
+  String get reportColOnHand => 'On hand';
+
+  @override
+  String get reportColStockValue => 'Value at cost';
+
+  @override
+  String get reportColSold => 'Sold';
+
+  @override
+  String get reportColLastSold => 'Last sold';
+
+  @override
+  String get reportColStatus => 'Status';
+
+  @override
+  String get reportColPhone => 'Phone';
+
+  @override
+  String get reportColBalance => 'Owed';
+
+  @override
+  String get reportColAge030 => '0-30 days';
+
+  @override
+  String get reportColAge3160 => '31-60 days';
+
+  @override
+  String get reportColAge6190 => '61-90 days';
+
+  @override
+  String get reportColAge90 => 'Over 90 days';
+
+  @override
+  String get reportColOldestDays => 'Oldest (days)';
+
+  @override
+  String get reportProfitTitle => 'Profit and margin';
+
+  @override
+  String get reportProfitRevenue => 'Sales after discounts';
+
+  @override
+  String get reportProfitReturned => 'Returned by customers';
+
+  @override
+  String get reportProfitNetRevenue => 'Net sales';
+
+  @override
+  String get reportProfitCost => 'Cost of the goods sold';
+
+  @override
+  String get reportProfitGross => 'Gross profit';
+
+  @override
+  String get reportProfitMargin => 'Gross margin';
+
+  @override
+  String get reportProfitExpenses => 'Expenses';
+
+  @override
+  String get reportProfitNet => 'Net profit';
+
+  @override
+  String get reportProfitShipping =>
+      'Delivery fees charged (not in the profit)';
+
+  @override
+  String get reportStockTitle => 'Stock that does not sell';
+
+  @override
+  String reportStockWindow(int days) {
+    return 'Looking at the last $days days';
+  }
+
+  @override
+  String reportStockDeadLine(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0 with no sale (money tied up)';
+  }
+
+  @override
+  String reportStockSlowLine(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0 selling slowly (money tied up)';
+  }
+
+  @override
+  String get reportStockDead => 'No sales';
+
+  @override
+  String get reportStockSlow => 'Slow';
+
+  @override
+  String get reportStockNew => 'New';
+
+  @override
+  String get reportStockOk => 'Selling';
+
+  @override
+  String get reportReceivablesTitle => 'Customers who owe money';
+
+  @override
+  String get reportPayablesTitle => 'Vendors who are owed money';
+
+  @override
+  String get apiErrorReportsTheFirstDayIsAfterTheLastDay =>
+      'The first day is after the last day.';
 }

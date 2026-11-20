@@ -15,6 +15,7 @@ import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
 import 'package:a2_stocks/screens/purchasing/purchases_screen.dart';
 import 'package:a2_stocks/screens/register/register_screen.dart';
+import 'package:a2_stocks/screens/reports/reports_screen.dart';
 import 'package:a2_stocks/screens/settings/settings_screen.dart';
 import 'package:a2_stocks/screens/sales/orders_screen.dart';
 import 'package:a2_stocks/screens/stock/stock_screen.dart';
@@ -76,6 +77,14 @@ final Provider<List<ErpModule>> erpModulesProvider =
       icon: Icons.shopping_cart_checkout_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
       builder: (BuildContext context) => const PurchasesScreen(),
+    ),
+    ErpModule(
+      id: 'reports',
+      group: ModuleGroup.sales,
+      title: (AppLocalizations l10n) => l10n.moduleReports,
+      icon: Icons.bar_chart_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      builder: (BuildContext context) => const ReportsScreen(),
     ),
     ErpModule(
       id: 'expenses',

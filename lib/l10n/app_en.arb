@@ -3480,5 +3480,109 @@
       }
     }
   },
-  "dashboardEstimatedProfit": "Estimated profit this month (sales less cost of goods and expenses)"
+  "dashboardEstimatedProfit": "Estimated profit this month (sales less cost of goods and expenses)",
+  "moduleReports": "Reports",
+  "@moduleReports": {
+    "description": "Navigation: sales, profit, stock and debts for the owner."
+  },
+  "reportKindSales": "Sales",
+  "reportKindProfit": "Profit",
+  "reportKindStock": "Stock that does not sell",
+  "reportKindReceivables": "Customers who owe",
+  "reportKindPayables": "Vendors owed",
+  "reportRangeToday": "Today",
+  "reportRangeLast7": "Last 7 days",
+  "reportRangeThisMonth": "This month",
+  "reportRangeLastMonth": "Last month",
+  "reportRangeThisYear": "This year",
+  "reportRangeCustom": "Pick days",
+  "reportExportCsv": "Save as CSV (for a spreadsheet)",
+  "reportExportPdf": "Save as PDF",
+  "reportSaveAs": "Save the report",
+  "reportSaved": "Report saved.",
+  "reportNothing": "Nothing to show for this report.",
+  "reportDays": "{count} days",
+  "@reportDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportTotal": "Total",
+  "reportOnlineStore": "Online store",
+  "reportNeverSold": "Never",
+  "reportSalesByProduct": "Sales by product",
+  "reportSalesByCategory": "Sales by category",
+  "reportSalesByCustomer": "Sales by customer",
+  "reportSalesByCashier": "Sales by cashier",
+  "reportColProduct": "Product",
+  "reportColCategory": "Category",
+  "reportColCustomer": "Customer",
+  "reportColVendor": "Vendor",
+  "reportColCashier": "Cashier",
+  "reportColUnits": "Units",
+  "reportColOrders": "Orders",
+  "reportColRevenue": "Sales",
+  "reportColReturned": "Returned",
+  "reportColCost": "Cost",
+  "reportColProfit": "Profit",
+  "reportColMargin": "Margin",
+  "reportColExpenses": "Expenses",
+  "reportColDay": "Day",
+  "reportColSku": "SKU",
+  "reportColOnHand": "On hand",
+  "reportColStockValue": "Value at cost",
+  "reportColSold": "Sold",
+  "reportColLastSold": "Last sold",
+  "reportColStatus": "Status",
+  "reportColPhone": "Phone",
+  "reportColBalance": "Owed",
+  "reportColAge030": "0-30 days",
+  "reportColAge3160": "31-60 days",
+  "reportColAge6190": "61-90 days",
+  "reportColAge90": "Over 90 days",
+  "reportColOldestDays": "Oldest (days)",
+  "reportProfitTitle": "Profit and margin",
+  "reportProfitRevenue": "Sales after discounts",
+  "reportProfitReturned": "Returned by customers",
+  "reportProfitNetRevenue": "Net sales",
+  "reportProfitCost": "Cost of the goods sold",
+  "reportProfitGross": "Gross profit",
+  "reportProfitMargin": "Gross margin",
+  "reportProfitExpenses": "Expenses",
+  "reportProfitNet": "Net profit",
+  "reportProfitShipping": "Delivery fees charged (not in the profit)",
+  "reportStockTitle": "Stock that does not sell",
+  "reportStockWindow": "Looking at the last {days} days",
+  "@reportStockWindow": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reportStockDeadLine": "{count, plural, =1{1 item} other{{count} items}} with no sale (money tied up)",
+  "@reportStockDeadLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportStockSlowLine": "{count, plural, =1{1 item} other{{count} items}} selling slowly (money tied up)",
+  "@reportStockSlowLine": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportStockDead": "No sales",
+  "reportStockSlow": "Slow",
+  "reportStockNew": "New",
+  "reportStockOk": "Selling",
+  "reportReceivablesTitle": "Customers who owe money",
+  "reportPayablesTitle": "Vendors who are owed money",
+  "apiErrorReportsTheFirstDayIsAfterTheLastDay": "The first day is after the last day."
 }
