@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/models/report_models.dart';
+import 'package:a2_stocks/models/reorder.dart';
 import 'package:a2_stocks/online/online_providers.dart';
 import 'package:a2_stocks/online/reports_service.dart';
 import 'package:a2_stocks/providers/core_providers.dart';
@@ -92,4 +93,13 @@ final AutoDisposeFutureProvider<AgeingReport> receivablesReportProvider = Future
 final AutoDisposeFutureProvider<AgeingReport> payablesReportProvider = FutureProvider.autoDispose<AgeingReport>((Ref ref) {
   ref.watch(syncTickProvider);
   return ref.watch(reportsServiceProvider).payables();
+});
+
+/// How far back the reorder suggestions look at sales, and how many days of sales an order should cover.
+final StateProvider<int> reorderDaysProvider = StateProvider<int>((Ref ref) => 30);
+final StateProvider<int> reorderCoverProvider = StateProvider<int>((Ref ref) => 30);
+
+final AutoDisposeFutureProvider<ReorderReport> reorderProvider = FutureProvider.autoDispose<ReorderReport>((Ref ref) {
+  ref.watch(syncTickProvider);
+  return ref.watch(reportsServiceProvider).reorder(days: ref.watch(reorderDaysProvider), coverDays: ref.watch(reorderCoverProvider));
 });

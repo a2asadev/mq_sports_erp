@@ -5,6 +5,7 @@ import 'package:a2_stocks/core/utils/report_builders.dart';
 import 'package:a2_stocks/core/utils/report_pdf.dart';
 import 'package:a2_stocks/core/utils/report_table.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/models/reorder.dart';
 import 'package:a2_stocks/models/report_models.dart';
 import 'package:a2_stocks/online/reports_service.dart';
 import 'package:a2_stocks/providers/report_providers.dart';
@@ -49,6 +50,9 @@ class _FakeReports implements ReportsService {
       'byDay': <Object?>[<String, dynamic>{'date': '2026-11-20', 'revenue': 387, 'cost': 250, 'expenses': 20, 'profit': 117}],
     });
   }
+
+  @override
+  Future<ReorderReport> reorder({int days = 30, int coverDays = 30}) async => const ReorderReport(days: 30, coverDays: 30, rows: <ReorderSuggestion>[]);
 
   @override
   Future<TaxReport> tax({String? from, String? to}) async {

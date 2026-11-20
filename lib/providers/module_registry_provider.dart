@@ -14,6 +14,7 @@ import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
 import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
 import 'package:a2_stocks/screens/purchasing/purchase_orders_screen.dart';
+import 'package:a2_stocks/screens/purchasing/reorder_screen.dart';
 import 'package:a2_stocks/screens/purchasing/purchases_screen.dart';
 import 'package:a2_stocks/screens/register/register_screen.dart';
 import 'package:a2_stocks/screens/reports/reports_screen.dart';
@@ -70,6 +71,14 @@ final Provider<List<ErpModule>> erpModulesProvider =
       icon: Icons.local_shipping_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
       builder: (BuildContext context) => const VendorsScreen(),
+    ),
+    ErpModule(
+      id: 'reorder',
+      group: ModuleGroup.purchasing,
+      title: (AppLocalizations l10n) => l10n.moduleReorder,
+      icon: Icons.playlist_add_check_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      builder: (BuildContext context) => const ReorderScreen(),
     ),
     ErpModule(
       id: 'purchase_orders',

@@ -3814,5 +3814,63 @@
   },
   "apiErrorPurchaseOrdersPurchaseOrderNotFound": "Purchase order not found",
   "apiErrorPurchaseOrdersThatLineIsNotOnThisOrder": "That line is not on this order.",
-  "apiErrorPurchaseOrdersThisOrderAlreadyExists": "This purchase order already exists."
+  "apiErrorPurchaseOrdersThisOrderAlreadyExists": "This purchase order already exists.",
+  "moduleReorder": "Reorder suggestions",
+  "@moduleReorder": {
+    "description": "Navigation: what to order from vendors, worked out from stock and sales."
+  },
+  "reorderLookBack": "Sales looked at:",
+  "reorderCover": "Order enough for:",
+  "reorderNone": "Nothing needs ordering right now.",
+  "reorderReasonOut": "Out of stock",
+  "reorderReasonLow": "Low",
+  "reorderReasonRunning": "Running out",
+  "reorderLine": "On hand {onHand} · on order {onOrder}",
+  "@reorderLine": {
+    "placeholders": {
+      "onHand": {
+        "type": "int"
+      },
+      "onOrder": {
+        "type": "int"
+      }
+    }
+  },
+  "reorderSpeed": "Sells {perDay} a day, about {days} days left",
+  "@reorderSpeed": {
+    "placeholders": {
+      "perDay": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "reorderNoSales": "No sales in this period",
+  "reorderNoVendor": "No vendor yet",
+  "reorderNoVendorHint": "These were never bought from an active vendor. Choose one to order them.",
+  "reorderChooseVendor": "Choose vendor",
+  "reorderCreate": "Create order",
+  "reorderGroupTotal": "{count} items · {amount}",
+  "@reorderGroupTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "reorderCreated": "Order {number} created. Nothing changes in stock until the goods arrive.",
+  "@reorderCreated": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "reorderOpen": "Open",
+  "reorderNote": "From reorder suggestions"
 }

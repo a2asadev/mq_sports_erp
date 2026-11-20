@@ -8473,6 +8473,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This purchase order already exists.'**
   String get apiErrorPurchaseOrdersThisOrderAlreadyExists;
+
+  /// Navigation: what to order from vendors, worked out from stock and sales.
+  ///
+  /// In en, this message translates to:
+  /// **'Reorder suggestions'**
+  String get moduleReorder;
+
+  /// No description provided for @reorderLookBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales looked at:'**
+  String get reorderLookBack;
+
+  /// No description provided for @reorderCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Order enough for:'**
+  String get reorderCover;
+
+  /// No description provided for @reorderNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing needs ordering right now.'**
+  String get reorderNone;
+
+  /// No description provided for @reorderReasonOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock'**
+  String get reorderReasonOut;
+
+  /// No description provided for @reorderReasonLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get reorderReasonLow;
+
+  /// No description provided for @reorderReasonRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running out'**
+  String get reorderReasonRunning;
+
+  /// No description provided for @reorderLine.
+  ///
+  /// In en, this message translates to:
+  /// **'On hand {onHand} · on order {onOrder}'**
+  String reorderLine(int onHand, int onOrder);
+
+  /// No description provided for @reorderSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sells {perDay} a day, about {days} days left'**
+  String reorderSpeed(String perDay, String days);
+
+  /// No description provided for @reorderNoSales.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales in this period'**
+  String get reorderNoSales;
+
+  /// No description provided for @reorderNoVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'No vendor yet'**
+  String get reorderNoVendor;
+
+  /// No description provided for @reorderNoVendorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'These were never bought from an active vendor. Choose one to order them.'**
+  String get reorderNoVendorHint;
+
+  /// No description provided for @reorderChooseVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose vendor'**
+  String get reorderChooseVendor;
+
+  /// No description provided for @reorderCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create order'**
+  String get reorderCreate;
+
+  /// No description provided for @reorderGroupTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} items · {amount}'**
+  String reorderGroupTotal(int count, String amount);
+
+  /// No description provided for @reorderCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Order {number} created. Nothing changes in stock until the goods arrive.'**
+  String reorderCreated(String number);
+
+  /// No description provided for @reorderOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get reorderOpen;
+
+  /// No description provided for @reorderNote.
+  ///
+  /// In en, this message translates to:
+  /// **'From reorder suggestions'**
+  String get reorderNote;
 }
 
 class _AppLocalizationsDelegate

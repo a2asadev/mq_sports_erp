@@ -5340,4 +5340,67 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get apiErrorPurchaseOrdersThisOrderAlreadyExists =>
       'This purchase order already exists.';
+
+  @override
+  String get moduleReorder => 'Reorder suggestions';
+
+  @override
+  String get reorderLookBack => 'Sales looked at:';
+
+  @override
+  String get reorderCover => 'Order enough for:';
+
+  @override
+  String get reorderNone => 'Nothing needs ordering right now.';
+
+  @override
+  String get reorderReasonOut => 'Out of stock';
+
+  @override
+  String get reorderReasonLow => 'Low';
+
+  @override
+  String get reorderReasonRunning => 'Running out';
+
+  @override
+  String reorderLine(int onHand, int onOrder) {
+    return 'On hand $onHand · on order $onOrder';
+  }
+
+  @override
+  String reorderSpeed(String perDay, String days) {
+    return 'Sells $perDay a day, about $days days left';
+  }
+
+  @override
+  String get reorderNoSales => 'No sales in this period';
+
+  @override
+  String get reorderNoVendor => 'No vendor yet';
+
+  @override
+  String get reorderNoVendorHint =>
+      'These were never bought from an active vendor. Choose one to order them.';
+
+  @override
+  String get reorderChooseVendor => 'Choose vendor';
+
+  @override
+  String get reorderCreate => 'Create order';
+
+  @override
+  String reorderGroupTotal(int count, String amount) {
+    return '$count items · $amount';
+  }
+
+  @override
+  String reorderCreated(String number) {
+    return 'Order $number created. Nothing changes in stock until the goods arrive.';
+  }
+
+  @override
+  String get reorderOpen => 'Open';
+
+  @override
+  String get reorderNote => 'From reorder suggestions';
 }

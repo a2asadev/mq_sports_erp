@@ -1,4 +1,5 @@
 import 'package:a2_stocks/models/report_models.dart';
+import 'package:a2_stocks/models/reorder.dart';
 import 'package:a2_stocks/online/api_client.dart';
 
 /// Reports for the owner (`/v1/reports/*`, admin and manager). The server works the
@@ -22,6 +23,13 @@ class ReportsService {
   Future<ProfitReport> profit({String? from, String? to}) async {
     final ApiResponse r = await _api.get('/v1/reports/profit', query: _period(from, to));
     return ProfitReport.fromMap(r.asMap);
+  }
+
+  /// What to reorder: items that are out, low or running out, how much and from whom. [days] is how far back
+  /// sales are looked at; [coverDays] how many days of sales the stock should cover once the order arrives.
+  Future<ReorderReport> reorder({int days = 30, int coverDays = 30}) async {
+    final ApiResponse r = await _api.get('/v1/reports/reorder', query: <String, String>{'days': '$days', 'coverDays': '$coverDays'});
+    return ReorderReport.fromMap(r.asMap);
   }
 
   /// Tax collected, given back with returns and owed, for the days [from] to [to].
