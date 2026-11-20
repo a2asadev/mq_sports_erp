@@ -1,3 +1,5 @@
+import 'package:a2_stocks/core/utils/tax.dart';
+import 'package:a2_stocks/core/utils/tax_text.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
@@ -40,8 +42,16 @@ class ReceiptPayment {
   final String reference;
 }
 
-/// Everything a receipt shows. No tax (for now); the total is items minus
-/// discounts, plus delivery for online orders.
+/// One tax line on a receipt ("GST 17%", or "Includes GST 17%" when the prices contain it).
+class ReceiptTaxLine {
+  const ReceiptTaxLine({required this.label, required this.amount});
+
+  final String label;
+  final double amount;
+}
+
+/// Everything a receipt shows: the total is items minus discounts, plus the tax when it was added on top,
+/// plus delivery for online orders.
 class ReceiptData {
   const ReceiptData({
     required this.shopName,
@@ -58,6 +68,8 @@ class ReceiptData {
     required this.payments,
     this.change = 0,
     this.logoUrl = '',
+    this.taxLines = const <ReceiptTaxLine>[],
+    this.taxNumber = '',
   });
 
   final String shopName;
@@ -85,6 +97,12 @@ class ReceiptData {
   /// Public address of the business's logo; '' prints none.
   final String logoUrl;
 
+  /// The tax of the sale, line by line (empty when none was charged).
+  final List<ReceiptTaxLine> taxLines;
+
+  /// The business's tax registration number; '' prints none.
+  final String taxNumber;
+
   double get paid => PaymentLine.total(
         payments.map((ReceiptPayment p) => PaymentLine(method: PaymentMethod.cash, amount: p.amount)),
       );
@@ -103,6 +121,7 @@ class ReceiptData {
     required String walkInCustomerId,
     String shopPhone = '',
     String logoUrl = '',
+    String taxNumber = '',
     String cashier = '',
     double change = 0,
   }) {
@@ -130,6 +149,7 @@ class ReceiptData {
       walkInCustomerId: walkInCustomerId,
       shopPhone: shopPhone,
       logoUrl: logoUrl,
+      taxNumber: taxNumber,
       cashier: cashier,
       change: change,
     );
@@ -145,6 +165,7 @@ class ReceiptData {
     required String walkInCustomerId,
     String shopPhone = '',
     String logoUrl = '',
+    String taxNumber = '',
     String cashier = '',
     double change = 0,
   }) {
@@ -171,6 +192,11 @@ class ReceiptData {
       discount: order.totalDiscount,
       shippingFee: order.shippingFee,
       total: order.totalAmount,
+      taxLines: <ReceiptTaxLine>[
+        for (final MapEntry<String, double> line in taxLabels(L10n.current, TaxResult(gst: order.gstAmount, vat: order.vatAmount, gstRate: order.gstRate, vatRate: order.vatRate, inclusive: order.taxInclusive)))
+          ReceiptTaxLine(label: line.key, amount: line.value),
+      ],
+      taxNumber: taxNumber,
       payments: payments,
       change: change,
     );
@@ -188,6 +214,7 @@ class ReceiptData {
     final StringBuffer out = StringBuffer()
       ..writeln('*$shopName*')
       ..writeln(shopPhone.isEmpty ? '' : L10n.current.receiptTel(shopPhone))
+      ..writeln(taxNumber.isEmpty ? '' : L10n.current.receiptTaxNumber(taxNumber))
       ..writeln(L10n.current.receiptReceipt(orderNo))
       ..writeln(_dateText(date));
     if (customerName.isNotEmpty) {
@@ -202,6 +229,9 @@ class ReceiptData {
     if (discount > 0.005) {
       out.writeln(L10n.current.receiptItems(money(subtotal)));
       out.writeln(L10n.current.receiptDiscount3(money(discount)));
+    }
+    for (final ReceiptTaxLine t in taxLines) {
+      out.writeln('${t.label}: ${money(t.amount)}');
     }
     if (shippingFee > 0.005) {
       out.writeln(L10n.current.receiptDelivery2(money(shippingFee)));

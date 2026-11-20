@@ -16,6 +16,11 @@ class BusinessInfo {
     this.logoUrl = '',
     this.brandColor = '',
     this.usesRegister = false,
+    this.taxEnabled = false,
+    this.gstRate = 0,
+    this.vatRate = 0,
+    this.pricesIncludeTax = false,
+    this.taxNumber = '',
   });
 
   /// The tenant id on the server.
@@ -42,6 +47,16 @@ class BusinessInfo {
   /// Whether the business keeps a cash register and closes its day (set by an admin in
   /// Settings or in the welcome guide). Off until said: the Cash register page is hidden.
   final bool usesRegister;
+
+  /// Tax: switched on by an admin. GST and VAT are percentages (0 = not charged), both applied to the same
+  /// goods price. [pricesIncludeTax]: the shelf price already contains the tax, else it is added on top.
+  final bool taxEnabled;
+  final double gstRate;
+  final double vatRate;
+  final bool pricesIncludeTax;
+
+  /// Registration number printed on receipts; '' prints none.
+  final String taxNumber;
 
   /// The customer record behind counter sales to people who just walk in. Empty
   /// when the business has none.
@@ -76,6 +91,11 @@ class BusinessInfo {
     final Object? logo = map['logoUrl'];
     final Object? color = map['brandColor'];
     final Object? register = map['usesRegister'];
+    final Object? taxOn = map['taxEnabled'];
+    final Object? gst = map['gstRate'];
+    final Object? vat = map['vatRate'];
+    final Object? inclusive = map['pricesIncludeTax'];
+    final Object? taxNo = map['taxNumber'];
     return BusinessInfo(
       id: id,
       name: name.trim(),
@@ -86,6 +106,11 @@ class BusinessInfo {
       logoUrl: logo is String ? logo : '',
       brandColor: color is String && RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(color) ? color.toUpperCase() : '',
       usesRegister: register is bool ? register : false,
+      taxEnabled: taxOn is bool ? taxOn : false,
+      gstRate: gst is num ? gst.toDouble() : 0,
+      vatRate: vat is num ? vat.toDouble() : 0,
+      pricesIncludeTax: inclusive is bool ? inclusive : false,
+      taxNumber: taxNo is String ? taxNo : '',
     );
   }
 
@@ -96,6 +121,11 @@ class BusinessInfo {
     String? logoUrl,
     String? brandColor,
     bool? usesRegister,
+    bool? taxEnabled,
+    double? gstRate,
+    double? vatRate,
+    bool? pricesIncludeTax,
+    String? taxNumber,
   }) =>
       BusinessInfo(
         id: id,
@@ -107,6 +137,11 @@ class BusinessInfo {
         logoUrl: logoUrl ?? this.logoUrl,
         brandColor: brandColor ?? this.brandColor,
         usesRegister: usesRegister ?? this.usesRegister,
+        taxEnabled: taxEnabled ?? this.taxEnabled,
+        gstRate: gstRate ?? this.gstRate,
+        vatRate: vatRate ?? this.vatRate,
+        pricesIncludeTax: pricesIncludeTax ?? this.pricesIncludeTax,
+        taxNumber: taxNumber ?? this.taxNumber,
       );
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -119,6 +154,11 @@ class BusinessInfo {
         'logoUrl': logoUrl,
         'brandColor': brandColor,
         'usesRegister': usesRegister,
+        'taxEnabled': taxEnabled,
+        'gstRate': gstRate,
+        'vatRate': vatRate,
+        'pricesIncludeTax': pricesIncludeTax,
+        'taxNumber': taxNumber,
       };
 
   @override
@@ -132,8 +172,13 @@ class BusinessInfo {
       other.currency == currency &&
       other.logoUrl == logoUrl &&
       other.brandColor == brandColor &&
-      other.usesRegister == usesRegister;
+      other.usesRegister == usesRegister &&
+      other.taxEnabled == taxEnabled &&
+      other.gstRate == gstRate &&
+      other.vatRate == vatRate &&
+      other.pricesIncludeTax == pricesIncludeTax &&
+      other.taxNumber == taxNumber;
 
   @override
-  int get hashCode => Object.hash(id, name, phone, walkInCustomerId, hasOnlineStore, currency, logoUrl, brandColor, usesRegister);
+  int get hashCode => Object.hash(id, name, phone, walkInCustomerId, hasOnlineStore, currency, logoUrl, brandColor, usesRegister, taxEnabled, gstRate, vatRate, pricesIncludeTax, taxNumber);
 }

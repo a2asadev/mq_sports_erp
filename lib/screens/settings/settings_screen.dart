@@ -19,6 +19,7 @@ import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/onboarding/onboarding_screen.dart';
 import 'package:a2_stocks/screens/register/register_choice.dart';
 import 'package:a2_stocks/screens/settings/notification_settings_card.dart';
+import 'package:a2_stocks/screens/settings/tax_settings_form.dart';
 
 final Provider<StoreSettingsService> storeSettingsServiceProvider =
     Provider<StoreSettingsService>((Ref ref) => StoreSettingsService(ref.watch(apiClientProvider)));
@@ -429,7 +430,9 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
           ),
           const SizedBox(height: 8),
           RegisterChoiceTile(enabled: widget.canEdit && !_busy),
-          const SizedBox(height: 8),
+          const Divider(height: 24),
+          TaxSettingsForm(canEdit: widget.canEdit),
+          const Divider(height: 24),
           if (widget.initial != null) ...<Widget>[
             TextFormField(
               controller: _name,

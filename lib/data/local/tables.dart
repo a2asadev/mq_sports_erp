@@ -252,6 +252,12 @@ class Orders extends Table {
   TextColumn get saleType => text().withDefault(const Constant('retail'))();
   RealColumn get discount => real().withDefault(const Constant(0))();
   RealColumn get shippingFee => real().withDefault(const Constant(0))();
+  RealColumn get taxAmount => real().withDefault(const Constant(0))();
+  RealColumn get gstAmount => real().withDefault(const Constant(0))();
+  RealColumn get vatAmount => real().withDefault(const Constant(0))();
+  RealColumn get gstRate => real().withDefault(const Constant(0))();
+  RealColumn get vatRate => real().withDefault(const Constant(0))();
+  BoolColumn get taxInclusive => boolean().withDefault(const Constant(false))();
   TextColumn get shippingAddress => text().withDefault(const Constant(''))();
   TextColumn get channel => text().withDefault(const Constant('admin'))();
   TextColumn get notes => text().withDefault(const Constant(''))();

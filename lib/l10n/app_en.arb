@@ -3584,5 +3584,59 @@
   "reportStockOk": "Selling",
   "reportReceivablesTitle": "Customers who owe money",
   "reportPayablesTitle": "Vendors who are owed money",
-  "apiErrorReportsTheFirstDayIsAfterTheLastDay": "The first day is after the last day."
+  "apiErrorReportsTheFirstDayIsAfterTheLastDay": "The first day is after the last day.",
+  "taxNameGst": "GST",
+  "@taxNameGst": {
+    "description": "Goods and services tax: the name on receipts."
+  },
+  "taxNameVat": "VAT",
+  "@taxNameVat": {
+    "description": "Value added tax: the name on receipts."
+  },
+  "taxLine": "{name} {rate}%",
+  "@taxLine": {
+    "description": "A tax line: the tax added on top of the price.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "taxLineIncluded": "Includes {name} {rate}%",
+  "@taxLineIncluded": {
+    "description": "A tax line: the price already contains this tax.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "receiptTaxNumber": "Tax no. {number}",
+  "@receiptTaxNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "taxSettingsTitle": "Tax",
+  "taxSettingsSwitch": "Charge tax on sales",
+  "taxSettingsHint": "GST and VAT are charged on the goods after discounts, never on the delivery fee. If you charge both, both apply to the same price. Leave a rate at 0 if you do not charge it.",
+  "taxGstRate": "GST rate (%)",
+  "taxVatRate": "VAT rate (%)",
+  "taxIncludesTitle": "Do your shelf prices already include tax?",
+  "taxIncludesYes": "Yes, the tax is inside the price",
+  "taxIncludesNo": "No, add the tax on top",
+  "taxNumberLabel": "Tax registration number (printed on receipts)",
+  "taxSave": "Save tax settings",
+  "taxSaved": "Tax settings saved.",
+  "taxNeedsRate": "Enter a GST or VAT rate above 0.",
+  "taxRateInvalid": "A rate is a number from 0 to 100.",
+  "taxAdminOnly": "Only an admin can change the tax settings."
 }

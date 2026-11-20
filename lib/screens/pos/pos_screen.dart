@@ -8,6 +8,8 @@ import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/core/utils/tax.dart';
+import 'package:a2_stocks/core/utils/tax_text.dart';
 import 'package:a2_stocks/core/utils/category_tree.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/receipt.dart';
@@ -219,9 +221,10 @@ class _PosScreenState extends ConsumerState<PosScreen> {
       _message(context.l10n.posTheWalkInCustomer);
       return;
     }
+    final TaxSettings tax = TaxSettings.of(ref.read(businessProvider));
     final PosPaymentResult? payment = await showPosPaymentDialog(
       context,
-      total: cart.total,
+      total: cart.payable(tax),
       allowCredit: cart.customer != null,
       initialMethod: _method,
     );
@@ -271,6 +274,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
       walkInCustomerId: ref.read(businessProvider).walkInCustomerId,
       shopPhone: shop.phone,
       logoUrl: shop.logoUrl,
+      taxNumber: ref.read(businessProvider).taxNumber,
       cashier: me == null ? '' : (me.displayName.isNotEmpty ? me.displayName : me.email),
       change: payment.change,
     );
@@ -357,6 +361,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     final AsyncValue<List<ProductModel>> productsAsync = ref.watch(productsProvider);
     final List<ProductModel> products = productsAsync.valueOrNull ?? <ProductModel>[];
     final PosCart cart = ref.watch(posCartProvider);
+    final TaxSettings tax = ref.watch(businessProvider.select(TaxSettings.of));
     final bool canSell = ref.watch(canCreateOrdersProvider);
 
     return Scaffold(
@@ -439,7 +444,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                         label: Text('${cart.units}'),
                         child: const Icon(Icons.shopping_bag_outlined),
                       ),
-                      label: cart.isEmpty ? context.l10n.posSale2 : context.l10n.posSale(MoneyFormat.prefix, _fmt(cart.total)),
+                      label: cart.isEmpty ? context.l10n.posSale2 : context.l10n.posSale(MoneyFormat.prefix, _fmt(cart.payable(tax))),
                     ),
                   ],
                 ),
@@ -1070,6 +1075,7 @@ class _SalePanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final PosCart cart = ref.watch(posCartProvider);
+    final TaxSettings tax = ref.watch(businessProvider.select(TaxSettings.of));
     final PosCartNotifier notifier = ref.read(posCartProvider.notifier);
     final Map<String, int> stock = ref.watch(stockOnHandProvider);
 
@@ -1207,13 +1213,15 @@ class _SalePanel extends ConsumerWidget {
             child: const Icon(Icons.edit_outlined, size: 15, color: AppColors.textMuted),
           ),
         ),
+        for (final MapEntry<String, double> line in taxLabels(context.l10n, cart.taxFor(tax)))
+          _summaryRow(line.key, '${MoneyFormat.prefix}${_fmt(line.value)}'),
         const Divider(height: 20),
         Row(
           children: <Widget>[
             Text(context.l10n.posTotalPayable, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
             const Spacer(),
             Text(
-              '${MoneyFormat.prefix}${_fmt(cart.total)}',
+              '${MoneyFormat.prefix}${_fmt(cart.payable(tax))}',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.navy),
             ),
           ],
@@ -1293,7 +1301,7 @@ class _SalePanel extends ConsumerWidget {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
                     : const Icon(Icons.shopping_bag_outlined, size: 18),
-                label: Text(cart.isEmpty ? context.l10n.posPlaceOrder2 : context.l10n.posPlaceOrder(MoneyFormat.prefix, _fmt(cart.total))),
+                label: Text(cart.isEmpty ? context.l10n.posPlaceOrder2 : context.l10n.posPlaceOrder(MoneyFormat.prefix, _fmt(cart.payable(tax)))),
               ),
             ),
           ],

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/core/utils/tax.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
+import 'package:a2_stocks/core/utils/tax_text.dart';
 import 'package:a2_stocks/core/utils/price_warnings.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
@@ -167,10 +170,17 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
     return (amount * 100).round() / 100;
   }
 
-  double get _total {
+  /// The goods after discounts, before any tax.
+  double get _goods {
     final double net = _subtotal - _orderDiscount;
     return ((net > 0 ? net : 0) * 100).round() / 100;
   }
+
+  /// The tax of the business on this sale.
+  TaxResult get _tax => computeTax(_goods, TaxSettings.of(ref.read(businessProvider)));
+
+  /// What the customer owes: the goods plus the tax when it is added on top.
+  double get _total => ((_goods + _tax.added) * 100).round() / 100;
 
   double get _paid => double.tryParse(_paidController.text.trim()) ?? 0;
 
@@ -559,6 +569,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                     const SizedBox(height: 12),
                     _summaryRow(context.l10n.orderDetailSubtotal, formatAmount(_subtotal)),
                     _summaryRow(context.l10n.orderFormOrderDiscount, '- ${formatAmount(_orderDiscount)}'),
+                    for (final MapEntry<String, double> line in taxLabels(context.l10n, _tax)) _summaryRow(line.key, formatAmount(line.value)),
                     _stepTitle(context, '4', context.l10n.posPayment),
                     Row(
                       children: <Widget>[

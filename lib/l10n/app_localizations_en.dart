@@ -5028,4 +5028,68 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get apiErrorReportsTheFirstDayIsAfterTheLastDay =>
       'The first day is after the last day.';
+
+  @override
+  String get taxNameGst => 'GST';
+
+  @override
+  String get taxNameVat => 'VAT';
+
+  @override
+  String taxLine(String name, String rate) {
+    return '$name $rate%';
+  }
+
+  @override
+  String taxLineIncluded(String name, String rate) {
+    return 'Includes $name $rate%';
+  }
+
+  @override
+  String receiptTaxNumber(String number) {
+    return 'Tax no. $number';
+  }
+
+  @override
+  String get taxSettingsTitle => 'Tax';
+
+  @override
+  String get taxSettingsSwitch => 'Charge tax on sales';
+
+  @override
+  String get taxSettingsHint =>
+      'GST and VAT are charged on the goods after discounts, never on the delivery fee. If you charge both, both apply to the same price. Leave a rate at 0 if you do not charge it.';
+
+  @override
+  String get taxGstRate => 'GST rate (%)';
+
+  @override
+  String get taxVatRate => 'VAT rate (%)';
+
+  @override
+  String get taxIncludesTitle => 'Do your shelf prices already include tax?';
+
+  @override
+  String get taxIncludesYes => 'Yes, the tax is inside the price';
+
+  @override
+  String get taxIncludesNo => 'No, add the tax on top';
+
+  @override
+  String get taxNumberLabel => 'Tax registration number (printed on receipts)';
+
+  @override
+  String get taxSave => 'Save tax settings';
+
+  @override
+  String get taxSaved => 'Tax settings saved.';
+
+  @override
+  String get taxNeedsRate => 'Enter a GST or VAT rate above 0.';
+
+  @override
+  String get taxRateInvalid => 'A rate is a number from 0 to 100.';
+
+  @override
+  String get taxAdminOnly => 'Only an admin can change the tax settings.';
 }

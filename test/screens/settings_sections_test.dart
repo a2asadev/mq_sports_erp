@@ -102,6 +102,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('AED · UAE dirham (AED)').last);
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Save'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
@@ -114,6 +116,8 @@ void main() {
   testWidgets('saving without changing the currency does not call the currency endpoint', (WidgetTester tester) async {
     await pumpSettings(tester, role: UserRole.admin, business: _withStore);
     await tester.tap(find.text('Shop details'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Save'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
@@ -132,6 +136,8 @@ void main() {
 
     await tester.enterText(find.widgetWithText(TextFormField, 'Shop name'), 'Ali Store');
     await tester.enterText(find.widgetWithText(TextFormField, 'Phone'), '0300-9');
+    await tester.ensureVisible(find.text('Save'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
@@ -156,6 +162,8 @@ void main() {
     await tester.tap(find.text('Shop details'));
     await tester.pumpAndSettle();
     await tester.enterText(find.widgetWithText(TextFormField, 'Shop name'), '  ');
+    await tester.ensureVisible(find.text('Save'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.text('Enter the shop name.'), findsOneWidget);
@@ -188,6 +196,8 @@ void main() {
 
     await tester.tap(find.byTooltip('Blue'));
     await tester.pump();
+    await tester.ensureVisible(find.text('Save'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
@@ -207,6 +217,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('A2 Stocks teal'));
     await tester.pump();
+    await tester.ensureVisible(find.text('Save'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(jsonDecode(calls.singleWhere((http.Request r) => r.method == 'PUT').body), <String, dynamic>{'brandColor': ''});
@@ -220,6 +232,8 @@ void main() {
     await tester.tap(find.byType(DropdownButtonFormField<String>));
     await tester.pumpAndSettle();
     await tester.tap(find.text('AED · UAE dirham (AED)').last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Save'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();

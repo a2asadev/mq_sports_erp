@@ -66,6 +66,11 @@ class ReceiptView extends StatelessWidget {
               style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
           ),
+          if (receipt.taxNumber.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Center(child: Text(context.l10n.receiptTaxNumber(receipt.taxNumber), style: _base)),
+            ),
           if (receipt.shopPhone.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 6),
@@ -160,6 +165,7 @@ class ReceiptView extends StatelessWidget {
           const SizedBox(height: 6),
           _kv(context.l10n.receiptSubTotal, ReceiptData.money(receipt.subtotal)),
           if (receipt.discount > 0.005) _kv(context.l10n.receiptDiscount2, '-${ReceiptData.money(receipt.discount)}'),
+          for (final ReceiptTaxLine t in receipt.taxLines) _kv(t.label, ReceiptData.money(t.amount)),
           if (receipt.shippingFee > 0.005) _kv(context.l10n.receiptDelivery, ReceiptData.money(receipt.shippingFee)),
           const SizedBox(height: 4),
           const _Solid(),

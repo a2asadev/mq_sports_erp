@@ -6696,6 +6696,56 @@ class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
       type: DriftSqlType.double,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _taxAmountMeta =
+      const VerificationMeta('taxAmount');
+  @override
+  late final GeneratedColumn<double> taxAmount = GeneratedColumn<double>(
+      'tax_amount', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _gstAmountMeta =
+      const VerificationMeta('gstAmount');
+  @override
+  late final GeneratedColumn<double> gstAmount = GeneratedColumn<double>(
+      'gst_amount', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _vatAmountMeta =
+      const VerificationMeta('vatAmount');
+  @override
+  late final GeneratedColumn<double> vatAmount = GeneratedColumn<double>(
+      'vat_amount', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _gstRateMeta =
+      const VerificationMeta('gstRate');
+  @override
+  late final GeneratedColumn<double> gstRate = GeneratedColumn<double>(
+      'gst_rate', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _vatRateMeta =
+      const VerificationMeta('vatRate');
+  @override
+  late final GeneratedColumn<double> vatRate = GeneratedColumn<double>(
+      'vat_rate', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _taxInclusiveMeta =
+      const VerificationMeta('taxInclusive');
+  @override
+  late final GeneratedColumn<bool> taxInclusive = GeneratedColumn<bool>(
+      'tax_inclusive', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("tax_inclusive" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _shippingAddressMeta =
       const VerificationMeta('shippingAddress');
   @override
@@ -6742,6 +6792,12 @@ class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
         saleType,
         discount,
         shippingFee,
+        taxAmount,
+        gstAmount,
+        vatAmount,
+        gstRate,
+        vatRate,
+        taxInclusive,
         shippingAddress,
         channel,
         notes,
@@ -6809,6 +6865,32 @@ class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
           shippingFee.isAcceptableOrUnknown(
               data['shipping_fee']!, _shippingFeeMeta));
     }
+    if (data.containsKey('tax_amount')) {
+      context.handle(_taxAmountMeta,
+          taxAmount.isAcceptableOrUnknown(data['tax_amount']!, _taxAmountMeta));
+    }
+    if (data.containsKey('gst_amount')) {
+      context.handle(_gstAmountMeta,
+          gstAmount.isAcceptableOrUnknown(data['gst_amount']!, _gstAmountMeta));
+    }
+    if (data.containsKey('vat_amount')) {
+      context.handle(_vatAmountMeta,
+          vatAmount.isAcceptableOrUnknown(data['vat_amount']!, _vatAmountMeta));
+    }
+    if (data.containsKey('gst_rate')) {
+      context.handle(_gstRateMeta,
+          gstRate.isAcceptableOrUnknown(data['gst_rate']!, _gstRateMeta));
+    }
+    if (data.containsKey('vat_rate')) {
+      context.handle(_vatRateMeta,
+          vatRate.isAcceptableOrUnknown(data['vat_rate']!, _vatRateMeta));
+    }
+    if (data.containsKey('tax_inclusive')) {
+      context.handle(
+          _taxInclusiveMeta,
+          taxInclusive.isAcceptableOrUnknown(
+              data['tax_inclusive']!, _taxInclusiveMeta));
+    }
     if (data.containsKey('shipping_address')) {
       context.handle(
           _shippingAddressMeta,
@@ -6862,6 +6944,18 @@ class $OrdersTable extends Orders with TableInfo<$OrdersTable, OrderRow> {
           .read(DriftSqlType.double, data['${effectivePrefix}discount'])!,
       shippingFee: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}shipping_fee'])!,
+      taxAmount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}tax_amount'])!,
+      gstAmount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}gst_amount'])!,
+      vatAmount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}vat_amount'])!,
+      gstRate: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}gst_rate'])!,
+      vatRate: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}vat_rate'])!,
+      taxInclusive: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}tax_inclusive'])!,
       shippingAddress: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}shipping_address'])!,
       channel: attachedDatabase.typeMapping
@@ -6891,6 +6985,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
   final String saleType;
   final double discount;
   final double shippingFee;
+  final double taxAmount;
+  final double gstAmount;
+  final double vatAmount;
+  final double gstRate;
+  final double vatRate;
+  final bool taxInclusive;
   final String shippingAddress;
   final String channel;
   final String notes;
@@ -6906,6 +7006,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       required this.saleType,
       required this.discount,
       required this.shippingFee,
+      required this.taxAmount,
+      required this.gstAmount,
+      required this.vatAmount,
+      required this.gstRate,
+      required this.vatRate,
+      required this.taxInclusive,
       required this.shippingAddress,
       required this.channel,
       required this.notes,
@@ -6923,6 +7029,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
     map['sale_type'] = Variable<String>(saleType);
     map['discount'] = Variable<double>(discount);
     map['shipping_fee'] = Variable<double>(shippingFee);
+    map['tax_amount'] = Variable<double>(taxAmount);
+    map['gst_amount'] = Variable<double>(gstAmount);
+    map['vat_amount'] = Variable<double>(vatAmount);
+    map['gst_rate'] = Variable<double>(gstRate);
+    map['vat_rate'] = Variable<double>(vatRate);
+    map['tax_inclusive'] = Variable<bool>(taxInclusive);
     map['shipping_address'] = Variable<String>(shippingAddress);
     map['channel'] = Variable<String>(channel);
     map['notes'] = Variable<String>(notes);
@@ -6942,6 +7054,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       saleType: Value(saleType),
       discount: Value(discount),
       shippingFee: Value(shippingFee),
+      taxAmount: Value(taxAmount),
+      gstAmount: Value(gstAmount),
+      vatAmount: Value(vatAmount),
+      gstRate: Value(gstRate),
+      vatRate: Value(vatRate),
+      taxInclusive: Value(taxInclusive),
       shippingAddress: Value(shippingAddress),
       channel: Value(channel),
       notes: Value(notes),
@@ -6963,6 +7081,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       saleType: serializer.fromJson<String>(json['saleType']),
       discount: serializer.fromJson<double>(json['discount']),
       shippingFee: serializer.fromJson<double>(json['shippingFee']),
+      taxAmount: serializer.fromJson<double>(json['taxAmount']),
+      gstAmount: serializer.fromJson<double>(json['gstAmount']),
+      vatAmount: serializer.fromJson<double>(json['vatAmount']),
+      gstRate: serializer.fromJson<double>(json['gstRate']),
+      vatRate: serializer.fromJson<double>(json['vatRate']),
+      taxInclusive: serializer.fromJson<bool>(json['taxInclusive']),
       shippingAddress: serializer.fromJson<String>(json['shippingAddress']),
       channel: serializer.fromJson<String>(json['channel']),
       notes: serializer.fromJson<String>(json['notes']),
@@ -6983,6 +7107,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       'saleType': serializer.toJson<String>(saleType),
       'discount': serializer.toJson<double>(discount),
       'shippingFee': serializer.toJson<double>(shippingFee),
+      'taxAmount': serializer.toJson<double>(taxAmount),
+      'gstAmount': serializer.toJson<double>(gstAmount),
+      'vatAmount': serializer.toJson<double>(vatAmount),
+      'gstRate': serializer.toJson<double>(gstRate),
+      'vatRate': serializer.toJson<double>(vatRate),
+      'taxInclusive': serializer.toJson<bool>(taxInclusive),
       'shippingAddress': serializer.toJson<String>(shippingAddress),
       'channel': serializer.toJson<String>(channel),
       'notes': serializer.toJson<String>(notes),
@@ -7001,6 +7131,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
           String? saleType,
           double? discount,
           double? shippingFee,
+          double? taxAmount,
+          double? gstAmount,
+          double? vatAmount,
+          double? gstRate,
+          double? vatRate,
+          bool? taxInclusive,
           String? shippingAddress,
           String? channel,
           String? notes,
@@ -7016,6 +7152,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
         saleType: saleType ?? this.saleType,
         discount: discount ?? this.discount,
         shippingFee: shippingFee ?? this.shippingFee,
+        taxAmount: taxAmount ?? this.taxAmount,
+        gstAmount: gstAmount ?? this.gstAmount,
+        vatAmount: vatAmount ?? this.vatAmount,
+        gstRate: gstRate ?? this.gstRate,
+        vatRate: vatRate ?? this.vatRate,
+        taxInclusive: taxInclusive ?? this.taxInclusive,
         shippingAddress: shippingAddress ?? this.shippingAddress,
         channel: channel ?? this.channel,
         notes: notes ?? this.notes,
@@ -7037,6 +7179,14 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       discount: data.discount.present ? data.discount.value : this.discount,
       shippingFee:
           data.shippingFee.present ? data.shippingFee.value : this.shippingFee,
+      taxAmount: data.taxAmount.present ? data.taxAmount.value : this.taxAmount,
+      gstAmount: data.gstAmount.present ? data.gstAmount.value : this.gstAmount,
+      vatAmount: data.vatAmount.present ? data.vatAmount.value : this.vatAmount,
+      gstRate: data.gstRate.present ? data.gstRate.value : this.gstRate,
+      vatRate: data.vatRate.present ? data.vatRate.value : this.vatRate,
+      taxInclusive: data.taxInclusive.present
+          ? data.taxInclusive.value
+          : this.taxInclusive,
       shippingAddress: data.shippingAddress.present
           ? data.shippingAddress.value
           : this.shippingAddress,
@@ -7059,6 +7209,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
           ..write('saleType: $saleType, ')
           ..write('discount: $discount, ')
           ..write('shippingFee: $shippingFee, ')
+          ..write('taxAmount: $taxAmount, ')
+          ..write('gstAmount: $gstAmount, ')
+          ..write('vatAmount: $vatAmount, ')
+          ..write('gstRate: $gstRate, ')
+          ..write('vatRate: $vatRate, ')
+          ..write('taxInclusive: $taxInclusive, ')
           ..write('shippingAddress: $shippingAddress, ')
           ..write('channel: $channel, ')
           ..write('notes: $notes, ')
@@ -7079,6 +7235,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
       saleType,
       discount,
       shippingFee,
+      taxAmount,
+      gstAmount,
+      vatAmount,
+      gstRate,
+      vatRate,
+      taxInclusive,
       shippingAddress,
       channel,
       notes,
@@ -7097,6 +7259,12 @@ class OrderRow extends DataClass implements Insertable<OrderRow> {
           other.saleType == this.saleType &&
           other.discount == this.discount &&
           other.shippingFee == this.shippingFee &&
+          other.taxAmount == this.taxAmount &&
+          other.gstAmount == this.gstAmount &&
+          other.vatAmount == this.vatAmount &&
+          other.gstRate == this.gstRate &&
+          other.vatRate == this.vatRate &&
+          other.taxInclusive == this.taxInclusive &&
           other.shippingAddress == this.shippingAddress &&
           other.channel == this.channel &&
           other.notes == this.notes &&
@@ -7114,6 +7282,12 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
   final Value<String> saleType;
   final Value<double> discount;
   final Value<double> shippingFee;
+  final Value<double> taxAmount;
+  final Value<double> gstAmount;
+  final Value<double> vatAmount;
+  final Value<double> gstRate;
+  final Value<double> vatRate;
+  final Value<bool> taxInclusive;
   final Value<String> shippingAddress;
   final Value<String> channel;
   final Value<String> notes;
@@ -7130,6 +7304,12 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
     this.saleType = const Value.absent(),
     this.discount = const Value.absent(),
     this.shippingFee = const Value.absent(),
+    this.taxAmount = const Value.absent(),
+    this.gstAmount = const Value.absent(),
+    this.vatAmount = const Value.absent(),
+    this.gstRate = const Value.absent(),
+    this.vatRate = const Value.absent(),
+    this.taxInclusive = const Value.absent(),
     this.shippingAddress = const Value.absent(),
     this.channel = const Value.absent(),
     this.notes = const Value.absent(),
@@ -7147,6 +7327,12 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
     this.saleType = const Value.absent(),
     this.discount = const Value.absent(),
     this.shippingFee = const Value.absent(),
+    this.taxAmount = const Value.absent(),
+    this.gstAmount = const Value.absent(),
+    this.vatAmount = const Value.absent(),
+    this.gstRate = const Value.absent(),
+    this.vatRate = const Value.absent(),
+    this.taxInclusive = const Value.absent(),
     this.shippingAddress = const Value.absent(),
     this.channel = const Value.absent(),
     this.notes = const Value.absent(),
@@ -7170,6 +7356,12 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
     Expression<String>? saleType,
     Expression<double>? discount,
     Expression<double>? shippingFee,
+    Expression<double>? taxAmount,
+    Expression<double>? gstAmount,
+    Expression<double>? vatAmount,
+    Expression<double>? gstRate,
+    Expression<double>? vatRate,
+    Expression<bool>? taxInclusive,
     Expression<String>? shippingAddress,
     Expression<String>? channel,
     Expression<String>? notes,
@@ -7187,6 +7379,12 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
       if (saleType != null) 'sale_type': saleType,
       if (discount != null) 'discount': discount,
       if (shippingFee != null) 'shipping_fee': shippingFee,
+      if (taxAmount != null) 'tax_amount': taxAmount,
+      if (gstAmount != null) 'gst_amount': gstAmount,
+      if (vatAmount != null) 'vat_amount': vatAmount,
+      if (gstRate != null) 'gst_rate': gstRate,
+      if (vatRate != null) 'vat_rate': vatRate,
+      if (taxInclusive != null) 'tax_inclusive': taxInclusive,
       if (shippingAddress != null) 'shipping_address': shippingAddress,
       if (channel != null) 'channel': channel,
       if (notes != null) 'notes': notes,
@@ -7206,6 +7404,12 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
       Value<String>? saleType,
       Value<double>? discount,
       Value<double>? shippingFee,
+      Value<double>? taxAmount,
+      Value<double>? gstAmount,
+      Value<double>? vatAmount,
+      Value<double>? gstRate,
+      Value<double>? vatRate,
+      Value<bool>? taxInclusive,
       Value<String>? shippingAddress,
       Value<String>? channel,
       Value<String>? notes,
@@ -7222,6 +7426,12 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
       saleType: saleType ?? this.saleType,
       discount: discount ?? this.discount,
       shippingFee: shippingFee ?? this.shippingFee,
+      taxAmount: taxAmount ?? this.taxAmount,
+      gstAmount: gstAmount ?? this.gstAmount,
+      vatAmount: vatAmount ?? this.vatAmount,
+      gstRate: gstRate ?? this.gstRate,
+      vatRate: vatRate ?? this.vatRate,
+      taxInclusive: taxInclusive ?? this.taxInclusive,
       shippingAddress: shippingAddress ?? this.shippingAddress,
       channel: channel ?? this.channel,
       notes: notes ?? this.notes,
@@ -7261,6 +7471,24 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
     if (shippingFee.present) {
       map['shipping_fee'] = Variable<double>(shippingFee.value);
     }
+    if (taxAmount.present) {
+      map['tax_amount'] = Variable<double>(taxAmount.value);
+    }
+    if (gstAmount.present) {
+      map['gst_amount'] = Variable<double>(gstAmount.value);
+    }
+    if (vatAmount.present) {
+      map['vat_amount'] = Variable<double>(vatAmount.value);
+    }
+    if (gstRate.present) {
+      map['gst_rate'] = Variable<double>(gstRate.value);
+    }
+    if (vatRate.present) {
+      map['vat_rate'] = Variable<double>(vatRate.value);
+    }
+    if (taxInclusive.present) {
+      map['tax_inclusive'] = Variable<bool>(taxInclusive.value);
+    }
     if (shippingAddress.present) {
       map['shipping_address'] = Variable<String>(shippingAddress.value);
     }
@@ -7294,6 +7522,12 @@ class OrdersCompanion extends UpdateCompanion<OrderRow> {
           ..write('saleType: $saleType, ')
           ..write('discount: $discount, ')
           ..write('shippingFee: $shippingFee, ')
+          ..write('taxAmount: $taxAmount, ')
+          ..write('gstAmount: $gstAmount, ')
+          ..write('vatAmount: $vatAmount, ')
+          ..write('gstRate: $gstRate, ')
+          ..write('vatRate: $vatRate, ')
+          ..write('taxInclusive: $taxInclusive, ')
           ..write('shippingAddress: $shippingAddress, ')
           ..write('channel: $channel, ')
           ..write('notes: $notes, ')
@@ -12244,6 +12478,12 @@ typedef $$OrdersTableCreateCompanionBuilder = OrdersCompanion Function({
   Value<String> saleType,
   Value<double> discount,
   Value<double> shippingFee,
+  Value<double> taxAmount,
+  Value<double> gstAmount,
+  Value<double> vatAmount,
+  Value<double> gstRate,
+  Value<double> vatRate,
+  Value<bool> taxInclusive,
   Value<String> shippingAddress,
   Value<String> channel,
   Value<String> notes,
@@ -12261,6 +12501,12 @@ typedef $$OrdersTableUpdateCompanionBuilder = OrdersCompanion Function({
   Value<String> saleType,
   Value<double> discount,
   Value<double> shippingFee,
+  Value<double> taxAmount,
+  Value<double> gstAmount,
+  Value<double> vatAmount,
+  Value<double> gstRate,
+  Value<double> vatRate,
+  Value<bool> taxInclusive,
   Value<String> shippingAddress,
   Value<String> channel,
   Value<String> notes,
@@ -12304,6 +12550,24 @@ class $$OrdersTableFilterComposer
 
   ColumnFilters<double> get shippingFee => $composableBuilder(
       column: $table.shippingFee, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get taxAmount => $composableBuilder(
+      column: $table.taxAmount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get gstAmount => $composableBuilder(
+      column: $table.gstAmount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get vatAmount => $composableBuilder(
+      column: $table.vatAmount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get gstRate => $composableBuilder(
+      column: $table.gstRate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get vatRate => $composableBuilder(
+      column: $table.vatRate, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get taxInclusive => $composableBuilder(
+      column: $table.taxInclusive, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get shippingAddress => $composableBuilder(
       column: $table.shippingAddress,
@@ -12359,6 +12623,25 @@ class $$OrdersTableOrderingComposer
   ColumnOrderings<double> get shippingFee => $composableBuilder(
       column: $table.shippingFee, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<double> get taxAmount => $composableBuilder(
+      column: $table.taxAmount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get gstAmount => $composableBuilder(
+      column: $table.gstAmount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get vatAmount => $composableBuilder(
+      column: $table.vatAmount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get gstRate => $composableBuilder(
+      column: $table.gstRate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get vatRate => $composableBuilder(
+      column: $table.vatRate, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get taxInclusive => $composableBuilder(
+      column: $table.taxInclusive,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get shippingAddress => $composableBuilder(
       column: $table.shippingAddress,
       builder: (column) => ColumnOrderings(column));
@@ -12412,6 +12695,24 @@ class $$OrdersTableAnnotationComposer
   GeneratedColumn<double> get shippingFee => $composableBuilder(
       column: $table.shippingFee, builder: (column) => column);
 
+  GeneratedColumn<double> get taxAmount =>
+      $composableBuilder(column: $table.taxAmount, builder: (column) => column);
+
+  GeneratedColumn<double> get gstAmount =>
+      $composableBuilder(column: $table.gstAmount, builder: (column) => column);
+
+  GeneratedColumn<double> get vatAmount =>
+      $composableBuilder(column: $table.vatAmount, builder: (column) => column);
+
+  GeneratedColumn<double> get gstRate =>
+      $composableBuilder(column: $table.gstRate, builder: (column) => column);
+
+  GeneratedColumn<double> get vatRate =>
+      $composableBuilder(column: $table.vatRate, builder: (column) => column);
+
+  GeneratedColumn<bool> get taxInclusive => $composableBuilder(
+      column: $table.taxInclusive, builder: (column) => column);
+
   GeneratedColumn<String> get shippingAddress => $composableBuilder(
       column: $table.shippingAddress, builder: (column) => column);
 
@@ -12460,6 +12761,12 @@ class $$OrdersTableTableManager extends RootTableManager<
             Value<String> saleType = const Value.absent(),
             Value<double> discount = const Value.absent(),
             Value<double> shippingFee = const Value.absent(),
+            Value<double> taxAmount = const Value.absent(),
+            Value<double> gstAmount = const Value.absent(),
+            Value<double> vatAmount = const Value.absent(),
+            Value<double> gstRate = const Value.absent(),
+            Value<double> vatRate = const Value.absent(),
+            Value<bool> taxInclusive = const Value.absent(),
             Value<String> shippingAddress = const Value.absent(),
             Value<String> channel = const Value.absent(),
             Value<String> notes = const Value.absent(),
@@ -12477,6 +12784,12 @@ class $$OrdersTableTableManager extends RootTableManager<
             saleType: saleType,
             discount: discount,
             shippingFee: shippingFee,
+            taxAmount: taxAmount,
+            gstAmount: gstAmount,
+            vatAmount: vatAmount,
+            gstRate: gstRate,
+            vatRate: vatRate,
+            taxInclusive: taxInclusive,
             shippingAddress: shippingAddress,
             channel: channel,
             notes: notes,
@@ -12494,6 +12807,12 @@ class $$OrdersTableTableManager extends RootTableManager<
             Value<String> saleType = const Value.absent(),
             Value<double> discount = const Value.absent(),
             Value<double> shippingFee = const Value.absent(),
+            Value<double> taxAmount = const Value.absent(),
+            Value<double> gstAmount = const Value.absent(),
+            Value<double> vatAmount = const Value.absent(),
+            Value<double> gstRate = const Value.absent(),
+            Value<double> vatRate = const Value.absent(),
+            Value<bool> taxInclusive = const Value.absent(),
             Value<String> shippingAddress = const Value.absent(),
             Value<String> channel = const Value.absent(),
             Value<String> notes = const Value.absent(),
@@ -12511,6 +12830,12 @@ class $$OrdersTableTableManager extends RootTableManager<
             saleType: saleType,
             discount: discount,
             shippingFee: shippingFee,
+            taxAmount: taxAmount,
+            gstAmount: gstAmount,
+            vatAmount: vatAmount,
+            gstRate: gstRate,
+            vatRate: vatRate,
+            taxInclusive: taxInclusive,
             shippingAddress: shippingAddress,
             channel: channel,
             notes: notes,

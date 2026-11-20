@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/core/utils/tax.dart';
+import 'package:a2_stocks/core/utils/tax_text.dart';
 import 'package:a2_stocks/core/utils/whatsapp.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
@@ -301,6 +303,8 @@ class OrderDetailScreen extends ConsumerWidget {
                         '- ${formatAmount(order.totalDiscount)}'),
                   if (order.shippingFee > 0.005)
                     _amountRow(context.l10n.orderDetailDelivery, formatAmount(order.shippingFee)),
+                  for (final MapEntry<String, double> line in taxLabels(context.l10n, TaxResult(gst: order.gstAmount, vat: order.vatAmount, gstRate: order.gstRate, vatRate: order.vatRate, inclusive: order.taxInclusive)))
+                    _amountRow(line.key, formatAmount(line.value)),
                   _amountRow(context.l10n.orderReceiptCardTotal, formatAmount(total), bold: true),
                   if (!cancelled) ...<Widget>[
                     if (returned > 0.005) _amountRow(context.l10n.orderDetailReturnedGoods, '- ${formatAmount(returned)}'),
@@ -410,6 +414,7 @@ class OrderDetailScreen extends ConsumerWidget {
               walkInCustomerId: ref.watch(businessProvider).walkInCustomerId,
               shopPhone: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).phone,
               logoUrl: (ref.watch(shopInfoProvider).valueOrNull ?? const ShopInfo()).logoUrl,
+              taxNumber: ref.watch(businessProvider).taxNumber,
             ),
             phone: _phoneFor(ref, order),
           ),

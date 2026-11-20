@@ -9,6 +9,8 @@ import 'package:a2_stocks/providers/data_mode.dart';
 import 'package:a2_stocks/online/online_providers.dart';
 import 'package:a2_stocks/online/online_repositories.dart';
 import 'package:a2_stocks/core/constants/storage_keys.dart';
+import 'package:a2_stocks/core/utils/tax.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
 import 'package:a2_stocks/models/activity_log_model.dart';
 import 'package:a2_stocks/models/customer_model.dart';
@@ -134,7 +136,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       }
     }
 
-    final OrderModel order = OrderModel(
+    final OrderModel untaxed = OrderModel(
       orderNo: _newOrderNo(orderDate),
       customerId: customer.id,
       customerName: customer.name,
@@ -145,6 +147,11 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       discount: orderDiscount,
       notes: notes,
       statusHistory: <OrderStatusEntry>[_entry(OrderStatus.pending)],
+    );
+    // The tax of this business at this moment, kept on the order (the server works it out again and has
+    // the final say, by the same rule).
+    final OrderModel order = untaxed.withTax(
+      computeTax(untaxed.subtotal - orderDiscount, TaxSettings.of(ref.read(businessProvider))),
     );
     if (orderDiscount < 0 || orderDiscount > order.subtotal + 0.005) {
       return reportFailure(ValidationException(

@@ -1,4 +1,5 @@
 import 'package:a2_stocks/models/syncable_model.dart';
+import 'package:a2_stocks/core/utils/tax.dart';
 import 'package:uuid/uuid.dart';
 
 double _round2(double value) => (value * 100).round() / 100;
@@ -175,6 +176,12 @@ class OrderModel implements SyncableModel {
     this.discount = 0,
     this.shippingFee = 0,
     this.shippingAddress = '',
+    this.taxAmount = 0,
+    this.gstAmount = 0,
+    this.vatAmount = 0,
+    this.gstRate = 0,
+    this.vatRate = 0,
+    this.taxInclusive = false,
     this.channel = 'admin',
     this.notes = '',
     List<OrderStatusEntry>? statusHistory,
@@ -209,6 +216,17 @@ class OrderModel implements SyncableModel {
   /// Who to deliver to and where (online-store orders), as text.
   final String shippingAddress;
 
+  /// Tax charged on this order (GST + VAT) and the rates it was charged at; 0 when tax was off. Kept on the
+  /// order, so a later change of rate never changes it.
+  final double taxAmount;
+  final double gstAmount;
+  final double vatAmount;
+  final double gstRate;
+  final double vatRate;
+
+  /// true: the prices already contained the tax, so [totalAmount] does not add it again.
+  final bool taxInclusive;
+
   /// Where the order came from: 'admin', 'pos' or 'web' (the online store).
   final String channel;
   final String notes;
@@ -229,8 +247,34 @@ class OrderModel implements SyncableModel {
 
   double get totalAmount {
     final double net = subtotal - discount;
-    return _round2((net > 0 ? net : 0) + shippingFee);
+    return _round2((net > 0 ? net : 0) + (taxInclusive ? 0 : taxAmount) + shippingFee);
   }
+
+  /// The same order with the tax worked out for it (see `computeTax`).
+  OrderModel withTax(TaxResult tax) => OrderModel(
+        id: id,
+        orderNo: orderNo,
+        customerId: customerId,
+        customerName: customerName,
+        orderDate: orderDate,
+        status: status,
+        saleType: saleType,
+        items: items,
+        discount: discount,
+        shippingFee: shippingFee,
+        shippingAddress: shippingAddress,
+        taxAmount: tax.total,
+        gstAmount: tax.gst,
+        vatAmount: tax.vat,
+        gstRate: tax.gstRate,
+        vatRate: tax.vatRate,
+        taxInclusive: tax.inclusive,
+        channel: channel,
+        notes: notes,
+        statusHistory: statusHistory,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+      );
 
   /// Line discounts plus the order discount.
   double get totalDiscount {
@@ -256,6 +300,12 @@ class OrderModel implements SyncableModel {
       'discount': discount,
       'shippingFee': shippingFee,
       'shippingAddress': shippingAddress,
+      'taxAmount': taxAmount,
+      'gstAmount': gstAmount,
+      'vatAmount': vatAmount,
+      'gstRate': gstRate,
+      'vatRate': vatRate,
+      'taxInclusive': taxInclusive,
       'channel': channel,
       'notes': notes,
       'statusHistory':
@@ -286,6 +336,12 @@ class OrderModel implements SyncableModel {
       discount: (map['discount'] as num?)?.toDouble() ?? 0,
       shippingFee: (map['shippingFee'] as num?)?.toDouble() ?? 0,
       shippingAddress: map['shippingAddress'] as String? ?? '',
+      taxAmount: (map['taxAmount'] as num?)?.toDouble() ?? 0,
+      gstAmount: (map['gstAmount'] as num?)?.toDouble() ?? 0,
+      vatAmount: (map['vatAmount'] as num?)?.toDouble() ?? 0,
+      gstRate: (map['gstRate'] as num?)?.toDouble() ?? 0,
+      vatRate: (map['vatRate'] as num?)?.toDouble() ?? 0,
+      taxInclusive: map['taxInclusive'] == true,
       channel: map['channel'] as String? ?? 'admin',
       notes: map['notes'] as String? ?? '',
       statusHistory: rawHistory
@@ -316,6 +372,12 @@ class OrderModel implements SyncableModel {
       discount: discount,
       shippingFee: shippingFee,
       shippingAddress: shippingAddress,
+      taxAmount: taxAmount,
+      gstAmount: gstAmount,
+      vatAmount: vatAmount,
+      gstRate: gstRate,
+      vatRate: vatRate,
+      taxInclusive: taxInclusive,
       channel: channel,
       notes: notes ?? this.notes,
       statusHistory: statusHistory ?? this.statusHistory,

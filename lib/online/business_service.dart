@@ -13,11 +13,25 @@ class BusinessService {
   /// Admin only (the server refuses anyone else). Amounts already recorded are
   /// not converted when the currency changes. Returns the business as the server
   /// now describes it.
-  Future<BusinessInfo?> update({String? currency, String? brandColor, bool? usesRegister}) async {
+  Future<BusinessInfo?> update({
+    String? currency,
+    String? brandColor,
+    bool? usesRegister,
+    bool? taxEnabled,
+    double? gstRate,
+    double? vatRate,
+    bool? pricesIncludeTax,
+    String? taxNumber,
+  }) async {
     final ApiResponse response = await _api.put('/v1/business', body: <String, dynamic>{
       if (currency != null) 'currency': currency,
       if (brandColor != null) 'brandColor': brandColor,
       if (usesRegister != null) 'usesRegister': usesRegister,
+      if (taxEnabled != null) 'taxEnabled': taxEnabled,
+      if (gstRate != null) 'gstRate': gstRate,
+      if (vatRate != null) 'vatRate': vatRate,
+      if (pricesIncludeTax != null) 'pricesIncludeTax': pricesIncludeTax,
+      if (taxNumber != null) 'taxNumber': taxNumber,
     });
     return BusinessInfo.tryFromMap(response.asMap);
   }

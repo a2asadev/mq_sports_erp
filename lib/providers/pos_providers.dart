@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/core/utils/tax.dart';
 import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/order_model.dart';
@@ -113,7 +114,14 @@ class PosCart {
   /// The order discount never takes the total below zero.
   double get effectiveOrderDiscount => orderDiscount > subtotal ? subtotal : orderDiscount;
 
+  /// The goods after discounts, before any tax.
   double get total => _round2(subtotal - effectiveOrderDiscount);
+
+  /// The tax of the business on this sale (see `computeTax`).
+  TaxResult taxFor(TaxSettings settings) => computeTax(total, settings);
+
+  /// What the customer pays: the goods, plus the tax when it is added on top (not when the prices contain it).
+  double payable(TaxSettings settings) => _round2(total + taxFor(settings).added);
 
   int quantityOf(String variantId) =>
       lines.where((PosLine l) => l.variantId == variantId).fold<int>(0, (int s, PosLine l) => s + l.quantity);

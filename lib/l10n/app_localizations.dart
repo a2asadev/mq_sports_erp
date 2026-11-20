@@ -7939,6 +7939,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The first day is after the last day.'**
   String get apiErrorReportsTheFirstDayIsAfterTheLastDay;
+
+  /// Goods and services tax: the name on receipts.
+  ///
+  /// In en, this message translates to:
+  /// **'GST'**
+  String get taxNameGst;
+
+  /// Value added tax: the name on receipts.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT'**
+  String get taxNameVat;
+
+  /// A tax line: the tax added on top of the price.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} {rate}%'**
+  String taxLine(String name, String rate);
+
+  /// A tax line: the price already contains this tax.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes {name} {rate}%'**
+  String taxLineIncluded(String name, String rate);
+
+  /// No description provided for @receiptTaxNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax no. {number}'**
+  String receiptTaxNumber(String number);
+
+  /// No description provided for @taxSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax'**
+  String get taxSettingsTitle;
+
+  /// No description provided for @taxSettingsSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Charge tax on sales'**
+  String get taxSettingsSwitch;
+
+  /// No description provided for @taxSettingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'GST and VAT are charged on the goods after discounts, never on the delivery fee. If you charge both, both apply to the same price. Leave a rate at 0 if you do not charge it.'**
+  String get taxSettingsHint;
+
+  /// No description provided for @taxGstRate.
+  ///
+  /// In en, this message translates to:
+  /// **'GST rate (%)'**
+  String get taxGstRate;
+
+  /// No description provided for @taxVatRate.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT rate (%)'**
+  String get taxVatRate;
+
+  /// No description provided for @taxIncludesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Do your shelf prices already include tax?'**
+  String get taxIncludesTitle;
+
+  /// No description provided for @taxIncludesYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, the tax is inside the price'**
+  String get taxIncludesYes;
+
+  /// No description provided for @taxIncludesNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No, add the tax on top'**
+  String get taxIncludesNo;
+
+  /// No description provided for @taxNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax registration number (printed on receipts)'**
+  String get taxNumberLabel;
+
+  /// No description provided for @taxSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save tax settings'**
+  String get taxSave;
+
+  /// No description provided for @taxSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax settings saved.'**
+  String get taxSaved;
+
+  /// No description provided for @taxNeedsRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a GST or VAT rate above 0.'**
+  String get taxNeedsRate;
+
+  /// No description provided for @taxRateInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'A rate is a number from 0 to 100.'**
+  String get taxRateInvalid;
+
+  /// No description provided for @taxAdminOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only an admin can change the tax settings.'**
+  String get taxAdminOnly;
 }
 
 class _AppLocalizationsDelegate

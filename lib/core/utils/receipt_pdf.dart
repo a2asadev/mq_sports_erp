@@ -89,6 +89,11 @@ Future<Uint8List> buildReceiptPdf(
               style: const pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold),
             ),
           ),
+          if (r.taxNumber.isNotEmpty)
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 2),
+              child: pw.Center(child: pw.Text(L10n.current.receiptTaxNumber(r.taxNumber), style: base)),
+            ),
           if (r.shopPhone.isNotEmpty)
             pw.Padding(
               padding: const pw.EdgeInsets.only(top: 3),
@@ -150,6 +155,7 @@ Future<Uint8List> buildReceiptPdf(
           solid(),
           kv(L10n.current.receiptSubTotal, ReceiptData.money(r.subtotal)),
           if (r.discount > 0.005) kv(L10n.current.receiptDiscount2, '-${ReceiptData.money(r.discount)}'),
+          for (final ReceiptTaxLine t in r.taxLines) kv(t.label, ReceiptData.money(t.amount)),
           if (r.shippingFee > 0.005) kv(L10n.current.receiptDelivery, ReceiptData.money(r.shippingFee)),
           solid(),
           for (final ReceiptPayment p in r.payments)
