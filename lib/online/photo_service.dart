@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/product_image.dart';
 import 'package:a2_stocks/online/api_client.dart';
 
@@ -61,14 +62,14 @@ class PhotoRules {
   /// Returns the photo, or throws a [ValidationException] saying what is wrong.
   static PickedPhoto check(String name, Uint8List bytes) {
     if (bytes.isEmpty) {
-      throw const ValidationException('That file is empty.');
+      throw ValidationException(L10n.current.photoServiceThatFileIsEmpty);
     }
     if (bytes.length > maxBytes) {
-      throw const ValidationException('That photo is bigger than 10 MB. Please choose a smaller one.');
+      throw ValidationException(L10n.current.photoServiceThatPhotoIsBigger);
     }
     final String? type = contentTypeOf(bytes);
     if (type == null) {
-      throw const ValidationException('Only JPEG, PNG or WebP photos can be used.');
+      throw ValidationException(L10n.current.photoServiceOnlyJpegPngOr);
     }
     return PickedPhoto(bytes: bytes, contentType: type, name: name);
   }
@@ -104,7 +105,7 @@ class PhotoService {
   static Future<PickedPhoto?> _pickFromDevice() async {
     final PlatformFile? file = await FilePicker.pickFile(
       type: FileType.image,
-      dialogTitle: 'Choose a photo',
+      dialogTitle: L10n.current.photoServiceChooseAPhoto,
     );
     if (file == null) {
       return null;
@@ -182,8 +183,8 @@ class PhotoService {
       return await call();
     } on ValidationException catch (error) {
       if (error.message.toLowerCase().contains('not found')) {
-        throw const ValidationException(
-          'This item has not reached the server yet. Wait for it to sync, then add the photo.',
+        throw ValidationException(
+          L10n.current.photoServiceThisItemHasNot,
         );
       }
       rethrow;
@@ -193,7 +194,7 @@ class PhotoService {
   Future<void> _putToStorage(Map<String, dynamic> link, PickedPhoto photo) async {
     final String? url = link['uploadUrl'] as String?;
     if (url == null) {
-      throw const RemoteSyncException('The server did not give an upload link.');
+      throw RemoteSyncException(L10n.current.photoServiceTheServerDidNot);
     }
     try {
       // The file length is set by the HTTP client from the bytes; the link was
@@ -202,12 +203,12 @@ class PhotoService {
           .put(Uri.parse(url), headers: <String, String>{'Content-Type': photo.contentType}, body: photo.bytes)
           .timeout(const Duration(minutes: 2));
       if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw RemoteSyncException('The photo could not be uploaded (${response.statusCode}). Please try again.');
+        throw RemoteSyncException(L10n.current.photoServiceThePhotoCouldNot2(response.statusCode));
       }
     } on AppException {
       rethrow;
     } catch (_) {
-      throw const RemoteSyncException('The photo could not be uploaded. Check your connection and try again.');
+      throw RemoteSyncException(L10n.current.photoServiceThePhotoCouldNot);
     }
   }
 }

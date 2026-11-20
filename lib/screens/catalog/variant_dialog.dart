@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:a2_stocks/core/utils/price_warnings.dart';
 import 'package:a2_stocks/core/utils/sku_generator.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/variant_model.dart';
 
 /// Opens the variant editor. Returns the saved variant, or null when the
@@ -116,7 +117,7 @@ class _VariantDialogState extends State<_VariantDialog> {
   String? _validatePrice(String? value) {
     final double? parsed = double.tryParse((value ?? '').trim());
     if (parsed == null || parsed < 0) {
-      return 'Enter a valid price.';
+      return context.l10n.variantEnterAValidPrice;
     }
     return null;
   }
@@ -134,7 +135,7 @@ class _VariantDialogState extends State<_VariantDialog> {
     );
     setState(() {
       if (sku.isEmpty) {
-        _skuHelper = 'Enter the product name or an attribute value first.';
+        _skuHelper = context.l10n.variantEnterTheProductName;
       } else {
         _skuController.text = sku;
         _skuHelper = null;
@@ -202,7 +203,7 @@ class _VariantDialogState extends State<_VariantDialog> {
     );
 
     return AlertDialog(
-      title: Text(widget.variant == null ? 'Add variant' : 'Variant'),
+      title: Text(widget.variant == null ? context.l10n.productFormAddVariant : context.l10n.variantVariant),
       content: SizedBox(
         width: 440,
         child: SingleChildScrollView(
@@ -216,38 +217,38 @@ class _VariantDialogState extends State<_VariantDialog> {
                   controller: _skuController,
                   enabled: !readOnly,
                   decoration: InputDecoration(
-                    labelText: 'SKU',
+                    labelText: context.l10n.variantSku,
                     helperText: _skuHelper,
                     suffixIcon: readOnly
                         ? null
                         : IconButton(
-                            tooltip: 'Auto-create SKU',
+                            tooltip: context.l10n.variantAutoCreateSku,
                             icon: const Icon(Icons.auto_fix_high),
                             onPressed: _autoCreateSku,
                           ),
                   ),
                   validator: (String? value) =>
                       (value == null || value.trim().isEmpty)
-                          ? 'SKU is required.'
+                          ? context.l10n.variantSkuIsRequired
                           : null,
                 ),
                 TextFormField(
                   controller: _nameController,
                   enabled: !readOnly,
-                  decoration: const InputDecoration(
-                      labelText: 'Variant name (optional)'),
+                  decoration: InputDecoration(
+                      labelText: context.l10n.variantVariantNameOptional),
                 ),
                 TextFormField(
                   controller: _barcodeController,
                   enabled: !readOnly,
                   decoration:
-                      const InputDecoration(labelText: 'Barcode (optional)'),
+                      InputDecoration(labelText: context.l10n.variantBarcodeOptional),
                 ),
                 const SizedBox(height: 8),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Wholesale variant'),
-                  subtitle: const Text('Adds a separate wholesale price'),
+                  title: Text(context.l10n.variantWholesaleVariant),
+                  subtitle: Text(context.l10n.variantAddsASeparateWholesale),
                   value: _isWholesale,
                   onChanged: readOnly
                       ? null
@@ -258,7 +259,7 @@ class _VariantDialogState extends State<_VariantDialog> {
                   children: <Widget>[
                     _priceField(
                       controller: _costController,
-                      label: 'Cost price',
+                      label: context.l10n.variantCostPrice,
                       readOnly: readOnly,
                       validator: _validatePrice,
                     ),
@@ -266,7 +267,7 @@ class _VariantDialogState extends State<_VariantDialog> {
                       const SizedBox(width: 12),
                       _priceField(
                         controller: _wholesaleController,
-                        label: 'Wholesale price',
+                        label: context.l10n.variantWholesalePrice,
                         readOnly: readOnly,
                         validator: _validatePrice,
                       ),
@@ -274,7 +275,7 @@ class _VariantDialogState extends State<_VariantDialog> {
                     const SizedBox(width: 12),
                     _priceField(
                       controller: _saleController,
-                      label: _isWholesale ? 'Retail price' : 'Sale price',
+                      label: _isWholesale ? context.l10n.variantRetailPrice : context.l10n.variantSalePrice,
                       readOnly: readOnly,
                       validator: _validatePrice,
                     ),
@@ -303,20 +304,19 @@ class _VariantDialogState extends State<_VariantDialog> {
                   controller: _alertController,
                   enabled: !readOnly,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Low-stock alert level',
-                    helperText: 'Flag this variant when stock is at or below '
-                        'this number. 0 = no alert.',
+                  decoration: InputDecoration(
+                    labelText: context.l10n.variantLowStockAlertLevel,
+                    helperText: context.l10n.variantFlagThisVariantWhen,
                   ),
                   validator: (String? value) {
                     final int? parsed = int.tryParse((value ?? '').trim());
                     return (parsed == null || parsed < 0)
-                        ? 'Enter 0 or a whole number.'
+                        ? context.l10n.variantEnter0OrA
                         : null;
                   },
                 ),
                 const SizedBox(height: 16),
-                Text('Attributes', style: theme.textTheme.titleSmall),
+                Text(context.l10n.variantAttributes, style: theme.textTheme.titleSmall),
                 for (int i = 0; i < _attributes.length; i++)
                   Row(
                     children: <Widget>[
@@ -324,8 +324,8 @@ class _VariantDialogState extends State<_VariantDialog> {
                         child: TextField(
                           controller: _attributes[i].keyController,
                           enabled: !readOnly,
-                          decoration: const InputDecoration(
-                              labelText: 'Name', hintText: 'Size'),
+                          decoration: InputDecoration(
+                              labelText: context.l10n.categoryFormName, hintText: context.l10n.variantSize),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -333,13 +333,13 @@ class _VariantDialogState extends State<_VariantDialog> {
                         child: TextField(
                           controller: _attributes[i].valueController,
                           enabled: !readOnly,
-                          decoration: const InputDecoration(
-                              labelText: 'Value', hintText: 'Small'),
+                          decoration: InputDecoration(
+                              labelText: context.l10n.variantValue, hintText: context.l10n.variantSmall),
                         ),
                       ),
                       if (!readOnly)
                         IconButton(
-                          tooltip: 'Remove attribute',
+                          tooltip: context.l10n.variantRemoveAttribute,
                           icon: const Icon(Icons.close),
                           onPressed: () => setState(() {
                             _attributes.removeAt(i).dispose();
@@ -354,12 +354,12 @@ class _VariantDialogState extends State<_VariantDialog> {
                       onPressed: () =>
                           setState(() => _attributes.add(_AttributeRow('', ''))),
                       icon: const Icon(Icons.add),
-                      label: const Text('Add attribute'),
+                      label: Text(context.l10n.variantAddAttribute),
                     ),
                   ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Active'),
+                  title: Text(context.l10n.categoryFormActive),
                   value: _isActive,
                   onChanged:
                       readOnly ? null : (bool v) => setState(() => _isActive = v),
@@ -372,10 +372,10 @@ class _VariantDialogState extends State<_VariantDialog> {
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(readOnly ? 'Close' : 'Cancel'),
+          child: Text(readOnly ? context.l10n.starterPackClose : context.l10n.categoriesCancel),
         ),
         if (!readOnly)
-          FilledButton(onPressed: _save, child: const Text('Save variant')),
+          FilledButton(onPressed: _save, child: Text(context.l10n.variantSaveVariant)),
       ],
     );
   }

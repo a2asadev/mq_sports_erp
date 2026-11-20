@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/activity_log_model.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
@@ -196,20 +198,20 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                 children: <Widget>[
                   Text(log.summary, style: theme.textTheme.bodyLarge),
                   const SizedBox(height: 12),
-                  _detail('Time', _time(log)),
-                  _detail('User', <String>[
+                  _detail(context.l10n.activityLogsTime, _time(log)),
+                  _detail(context.l10n.activityLogsUser, <String>[
                     if (log.userName.isNotEmpty) log.userName,
                     if (log.userRole.isNotEmpty) '(${log.userRole})',
                   ].join(' ')),
-                  _detail('Level / type', '${log.level.label} · ${log.kind.label}'),
-                  _detail('Module', log.module),
-                  _detail('Record', log.entityLabel),
-                  _detail('Record id', log.entityId),
-                  _detail('Group', log.groupId),
-                  _detail('Log id', '${_shortId(log)}  ·  ${log.id}'),
+                  _detail(context.l10n.activityLogsLevelType, '${log.level.label} · ${log.kind.label}'),
+                  _detail(context.l10n.activityLogsModule, log.module),
+                  _detail(context.l10n.activityLogsRecord, log.entityLabel),
+                  _detail(context.l10n.activityLogsRecordId, log.entityId),
+                  _detail(context.l10n.activityLogsGroup, log.groupId),
+                  _detail(context.l10n.activityLogsLogId, '${_shortId(log)}  ·  ${log.id}'),
                   if (log.changes.isNotEmpty) ...<Widget>[
                     const Divider(height: 24),
-                    Text('Changes', style: theme.textTheme.titleSmall),
+                    Text(context.l10n.activityLogsChanges, style: theme.textTheme.titleSmall),
                     const SizedBox(height: 4),
                     for (final LogFieldChange change in log.changes)
                       Padding(
@@ -219,9 +221,9 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                             text: '${change.field}: ',
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          TextSpan(text: change.from ?? '(none)'),
+                          TextSpan(text: change.from ?? context.l10n.activityLogsNone),
                           const TextSpan(text: '  →  '),
-                          TextSpan(text: change.to ?? '(removed)'),
+                          TextSpan(text: change.to ?? context.l10n.activityLogsRemoved),
                         ])),
                       ),
                   ],
@@ -234,11 +236,11 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
               onPressed: () {
                 Clipboard.setData(ClipboardData(text: _asText(log)));
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Log copied.')),
+                  SnackBar(content: Text(context.l10n.activityLogsLogCopied)),
                 );
               },
               icon: const Icon(Icons.copy_outlined),
-              label: const Text('Copy'),
+              label: Text(context.l10n.activityLogsCopy),
             ),
             if (log.groupId.isNotEmpty)
               TextButton.icon(
@@ -247,11 +249,11 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                   setState(() => _group = log.groupId);
                 },
                 icon: const Icon(Icons.account_tree_outlined),
-                label: const Text('Show linked'),
+                label: Text(context.l10n.activityLogsShowLinked),
               ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Close'),
+              child: Text(context.l10n.starterPackClose),
             ),
           ],
         );
@@ -282,8 +284,8 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
     final StringBuffer out = StringBuffer()
       ..writeln('${_time(log)}  [${log.level.label}] ${log.action}')
       ..writeln(log.summary)
-      ..writeln('User: ${log.userName} ${log.userRole}')
-      ..writeln('Module: ${log.module}  Record: ${log.entityLabel} (${log.entityId})');
+      ..writeln(context.l10n.activityLogsUser2(log.userName, log.userRole))
+      ..writeln(context.l10n.activityLogsModuleRecord(log.module, log.entityLabel, log.entityId));
     for (final LogFieldChange change in log.changes) {
       out.writeln('  ${change.field}: ${change.from ?? '(none)'} -> ${change.to ?? '(removed)'}');
     }
@@ -296,8 +298,8 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
     final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
     if (user == null || !user.isActive || user.role != UserRole.admin) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Activity Logs')),
-        body: const Center(child: Text('Only admins can view the activity logs.')),
+        appBar: AppBar(title: Text(context.l10n.activityLogsActivityLogs)),
+        body: Center(child: Text(context.l10n.activityLogsOnlyAdminsCanView)),
       );
     }
 
@@ -336,10 +338,10 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
             child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search summary, record, user, field or #id…',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: context.l10n.activityLogsSearchSummaryRecordUser,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
                 isDense: true,
               ),
               onChanged: (String value) => setState(() => _query = value),
@@ -353,7 +355,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                    label: const Text('All levels'),
+                    label: Text(context.l10n.activityLogsAllLevels),
                     selected: _level == null,
                     onSelected: (bool _) => setState(() => _level = null),
                   ),
@@ -369,21 +371,21 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                     ),
                   ),
                 _dropdown<LogKind>(
-                  hint: 'Type',
+                  hint: context.l10n.activityLogsType,
                   value: _kind,
                   items: LogKind.values,
                   label: (LogKind k) => k.label,
                   onChanged: (LogKind? v) => setState(() => _kind = v),
                 ),
                 _dropdown<String>(
-                  hint: 'Module',
+                  hint: context.l10n.activityLogsModule,
                   value: _module,
                   items: modules,
                   label: (String m) => m,
                   onChanged: (String? v) => setState(() => _module = v),
                 ),
                 _dropdown<String>(
-                  hint: 'User',
+                  hint: context.l10n.activityLogsUser,
                   value: _user,
                   items: users,
                   label: (String u) => u,
@@ -394,7 +396,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                   child: ActionChip(
                     avatar: const Icon(Icons.date_range, size: 18),
                     label: Text(_range == null
-                        ? 'Date'
+                        ? context.l10n.ledgerEntryDate
                         : '${formatDate(_range!.start)} – ${formatDate(_range!.end)}'),
                     onPressed: _pickRange,
                   ),
@@ -404,12 +406,12 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                     padding: const EdgeInsets.only(right: 8),
                     child: InputChip(
                       avatar: const Icon(Icons.account_tree_outlined, size: 18),
-                      label: const Text('Linked entries'),
+                      label: Text(context.l10n.activityLogsLinkedEntries),
                       onDeleted: () => setState(() => _group = null),
                     ),
                   ),
                 if (_hasFilters)
-                  TextButton(onPressed: _clearFilters, child: const Text('Clear')),
+                  TextButton(onPressed: _clearFilters, child: Text(context.l10n.activityLogsClear)),
               ],
             ),
           ),
@@ -419,9 +421,9 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    '${shown.length} of ${data.logs.length} log(s)'
-                    '${errors > 0 ? ' · $errors error(s)' : ''}'
-                    '${data.pendingCount > 0 ? ' · ${data.pendingCount} not uploaded yet' : ''}',
+                    '${context.l10n.activityLogsCount(shown.length, data.logs.length)}'
+                    '${errors > 0 ? context.l10n.activityLogsErrors(errors) : ''}'
+                    '${data.pendingCount > 0 ? context.l10n.activityLogsNotUploaded(data.pendingCount) : ''}',
                     style: theme.textTheme.bodySmall,
                   ),
                 ),
@@ -432,8 +434,8 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
             child: shown.isEmpty
                 ? Center(
                     child: Text(data.logs.isEmpty
-                        ? 'No logs on this device yet.'
-                        : 'No logs match the filters.'),
+                        ? context.l10n.activityLogsNoLogsOnThis
+                        : context.l10n.activityLogsNoLogsMatchThe),
                   )
                 : _logList(shown, data.logs),
           ),
@@ -443,7 +445,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Activity Logs'),
+        title: Text(context.l10n.activityLogsActivityLogs),
         actions: <Widget>[
           if (data?.isLoadingCloud ?? false)
             const Padding(
@@ -460,7 +462,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                   ? null
                   : () => ref.read(activityLogsProvider.notifier).loadFromCloud(),
               icon: const Icon(Icons.cloud_download_outlined),
-              label: Text(data?.cloudLoaded ?? false ? 'Refresh cloud' : 'Load from cloud'),
+              label: Text(data?.cloudLoaded ?? false ? context.l10n.activityLogsRefreshCloud : context.l10n.activityLogsLoadFromCloud),
             ),
         ],
       ),
@@ -532,7 +534,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                           if (log.entityLabel.isNotEmpty) _Tag(text: log.entityLabel, color: AppColors.textMuted),
                           if (related > 1)
                             _Tag(
-                              text: '$related linked',
+                              text: context.l10n.activityLogsLinked(related),
                               color: AppColors.violet,
                               onTap: () => setState(() => _group = log.groupId),
                             ),
@@ -540,7 +542,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
                             <String>[
                               _time(log),
                               if (log.userName.isNotEmpty) log.userName,
-                              if (log.changes.isNotEmpty) '${log.changes.length} change(s)',
+                              if (log.changes.isNotEmpty) context.l10n.activityLogsChangeS(log.changes.length),
                             ].join(' · '),
                             style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
                           ),
@@ -577,7 +579,7 @@ class _ActivityLogsScreenState extends ConsumerState<ActivityLogsScreen> {
         tooltip: hint,
         onSelected: (int index) => onChanged(index < 0 ? null : items[index]),
         itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-          PopupMenuItem<int>(value: -1, child: Text('All ${hint.toLowerCase()}s')),
+          PopupMenuItem<int>(value: -1, child: Text(context.l10n.activityLogsAllS(hint.toLowerCase()))),
           for (int i = 0; i < items.length; i++)
             PopupMenuItem<int>(value: i, child: Text(label(items[i]))),
         ],

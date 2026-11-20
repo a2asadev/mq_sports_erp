@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/payment_method.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
@@ -42,9 +44,8 @@ final Provider<bool> canCancelOrdersProvider = Provider<bool>((Ref ref) {
       (user.role == UserRole.admin || user.role == UserRole.manager);
 });
 
-const String _noPermissionMessage = 'You are not allowed to change orders.';
-const String _noCancelPermissionMessage =
-    'Only admins and managers can cancel orders.';
+String get _noPermissionMessage => L10n.current.salesYouAreNotAllowed;
+String get _noCancelPermissionMessage => L10n.current.salesOnlyAdminsAndManagers;
 
 final Provider<OrderOperations> orderRepositoryProvider =
     Provider<OrderOperations>((Ref ref) {
@@ -100,26 +101,26 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
     List<PaymentLine> payments = const <PaymentLine>[],
   }) async {
     if (!ref.read(canCreateOrdersProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     if (!customer.isActive) {
-      return reportFailure(const ValidationException('This customer is inactive.'));
+      return reportFailure(ValidationException(L10n.current.salesThisCustomerIsInactive));
     }
     if (items.isEmpty) {
-      return reportFailure(const ValidationException('Add at least one item.'));
+      return reportFailure(ValidationException(L10n.current.purchaseFormAddAtLeastOne));
     }
     for (final OrderItem item in items) {
       if (item.quantity <= 0) {
-        return reportFailure(const ValidationException(
-            'Every item needs a quantity of at least 1.'));
+        return reportFailure(ValidationException(
+            L10n.current.purchasingEveryItemNeedsA));
       }
       if (item.unitPrice < 0) {
         return reportFailure(
-            const ValidationException('A selling price cannot be negative.'));
+            ValidationException(L10n.current.salesASellingPriceCannot));
       }
       if (item.discount < 0 || item.discount > item.grossAmount + 0.005) {
         return reportFailure(ValidationException(
-            'The discount on "${item.productName}" must be between 0 and the line amount.'));
+            L10n.current.salesTheDiscountOnMust(item.productName)));
       }
     }
 
@@ -127,7 +128,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
     final double paid = payments.isEmpty ? paidNow : PaymentLine.total(payments);
     for (final PaymentLine line in payments) {
       if (line.amount <= 0) {
-        return reportFailure(const ValidationException('Every payment must be more than zero.'));
+        return reportFailure(ValidationException(L10n.current.salesEveryPaymentMustBe));
       }
     }
 
@@ -144,12 +145,12 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       statusHistory: <OrderStatusEntry>[_entry(OrderStatus.pending)],
     );
     if (orderDiscount < 0 || orderDiscount > order.subtotal + 0.005) {
-      return reportFailure(const ValidationException(
-          'The order discount must be between 0 and the order subtotal.'));
+      return reportFailure(ValidationException(
+          L10n.current.salesTheOrderDiscountMust));
     }
     if (paid < 0 || paid > order.totalAmount + 0.005) {
-      return reportFailure(const ValidationException(
-          'The amount paid must be between 0 and the order total.'));
+      return reportFailure(ValidationException(
+          L10n.current.salesTheAmountPaidMust));
     }
 
     try {
@@ -163,11 +164,11 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
             .firstOrNull;
         if (product == null || variant == null) {
           return reportFailure(ValidationException(
-              '"${item.productName}" no longer exists in the catalog.'));
+              L10n.current.purchasingNoLongerExistsIn(item.productName)));
         }
         if (!product.isActive || !variant.isActive) {
           return reportFailure(ValidationException(
-              '"${item.productName} · ${item.variantLabel}" is inactive.'));
+              L10n.current.salesIsInactive(item.productName, item.variantLabel)));
         }
       }
 
@@ -188,8 +189,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
         final int wanted = requested[item.variantId] ?? 0;
         if (wanted > available) {
           return reportFailure(ValidationException(
-              'Not enough stock for "${item.productName} · ${item.variantLabel}": '
-              '$available available, $wanted requested.'));
+              L10n.current.salesNotEnoughStockFor(item.productName, item.variantLabel, available, wanted)));
         }
       }
 
@@ -203,9 +203,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
             customer.openingBalance + ledgerSum + order.totalAmount - paid;
         if (balanceAfter > customer.creditLimit + 0.005) {
           return reportFailure(ValidationException(
-              'This order would take ${customer.name} over the credit limit '
-              '(limit ${customer.creditLimit.toStringAsFixed(2)}, balance after '
-              '${balanceAfter.toStringAsFixed(2)}).'));
+              L10n.current.salesThisOrderWouldTake(customer.name, customer.creditLimit.toStringAsFixed(2), balanceAfter.toStringAsFixed(2))));
         }
       }
     } on AppException catch (e) {
@@ -220,12 +218,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       await _logAction(
         action: 'order_confirmed',
         order: order,
-        summary: 'Order ${order.orderNo} confirmed for ${order.customerName}: '
-            '${order.items.length} item(s), ${order.totalUnits} unit(s), '
-            '${order.saleType.label.toLowerCase()} sale, total '
-            '${order.totalAmount.toStringAsFixed(2)}, paid now '
-            '${paid.toStringAsFixed(2)}. Stock taken out and the customer '
-            'ledger charged.',
+        summary: L10n.current.salesOrderConfirmedForItem(order.orderNo, order.customerName, order.items.length, order.totalUnits, order.saleType.label.toLowerCase(), order.totalAmount.toStringAsFixed(2), paid.toStringAsFixed(2)),
       );
       // Stock, ledger and order lists reload from Hive.
       ref.read(syncTickProvider.notifier).increment();
@@ -241,16 +234,16 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
   /// Moves an order one step along the pipeline.
   Future<bool> advanceStatus(OrderModel order) async {
     if (!ref.read(canCreateOrdersProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final OrderModel? current = await _latest(order.id);
     if (current == null) {
-      return reportFailure(const ValidationException('This order no longer exists.'));
+      return reportFailure(ValidationException(L10n.current.orderDetailThisOrderNoLonger));
     }
     final OrderStatus? next = current.status.next;
     if (next == null) {
       return reportFailure(ValidationException(
-          'A ${current.status.label.toLowerCase()} order cannot change status.'));
+          L10n.current.salesAOrderCannotChange(current.status.label.toLowerCase())));
     }
     final OrderModel updated = current.copyWith(
       status: next,
@@ -263,8 +256,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
     await _logAction(
       action: 'order_status_changed',
       order: updated,
-      summary: 'Order ${updated.orderNo} moved from ${current.status.label} '
-          'to ${next.label}.',
+      summary: L10n.current.salesOrderMovedFromTo(updated.orderNo, current.status.label, next.label),
     );
     return true;
   }
@@ -291,15 +283,15 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
   Future<bool> cancelOrder(OrderModel order) async {
     if (!ref.read(canCancelOrdersProvider)) {
       return reportFailure(
-          const PermissionDeniedException(_noCancelPermissionMessage));
+          PermissionDeniedException(_noCancelPermissionMessage));
     }
     final OrderModel? current = await _latest(order.id);
     if (current == null) {
-      return reportFailure(const ValidationException('This order no longer exists.'));
+      return reportFailure(ValidationException(L10n.current.orderDetailThisOrderNoLonger));
     }
     if (current.status.isFinal) {
       return reportFailure(ValidationException(
-          'A ${current.status.label.toLowerCase()} order cannot be cancelled.'));
+          L10n.current.salesAOrderCannotBe(current.status.label.toLowerCase())));
     }
     final OrderModel cancelled = current.copyWith(
       status: OrderStatus.cancelled,
@@ -318,10 +310,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
         action: 'order_cancelled',
         order: cancelled,
         level: LogLevel.warning,
-        summary: 'Order ${cancelled.orderNo} cancelled (was '
-            '${current.status.label}): ${cancelled.totalUnits} unit(s) returned '
-            'to stock and the ${cancelled.totalAmount.toStringAsFixed(2)} '
-            'charge on ${cancelled.customerName}\'s ledger reversed.',
+        summary: L10n.current.salesOrderCancelledWasUnit(cancelled.orderNo, current.status.label, cancelled.totalUnits, cancelled.totalAmount.toStringAsFixed(2), cancelled.customerName),
       );
       ref.read(syncTickProvider.notifier).increment();
       return true;
@@ -343,21 +332,21 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
     String paymentRef = '',
   }) async {
     if (!ref.read(canCreateOrdersProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     if (order.status == OrderStatus.cancelled) {
       return reportFailure(
-          const ValidationException('A cancelled order cannot take payments.'));
+          ValidationException(L10n.current.salesACancelledOrderCannot));
     }
     if (amount <= 0) {
       return reportFailure(
-          const ValidationException('The amount must be greater than zero.'));
+          ValidationException(L10n.current.partiesTheAmountMustBe));
     }
     final double paid = ref.read(orderPaidProvider)[order.id] ?? 0;
     final double due = order.totalAmount - paid;
     if (amount > due + 0.005) {
       return reportFailure(ValidationException(
-          'The payment is more than the amount due (${due.toStringAsFixed(2)}).'));
+          L10n.current.purchasingThePaymentIsMore(due.toStringAsFixed(2))));
     }
     final LedgerModel entry = LedgerModel(
       partyType: PartyType.customer,
@@ -376,8 +365,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       await _logAction(
         action: 'order_payment',
         order: order,
-        summary: 'Payment of ${amount.toStringAsFixed(2)} recorded for order '
-            '${order.orderNo} (${order.customerName}).',
+        summary: L10n.current.salesPaymentOfRecordedFor(amount.toStringAsFixed(2), order.orderNo, order.customerName),
       );
       ref.read(syncTickProvider.notifier).increment();
       return true;

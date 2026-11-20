@@ -3,13 +3,9 @@ import 'package:uuid/uuid.dart';
 
 /// Payment state of a purchase, derived from what was paid so far.
 enum PurchaseStatus {
-  pending('Pending'),
-  partial('Partial'),
-  paid('Paid');
-
-  const PurchaseStatus(this.label);
-
-  final String label;
+  pending,
+  partial,
+  paid;
 }
 
 /// Pending when nothing was paid, Paid when the total is covered, otherwise

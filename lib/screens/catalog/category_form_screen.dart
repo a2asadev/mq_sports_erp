@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/online/photo_service.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -108,7 +109,7 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
     final String parentValue = _resolvedParent(options);
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? 'Edit category' : 'Add category')),
+      appBar: AppBar(title: Text(isEdit ? context.l10n.categoryFormEditCategory : context.l10n.categoriesAddCategory)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -125,7 +126,7 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
                         kind: PhotoKind.category,
                         entityId: widget.category!.id,
                         photoUrl: _photoUrl,
-                        title: 'Category photo',
+                        title: context.l10n.categoryFormCategoryPhoto,
                         enabled: !_isSubmitting,
                         onChanged: (String url) => _photoUrl = url,
                       )
@@ -137,27 +138,27 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
                       enabled: !_isSubmitting,
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Name',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.categoryFormName,
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (String? value) =>
                           (value == null || value.trim().isEmpty)
-                              ? 'Name is required.'
+                              ? context.l10n.categoryFormNameIsRequired
                               : null,
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       value: parentValue,
                       isExpanded: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Parent category',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.categoryFormParentCategory,
+                        border: const OutlineInputBorder(),
                       ),
                       items: <DropdownMenuItem<String>>[
-                        const DropdownMenuItem<String>(
+                        DropdownMenuItem<String>(
                           value: '',
-                          child: Text('None (top level)'),
+                          child: Text(context.l10n.categoryFormNoneTopLevel),
                         ),
                         ...options.map(
                           (MapEntry<String, String> option) =>
@@ -178,14 +179,14 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
                       controller: _descriptionController,
                       enabled: !_isSubmitting,
                       maxLines: 3,
-                      decoration: const InputDecoration(
-                        labelText: 'Description (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.categoryFormDescriptionOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 8),
                     SwitchListTile(
-                      title: const Text('Active'),
+                      title: Text(context.l10n.categoryFormActive),
                       value: _isActive,
                       onChanged: _isSubmitting
                           ? null
@@ -200,7 +201,7 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : Text(isEdit ? 'Save changes' : 'Create category'),
+                          : Text(isEdit ? context.l10n.categoryFormSaveChanges : context.l10n.categoryFormCreateCategory),
                     ),
                   ],
                 ),

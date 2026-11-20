@@ -2,13 +2,9 @@ import 'package:a2_stocks/models/syncable_model.dart';
 import 'package:uuid/uuid.dart';
 
 enum StockMovementType {
-  purchase('Purchase'),
-  sale('Sale'),
-  adjustment('Adjustment');
-
-  const StockMovementType(this.label);
-
-  final String label;
+  purchase,
+  sale,
+  adjustment;
 
   static StockMovementType fromName(String? name) {
     for (final StockMovementType type in StockMovementType.values) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/pos_holds.dart';
 import 'package:a2_stocks/providers/pos_providers.dart';
 
@@ -14,18 +15,18 @@ Future<HeldSale?> showHeldSalesDialog(BuildContext context) {
   );
 }
 
-String _ago(DateTime when) {
+String _ago(BuildContext context, DateTime when) {
   final Duration d = DateTime.now().difference(when);
   if (d.inMinutes < 1) {
-    return 'just now';
+    return context.l10n.heldSalesJustNow;
   }
   if (d.inMinutes < 60) {
-    return '${d.inMinutes} min ago';
+    return context.l10n.heldSalesMinAgo(d.inMinutes);
   }
   if (d.inHours < 24) {
-    return '${d.inHours} h ago';
+    return context.l10n.heldSalesHAgo(d.inHours);
   }
-  return '${d.inDays} d ago';
+  return context.l10n.heldSalesDAgo(d.inDays);
 }
 
 String _clock(DateTime when) {
@@ -51,8 +52,8 @@ class _HeldSalesDialog extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(20, 16, 8, 8),
               child: Row(
                 children: <Widget>[
-                  const Expanded(
-                    child: Text('Held sales', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                  Expanded(
+                    child: Text(context.l10n.heldSalesHeldSales, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
                   ),
                   IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close)),
                 ],
@@ -60,10 +61,10 @@ class _HeldSalesDialog extends ConsumerWidget {
             ),
             const Divider(),
             if (held.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(40),
+              Padding(
+                padding: const EdgeInsets.all(40),
                 child: Center(
-                  child: Text('No sales on hold.', style: TextStyle(color: AppColors.textMuted)),
+                  child: Text(context.l10n.heldSalesNoSalesOnHold, style: const TextStyle(color: AppColors.textMuted)),
                 ),
               )
             else
@@ -115,21 +116,21 @@ class _HeldTile extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  cart.customer?.name ?? 'Walk-in customer',
+                  cart.customer?.name ?? context.l10n.dashboardWalkInCustomer,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
               Text(
-                '${_clock(sale.heldAt)} · ${_ago(sale.heldAt)}',
+                '${_clock(sale.heldAt)} · ${_ago(context, sale.heldAt)}',
                 style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
               ),
             ],
           ),
           const SizedBox(height: 8),
           Text(
-            more > 0 ? '$names and $more more' : names,
+            more > 0 ? context.l10n.heldSalesAndMore(names, more) : names,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 12.5, color: AppColors.textMuted),
@@ -139,16 +140,16 @@ class _HeldTile extends StatelessWidget {
             children: <Widget>[
               Expanded(
                 child: Text(
-                  '${cart.units} item${cart.units == 1 ? '' : 's'} · ${formatMoney(cart.total)}',
+                  context.l10n.heldSalesItemsTotal(cart.units, formatMoney(cart.total)),
                   style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.navy),
                 ),
               ),
-              TextButton(onPressed: onDelete, child: const Text('Delete')),
+              TextButton(onPressed: onDelete, child: Text(context.l10n.categoriesDelete)),
               const SizedBox(width: 4),
               FilledButton(
                 onPressed: onResume,
                 style: FilledButton.styleFrom(backgroundColor: AppColors.navy),
-                child: const Text('Resume'),
+                child: Text(context.l10n.heldSalesResume),
               ),
             ],
           ),

@@ -1,0 +1,3176 @@
+{
+  "@@locale": "en",
+  "appTitle": "A2 Stocks",
+  "@appTitle": {
+    "description": "The product name. Also the window / task-switcher title."
+  },
+  "commonTryAgain": "Try again",
+  "commonSignOut": "Sign out",
+  "commonSomethingWentWrong": "Something went wrong.",
+  "authEmail": "Email",
+  "authPassword": "Password",
+  "authWelcomeBack": "Welcome back",
+  "authSignInToContinue": "Sign in to continue",
+  "authSignIn": "Sign in",
+  "authShowPassword": "Show password",
+  "authHidePassword": "Hide password",
+  "authEmailRequired": "Email is required.",
+  "authEmailInvalid": "Enter a valid email address.",
+  "authPasswordRequired": "Password is required.",
+  "authError": "Authentication error: {error}",
+  "@authError": {
+    "description": "Shown when the sign-in state itself cannot be read.",
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "accessNotRegistered": "Your account is not registered in A2 Stocks. Contact your administrator.",
+  "accessInactive": "Your account is inactive. Contact your administrator.",
+  "accessCouldNotVerify": "Your account could not be verified.",
+  "categoriesStatus": "Status",
+  "categoriesProducts": "Products",
+  "categoriesParent": "Parent",
+  "categoriesCategorySubcategory": "Category / Subcategory",
+  "categoriesDirectlyInInIts": "{directProducts} directly in {name}\n{productsInSubcategories} in its subcategories",
+  "@categoriesDirectlyInInIts": {
+    "placeholders": {
+      "directProducts": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      },
+      "productsInSubcategories": {
+        "type": "Object"
+      }
+    }
+  },
+  "categoriesSubcategories": "Subcategories",
+  "categoriesCategory": "Category",
+  "categoriesNoCategoriesMatch": "No categories match.",
+  "categoriesAddCategory": "Add category",
+  "categoriesStarterPacks": "Starter packs",
+  "categoriesCategories": "Categories",
+  "categoriesSearchCategories": "Search categories",
+  "categoriesWithoutProducts": "Without products",
+  "categoriesSubcategoriesInTotal": "Subcategories in total",
+  "categoriesMainCategories": "Main categories",
+  "categoriesStartFromATemplate": "Start from a template",
+  "categoriesStartFromAReady": "Start from a ready-made set for your kind of business, or add them one by one.",
+  "categoriesNoCategoriesYet": "No categories yet.",
+  "categoriesDelete": "Delete",
+  "categoriesEdit": "Edit",
+  "categoriesAddSubcategory": "Add subcategory",
+  "categoriesActions": "Actions",
+  "categoriesCancel": "Cancel",
+  "categoriesDelete2": "Delete \"{name}\"?",
+  "@categoriesDelete2": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "categoriesDeleteCategory": "Delete category",
+  "categoriesAddedCategories": "Added {created} categories{already}.",
+  "@categoriesAddedCategories": {
+    "placeholders": {
+      "created": {
+        "type": "Object"
+      },
+      "already": {
+        "type": "Object"
+      }
+    }
+  },
+  "categoryFormActive": "Active",
+  "categoryFormDescriptionOptional": "Description (optional)",
+  "categoryFormNoneTopLevel": "None (top level)",
+  "categoryFormParentCategory": "Parent category",
+  "categoryFormName": "Name",
+  "categoryFormCategoryPhoto": "Category photo",
+  "productsAddProduct": "Add product",
+  "productsInactive": "Inactive",
+  "productsSearchNameBrandSku": "Search name, brand, SKU or barcode",
+  "productsBrands": "Brands",
+  "productsVariants": "Variants",
+  "productsDeleteAndItsVariant": "Delete \"{name}\" and its {length, plural, =1{{length} variant} other{{length} variants}}?",
+  "@productsDeleteAndItsVariant": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "productsDeleteProduct": "Delete product",
+  "productFormAddAtLeastOne": "Add at least one variant.",
+  "productFormAddVariant": "Add variant",
+  "productFormVariants": "Variants ({length})",
+  "@productFormVariants": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "productFormBrandOptional": "Brand (optional)",
+  "productFormProductName": "Product name",
+  "productFormRemoveVariant": "Remove variant",
+  "starterPackPickTheKindOf": "Pick the kind of business you run and we will add a ready-made set of categories. You can rename, move or delete any of them afterwards.",
+  "starterPackStarterPacksNeedA": "{value}\nStarter packs need a connection to the server.",
+  "@starterPackStarterPacksNeedA": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "starterPackClose": "Close",
+  "starterPackBackToTheList": "Back to the list",
+  "variantSaveVariant": "Save variant",
+  "variantAddAttribute": "Add attribute",
+  "variantRemoveAttribute": "Remove attribute",
+  "variantSmall": "Small",
+  "variantValue": "Value",
+  "variantSize": "Size",
+  "variantAttributes": "Attributes",
+  "variantFlagThisVariantWhen": "Flag this variant when stock is at or below this number. 0 = no alert.",
+  "variantLowStockAlertLevel": "Low-stock alert level",
+  "variantWholesalePrice": "Wholesale price",
+  "variantCostPrice": "Cost price",
+  "variantAddsASeparateWholesale": "Adds a separate wholesale price",
+  "variantWholesaleVariant": "Wholesale variant",
+  "variantBarcodeOptional": "Barcode (optional)",
+  "variantVariantNameOptional": "Variant name (optional)",
+  "variantAutoCreateSku": "Auto-create SKU",
+  "variantSku": "SKU",
+  "dashboardTopCategories": "Top categories",
+  "dashboardOrderS": "{value, plural, =1{{value} order} other{{value} orders}}",
+  "@dashboardOrderS": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardTopCustomers": "Top customers",
+  "dashboardRecentSales": "Recent sales",
+  "dashboardViewAll": "View all",
+  "dashboardLowStock": "Low stock",
+  "dashboardTopSelling": "Top selling",
+  "dashboardOverallInformation": "Overall information",
+  "dashboardWalkInSalesHave": "Walk-in sales have no customer record, so they are counted on their own and are never new or returning.",
+  "dashboardNewVsReturningCustomers": "New vs returning customers",
+  "dashboardTotalSales": "Total sales  ",
+  "dashboardSales": "Sales",
+  "dashboardViewStock": "View stock",
+  "dashboardHasLeft": " has {onHand} left{more}. ",
+  "@dashboardHasLeft": {
+    "placeholders": {
+      "onHand": {
+        "type": "Object"
+      },
+      "more": {
+        "type": "Object"
+      }
+    }
+  },
+  "dashboardRunningLow": "Running low: ",
+  "dashboardUnitsInStock": "Units in stock",
+  "dashboardPotentialMargin": "Potential margin",
+  "dashboardStockAtRetail": "Stock at retail",
+  "dashboardStockAtCost": "Stock at cost",
+  "dashboardPendingOrders": "Pending orders",
+  "dashboardSalesThisMonth": "Sales this month",
+  "dashboardSalesToday": "Sales today",
+  "dashboardYouHaveOrderS": "You have {ordersToday, plural, =1{{ordersToday} order} other{{ordersToday} orders}} today · {value}",
+  "@dashboardYouHaveOrderS": {
+    "placeholders": {
+      "ordersToday": {
+        "type": "int"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "dashboardWelcome": "Welcome, {value}",
+  "@dashboardWelcome": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "dashboardNoModulesAvailableFor": "No modules available for your role yet.",
+  "homePos": "POS",
+  "homeMenu": "Menu",
+  "activityLogsAllS": "All {value}s",
+  "@activityLogsAllS": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "activityLogsLinked": "{related} linked",
+  "@activityLogsLinked": {
+    "placeholders": {
+      "related": {
+        "type": "Object"
+      }
+    }
+  },
+  "activityLogsActivityLogs": "Activity Logs",
+  "activityLogsClear": "Clear",
+  "activityLogsLinkedEntries": "Linked entries",
+  "activityLogsUser": "User",
+  "activityLogsModule": "Module",
+  "activityLogsType": "Type",
+  "activityLogsAllLevels": "All levels",
+  "activityLogsSearchSummaryRecordUser": "Search summary, record, user, field or #id…",
+  "activityLogsOnlyAdminsCanView": "Only admins can view the activity logs.",
+  "activityLogsShowLinked": "Show linked",
+  "activityLogsCopy": "Copy",
+  "activityLogsLogCopied": "Log copied.",
+  "activityLogsChanges": "Changes",
+  "onboardingContentAddPhotosToProducts": "Add photos to products (several each), categories, customers, vendors and users. Your own photo is in Settings.",
+  "onboardingContentPhotos": "Photos",
+  "onboardingContentEveryChangeIsRecorded": "Every change is recorded with who did it and when. Open Activity Logs to see sales, price changes, logins and more.",
+  "onboardingContentActivityLogs": "Activity logs",
+  "onboardingContentCustomersOrderOnYour": "Customers order on your website and pay cash on delivery.",
+  "onboardingContentTheOnlineStore": "The online store",
+  "onboardingContentCreateALoginFor": "Create a login for everyone under Users. Nobody should share one.",
+  "onboardingContentYourTeam": "Your team",
+  "onboardingContentDoTheseOnceIn": "Do these once, in this order:",
+  "onboardingContentFirstSetupChecklist": "First setup checklist",
+  "onboardingContentYouAreSignedIn": "You are signed in as Admin: you can see and change everything. Here is how to get the shop ready.",
+  "onboardingContentWelcomeToA2Stocks": "Welcome to A2 Stocks",
+  "onboardingContentAddPhotosToProducts2": "Add photos to products, categories, customers and vendors. Product photos appear in the online store.",
+  "onboardingContentCountTheShelfIn": "Count the shelf in Stock Audit; confirming it corrects the system to what you counted.",
+  "onboardingContentStockAndAudits": "Stock and audits",
+  "onboardingContentVendorsAndPurchasesRecord": "Vendors and Purchases record what you buy and what you owe. Confirming a purchase adds the stock.",
+  "onboardingContentBuyingStock": "Buying stock",
+  "onboardingContentSalesOrdersHoldsEvery": "Sales & Orders holds every order: from the counter and from the online store.",
+  "onboardingContentSalesAndOnlineOrders": "Sales and online orders",
+  "onboardingContentTheHomeScreenShows": "The home screen shows today's and this month's sales, what customers owe, low stock and the best sellers.",
+  "onboardingContentYourDashboard": "Your dashboard",
+  "onboardingContentYouAreSignedIn2": "You are signed in as Manager: you run the shop day to day. This tour shows where things are.",
+  "onboardingContentAddACustomerWhen": "Add a customer when someone new buys. Their balance shows what they owe and the payments they made.",
+  "onboardingContentCustomers": "Customers",
+  "onboardingContentLookUpProductsPrices": "Look up products, prices and photos under Products, and what is on the shelf under Stock.",
+  "onboardingContentProductsAndStock": "Products and stock",
+  "onboardingContentOpenSalesOrdersTo": "Open Sales & Orders to make a sale.",
+  "onboardingContentSelling": "Selling",
+  "onboardingContentYouAreSignedIn3": "You are signed in as Staff. This quick tour shows what you can do. It takes a minute.",
+  "onboardingContentOpenSettingsToAdd": "Open Settings to add your own photo and to see this guide again whenever you like.",
+  "onboardingContentYourProfile": "Your profile",
+  "onboardingContentOnPhonesAndComputers": "On phones and computers the app keeps working when the internet is down and sends your work to the shop's server when the connection returns. On the web version a connection is needed all the time.",
+  "onboardingContentWorksWithOrWithout": "Works with or without internet",
+  "onboardingSkip": "Skip",
+  "onboardingWelcome": "Welcome · {label}",
+  "@onboardingWelcome": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "customersAddCustomer": "Add customer",
+  "customersNoCustomersYet": "No customers yet.",
+  "ledgerEntrySaveEntry": "Save entry",
+  "ledgerEntryReferenceReceiptNoOptional": "Reference / receipt no. (optional)",
+  "ledgerEntryDate": "Date",
+  "ledgerEntryAmount": "Amount",
+  "ledgerEntryAddLedgerEntry": "Add ledger entry",
+  "partyDetailAddEntry": "Add entry",
+  "partyDetailDeleteEntry": "Delete entry",
+  "partyDetailBal": "Bal {value}",
+  "@partyDetailBal": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyDetailNoLedgerEntriesYet": "No ledger entries yet.",
+  "partyDetailOpeningBalance": "Opening balance",
+  "partyDetailLedger": "Ledger",
+  "partyDetailThisRecordNoLonger": "This record no longer exists.",
+  "partyFormInactivePartiesAreHidden": "Inactive parties are hidden from pickers.",
+  "partyFormNotesOptional": "Notes (optional)",
+  "partyForm0MeansNoLimit": "0 means no limit.",
+  "partyFormCreditLimit": "Credit limit",
+  "partyFormCityOptional": "City (optional)",
+  "partyFormAddressOptional": "Address (optional)",
+  "partyFormEmailOptional": "Email (optional)",
+  "partyFormPhone": "Phone",
+  "partyFormContactPersonOptional": "Contact person (optional)",
+  "vendorsAddVendor": "Add vendor",
+  "vendorsVendors": "Vendors",
+  "vendorsNoVendorsYet": "No vendors yet.",
+  "heldSalesResume": "Resume",
+  "heldSalesNoSalesOnHold": "No sales on hold.",
+  "heldSalesHeldSales": "Held sales",
+  "posPaymentCompleteSale": "Complete sale",
+  "posPaymentBack": "Back",
+  "posPaymentGiveChange": "Give change: {prefix}{value}",
+  "@posPaymentGiveChange": {
+    "placeholders": {
+      "prefix": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posPaymentFullyPaid": "Fully paid",
+  "posPaymentAddPayment": "Add payment",
+  "posPaymentExact": "Exact",
+  "posPaymentLeftToPay": "Left to pay: {prefix}{value}",
+  "@posPaymentLeftToPay": {
+    "placeholders": {
+      "prefix": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posPaymentRemoveThisPayment": "Remove this payment",
+  "posPaymentPay": "Pay {prefix}{value}",
+  "@posPaymentPay": {
+    "placeholders": {
+      "prefix": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posYourLoginCannotMake": "Your login cannot make sales.",
+  "posHold": "Hold",
+  "posTotalPayable": "Total Payable",
+  "posItems": "Items : {units}",
+  "@posItems": {
+    "placeholders": {
+      "units": {
+        "type": "Object"
+      }
+    }
+  },
+  "posNoProductsSelected": "No Products Selected",
+  "posClearSale": "Clear sale",
+  "posNewSale": "New sale",
+  "posOrderList": "Order List",
+  "posApply": "Apply",
+  "posNoProductsFound": "No products found.",
+  "posAll": "All",
+  "posWelcome": "Welcome, {who}",
+  "@posWelcome": {
+    "placeholders": {
+      "who": {
+        "type": "Object"
+      }
+    }
+  },
+  "posSearchOrScanBarcode": "Search, or scan barcode / SKU and press Enter",
+  "posDashboard": "Dashboard",
+  "posBalanceDue": "Balance due: {prefix}{value}",
+  "@posBalanceDue": {
+    "placeholders": {
+      "prefix": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posSaleComplete": "Sale complete",
+  "posCustomer": "Customer",
+  "purchasesNewPurchase": "New purchase",
+  "purchasesPurchases": "Purchases",
+  "purchasesOfPurchaseSShown": "{length} of {length2, plural, =1{{length2} purchase} other{{length2} purchases}} shown",
+  "@purchasesOfPurchaseSShown": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      },
+      "length2": {
+        "type": "int"
+      }
+    }
+  },
+  "purchasesSearchPurchaseNoVendor": "Search purchase no., vendor, invoice…",
+  "purchasesNotFullyPaid": "Not fully paid",
+  "purchasesOwedToVendors": "Owed to vendors",
+  "purchasesTotalPurchased": "Total purchased",
+  "purchaseDetailSavePayment": "Save payment",
+  "purchaseDetailNoteOptional": "Note (optional)",
+  "purchaseDetailDue": "Due: {value}",
+  "@purchaseDetailDue": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchaseDetailRecordPayment": "Record payment",
+  "purchaseDetailNoPaymentsRecordedYet": "No payments recorded yet.",
+  "purchaseDetailPayments": "Payments",
+  "purchaseDetailSku": "SKU {sku}",
+  "@purchaseDetailSku": {
+    "placeholders": {
+      "sku": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchaseDetailItemsUnits": "Items ({length} · {totalUnits} units)",
+  "@purchaseDetailItemsUnits": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      },
+      "totalUnits": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchaseDetailThisPurchaseNoLonger": "This purchase no longer exists.",
+  "purchaseDetailPurchase": "Purchase",
+  "purchaseFormConfirmingAddsTheQuantities": "Confirming adds the quantities to stock and posts the purchase to the vendor ledger. It is uploaded to the cloud as one atomic change when you sync.",
+  "purchaseFormConfirmPurchase": "Confirm purchase",
+  "purchaseFormPayLater": "Pay later",
+  "purchaseFormPaidInFull": "Paid in full",
+  "purchaseFormPaidNow": "Paid now",
+  "purchaseFormTotal": "Total {value}",
+  "@purchaseFormTotal": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchaseFormAddItem": "Add item",
+  "purchaseFormLineTotal": "Line total {value}",
+  "@purchaseFormLineTotal": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchaseFormCatalog": "Catalog {value}",
+  "@purchaseFormCatalog": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchaseFormBuyingPrice": "Buying price",
+  "purchaseFormQuantity": "Quantity",
+  "purchaseFormRemoveItem": "Remove item",
+  "purchaseFormAddAtLeastOne": "Add at least one item.",
+  "purchaseFormSupplierInvoiceNoOptional": "Supplier invoice no. (optional)",
+  "purchaseFormConfirm": "Confirm",
+  "purchaseFormVendorItemSUnit": "Vendor: {name}\n{length, plural, =1{{length} item} other{{length} items}}, {units, plural, =1{{units} unit} other{{units} units}} will be added to stock.\n\nTotal: {value}\nPaid now: {value2}\nDue: {value3}",
+  "@purchaseFormVendorItemSUnit": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "length": {
+        "type": "int"
+      },
+      "units": {
+        "type": "int"
+      },
+      "value": {
+        "type": "Object"
+      },
+      "value2": {
+        "type": "Object"
+      },
+      "value3": {
+        "type": "Object"
+      }
+    }
+  },
+  "ordersNewOrder": "New order",
+  "ordersSalesOrders": "Sales & Orders",
+  "ordersOfOrderSShown": "{length} of {length2, plural, =1{{length2} order} other{{length2} orders}} shown",
+  "@ordersOfOrderSShown": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      },
+      "length2": {
+        "type": "int"
+      }
+    }
+  },
+  "ordersAllTypes": "All types",
+  "ordersSearchOrderNoOr": "Search order no. or customer…",
+  "ordersOpenOrders": "Open orders",
+  "ordersToCollect": "To collect",
+  "ordersTotalSales": "Total sales",
+  "orderDetailReceipt": "Receipt",
+  "orderDetailNoHistoryRecorded": "No history recorded.",
+  "orderDetailStatusHistory": "Status history",
+  "orderDetailMessageOnWhatsapp": "Message on WhatsApp",
+  "orderDetailCancelOrder": "Cancel order",
+  "orderDetailMarkAs": "Mark as {label}",
+  "@orderDetailMarkAs": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderDetailCancelledTheStockWas": "Cancelled. The stock was returned and the ledger charge reversed.",
+  "orderDetailThisOrderNoLonger": "This order no longer exists.",
+  "orderDetailOrder": "Order",
+  "orderDetailKeepOrder": "Keep order",
+  "orderDetailWillBeCancelledUnit": "{orderNo} will be cancelled. {totalUnits, plural, =1{{totalUnits} unit} other{{totalUnits} units}} go back into stock and the charge on {customerName}'s ledger is reversed. Money already received stays on the ledger as customer credit.",
+  "@orderDetailWillBeCancelledUnit": {
+    "placeholders": {
+      "orderNo": {
+        "type": "Object"
+      },
+      "totalUnits": {
+        "type": "int"
+      },
+      "customerName": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderDetailCancelThisOrder": "Cancel this order?",
+  "orderDetailWhatsappCouldNotBe": "WhatsApp could not be opened on this device.",
+  "orderDetailThisCustomerHasNo": "This customer has no usable phone number. Add one to their record.",
+  "orderFormConfirmingTakesTheQuantities": "Confirming takes the quantities out of stock and posts the order to the customer ledger. It is uploaded to the cloud as one atomic change when you sync.",
+  "orderFormConfirmOrder": "Confirm order",
+  "orderFormDiscountOnTheWhole": "Discount on the whole order",
+  "orderFormSaleType": "Sale type",
+  "orderFormLineDiscount": "Line discount",
+  "orderFormSellingPrice": "Selling price",
+  "orderFormCustomerSaleTypeItem": "Customer: {name}\nSale type: {label}\n{length, plural, =1{{length} item} other{{length} items}}, {units, plural, =1{{units} unit} other{{units} units}} will be taken out of stock.\n\nTotal: {value}\nPaid now: {value2}\nDue: {value3}",
+  "@orderFormCustomerSaleTypeItem": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "label": {
+        "type": "Object"
+      },
+      "length": {
+        "type": "int"
+      },
+      "units": {
+        "type": "int"
+      },
+      "value": {
+        "type": "Object"
+      },
+      "value2": {
+        "type": "Object"
+      },
+      "value3": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderFormAmt": "Amt",
+  "settingsSendTestEMail": "Send test e-mail",
+  "settingsSaveSettings": "Save settings",
+  "settingsWhenOffTheWebsite": "When off, the website shows a closed notice and takes no orders.",
+  "settingsStoreIsOpen": "Store is open",
+  "settingsOnlyAnAdminCan": "Only an admin can change these.",
+  "settingsOnlineStore": "Online store",
+  "settingsSend": "Send",
+  "settingsSendTo": "Send to",
+  "settingsTheStoreSettingsNeed": "{value}\nThe store settings need a connection to the server.",
+  "@settingsTheStoreSettingsNeed": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "settingsCraftedWithLoveBy": "Crafted with love by A2 Devs.",
+  "settingsPosInventorySoftware": "POS & Inventory Software",
+  "settingsSave": "Save",
+  "settingsAmountsAlreadyRecordedAre": "Amounts already recorded are not converted: they keep their numbers.",
+  "settingsCurrency": "Currency",
+  "settingsShopName": "Shop name",
+  "settingsButtonsSelectionsAndCharts": "Buttons, selections and charts. A2 Stocks teal unless you pick your own.",
+  "settingsBrandColour": "Brand colour",
+  "settingsLogo": "Logo",
+  "settingsShopDetails": "Shop details",
+  "settingsTheShopDetailsNeed": "{value}\nThe shop details need a connection to the server.",
+  "@settingsTheShopDetailsNeed": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "settingsYourPhoto": "Your photo",
+  "settingsSettings": "Settings",
+  "settingsAShortTourOf": "A short tour of what you can do as {label}.",
+  "@settingsAShortTourOf": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "settingsWelcomeGuide": "Welcome guide",
+  "settingsSomethingWentWrongPlease": "Something went wrong. Please try again.",
+  "stockAuditNoStockAuditsYet": "No stock audits yet.",
+  "stockAuditAuditHistory": "Audit history",
+  "stockAuditOneMore": "One more",
+  "stockAuditOneLess": "One less",
+  "stockAuditEachDifferenceBecomesA": "Each difference becomes a stock adjustment and is uploaded as one atomic change when you sync.",
+  "stockAuditApplyCount": "Apply count",
+  "stockAuditCountedDifferenceS": "{length} counted · {differences, plural, =1{{differences} difference} other{{differences} differences}}",
+  "@stockAuditCountedDifferenceS": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      },
+      "differences": {
+        "type": "int"
+      }
+    }
+  },
+  "stockAuditReasonNoteOptional": "Reason / note (optional)",
+  "stockAuditNoItemsToShow": "No items to show.",
+  "stockAuditClearCounts": "Clear counts",
+  "stockAuditCountedOnly": "Counted only ({length})",
+  "@stockAuditCountedOnly": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "stockAuditSearchProductSkuBarcode": "Search product, SKU, barcode…",
+  "stockAuditStockAudit": "Stock audit",
+  "stockAuditOnlyAdminsAndManagers": "Only admins and managers can count and adjust stock.",
+  "stockAuditStockCountApplied": "Stock count applied.",
+  "stockAuditItemSWillBe": "{length, plural, =1{{length} item} other{{length} items}} will be adjusted:",
+  "@stockAuditItemSWillBe": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "stockAuditEveryCountedQuantityMatches": "Every counted quantity matches the system, so nothing will be adjusted.",
+  "stockAuditApplyStockCount": "Apply stock count",
+  "stockItemSHaveNegative": "{negativeCount, plural, =1{{negativeCount} item} other{{negativeCount} items}} have negative stock. More was sold than was in stock, for example on two devices before they synced. Check the stock ledger and add a correction.",
+  "@stockItemSHaveNegative": {
+    "placeholders": {
+      "negativeCount": {
+        "type": "int"
+      }
+    }
+  },
+  "stockItemSUnitS": "{length, plural, =1{{length} item} other{{length} items}} · {totalUnits, plural, =1{{totalUnits} unit} other{{totalUnits} units}} in stock",
+  "@stockItemSUnitS": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      },
+      "totalUnits": {
+        "type": "int"
+      }
+    }
+  },
+  "stockOutOfStock": "Out of stock",
+  "stockStockValueCost": "Stock value (cost)",
+  "stockAudit": "Audit",
+  "stockStock": "Stock",
+  "syncDiscard": "Discard",
+  "syncRetry": "Retry",
+  "syncWaitingForTheServer": "Waiting for the server ({length})",
+  "@syncWaitingForTheServer": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "syncNothingIsWaitingTo": "Nothing is waiting to be uploaded.",
+  "syncDownloadEverythingAgain": "Download everything again",
+  "syncMore": "More",
+  "syncSync": "Sync",
+  "syncDownloadAgain": "Download again",
+  "syncThisReplacesThisDevice": "This replaces this device's copy of the data with the server's. Changes that are waiting to be uploaded are kept.",
+  "syncDownloadEverythingAgain2": "Download everything again?",
+  "usersAddUser": "Add user",
+  "usersUsers": "Users",
+  "usersManagersStaff": "Managers & staff",
+  "usersAdmins": "Admins",
+  "usersNoUsersYet": "No users yet.",
+  "usersDeleteUser": "Delete user",
+  "userFormRole": "Role",
+  "userFormPhoneOptional": "Phone (optional)",
+  "userFormShareItWithThe": "Share it with the user so they can sign in.",
+  "userFormInitialPassword": "Initial password",
+  "userFormEmailLogin": "Email (login)",
+  "userFormFullName": "Full name",
+  "userFormProfilePhoto": "Profile photo",
+  "businessBrandCraftedWithLoveBy": "Crafted with love by",
+  "businessBrandPoweredBy": "Powered by",
+  "logoutButtonSignOutFailed": "Sign out failed.",
+  "orderReceiptCardDue": "Due {value}",
+  "@orderReceiptCardDue": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderReceiptCardTotal": "Total",
+  "orderReceiptCardNoItems": "No items",
+  "partyListNoMatchesTryChanging": "No matches. Try changing the search or filters.",
+  "partyListShowInactive": "Show inactive",
+  "partyListOverCreditLimit": "Over credit limit",
+  "partyListWithBalance": "With balance",
+  "partyListSearchNamePhoneCity": "Search name, phone, city…",
+  "partyListSettled": "Settled",
+  "partyListWithABalance": "With a balance",
+  "partyPickerSelectCustomer": "Select customer",
+  "partyPickerSelectVendor": "Select vendor",
+  "photoWidgetsDeletePhoto": "Delete photo",
+  "photoWidgetsMakeMainPhoto": "Make main photo",
+  "photoWidgetsMain": "Main",
+  "photoWidgetsNoPhotosYetThe": "No photos yet. The first photo is the main one shown in the shop and on the online store.",
+  "photoWidgetsAddPhoto": "Add photo",
+  "photoWidgetsOf10": "({length} of 10)",
+  "@photoWidgetsOf10": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "photoWidgetsSaveFirstThenOpen": "Save first, then open this again to add {what}.",
+  "@photoWidgetsSaveFirstThenOpen": {
+    "placeholders": {
+      "what": {
+        "type": "Object"
+      }
+    }
+  },
+  "photoWidgetsRemove": "Remove",
+  "photoWidgetsThePhotoCouldNot": "The photo could not be saved. Please try again.",
+  "receiptActionsWhatsapp": "WhatsApp",
+  "receiptActionsSharePdf": "Share PDF",
+  "receiptActionsViewReceipt": "View receipt",
+  "receiptActionsPrintReceipt": "Print Receipt",
+  "receiptActionsOpenWhatsapp": "Open WhatsApp",
+  "receiptActionsCustomerPhone": "Customer phone",
+  "receiptActionsWhatsappNumber": "WhatsApp number",
+  "receiptActionsThatIsNotA": "That is not a usable phone number.",
+  "receiptActionsThatDidNotWork": "That did not work on this device. Please try again.",
+  "receiptThankYouForShopping": "Thank you for shopping with us. Please come again.",
+  "receiptDiscount": "Discount -{value}",
+  "@receiptDiscount": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptQty": "Qty",
+  "receiptPrice": "Price",
+  "receiptItem": "# Item",
+  "receiptSalesReceipt": "Sales Receipt",
+  "receiptPhoneNumber": "Phone Number : {shopPhone}",
+  "@receiptPhoneNumber": {
+    "placeholders": {
+      "shopPhone": {
+        "type": "Object"
+      }
+    }
+  },
+  "variantPickerStock": "Stock {onHand}",
+  "@variantPickerStock": {
+    "placeholders": {
+      "onHand": {
+        "type": "Object"
+      }
+    }
+  },
+  "variantPickerNoMatchingItems": "No matching items.",
+  "variantPickerSelectItem": "Select item",
+  "dateLong": "EEEE, d MMMM y",
+  "@dateLong": {
+    "description": "Pattern (ICU date skeleton letters, see intl DateFormat) for a full date with the weekday, e.g. \"Monday, 18 November 2026\". Translators may reorder the parts."
+  },
+  "dateShort": "EEE, d MMMM y",
+  "@dateShort": {
+    "description": "Pattern for a date with an abbreviated weekday, e.g. \"Mon, 18 November 2026\"."
+  },
+  "categoriesNoSubcategoriesMatch": "No subcategories match.",
+  "categoriesNoSubcategoriesYet": "No subcategories yet.",
+  "categoriesCategoriesWithNothingIn": "categories with nothing in them",
+  "categoriesYouAlreadyHadWere": " ({skipped} you already had were left as they are)",
+  "@categoriesYouAlreadyHadWere": {
+    "placeholders": {
+      "skipped": {
+        "type": "Object"
+      }
+    }
+  },
+  "categoryFormCreateCategory": "Create category",
+  "categoryFormSaveChanges": "Save changes",
+  "categoryFormNameIsRequired": "Name is required.",
+  "categoryFormEditCategory": "Edit category",
+  "productsNoProductsMatchYour": "No products match your search.",
+  "productsNoProductsYet": "No products yet.",
+  "productsInactive2": "{value} inactive",
+  "@productsInactive2": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "productFormCreateProduct": "Create product",
+  "productFormChooseACategory": "Choose a category.",
+  "productFormCreateACategoryFirst": "Create a category first.",
+  "productFormEditProduct": "Edit product",
+  "productFormProduct": "Product",
+  "productFormCostSale": "Cost {cost} · Sale {sale}",
+  "@productFormCostSale": {
+    "placeholders": {
+      "cost": {
+        "type": "Object"
+      },
+      "sale": {
+        "type": "Object"
+      }
+    }
+  },
+  "productFormCostWholesaleRetail": "Cost {cost} · Wholesale {value} · Retail {sale}",
+  "@productFormCostWholesaleRetail": {
+    "placeholders": {
+      "cost": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      },
+      "sale": {
+        "type": "Object"
+      }
+    }
+  },
+  "starterPackAddCategories": "Add {toAdd} categories",
+  "@starterPackAddCategories": {
+    "placeholders": {
+      "toAdd": {
+        "type": "Object"
+      }
+    }
+  },
+  "starterPackNothingNewToAdd": "Nothing new to add",
+  "starterPackYouAlreadyHaveEverything": "You already have everything you ticked.",
+  "starterPackTickAtLeastOne": "Tick at least one group.",
+  "starterPackSelectAll": "Select all",
+  "starterPackSelectNone": "Select none",
+  "starterPackOtherKindsOfStore": "Other kinds of store",
+  "starterPackStoresLikeYours": "Stores like yours",
+  "starterPackStarterCategories": "Starter categories",
+  "variantEnter0OrA": "Enter 0 or a whole number.",
+  "variantSalePrice": "Sale price",
+  "variantRetailPrice": "Retail price",
+  "variantSkuIsRequired": "SKU is required.",
+  "variantVariant": "Variant",
+  "variantEnterTheProductName": "Enter the product name or an attribute value first.",
+  "variantEnterAValidPrice": "Enter a valid price.",
+  "dashboardNoCategorySalesYet": "No category sales yet.",
+  "dashboardNoNamedCustomersHave": "No named customers have bought yet.",
+  "dashboardWalkInCustomer": "Walk-in customer",
+  "dashboardNoSalesYet": "No sales yet.",
+  "dashboardLeft": "{value} left",
+  "@dashboardLeft": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "dashboardNothingIsRunningLow": "Nothing is running low.",
+  "dashboardSold": "{value} sold",
+  "@dashboardSold": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "dashboardNoSalesInThis": "No sales in this period yet.",
+  "dashboardOrders": "Orders",
+  "dashboardNoNamedCustomersBought": "No named customers bought in this period.",
+  "dashboardWalkInOrders": "Walk-in orders",
+  "dashboardOfBuyers": "{returningPercent}% of buyers",
+  "@dashboardOfBuyers": {
+    "placeholders": {
+      "returningPercent": {
+        "type": "Object"
+      }
+    }
+  },
+  "dashboardReturningCustomers": "Returning customers",
+  "dashboardFirstOrderInThis": "first order in this period",
+  "dashboardNewCustomers": "New customers",
+  "dashboardAndMore": " and {value} more",
+  "@dashboardAndMore": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "dashboardAtOrBelowAlert": "at or below alert level",
+  "dashboardAllAboveAlertLevel": "All above alert level",
+  "dashboardProcessingShipped": "{processingOrders} processing · {shippedOrders} shipped",
+  "@dashboardProcessingShipped": {
+    "placeholders": {
+      "processingOrders": {
+        "type": "Object"
+      },
+      "shippedOrders": {
+        "type": "Object"
+      }
+    }
+  },
+  "dashboardOrderS2": "{ordersMonth, plural, =1{{ordersMonth} order} other{{ordersMonth} orders}}",
+  "@dashboardOrderS2": {
+    "placeholders": {
+      "ordersMonth": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardOrderS3": "{ordersToday, plural, =1{{ordersToday} order} other{{ordersToday} orders}}",
+  "@dashboardOrderS3": {
+    "placeholders": {
+      "ordersToday": {
+        "type": "int"
+      }
+    }
+  },
+  "homeCollapseMenu": "Collapse menu",
+  "homeExpandMenu": "Expand menu",
+  "homeHome": "Home",
+  "activityLogsChangeS": "{length, plural, =1{{length} change} other{{length} changes}}",
+  "@activityLogsChangeS": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "activityLogsLoadFromCloud": "Load from cloud",
+  "activityLogsRefreshCloud": "Refresh cloud",
+  "activityLogsNoLogsMatchThe": "No logs match the filters.",
+  "activityLogsNoLogsOnThis": "No logs on this device yet.",
+  "activityLogsModuleRecord": "Module: {module}  Record: {entityLabel} ({entityId})",
+  "@activityLogsModuleRecord": {
+    "placeholders": {
+      "module": {
+        "type": "Object"
+      },
+      "entityLabel": {
+        "type": "Object"
+      },
+      "entityId": {
+        "type": "Object"
+      }
+    }
+  },
+  "activityLogsUser2": "User: {userName} {userRole}",
+  "@activityLogsUser2": {
+    "placeholders": {
+      "userName": {
+        "type": "Object"
+      },
+      "userRole": {
+        "type": "Object"
+      }
+    }
+  },
+  "activityLogsRemoved": "(removed)",
+  "activityLogsNone": "(none)",
+  "activityLogsLogId": "Log id",
+  "activityLogsGroup": "Group",
+  "activityLogsRecordId": "Record id",
+  "activityLogsRecord": "Record",
+  "activityLogsLevelType": "Level / type",
+  "activityLogsTime": "Time",
+  "onboardingNext": "Next",
+  "onboardingGetStarted": "Get started",
+  "ledgerEntryEnterAnAmountGreater": "Enter an amount greater than zero.",
+  "partyDetailRef": "Ref {reference}",
+  "@partyDetailRef": {
+    "placeholders": {
+      "reference": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyDetailCreditLimit": "Credit limit {value}",
+  "@partyDetailCreditLimit": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyDetailOverTheCreditLimit": "Over the credit limit of {value}",
+  "@partyDetailOverTheCreditLimit": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyDetailDeleteThisOf": "Delete this {value} of {value2}?",
+  "@partyDetailDeleteThisOf": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      },
+      "value2": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyDetailDelete": "Delete \"{name}\"?",
+  "@partyDetailDelete": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyDetailDelete2": "Delete {value}",
+  "@partyDetailDelete2": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyFormCreate": "Create {noun}",
+  "@partyFormCreate": {
+    "placeholders": {
+      "noun": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyFormEnterAValidAmount": "Enter a valid amount.",
+  "partyFormPositiveYouOweThe": "Positive: you owe the vendor. Negative: advance paid.",
+  "partyFormPositiveTheCustomerOwes": "Positive: the customer owes you. Negative: advance received.",
+  "partyFormEnterAValidPhone": "Enter a valid phone number.",
+  "partyFormNameBusinessName": "Name / business name",
+  "partyFormNameShopName": "Name / shop name",
+  "partyFormVendorPhotoLogo": "Vendor photo / logo",
+  "partyFormCustomerPhotoShopFront": "Customer photo / shop front",
+  "partyFormAdd": "Add {noun}",
+  "@partyFormAdd": {
+    "placeholders": {
+      "noun": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyFormEdit": "Edit {noun}",
+  "@partyFormEdit": {
+    "placeholders": {
+      "noun": {
+        "type": "Object"
+      }
+    }
+  },
+  "heldSalesAndMore": "{names} and {more} more",
+  "@heldSalesAndMore": {
+    "placeholders": {
+      "names": {
+        "type": "Object"
+      },
+      "more": {
+        "type": "Object"
+      }
+    }
+  },
+  "heldSalesDAgo": "{inDays} d ago",
+  "@heldSalesDAgo": {
+    "placeholders": {
+      "inDays": {
+        "type": "Object"
+      }
+    }
+  },
+  "heldSalesHAgo": "{inHours} h ago",
+  "@heldSalesHAgo": {
+    "placeholders": {
+      "inHours": {
+        "type": "Object"
+      }
+    }
+  },
+  "heldSalesMinAgo": "{inMinutes} min ago",
+  "@heldSalesMinAgo": {
+    "placeholders": {
+      "inMinutes": {
+        "type": "Object"
+      }
+    }
+  },
+  "heldSalesJustNow": "just now",
+  "posPaymentSellWithDue": "Sell with {prefix}{value} due",
+  "@posPaymentSellWithDue": {
+    "placeholders": {
+      "prefix": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posPaymentSellOnCredit": "Sell on credit",
+  "posPaymentTransactionNo": "Transaction no.",
+  "posPaymentBankAndTransactionNo": "Bank and transaction no.",
+  "posPaymentCashReceived": "Cash received",
+  "posPlaceOrder": "Place Order · {prefix}{value}",
+  "@posPlaceOrder": {
+    "placeholders": {
+      "prefix": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posPlaceOrder2": "Place Order",
+  "posBank": "Bank",
+  "posDiscount": "Discount",
+  "posSubTotal": "Sub Total",
+  "posOrderDetails": "Order Details",
+  "posMayPayNowOr": "May pay now or later",
+  "posPaysInFullNow": "Pays in full now",
+  "posCustomerInformation": "Customer Information",
+  "posHeld": "Held",
+  "posHeld2": "Held ({heldCount})",
+  "@posHeld2": {
+    "placeholders": {
+      "heldCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "posDiscountOn": "Discount on {productName}",
+  "@posDiscountOn": {
+    "placeholders": {
+      "productName": {
+        "type": "Object"
+      }
+    }
+  },
+  "posDiscountOnTheWhole": "Discount on the whole sale",
+  "posLeft": "{onHand} left",
+  "@posLeft": {
+    "placeholders": {
+      "onHand": {
+        "type": "Object"
+      }
+    }
+  },
+  "posPayment": "Payment",
+  "posVoid": "Void",
+  "posViewOrders": "View Orders",
+  "posSale": "Sale · {prefix}{value}",
+  "@posSale": {
+    "placeholders": {
+      "prefix": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posSale2": "Sale",
+  "posHeldSaleResumedThe": "Held sale resumed. The previous sale is now on hold.",
+  "posHeldSaleResumed": "Held sale resumed.",
+  "posSalePutOnHold": "Sale put on hold. Find it under \"Held\".",
+  "posTheSaleCouldNot": "The sale could not be completed.",
+  "posTheWalkInCustomer": "The walk-in customer is not on this device yet. Sync once, then try again.",
+  "posNoProductWithBarcode": "No product with barcode or SKU \"{value}\".",
+  "@posNoProductWithBarcode": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posHasNoActiveVariant": "\"{name}\" has no active variant.",
+  "@posHasNoActiveVariant": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "posOnlyOfInStock": "Only {onHand} of \"{name} · {label}\" in stock.",
+  "@posOnlyOfInStock": {
+    "placeholders": {
+      "onHand": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      },
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "posIsOutOfStock": "\"{name} · {label}\" is out of stock.",
+  "@posIsOutOfStock": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchasesInv": "Inv {invoiceNo}",
+  "@purchasesInv": {
+    "placeholders": {
+      "invoiceNo": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchasesItemS": "{length, plural, =1{{length} item} other{{length} items}}",
+  "@purchasesItemS": {
+    "placeholders": {
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "purchasesNoPurchasesMatchYour": "No purchases match your search.",
+  "purchasesNoPurchasesYet": "No purchases yet.",
+  "purchaseDetailMoreThanTheAmount": "More than the amount due.",
+  "purchaseDetailDue2": "Due",
+  "purchaseDetailPaid": "Paid",
+  "purchaseDetailInvoice": "Invoice {invoiceNo}",
+  "@purchaseDetailInvoice": {
+    "placeholders": {
+      "invoiceNo": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchaseFormMoreThanThePurchase": "More than the purchase total.",
+  "purchaseFormInvalidPrice": "Invalid price",
+  "purchaseFormAtLeast1": "At least 1",
+  "purchaseFormItemsAndQuantities": "Items and quantities",
+  "purchaseFormChooseAVendor": "Choose a vendor.",
+  "purchaseFormVendor": "Vendor",
+  "ordersNoOrdersMatchYour": "No orders match your search.",
+  "ordersNoOrdersYet": "No orders yet.",
+  "ordersNotYetDelivered": "not yet delivered",
+  "ordersOrderS": "{count, plural, =1{{count} order} other{{count} orders}}",
+  "@ordersOrderS": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ordersOrderS2": "{todayCount, plural, =1{{todayCount} order} other{{todayCount} orders}}",
+  "@ordersOrderS2": {
+    "placeholders": {
+      "todayCount": {
+        "type": "int"
+      }
+    }
+  },
+  "orderDetailEnterTheTransactionNumber": "Enter the transaction number.",
+  "orderDetailDiscount": "Discount {value}",
+  "@orderDetailDiscount": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderDetailSku": "SKU {sku}",
+  "@orderDetailSku": {
+    "placeholders": {
+      "sku": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderDetailBy": "by {byName}",
+  "@orderDetailBy": {
+    "placeholders": {
+      "byName": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderDetailDelivery": "Delivery",
+  "orderDetailDiscountsLinesAndOrder": "Discounts (lines and order)",
+  "orderDetailSubtotal": "Subtotal",
+  "orderFormMoreThanTheOrder": "More than the order total.",
+  "orderFormOrderDiscount": "Order discount",
+  "orderFormItemsQuantitiesAndPrices": "Items, quantities and prices",
+  "orderFormChooseACustomer": "Choose a customer.",
+  "orderFormSellingBelowTheCost": "Selling below the cost price ({value}).",
+  "@orderFormSellingBelowTheCost": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderFormSkuInStock": "SKU {sku} · In stock: {onHand}",
+  "@orderFormSkuInStock": {
+    "placeholders": {
+      "sku": {
+        "type": "Object"
+      },
+      "onHand": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderFormSkuOnlyInStock": "SKU {sku} · Only {onHand} in stock, {requested} requested",
+  "@orderFormSkuOnlyInStock": {
+    "placeholders": {
+      "sku": {
+        "type": "Object"
+      },
+      "onHand": {
+        "type": "Object"
+      },
+      "requested": {
+        "type": "Object"
+      }
+    }
+  },
+  "orderFormMoreThanTheAmount": "More than the amount",
+  "orderFormMax100": "Max 100%",
+  "orderFormInvalidDiscount": "Invalid discount",
+  "settingsEnterAWholeNumber": "Enter a whole number, 0 or more.",
+  "settingsCustomersNeverSeeExact": "Customers never see exact numbers.",
+  "settingsShowLowStockAt": "Show \"Low stock\" at or below",
+  "settingsStockDisplay": "Stock display",
+  "settings0NeverFree": "0 = never free",
+  "settingsFreeDeliveryFrom": "Free delivery from",
+  "settingsDeliveryFee": "Delivery fee",
+  "settingsForExampleDeliveryTimes": "For example delivery times.",
+  "settingsNoteAtCheckout": "Note at checkout",
+  "settingsCheckoutDelivery": "Checkout & delivery",
+  "settingsLeaveEmptyForNo": "Leave empty for no alerts.",
+  "settingsSendNewOrderAlerts": "Send new-order alerts to (e-mail)",
+  "settingsShownInTheWebsite": "Shown in the website footer.",
+  "settingsContactPhone": "Contact phone",
+  "settingsEnterTheStoreName": "Enter the store name.",
+  "settingsStoreName": "Store name",
+  "settingsContactAlerts": "Contact & alerts",
+  "settingsEMailIsNot": "E-mail is not set up on the server yet (SMTP_HOST is empty). See docs/deploy.md.",
+  "settingsTheMailServerRefused": "The mail server refused or could not be reached. Check the SMTP settings on the server.",
+  "settingsTestEMailSent": "Test e-mail sent to {address}. Check the inbox (and the spam folder).",
+  "@settingsTestEMailSent": {
+    "placeholders": {
+      "address": {
+        "type": "Object"
+      }
+    }
+  },
+  "settingsEnterAValidE": "Enter a valid e-mail address.",
+  "settingsSavedTheStoreIs": "Saved. The store is closed: it takes no orders.",
+  "settingsSavedTheStoreIs2": "Saved. The store is open.",
+  "settingsEnterAnAmountOf": "Enter an amount of 0 or more.",
+  "settingsSlate": "Slate",
+  "settingsDarkTeal": "Dark teal",
+  "settingsGreen": "Green",
+  "settingsGold": "Gold",
+  "settingsOrange": "Orange",
+  "settingsRed": "Red",
+  "settingsPink": "Pink",
+  "settingsMagenta": "Magenta",
+  "settingsViolet": "Violet",
+  "settingsBlue": "Blue",
+  "settingsA2StocksTeal": "A2 Stocks teal",
+  "settingsEnterTheShopName": "Enter the shop name.",
+  "settingsPrintedAtTheTop": "Printed at the top of your receipts and in messages to customers.",
+  "settingsTheCurrencyEveryAmount": "The currency every amount in the app is written in.",
+  "settingsTheWelcomeTour": "The welcome tour",
+  "settingsHelpGuide": "Help & guide",
+  "settingsCurrencyAndReceiptDetails": "Currency and receipt details",
+  "settingsOpeningDeliveryAndAlerts": "Opening, delivery and alerts",
+  "settingsYourNameEMail": "Your name, e-mail and photo",
+  "settingsProfile": "Profile",
+  "stockAuditBy": "by {countedByName}",
+  "@stockAuditBy": {
+    "placeholders": {
+      "countedByName": {
+        "type": "Object"
+      }
+    }
+  },
+  "stockLowStock": "Low stock ({lowCount})",
+  "@stockLowStock": {
+    "placeholders": {
+      "lowCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "stockInStock": "In stock",
+  "stockItemS": "{items, plural, =1{{items} item} other{{items} items}}",
+  "@stockItemS": {
+    "placeholders": {
+      "items": {
+        "type": "int"
+      }
+    }
+  },
+  "syncSyncNow": "Sync now",
+  "syncSyncing": "Syncing…",
+  "syncLastChecked": "Last checked {value}.",
+  "@syncLastChecked": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "syncNothingIsWaiting": "Nothing is waiting.",
+  "syncInStepWithThe": "In step with the server",
+  "syncTheyAreUploadedAutomatically": "They are uploaded automatically in a few seconds.",
+  "syncChangeSToUpload": "{waiting, plural, =1{{waiting} change} other{{waiting} changes}} to upload",
+  "@syncChangeSToUpload": {
+    "placeholders": {
+      "waiting": {
+        "type": "int"
+      }
+    }
+  },
+  "syncEverythingYouDoIs": "Everything you do is saved on this device and uploaded later.",
+  "syncChangeSAreSaved": "{waiting, plural, =1{{waiting} change} other{{waiting} changes}} are saved on this device and are uploaded automatically when the connection is back.",
+  "@syncChangeSAreSaved": {
+    "placeholders": {
+      "waiting": {
+        "type": "int"
+      }
+    }
+  },
+  "syncYouAreOffline": "You are offline",
+  "syncTheServerCannotBe": "The server cannot be reached",
+  "syncTheServerRefusedThem": "The server refused them. Retry them, or discard them below.",
+  "syncChangeSNeedAttention": "{failed, plural, =1{{failed} change} other{{failed} changes}} need attention",
+  "@syncChangeSNeedAttention": {
+    "placeholders": {
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPleaseKeepTheApp": "Please keep the app open.",
+  "syncRefused": "Refused: {error}",
+  "@syncRefused": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "syncUploadedWaitingForThe": "Uploaded, waiting for the server's copy",
+  "syncWaitingToUpload": "Waiting to upload · {value}",
+  "@syncWaitingToUpload": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "usersManagerSStaff": "{managers, plural, =1{{managers} manager} other{{managers} managers}}, {staff} staff",
+  "@usersManagerSStaff": {
+    "placeholders": {
+      "managers": {
+        "type": "int"
+      },
+      "staff": {
+        "type": "Object"
+      }
+    }
+  },
+  "usersTurnedOff": "{value} turned off",
+  "@usersTurnedOff": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "usersActivate": "Activate",
+  "usersDeactivate": "Deactivate",
+  "usersYou": "{name} (you)",
+  "@usersYou": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "userFormCreateUser": "Create user",
+  "userFormInactiveUsersCannotUse": "Inactive users cannot use the app.",
+  "userFormYouCannotDeactivateYourself": "You cannot deactivate yourself.",
+  "userFormYouCannotChangeYour": "You cannot change your own role.",
+  "userFormUseAtLeast6": "Use at least 6 characters.",
+  "userFormTheLoginEmailCannot": "The login email cannot be changed.",
+  "userFormEditUser": "Edit user",
+  "logoutButtonDoYouWantTo": "Do you want to sign out of A2 Stocks?",
+  "logoutButtonYouHaveChangeS": "You have {pendingCount, plural, =1{{pendingCount} change} other{{pendingCount} changes}} that were not uploaded. They stay on this device and are uploaded when you sign in again with a connection. Sign out anyway?",
+  "@logoutButtonYouHaveChangeS": {
+    "placeholders": {
+      "pendingCount": {
+        "type": "int"
+      }
+    }
+  },
+  "onlineStatusChipNoConnection": "No connection",
+  "onlineStatusChipOnline": "Online",
+  "orderReceiptCardUnpaid": "Unpaid",
+  "orderReceiptCardPartlyPaid": "Partly paid",
+  "orderReceiptCardCancelled": "Cancelled",
+  "partyListNoCity": "No city",
+  "partyListNoPhone": "No phone",
+  "partyListOverLimit": "Over limit",
+  "partyListWithABalance2": "{withBalance} with a balance",
+  "@partyListWithABalance2": {
+    "placeholders": {
+      "withBalance": {
+        "type": "Object"
+      }
+    }
+  },
+  "partyListToPay": "To pay",
+  "partyListNothingHereYet": "Nothing here yet.",
+  "partyPickerWalkInCustomerNo": "Walk-in customer (no account)",
+  "photoWidgetsAPhoto": "a photo",
+  "photoWidgetsChangePhoto": "Change photo",
+  "photoWidgetsPhoto": "Photo",
+  "receiptActionsReceipt": "Receipt {orderNo}",
+  "@receiptActionsReceipt": {
+    "placeholders": {
+      "orderNo": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptDue": "Due :",
+  "receiptChange": "Change :",
+  "receiptDelivery": "Delivery :",
+  "receiptDiscount2": "Discount :",
+  "receiptSubTotal": "Sub Total :",
+  "receiptReceiptNo": "Receipt No",
+  "receiptServedBy": "Served by",
+  "syncStatusChipSynced": "Synced",
+  "syncStatusChipToUpload": "{waiting} to upload",
+  "@syncStatusChipToUpload": {
+    "placeholders": {
+      "waiting": {
+        "type": "Object"
+      }
+    }
+  },
+  "syncStatusChipOffline": "Offline",
+  "syncStatusChipWaitingOffline": "{waiting} waiting (offline)",
+  "@syncStatusChipWaitingOffline": {
+    "placeholders": {
+      "waiting": {
+        "type": "Object"
+      }
+    }
+  },
+  "syncStatusChipNeedAttention": "{failed} need attention",
+  "@syncStatusChipNeedAttention": {
+    "placeholders": {
+      "failed": {
+        "type": "Object"
+      }
+    }
+  },
+  "syncStatusChipSyncing": "Syncing",
+  "variantPickerSkuCost": "SKU {sku} · Cost {value}",
+  "@variantPickerSkuCost": {
+    "placeholders": {
+      "sku": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "variantPickerSkuPrice": "SKU {sku} · Price {value}",
+  "@variantPickerSkuPrice": {
+    "placeholders": {
+      "sku": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "moduleCategories": "Categories",
+  "@moduleCategories": {
+    "description": "Navigation titles of the modules (side bar, drawer, page headings)."
+  },
+  "moduleProducts": "Products",
+  "moduleCustomers": "Customers",
+  "moduleVendors": "Vendors",
+  "modulePurchases": "Purchases",
+  "modulePos": "POS",
+  "moduleSalesOrders": "Sales & Orders",
+  "moduleStock": "Stock",
+  "moduleActivityLogs": "Activity Logs",
+  "moduleSettings": "Settings",
+  "moduleUsers": "Users",
+  "moduleGroupMain": "Main",
+  "@moduleGroupMain": {
+    "description": "Headings the modules are listed under in the navigation."
+  },
+  "moduleGroupInventory": "Inventory",
+  "moduleGroupSales": "Sales",
+  "moduleGroupPurchasing": "Purchasing",
+  "moduleGroupSystem": "System",
+  "countProducts": "{count, plural, =1{{count} product} other{{count} products}}",
+  "@countProducts": {
+    "description": "A number of products, with the right plural form.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countSubcategories": "{count, plural, =1{{count} subcategory} other{{count} subcategories}}",
+  "@countSubcategories": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countVariants": "{count, plural, =1{{count} variant} other{{count} variants}}",
+  "@countVariants": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "categoriesTipHeader": "{name} · {subcategories}",
+  "@categoriesTipHeader": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "subcategories": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesTipChild": "•  {name} — {products}",
+  "@categoriesTipChild": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "products": {
+        "type": "String"
+      }
+    }
+  },
+  "categoriesTipTotal": "Total: {products} ({direct} directly in {name})",
+  "@categoriesTipTotal": {
+    "placeholders": {
+      "products": {
+        "type": "String"
+      },
+      "direct": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "productsUncategorized": "Uncategorized",
+  "productsSubtitle": "{category} · {variants} · {price}",
+  "@productsSubtitle": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      },
+      "variants": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "productFormSku": "SKU {sku}",
+  "@productFormSku": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      }
+    }
+  },
+  "productFormSkuInactive": "SKU {sku} · Inactive",
+  "@productFormSkuInactive": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      }
+    }
+  },
+  "starterPackSimilarAll": "Your store looks similar: you already have {matched}. You have all of this pack.",
+  "@starterPackSimilarAll": {
+    "placeholders": {
+      "matched": {
+        "type": "String"
+      }
+    }
+  },
+  "starterPackSimilarSome": "Your store looks similar: you already have {matched}. {have} of {total} categories are already added; add the rest.",
+  "@starterPackSimilarSome": {
+    "placeholders": {
+      "matched": {
+        "type": "String"
+      },
+      "have": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "starterPackWillAdd": "{toAdd, plural, =1{1 new category will be added.} other{{toAdd} new categories will be added.}}",
+  "@starterPackWillAdd": {
+    "placeholders": {
+      "toAdd": {
+        "type": "int"
+      }
+    }
+  },
+  "starterPackWillAddLeft": "{toAdd, plural, =1{1 new category will be added ({have} you already have are left as they are).} other{{toAdd} new categories will be added ({have} you already have are left as they are).}}",
+  "@starterPackWillAddLeft": {
+    "placeholders": {
+      "toAdd": {
+        "type": "int"
+      },
+      "have": {
+        "type": "int"
+      }
+    }
+  },
+  "activityLogsCount": "{shown} of {total, plural, =1{1 log} other{{total} logs}}",
+  "@activityLogsCount": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "activityLogsErrors": " · {count, plural, =1{1 error} other{{count} errors}}",
+  "@activityLogsErrors": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityLogsNotUploaded": " · {count} not uploaded yet",
+  "@activityLogsNotUploaded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "heldSalesItemsTotal": "{units, plural, =1{1 item} other{{units} items}} · {total}",
+  "@heldSalesItemsTotal": {
+    "placeholders": {
+      "units": {
+        "type": "int"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "posInStockCount": "{count} in stock",
+  "@posInStockCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "purchaseFormSkuInStock": "SKU {sku} · In stock now: {count}",
+  "@purchaseFormSkuInStock": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "orderDetailSaleLine": "{date} · {type} sale",
+  "@orderDetailSaleLine": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "orderDetailSaleLineOnline": "{date} · {type} sale · Online store",
+  "@orderDetailSaleLineOnline": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "stockAuditSystemLine": "SKU {sku} · System {onHand}",
+  "@stockAuditSystemLine": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      },
+      "onHand": {
+        "type": "int"
+      }
+    }
+  },
+  "stockAuditSystemLineInactive": "SKU {sku} · System {onHand} · inactive",
+  "@stockAuditSystemLineInactive": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      },
+      "onHand": {
+        "type": "int"
+      }
+    }
+  },
+  "stockAuditDifference": "Difference {variance}",
+  "@stockAuditDifference": {
+    "placeholders": {
+      "variance": {
+        "type": "String"
+      }
+    }
+  },
+  "stockAuditItemLine": "{product} · {variant} ({sku}): system {system}, counted {counted} ({variance})",
+  "@stockAuditItemLine": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      },
+      "variant": {
+        "type": "String"
+      },
+      "sku": {
+        "type": "String"
+      },
+      "system": {
+        "type": "int"
+      },
+      "counted": {
+        "type": "int"
+      },
+      "variance": {
+        "type": "String"
+      }
+    }
+  },
+  "stockCostLine": "SKU {sku} · Cost {cost}",
+  "@stockCostLine": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      }
+    }
+  },
+  "stockCostAlertLine": "SKU {sku} · Cost {cost} · Alert at {alert}",
+  "@stockCostAlertLine": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      },
+      "cost": {
+        "type": "String"
+      },
+      "alert": {
+        "type": "int"
+      }
+    }
+  },
+  "usersDeleteUserMessage": "Delete {name}? They will lose access to the app immediately. Their login remains in Firebase Authentication but cannot open the app. To block access but keep the record, deactivate the user instead.",
+  "@usersDeleteUserMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "orderReceiptMoreItems": "+ {count, plural, =1{1 more item} other{{count} more items}}",
+  "@orderReceiptMoreItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingContentWithEMailSet": "With e-mail set up, shoppers get a confirmation and you get an alert for each new order.",
+  "onboardingContentSwitchTheStoreOff": "Switch the store off in Settings to stop taking orders.",
+  "onboardingContentOrdersArriveHereAs": "Orders arrive here as \"Online store\" with the delivery address; the stock is taken out at once.",
+  "onboardingContentOnlyActiveProductsWith": "Only active products with a price and a category that is active are shown.",
+  "onboardingContentAPersonWhoLeaves": "A person who leaves is switched off, never deleted, so history stays correct.",
+  "onboardingContentAdminEverythingPlusUsers": "Admin: everything, plus users, activity logs and the store settings.",
+  "onboardingContentManagerEverythingStaffDo": "Manager: everything staff do, plus vendors, purchases, stock audits, the dashboard, and cancelling orders.",
+  "onboardingContentStaffSellRecordPayments": "Staff: sell, record payments, look up stock and products.",
+  "onboardingContent6UsersALogin": "6. Users: a login for each person, with the right role.",
+  "onboardingContent5PurchasesToPut": "5. Purchases to put the first stock on the shelf (or a Stock Audit to count what you have).",
+  "onboardingContent4VendorsAndCustomers": "4. Vendors and Customers; record opening balances if people already owe or are owed.",
+  "onboardingContent3CategoriesStartFrom": "3. Categories (start from a ready-made Starter pack for your kind of business), then Products with their variants, prices and photos.",
+  "onboardingContent2SettingsOnlineStore": "2. Settings > Online store > \"Send test e-mail\" to check that e-mail works.",
+  "onboardingContent1SettingsOnlineStore": "1. Settings > Online store: store name, phone, delivery fee, free-delivery amount.",
+  "onboardingContentSetAnAlertLevel": "Set an alert level on a variant to be warned before it runs out.",
+  "onboardingContentOnlyYouAndAdmins": "Only you and admins can cancel an order; do it for fake or refused online orders so the stock comes back.",
+  "onboardingContentOnlineOrdersAreMarked": "Online orders are marked \"Online store\" and already took their stock out.",
+  "onboardingContentYouCanAddPhotos": "You can add photos to products you can open.",
+  "onboardingContentRedNumbersInStock": "Red numbers in Stock mean the system thinks there is less than zero: tell your manager.",
+  "onboardingContentMoveAnOrderAlong": "Move an order along: Pending, Processing, Shipped, Delivered.",
+  "onboardingContentRecordThePaymentNow": "Record the payment now or later from the order.",
+  "onboardingContentChooseTheCustomerAdd": "Choose the customer, add the products and quantities, and give a discount if allowed.",
+  "onboardingContentSalesMadeOfflineAre": "Sales made offline are always recorded, even if the shelf turns out to be empty.",
+  "onboardingContentIfTheServerRefuses": "If the server refuses something, it appears on the Sync screen with the reason; you can retry or discard it.",
+  "onboardingContentTheChipAtThe": "The chip at the top shows what is waiting to be sent.",
+  "orderStatusPending": "Pending",
+  "@orderStatusPending": {
+    "description": "Order status names."
+  },
+  "orderStatusProcessing": "Processing",
+  "orderStatusShipped": "Shipped",
+  "orderStatusDelivered": "Delivered",
+  "orderStatusCancelled": "Cancelled",
+  "saleTypeRetail": "Retail",
+  "@saleTypeRetail": {
+    "description": "Retail / wholesale tags of an order or a customer."
+  },
+  "saleTypeWholesale": "Wholesale",
+  "partyTypeVendor": "Vendor",
+  "partyTypeCustomer": "Customer",
+  "balanceSettled": "Settled",
+  "@balanceSettled": {
+    "description": "What a party balance is called."
+  },
+  "balanceToReceive": "To receive",
+  "balanceAdvanceReceived": "Advance received",
+  "balanceToPay": "To pay",
+  "balanceAdvancePaid": "Advance paid",
+  "ledgerSaleOnCredit": "Sale on credit",
+  "ledgerPurchaseOnCredit": "Purchase on credit",
+  "ledgerPaymentReceived": "Payment received",
+  "ledgerPaymentMade": "Payment made",
+  "vendorTypeManufacturer": "Manufacturer",
+  "vendorTypeShop": "Shop",
+  "vendorTypeOther": "Other",
+  "paymentMethodCash": "Cash",
+  "paymentMethodEasypaisa": "Easypaisa",
+  "paymentMethodJazzcash": "JazzCash",
+  "paymentMethodBank": "Bank transfer",
+  "paymentMethodUnknown": "Payment",
+  "@paymentMethodUnknown": {
+    "description": "Shown when a payment has no recorded method."
+  },
+  "purchaseStatusPending": "Pending",
+  "purchaseStatusPartial": "Partial",
+  "purchaseStatusPaid": "Paid",
+  "stockMovementPurchase": "Purchase",
+  "stockMovementSale": "Sale",
+  "stockMovementAdjustment": "Adjustment",
+  "userRoleAdmin": "Admin",
+  "userRoleManager": "Manager",
+  "userRoleStaff": "Staff",
+  "logLevelInfo": "Info",
+  "logLevelWarning": "Warning",
+  "logLevelError": "Error",
+  "logKindRecord": "Record change",
+  "logKindAction": "Action",
+  "logKindFailure": "Failure",
+  "logKindSync": "Sync",
+  "logKindSession": "Session",
+  "activityLogLoadedLogS": "Loaded {length} log(s).",
+  "@activityLogLoadedLogS": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "authControllerSignedOut": "Signed out",
+  "authControllerSignedIn": "Signed in",
+  "catalogThisProductCannotBe": "This product cannot be deleted because {reason}. Mark it inactive instead.",
+  "@catalogThisProductCannotBe": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "catalogHasStockHistoryAnd": "\"{label}\" has stock history and cannot be removed. Mark it inactive instead.",
+  "@catalogHasStockHistoryAnd": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "catalogTheSelectedCategoryNo": "The selected category no longer exists.",
+  "catalogSkuAlreadyBelongsTo": "SKU \"{value}\" already belongs to \"{name}\".",
+  "@catalogSkuAlreadyBelongsTo": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "catalogSkuIsUsedTwice": "SKU \"{value}\" is used twice in this product.",
+  "@catalogSkuIsUsedTwice": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "catalogEveryVariantNeedsA": "Every variant needs a SKU.",
+  "catalogProductNameIsRequired": "Product name is required.",
+  "catalogThisCategoryCannotBe": "This category cannot be deleted because {reason}.",
+  "@catalogThisCategoryCannotBe": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "catalogTheSelectedParentCategory": "The selected parent category no longer exists.",
+  "catalogACategoryCannotBe": "A category cannot be placed inside itself or its subcategories.",
+  "catalogACategoryNamedAlready": "A category named \"{value}\" already exists here.",
+  "@catalogACategoryNamedAlready": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "catalogCategoryNameIsRequired": "Category name is required.",
+  "catalogOnlyAdminsAndManagers": "Only admins and managers can change the catalog.",
+  "catalogItHasStockHistory": "it has stock history",
+  "catalogItIsUsedBy": "it is used by {used} product(s)",
+  "@catalogItIsUsedBy": {
+    "placeholders": {
+      "used": {
+        "type": "Object"
+      }
+    }
+  },
+  "catalogItHasSubcategories": "it has subcategories",
+  "dashboardInsightsUncategorised": "Uncategorised",
+  "dashboardThisMonth": "This month",
+  "dashboardToday": "Today",
+  "localDataNoUserIsSigned": "No user is signed in, so there is no database to open.",
+  "partiesThisEntryBelongsTo": "This entry belongs to a purchase and cannot be deleted.",
+  "partiesThisPartyNoLonger": "This party no longer exists.",
+  "partiesTheAmountMustBe": "The amount must be greater than zero.",
+  "partiesThisCustomerCannotBe": "This customer cannot be deleted because {reason}. Deactivate it instead.",
+  "@partiesThisCustomerCannotBe": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "partiesTheCreditLimitCannot": "The credit limit cannot be negative.",
+  "partiesACustomerWithThis": "A customer with this phone number already exists.",
+  "partiesCustomerNameIsRequired": "Customer name is required.",
+  "partiesThisVendorCannotBe": "This vendor cannot be deleted because {reason}. Deactivate it instead.",
+  "@partiesThisVendorCannotBe": {
+    "placeholders": {
+      "reason": {
+        "type": "Object"
+      }
+    }
+  },
+  "partiesAVendorWithThis": "A vendor with this phone number already exists.",
+  "partiesAVendorNamedAlready": "A vendor named \"{value}\" already exists.",
+  "@partiesAVendorNamedAlready": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "partiesVendorNameIsRequired": "Vendor name is required.",
+  "partiesItHasOrders": "it has orders",
+  "partiesItHasAnOpening": "it has an opening balance",
+  "partiesItHasLedgerEntries": "it has ledger entries",
+  "partiesOnlyAdminsAndManagers": "Only admins and managers can change vendors, customers and ledgers.",
+  "purchasingPaymentOfRecordedFor": "Payment of {value} recorded for purchase {purchaseNo} ({vendorName}).",
+  "@purchasingPaymentOfRecordedFor": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      },
+      "purchaseNo": {
+        "type": "Object"
+      },
+      "vendorName": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchasingThePaymentIsMore": "The payment is more than the amount due ({value}).",
+  "@purchasingThePaymentIsMore": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchasingPurchaseConfirmedFromItem": "Purchase {purchaseNo} confirmed from {vendorName}: {length} item(s), {totalUnits} unit(s), total {value}, paid now {value2}. Stock added and the vendor ledger charged.",
+  "@purchasingPurchaseConfirmedFromItem": {
+    "placeholders": {
+      "purchaseNo": {
+        "type": "Object"
+      },
+      "vendorName": {
+        "type": "Object"
+      },
+      "length": {
+        "type": "Object"
+      },
+      "totalUnits": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      },
+      "value2": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchasingTheAmountPaidMust": "The amount paid must be between 0 and the purchase total.",
+  "purchasingNoLongerExistsIn": "\"{productName}\" no longer exists in the catalog.",
+  "@purchasingNoLongerExistsIn": {
+    "placeholders": {
+      "productName": {
+        "type": "Object"
+      }
+    }
+  },
+  "purchasingABuyingPriceCannot": "A buying price cannot be negative.",
+  "purchasingEveryItemNeedsA": "Every item needs a quantity of at least 1.",
+  "purchasingThisVendorIsInactive": "This vendor is inactive.",
+  "purchasingOnlyAdminsAndManagers": "Only admins and managers can record purchases.",
+  "salesPaymentOfRecordedFor": "Payment of {value} recorded for order {orderNo} ({customerName}).",
+  "@salesPaymentOfRecordedFor": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      },
+      "orderNo": {
+        "type": "Object"
+      },
+      "customerName": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesACancelledOrderCannot": "A cancelled order cannot take payments.",
+  "salesOrderCancelledWasUnit": "Order {orderNo} cancelled (was {label}): {totalUnits} unit(s) returned to stock and the {value} charge on {customerName}'s ledger reversed.",
+  "@salesOrderCancelledWasUnit": {
+    "placeholders": {
+      "orderNo": {
+        "type": "Object"
+      },
+      "label": {
+        "type": "Object"
+      },
+      "totalUnits": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      },
+      "customerName": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesAOrderCannotBe": "A {value} order cannot be cancelled.",
+  "@salesAOrderCannotBe": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesOrderMovedFromTo": "Order {orderNo} moved from {label} to {label2}.",
+  "@salesOrderMovedFromTo": {
+    "placeholders": {
+      "orderNo": {
+        "type": "Object"
+      },
+      "label": {
+        "type": "Object"
+      },
+      "label2": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesAOrderCannotChange": "A {value} order cannot change status.",
+  "@salesAOrderCannotChange": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesOrderConfirmedForItem": "Order {orderNo} confirmed for {customerName}: {length} item(s), {totalUnits} unit(s), {value} sale, total {value2}, paid now {value3}. Stock taken out and the customer ledger charged.",
+  "@salesOrderConfirmedForItem": {
+    "placeholders": {
+      "orderNo": {
+        "type": "Object"
+      },
+      "customerName": {
+        "type": "Object"
+      },
+      "length": {
+        "type": "Object"
+      },
+      "totalUnits": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      },
+      "value2": {
+        "type": "Object"
+      },
+      "value3": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesThisOrderWouldTake": "This order would take {name} over the credit limit (limit {value}, balance after {value2}).",
+  "@salesThisOrderWouldTake": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      },
+      "value2": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesNotEnoughStockFor": "Not enough stock for \"{productName} · {variantLabel}\": {available} available, {wanted} requested.",
+  "@salesNotEnoughStockFor": {
+    "placeholders": {
+      "productName": {
+        "type": "Object"
+      },
+      "variantLabel": {
+        "type": "Object"
+      },
+      "available": {
+        "type": "Object"
+      },
+      "wanted": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesIsInactive": "\"{productName} · {variantLabel}\" is inactive.",
+  "@salesIsInactive": {
+    "placeholders": {
+      "productName": {
+        "type": "Object"
+      },
+      "variantLabel": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesTheAmountPaidMust": "The amount paid must be between 0 and the order total.",
+  "salesTheOrderDiscountMust": "The order discount must be between 0 and the order subtotal.",
+  "salesEveryPaymentMustBe": "Every payment must be more than zero.",
+  "salesTheDiscountOnMust": "The discount on \"{productName}\" must be between 0 and the line amount.",
+  "@salesTheDiscountOnMust": {
+    "placeholders": {
+      "productName": {
+        "type": "Object"
+      }
+    }
+  },
+  "salesASellingPriceCannot": "A selling price cannot be negative.",
+  "salesThisCustomerIsInactive": "This customer is inactive.",
+  "salesOnlyAdminsAndManagers": "Only admins and managers can cancel orders.",
+  "salesYouAreNotAllowed": "You are not allowed to change orders.",
+  "stockAuditEveryCountedQuantityMatches2": "Every counted quantity matches the system, so there is nothing to adjust.",
+  "stockAuditACountedItemNo": "A counted item no longer exists in the catalog.",
+  "stockAuditTheSameItemWas": "The same item was counted twice.",
+  "stockAuditACountedQuantityCannot": "A counted quantity cannot be negative.",
+  "stockAuditEnterTheCountedQuantity": "Enter the counted quantity of at least one item.",
+  "syncControllerEverythingIsInStep": "Everything is in step with the server.",
+  "syncControllerChangeSWereRefused": "{refused} change(s) were refused by the server. See the list below.",
+  "@syncControllerChangeSWereRefused": {
+    "placeholders": {
+      "refused": {
+        "type": "Object"
+      }
+    }
+  },
+  "syncControllerTheServerCannotBe": "The server cannot be reached. Your work is saved on this device.",
+  "syncControllerSyncFailed": "Sync failed: {e}",
+  "@syncControllerSyncFailed": {
+    "placeholders": {
+      "e": {
+        "type": "Object"
+      }
+    }
+  },
+  "usersYouCannotDeleteYour": "You cannot delete your own account.",
+  "usersOnlyAnActiveAdmin": "Only an active admin can delete users.",
+  "usersUserNotFound": "User not found.",
+  "usersYouCannotChangeYour": "You cannot change your own role or active status.",
+  "usersOnlyAnActiveAdmin2": "Only an active admin can update users.",
+  "usersOnlyAnActiveAdmin3": "Only an active admin can add users.",
+  "appExceptionsTheCloudDataChanged": "The cloud data changed. Download the updates first.",
+  "posPaymentPlanThatIsMoreThan": "That is more than what is left to pay ({value}).",
+  "@posPaymentPlanThatIsMoreThan": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "posPaymentPlanEnterTheTransactionNumber": "Enter the {label} transaction number.",
+  "@posPaymentPlanEnterTheTransactionNumber": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "posPaymentPlanEnterTheBankAnd": "Enter the bank and transaction number.",
+  "posPaymentPlanTheSaleIsAlready": "The sale is already fully paid.",
+  "posPaymentPlanEnterAnAmountAbove": "Enter an amount above zero.",
+  "priceWarningsSalePriceIsLess": "Sale price is less than the cost price.",
+  "priceWarningsWholesalePriceIsLess": "Wholesale price is less than the cost price.",
+  "priceWarningsRetailPriceIsLess": "Retail price is less than the wholesale price.",
+  "receiptThankYouForShopping2": "Thank you for shopping with us!",
+  "receiptBalanceDue": "Balance due: {value}",
+  "@receiptBalanceDue": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptChange2": "Change: {value}",
+  "@receiptChange2": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptTotal": "*Total: {value}*",
+  "@receiptTotal": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptDelivery2": "Delivery: {value}",
+  "@receiptDelivery2": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptDiscount3": "Discount: -{value}",
+  "@receiptDiscount3": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptItems": "Items: {value}",
+  "@receiptItems": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptCustomer": "Customer: {customerName}",
+  "@receiptCustomer": {
+    "placeholders": {
+      "customerName": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptReceipt": "Receipt {orderNo}",
+  "@receiptReceipt": {
+    "placeholders": {
+      "orderNo": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptTel": "Tel: {shopPhone}",
+  "@receiptTel": {
+    "placeholders": {
+      "shopPhone": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptPdfDiscount": "Discount -{value}",
+  "@receiptPdfDiscount": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      }
+    }
+  },
+  "receiptPdfPhoneNumber": "Phone Number : {shopPhone}",
+  "@receiptPdfPhoneNumber": {
+    "placeholders": {
+      "shopPhone": {
+        "type": "Object"
+      }
+    }
+  },
+  "whatsappHelloYourOrder": "Hello{who}, your order {orderNo} ({value}) {status}. - {shopName}",
+  "@whatsappHelloYourOrder": {
+    "placeholders": {
+      "who": {
+        "type": "Object"
+      },
+      "orderNo": {
+        "type": "Object"
+      },
+      "value": {
+        "type": "Object"
+      },
+      "status": {
+        "type": "Object"
+      },
+      "shopName": {
+        "type": "Object"
+      }
+    }
+  },
+  "whatsappHasBeenCancelled": "has been cancelled",
+  "whatsappHasBeenDeliveredThank": "has been delivered. Thank you for shopping with us!",
+  "whatsappIsOnItsWay": "is on its way to you",
+  "whatsappIsBeingPrepared": "is being prepared",
+  "whatsappHasBeenReceived": "has been received",
+  "apiAuthServiceTheServerDidNot": "The server did not return the new user.",
+  "apiClientTheServerHadA": "The server had a problem (error {status}). Please try again.",
+  "@apiClientTheServerHadA": {
+    "placeholders": {
+      "status": {
+        "type": "Object"
+      }
+    }
+  },
+  "apiClientTooManyAttemptsPlease": "Too many attempts. Please wait a moment and try again.",
+  "apiClientYouAreNotAllowed": "You are not allowed to do this.",
+  "apiClientIncorrectEmailOrPassword": "Incorrect email or password.",
+  "apiClientTheServerRefusedThis": "The server refused this request.",
+  "apiClientCannotReachTheServer": "Cannot reach the server at {_baseUrl}. Check your connection and try again. ({message})",
+  "@apiClientCannotReachTheServer": {
+    "placeholders": {
+      "_baseUrl": {
+        "type": "Object"
+      },
+      "message": {
+        "type": "Object"
+      }
+    }
+  },
+  "apiClientTheServerTookToo": "The server took too long to answer. Please try again.",
+  "apiClientYourSessionEndedPlease": "Your session ended. Please sign in again.",
+  "apiClientTheServerSentAn": "The server sent an unexpected sign-in answer.",
+  "apiCommandsRecordsOfCannotBe": "Records of \"{collection}\" cannot be deleted.",
+  "@apiCommandsRecordsOfCannotBe": {
+    "placeholders": {
+      "collection": {
+        "type": "Object"
+      }
+    }
+  },
+  "apiCommandsRecordsOfCannotBe2": "Records of \"{collection}\" cannot be saved directly.",
+  "@apiCommandsRecordsOfCannotBe2": {
+    "placeholders": {
+      "collection": {
+        "type": "Object"
+      }
+    }
+  },
+  "onlineRepositoriesUsersAreCreatedWith": "Users are created with a login (email and password).",
+  "onlineRepositoriesAStockCountCannot": "A stock count cannot be deleted.",
+  "onlineRepositoriesAStockCountIs": "A stock count is created by confirming it.",
+  "onlineRepositoriesAnOrderCannotBe": "An order cannot be deleted. Cancel it instead.",
+  "onlineRepositoriesAnOrderIsCreated": "An order is created by confirming it.",
+  "onlineRepositoriesAConfirmedPurchaseCannot": "A confirmed purchase cannot be deleted.",
+  "onlineRepositoriesAConfirmedPurchaseCannot2": "A confirmed purchase cannot be changed.",
+  "onlineRepositoriesStockChangesOnlyThrough": "Stock changes only through purchases, sales and stock counts.",
+  "onlineRepositoriesLedgerEntriesCannotBe": "Ledger entries cannot be edited. Delete the entry and add it again.",
+  "photoServiceThePhotoCouldNot": "The photo could not be uploaded. Check your connection and try again.",
+  "photoServiceThePhotoCouldNot2": "The photo could not be uploaded ({statusCode}). Please try again.",
+  "@photoServiceThePhotoCouldNot2": {
+    "placeholders": {
+      "statusCode": {
+        "type": "Object"
+      }
+    }
+  },
+  "photoServiceTheServerDidNot": "The server did not give an upload link.",
+  "photoServiceThisItemHasNot": "This item has not reached the server yet. Wait for it to sync, then add the photo.",
+  "photoServiceChooseAPhoto": "Choose a photo",
+  "photoServiceOnlyJpegPngOr": "Only JPEG, PNG or WebP photos can be used.",
+  "photoServiceThatPhotoIsBigger": "That photo is bigger than 10 MB. Please choose a smaller one.",
+  "photoServiceThatFileIsEmpty": "That file is empty.",
+  "localRepositoriesStockCount": "Stock count {auditNo}",
+  "@localRepositoriesStockCount": {
+    "placeholders": {
+      "auditNo": {
+        "type": "Object"
+      }
+    }
+  },
+  "localRepositoriesStockCount2": "Stock count",
+  "localRepositoriesCancelOrder": "Cancel order {orderNo}",
+  "@localRepositoriesCancelOrder": {
+    "placeholders": {
+      "orderNo": {
+        "type": "Object"
+      }
+    }
+  },
+  "localRepositoriesOrder": "Order {orderNo}",
+  "@localRepositoriesOrder": {
+    "placeholders": {
+      "orderNo": {
+        "type": "Object"
+      }
+    }
+  },
+  "localRepositoriesPurchase": "Purchase {purchaseNo}",
+  "@localRepositoriesPurchase": {
+    "placeholders": {
+      "purchaseNo": {
+        "type": "Object"
+      }
+    }
+  },
+  "localRepositoriesStockEntry": "Stock entry",
+  "localRepositoriesPaymentFor": "Payment {value} for {reference}",
+  "@localRepositoriesPaymentFor": {
+    "placeholders": {
+      "value": {
+        "type": "Object"
+      },
+      "reference": {
+        "type": "Object"
+      }
+    }
+  },
+  "localRepositoriesLedgerEntry": "Ledger entry",
+  "currencyPkr": "Pakistani rupee",
+  "@currencyPkr": {
+    "description": "Currency names in the currency list of the shop details."
+  },
+  "currencyUsd": "US dollar",
+  "currencyEur": "Euro",
+  "currencyGbp": "British pound",
+  "currencyAed": "UAE dirham",
+  "currencySar": "Saudi riyal",
+  "currencyQar": "Qatari riyal",
+  "currencyInr": "Indian rupee",
+  "currencyBdt": "Bangladeshi taka",
+  "currencyCad": "Canadian dollar",
+  "currencyAud": "Australian dollar",
+  "stockAuditLogSummary": "Stock count {auditNo} applied: {items, plural, =1{1 item} other{{items} items}} adjusted, net {net, plural, =1{{netText} unit} other{{netText} units}}.{note}",
+  "@stockAuditLogSummary": {
+    "description": "Activity-log summary of an applied stock count.",
+    "placeholders": {
+      "auditNo": {
+        "type": "String"
+      },
+      "items": {
+        "type": "int"
+      },
+      "net": {
+        "type": "int"
+      },
+      "netText": {
+        "type": "String"
+      },
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "stockAuditLogNote": " Note: {note}",
+  "@stockAuditLogNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "starterPackMatchedOne": "{a}",
+  "@starterPackMatchedOne": {
+    "description": "The names of the pack groups the shop already has, as a sentence part.",
+    "placeholders": {
+      "a": {
+        "type": "String"
+      }
+    }
+  },
+  "starterPackMatchedTwo": "{a} and {b}",
+  "@starterPackMatchedTwo": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "starterPackMatchedThree": "{a}, {b} and {c}",
+  "@starterPackMatchedThree": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      }
+    }
+  },
+  "starterPackMatchedMore": "{a}, {b}, {c} and {more} more",
+  "@starterPackMatchedMore": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      },
+      "c": {
+        "type": "String"
+      },
+      "more": {
+        "type": "int"
+      }
+    }
+  },
+  "countGroups": "{count, plural, =1{{count} group} other{{count} groups}}",
+  "@countGroups": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countCategories": "{count, plural, =1{{count} category} other{{count} categories}}",
+  "@countCategories": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "starterPackSizeLine": "{groups} · {categories}",
+  "@starterPackSizeLine": {
+    "placeholders": {
+      "groups": {
+        "type": "String"
+      },
+      "categories": {
+        "type": "String"
+      }
+    }
+  },
+  "starterPackGroupHave": "{subcategories} · you already have this one",
+  "@starterPackGroupHave": {
+    "placeholders": {
+      "subcategories": {
+        "type": "String"
+      }
+    }
+  },
+  "photoWidgetsPhotos": "photos",
+  "apiErrorAuditsACountedItemNoLongerExists": "A counted item no longer exists in the catalog.",
+  "apiErrorAuditsAuditNumberAlreadyExists": "Audit number {supplied} already exists.",
+  "@apiErrorAuditsAuditNumberAlreadyExists": {
+    "placeholders": {
+      "supplied": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorAuditsCouldNotGenerateAnAuditNumber": "Could not generate an audit number, try again.",
+  "apiErrorAuditsEveryCountedQuantityMatchesTheSystem": "Every counted quantity matches the system, so there is nothing to adjust.",
+  "apiErrorAuditsStockAuditNotFound": "Stock audit not found",
+  "apiErrorAuditsTheSameItemWasCountedTwice": "The same item was counted twice.",
+  "apiErrorAuditsThisStockAuditAlreadyExists": "This stock audit already exists.",
+  "apiErrorAuthAccountDisabled": "Account is disabled",
+  "apiErrorAuthAccountDisabledToken": "Account is disabled",
+  "apiErrorAuthInvalidEmailOrPassword": "Invalid email or password",
+  "apiErrorAuthInvalidOrExpiredAccessToken": "Invalid or expired access token",
+  "apiErrorAuthInvalidRefreshToken": "Invalid refresh token",
+  "apiErrorAuthMissingAccessToken": "Missing access token",
+  "apiErrorAuthRefreshTokenExpired": "Refresh token expired",
+  "apiErrorAuthRefreshTokenWasAlreadyUsed": "Refresh token was already used",
+  "apiErrorAuthYouDoNotHavePermissionFor": "You do not have permission for this action",
+  "apiErrorCategoriesACategoryCannotBePlacedInside": "A category cannot be placed inside itself or its subcategories.",
+  "apiErrorCategoriesACategoryNamedAlreadyExistsHere": "A category named \"{name}\" already exists here.",
+  "@apiErrorCategoriesACategoryNamedAlreadyExistsHere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorCategoriesCategoryNameIsRequired": "Category name is required.",
+  "apiErrorCategoriesCategoryNotFound": "Category not found",
+  "apiErrorCategoriesTheSelectedParentCategoryNoLonger": "The selected parent category no longer exists.",
+  "apiErrorCategoriesDeleteHasSubcategories": "This category cannot be deleted because it has subcategories.",
+  "apiErrorCategoriesDeleteUsedByProducts": "This category cannot be deleted because it is used by {count, plural, =1{{count} product} other{{count} products}}.",
+  "@apiErrorCategoriesDeleteUsedByProducts": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "apiErrorCustomersACustomerWithThisPhoneNumber": "A customer with this phone number already exists.",
+  "apiErrorCustomersCustomerNameIsRequired": "Customer name is required.",
+  "apiErrorCustomersCustomerNotFound": "Customer not found",
+  "apiErrorCustomersDeleteHasLedgerEntries": "This customer cannot be deleted because it has ledger entries. Deactivate it instead.",
+  "apiErrorCustomersDeleteHasOpeningBalance": "This customer cannot be deleted because it has an opening balance. Deactivate it instead.",
+  "apiErrorCustomersDeleteHasOrders": "This customer cannot be deleted because it has orders. Deactivate it instead.",
+  "apiErrorCustomersTheWalkInCustomerIsUsed": "The walk-in customer is used by the POS and cannot be deleted.",
+  "apiErrorDbNotFound": "Record not found.",
+  "apiErrorDbStillReferenced": "This record is still referenced by other records.",
+  "apiErrorDbUnexpected": "Unexpected database error",
+  "apiErrorDbUniqueViolation": "A record with the same unique value already exists.",
+  "apiErrorIdempotencyARequestWithThisIdempotencyKey": "A request with this Idempotency-Key is still in progress. Try again shortly.",
+  "apiErrorIdempotencyIdempotencyKeyIsTooLong200": "Idempotency-Key is too long (200 characters at most).",
+  "apiErrorIdempotencyPleaseRetryTheRequest": "Please retry the request.",
+  "apiErrorIdempotencyThisIdempotencyKeyWasAlreadyUsed": "This Idempotency-Key was already used for a different request.",
+  "apiErrorImagesAProductCanHavePhotosAt": "A product can have {max} photos at most.",
+  "@apiErrorImagesAProductCanHavePhotosAt": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorImagesListEveryPhotoOfThisProduct": "List every photo of this product exactly once.",
+  "apiErrorImagesPhotoNotFound": "Photo not found",
+  "apiErrorImagesProductNotFound": "Product not found",
+  "apiErrorImagesThatVariantDoesNotBelongTo": "That variant does not belong to this product.",
+  "apiErrorImagesTheFileHasNotBeenUploaded": "The file has not been uploaded yet.",
+  "apiErrorImagesTheUploadedFileDoesNotMatch": "The uploaded file does not match the size that was declared.",
+  "apiErrorImagesTheUploadedFileIsNotA": "The uploaded file is not a valid JPEG, PNG or WebP photo.",
+  "apiErrorLedgerLedgerEntryNotFound": "Ledger entry not found",
+  "apiErrorLedgerOnlyAdminsAndManagersCanRead": "Only admins and managers can read vendor ledgers.",
+  "apiErrorLedgerThisEntryBelongsToAPurchase": "This entry belongs to a purchase and cannot be deleted.",
+  "apiErrorLedgerThisEntryBelongsToAnOrder": "This entry belongs to an order and cannot be deleted.",
+  "apiErrorLedgerThisPartyNoLongerExists": "This party no longer exists.",
+  "apiErrorOrdersACancelledOrderCannotTakePayments": "A cancelled order cannot take payments.",
+  "apiErrorOrdersCannotCancelInStatus": "A {status} order cannot be cancelled.",
+  "@apiErrorOrdersCannotCancelInStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorOrdersCannotChangeStatusInStatus": "A {status} order cannot change status.",
+  "@apiErrorOrdersCannotChangeStatusInStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorOrdersAnOrderCannotMoveFromTo": "An order cannot move from {from} to {to}.",
+  "@apiErrorOrdersAnOrderCannotMoveFromTo": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorOrdersCouldNotGenerateAnOrderNumber": "Could not generate an order number, try again.",
+  "apiErrorOrdersItemInactive": "\"{name}\" is inactive.",
+  "@apiErrorOrdersItemInactive": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorOrdersOrderNotFound": "Order not found",
+  "apiErrorOrdersOrderNumberAlreadyExists": "Order number {supplied} already exists.",
+  "@apiErrorOrdersOrderNumberAlreadyExists": {
+    "placeholders": {
+      "supplied": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorOrdersSendEitherTheAmountPaidOr": "Send either the amount paid or the payments, not both.",
+  "apiErrorOrdersTheAmountPaidMustBeBetween": "The amount paid must be between 0 and the order total.",
+  "apiErrorOrdersTheDiscountOnMustBeBetween": "The discount on \"{name}\" must be between 0 and the line amount.",
+  "@apiErrorOrdersTheDiscountOnMustBeBetween": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorOrdersTheOrderDiscountMustBeBetween": "The order discount must be between 0 and the order subtotal.",
+  "apiErrorOrdersThisCustomerIsInactive": "This customer is inactive.",
+  "apiErrorOrdersThisCustomerNoLongerExists": "This customer no longer exists.",
+  "apiErrorOrdersThisOrderAlreadyExists": "This order already exists.",
+  "apiErrorOrdersThisOrderWouldTakeOverThe": "This order would take {name} over the credit limit (limit {limit}, balance after {balance}).",
+  "@apiErrorOrdersThisOrderWouldTakeOverThe": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      },
+      "balance": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorOrdersUseTheCancelActionToCancel": "Use the cancel action to cancel an order.",
+  "apiErrorPhotosAPhotoCanBe10Mb": "A photo can be 10 MB at most.",
+  "apiErrorPhotosNotFound": "Not found",
+  "apiErrorPhotosOnlyJpegPngOrWebpPhotos": "Only JPEG, PNG or WebP photos are accepted.",
+  "apiErrorPhotosPhotosBelongToOneOf": "Photos belong to one of: {kinds}.",
+  "@apiErrorPhotosPhotosBelongToOneOf": {
+    "placeholders": {
+      "kinds": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorProductsAVariantIdAlreadyBelongsTo": "A variant id already belongs to another product.",
+  "apiErrorProductsAVariantIdIsUsedTwice": "A variant id is used twice.",
+  "apiErrorProductsEveryVariantNeedsASku": "Every variant needs a SKU.",
+  "apiErrorProductsVariantHasStockHistory": "\"{name}\" has stock history and cannot be removed. Mark it inactive instead.",
+  "@apiErrorProductsVariantHasStockHistory": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorProductsProductNameIsRequired": "Product name is required.",
+  "apiErrorProductsSkuAlreadyBelongsTo": "SKU \"{sku}\" already belongs to \"{name}\".",
+  "@apiErrorProductsSkuAlreadyBelongsTo": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorProductsSkuIsUsedTwiceInThis": "SKU \"{sku}\" is used twice in this product.",
+  "@apiErrorProductsSkuIsUsedTwiceInThis": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorProductsTheSelectedCategoryNoLongerExists": "The selected category no longer exists.",
+  "apiErrorProductsDeleteHasStockHistory": "This product cannot be deleted because it has stock history. Mark it inactive instead.",
+  "apiErrorPurchasesCouldNotGenerateAPurchaseNumber": "Could not generate a purchase number, try again.",
+  "apiErrorPurchasesItemNoLongerExistsInThe": "Item {item} no longer exists in the catalog.",
+  "@apiErrorPurchasesItemNoLongerExistsInThe": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorPurchasesPurchaseNotFound": "Purchase not found",
+  "apiErrorPurchasesPurchaseNumberAlreadyExists": "Purchase number {supplied} already exists.",
+  "@apiErrorPurchasesPurchaseNumberAlreadyExists": {
+    "placeholders": {
+      "supplied": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorPurchasesTheAmountPaidMustBeBetween": "The amount paid must be between 0 and the purchase total.",
+  "apiErrorPurchasesThePaymentIsMoreThanThe": "The payment is more than the amount due ({due}).",
+  "@apiErrorPurchasesThePaymentIsMoreThanThe": {
+    "placeholders": {
+      "due": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorPurchasesThisPurchaseAlreadyExists": "This purchase already exists.",
+  "apiErrorPurchasesThisVendorIsInactive": "This vendor is inactive.",
+  "apiErrorPurchasesThisVendorNoLongerExists": "This vendor no longer exists.",
+  "apiErrorRequestTooManyRequests": "Too many requests. Please wait a moment and try again.",
+  "apiErrorRequestValidationFailed": "Some of the values sent are not valid.",
+  "apiErrorStarterPacksChooseAtLeastOneGroupTo": "Choose at least one group to add.",
+  "apiErrorStarterPacksNotInThisPack": "Not in this pack: {names}.",
+  "@apiErrorStarterPacksNotInThisPack": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorStarterPacksThereIsNoSuchStarterPack": "There is no such starter pack.",
+  "apiErrorStockNotEnoughStockForOnHand": "Not enough stock for {name}: {quantity} on hand, {needed} needed.",
+  "@apiErrorStockNotEnoughStockForOnHand": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      },
+      "needed": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorStoreAnAccountWithThisEmailAlready": "An account with this email already exists. Please sign in.",
+  "apiErrorStoreAnItemInYourCartIs": "An item in your cart is no longer available. Please review your cart.",
+  "apiErrorStoreEMailIsOnlySetUp": "E-mail is only set up for the business that runs the online store.",
+  "apiErrorStorePleaseEnterAValidPhoneNumber": "Please enter a valid phone number so we can reach you.",
+  "apiErrorStorePleaseOrderAtMost100Of": "Please order at most 100 of one item.",
+  "apiErrorStorePleaseSignIn": "Please sign in.",
+  "apiErrorStorePleaseSignInAgain": "Please sign in again.",
+  "apiErrorStoreSorryOneOfYourItemsIs": "Sorry, one of your items is no longer available in the quantity you chose. Please review your cart.",
+  "apiErrorStoreTheStoreIsClosedRightNow": "The store is closed right now. Please come back later.",
+  "apiErrorStoreTheStoreIsNotTakingOrders": "The store is not taking orders right now.",
+  "apiErrorStoreThisLinkHasExpiredPleaseAsk": "This link has expired. Please ask for a new one.",
+  "apiErrorStoreThisOrderNumberIsAlreadyUsed": "This order number is already used. Please try again.",
+  "apiErrorStoreThisProductIsNotAvailable": "This product is not available.",
+  "apiErrorStoreWeCannotTakeOnlineOrdersFor": "We cannot take online orders for this phone number. Please call us.",
+  "apiErrorStoreWeCouldNotFindThisOrder": "We could not find this order. Check the link and try again.",
+  "apiErrorStoreWrongEmailOrPassword": "Wrong email or password.",
+  "apiErrorUsersAUserWithThisEmailAlready": "A user with this email already exists",
+  "apiErrorUsersThereMustBeAtLeastOne": "There must be at least one active admin",
+  "apiErrorUsersUserNotFound": "User not found",
+  "apiErrorUsersYouCannotDemoteOrDisableYour": "You cannot demote or disable your own admin account",
+  "apiErrorVendorsAVendorNamedAlreadyExists": "A vendor named \"{name}\" already exists.",
+  "@apiErrorVendorsAVendorNamedAlreadyExists": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorVendorsAVendorWithThisPhoneNumber": "A vendor with this phone number already exists.",
+  "apiErrorVendorsDeleteHasLedgerEntries": "This vendor cannot be deleted because it has ledger entries. Deactivate it instead.",
+  "apiErrorVendorsDeleteHasOpeningBalance": "This vendor cannot be deleted because it has an opening balance. Deactivate it instead.",
+  "apiErrorVendorsDeleteHasPurchases": "This vendor cannot be deleted because it has purchases. Deactivate it instead.",
+  "apiErrorVendorsVendorNameIsRequired": "Vendor name is required.",
+  "apiErrorVendorsVendorNotFound": "Vendor not found",
+  "apiErrorStreamTooManyConnections": "Too many open update streams for this account.",
+  "notificationsTitle": "Notifications",
+  "@notificationsTitle": {
+    "description": "The bell: its tooltip and the heading of its list."
+  },
+  "notificationsEmpty": "Nothing new. Online orders and low stock will show here.",
+  "notificationsMarkAllRead": "Mark all as read",
+  "notificationsLoadError": "The notifications could not be loaded. They need a connection to the server.",
+  "notificationsRetry": "Try again",
+  "notificationsView": "View",
+  "@notificationsView": {
+    "description": "Button of the pop-up for a new notification: opens what it is about."
+  },
+  "notificationNewOrder": "New online order {orderNo}",
+  "@notificationNewOrder": {
+    "placeholders": {
+      "orderNo": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationNewOrderDetail": "{customer} · {total}",
+  "@notificationNewOrderDetail": {
+    "placeholders": {
+      "customer": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationLowStock": "{product} is running low",
+  "@notificationLowStock": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationLowStockDetail": "{count, plural, =1{1 left} other{{count} left}} · alert level {threshold}",
+  "@notificationLowStockDetail": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "threshold": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationOutOfStock": "{product} is out of stock",
+  "@notificationOutOfStock": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationOutOfStockDetail": "Alert level {threshold}",
+  "@notificationOutOfStockDetail": {
+    "placeholders": {
+      "threshold": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationUnknown": "New notification",
+  "@notificationUnknown": {
+    "description": "Shown for a kind of notification this version of the app does not know."
+  },
+  "settingsNotifications": "Notifications",
+  "@settingsNotifications": {
+    "description": "Settings section: sound and desktop alerts for new notifications."
+  },
+  "settingsNotificationsSubtitle": "Sound and desktop alerts",
+  "notifSettingsSound": "Play a sound",
+  "notifSettingsSoundHint": "A chime for a new online order, a calmer tone for low stock.",
+  "notifSettingsSystem": "Show desktop notifications",
+  "notifSettingsSystemHint": "When this window is in the background or minimised, a new notification also appears on your screen.",
+  "notifSettingsBlocked": "Notifications are blocked for this site. Allow them in your browser's site settings, then switch this on again.",
+  "notifSettingsUnsupported": "This device cannot show desktop notifications.",
+  "notifSettingsTest": "Send a test",
+  "notifSettingsTestTitle": "Test notification",
+  "notifSettingsTestBody": "A new online order will look like this.",
+  "notifSettingsTestSent": "Test sent. It shows on your screen when this window is in the background.",
+  "notifSettingsTestSoundOnly": "Sound played. Desktop notifications are switched off above.",
+  "notifSettingsTestNotAllowed": "Sound played, but notifications are not allowed for this app yet. Switch the option on again to allow them."
+}

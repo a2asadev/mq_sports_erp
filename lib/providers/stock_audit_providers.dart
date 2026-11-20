@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
 import 'package:a2_stocks/repositories/repository.dart';
 import 'package:a2_stocks/providers/data_mode.dart';
@@ -31,8 +32,7 @@ final Provider<bool> canAuditStockProvider = Provider<bool>((Ref ref) {
       (user.role == UserRole.admin || user.role == UserRole.manager);
 });
 
-const String _noPermissionMessage =
-    'Only admins and managers can count and adjust stock.';
+String get _noPermissionMessage => L10n.current.stockAuditOnlyAdminsAndManagers;
 
 final Provider<StockAuditOperations> stockAuditRepositoryProvider =
     Provider<StockAuditOperations>((Ref ref) {
@@ -77,16 +77,16 @@ class StockAuditsNotifier extends BaseListNotifier<StockAuditModel> {
     required DateTime auditDate,
   }) async {
     if (!ref.read(canAuditStockProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     if (counts.isEmpty) {
       return reportFailure(
-          const ValidationException('Enter the counted quantity of at least one item.'));
+          ValidationException(L10n.current.stockAuditEnterTheCountedQuantity));
     }
     for (final CountedVariant count in counts) {
       if (count.countedQuantity < 0) {
         return reportFailure(
-            const ValidationException('A counted quantity cannot be negative.'));
+            ValidationException(L10n.current.stockAuditACountedQuantityCannot));
       }
     }
 
@@ -103,8 +103,8 @@ class StockAuditsNotifier extends BaseListNotifier<StockAuditModel> {
       final Set<String> seen = <String>{};
       for (final CountedVariant count in counts) {
         if (!seen.add(count.variantId)) {
-          return reportFailure(const ValidationException(
-              'The same item was counted twice.'));
+          return reportFailure(ValidationException(
+              L10n.current.stockAuditTheSameItemWas));
         }
         ProductModel? product;
         VariantModel? variant;
@@ -119,8 +119,8 @@ class StockAuditsNotifier extends BaseListNotifier<StockAuditModel> {
           }
         }
         if (product == null || variant == null) {
-          return reportFailure(const ValidationException(
-              'A counted item no longer exists in the catalog.'));
+          return reportFailure(ValidationException(
+              L10n.current.stockAuditACountedItemNo));
         }
         final StockAuditItem item = StockAuditItem(
           productId: product.id,
@@ -140,8 +140,8 @@ class StockAuditsNotifier extends BaseListNotifier<StockAuditModel> {
     }
 
     if (items.isEmpty) {
-      return reportFailure(const ValidationException(
-          'Every counted quantity matches the system, so there is nothing to adjust.'));
+      return reportFailure(ValidationException(
+          L10n.current.stockAuditEveryCountedQuantityMatches2));
     }
 
     final UserModel? actor = ref.read(currentUserProvider).valueOrNull;
@@ -169,10 +169,8 @@ class StockAuditsNotifier extends BaseListNotifier<StockAuditModel> {
             module: StorageKeys.stockAudits,
             entityId: audit.id,
             entityLabel: audit.auditNo,
-            summary: 'Stock count ${audit.auditNo} applied: '
-                '${audit.items.length} item(s) adjusted, net '
-                '${net > 0 ? '+$net' : '$net'} unit(s).'
-                '${note.isEmpty ? '' : ' Note: $note'}',
+            summary: L10n.current.stockAuditLogSummary(audit.auditNo, audit.items.length, net, net > 0 ? '+$net' : '$net',
+                note.isEmpty ? '' : L10n.current.stockAuditLogNote(note)),
             changes: <LogFieldChange>[
               for (final StockAuditItem item in audit.items)
                 LogFieldChange(

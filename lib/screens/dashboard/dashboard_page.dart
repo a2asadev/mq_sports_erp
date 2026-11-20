@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/erp_module.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/providers/dashboard_insights.dart';
@@ -39,18 +41,7 @@ String _firstName(UserModel? user) {
   return name.split(' ').first;
 }
 
-const List<String> _weekdayNames = <String>[
-  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
-];
-const List<String> _monthNames = <String>[
-  'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
-  'September', 'October', 'November', 'December',
-];
-
-String _today() {
-  final DateTime n = DateTime.now();
-  return '${_weekdayNames[n.weekday - 1]}, ${n.day} ${_monthNames[n.month - 1]} ${n.year}';
-}
+String _today(BuildContext context) => formatLongDate(context, DateTime.now());
 
 /// Lays [children] out in [columns] equal columns.
 class _Grid extends StatelessWidget {
@@ -87,11 +78,11 @@ class _Shortcuts extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('Welcome, ${_firstName(user)}', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
-        Text(_today(), style: const TextStyle(color: AppColors.textMuted)),
+        Text(context.l10n.dashboardWelcome(_firstName(user)), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
+        Text(_today(context), style: const TextStyle(color: AppColors.textMuted)),
         const SizedBox(height: 16),
         if (modules.isEmpty)
-          const Text('No modules available for your role yet.')
+          Text(context.l10n.dashboardNoModulesAvailableFor)
         else
           LayoutBuilder(
             builder: (BuildContext context, BoxConstraints box) => _Grid(
@@ -115,7 +106,7 @@ class _Shortcuts extends ConsumerWidget {
                               child: Icon(m.icon, size: 28, color: AppColors.primary),
                             ),
                             const SizedBox(height: 10),
-                            Text(m.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+                            Text(m.title(context.l10n), style: const TextStyle(fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ),
@@ -160,12 +151,12 @@ class _ExecutiveDashboard extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Welcome, ${_firstName(user)}',
+              context.l10n.dashboardWelcome(_firstName(user)),
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 2),
             Text(
-              'You have ${stats.ordersToday} order(s) today · ${_today()}',
+              context.l10n.dashboardYouHaveOrderS(stats.ordersToday, _today(context)),
               style: const TextStyle(color: AppColors.textMuted),
             ),
             const SizedBox(height: 16),
@@ -176,31 +167,31 @@ class _ExecutiveDashboard extends ConsumerWidget {
                 _ColorStat(
                   color: AppColors.primary,
                   icon: Icons.payments_outlined,
-                  title: 'Sales today',
+                  title: context.l10n.dashboardSalesToday,
                   value: formatMoney(stats.salesToday),
-                  caption: '${stats.ordersToday} order(s)',
+                  caption: context.l10n.dashboardOrderS3(stats.ordersToday),
                 ),
                 _ColorStat(
                   color: AppColors.navy,
                   icon: Icons.calendar_month_outlined,
-                  title: 'Sales this month',
+                  title: context.l10n.dashboardSalesThisMonth,
                   value: formatMoney(stats.salesMonth),
-                  caption: '${stats.ordersMonth} order(s)',
+                  caption: context.l10n.dashboardOrderS2(stats.ordersMonth),
                 ),
                 _ColorStat(
                   color: AppColors.teal,
                   icon: Icons.pending_actions_outlined,
-                  title: 'Pending orders',
+                  title: context.l10n.dashboardPendingOrders,
                   value: '${stats.pendingOrders}',
-                  caption: '${stats.processingOrders} processing · ${stats.shippedOrders} shipped',
+                  caption: context.l10n.dashboardProcessingShipped(stats.processingOrders, stats.shippedOrders),
                   onTap: openOrders,
                 ),
                 _ColorStat(
                   color: AppColors.sky,
                   icon: Icons.notification_important_outlined,
-                  title: 'Low stock',
+                  title: context.l10n.dashboardLowStock,
                   value: '${stats.lowStockCount}',
-                  caption: stats.lowStockCount == 0 ? 'All above alert level' : 'at or below alert level',
+                  caption: stats.lowStockCount == 0 ? context.l10n.dashboardAllAboveAlertLevel : context.l10n.dashboardAtOrBelowAlert,
                   onTap: openLowStock,
                 ),
               ],
@@ -214,28 +205,28 @@ class _ExecutiveDashboard extends ConsumerWidget {
                   tint: AppColors.skySoft,
                   accent: AppColors.sky,
                   value: formatMoney(stats.stockCostValue),
-                  label: 'Stock at cost',
+                  label: context.l10n.dashboardStockAtCost,
                 ),
                 _SoftStat(
                   icon: Icons.sell_outlined,
                   tint: AppColors.primarySoft,
                   accent: AppColors.primary,
                   value: formatMoney(stats.stockRetailValue),
-                  label: 'Stock at retail',
+                  label: context.l10n.dashboardStockAtRetail,
                 ),
                 _SoftStat(
                   icon: Icons.trending_up,
                   tint: AppColors.tealSoft,
                   accent: AppColors.teal,
                   value: formatMoney(stats.potentialMargin),
-                  label: 'Potential margin',
+                  label: context.l10n.dashboardPotentialMargin,
                 ),
                 _SoftStat(
                   icon: Icons.layers_outlined,
                   tint: AppColors.amberSoft,
                   accent: AppColors.amber,
                   value: '${stats.stockUnits}',
-                  label: 'Units in stock',
+                  label: context.l10n.dashboardUnitsInStock,
                 ),
               ],
             ),
@@ -295,7 +286,7 @@ class _LowStockBannerState extends State<_LowStockBanner> {
     if (_closed) {
       return const SizedBox.shrink();
     }
-    final String more = widget.total > 1 ? ' and ${widget.total - 1} more' : '';
+    final String more = widget.total > 1 ? context.l10n.dashboardAndMore(widget.total - 1) : '';
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.fromLTRB(14, 8, 4, 8),
@@ -312,20 +303,20 @@ class _LowStockBannerState extends State<_LowStockBanner> {
             child: Text.rich(
               TextSpan(
                 children: <InlineSpan>[
-                  const TextSpan(text: 'Running low: '),
+                  TextSpan(text: context.l10n.dashboardRunningLow),
                   TextSpan(
                     text: '${widget.item.productName} ${widget.item.variantLabel}'.trim(),
                     style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.primaryDark),
                   ),
-                  TextSpan(text: ' has ${widget.item.onHand} left$more. '),
+                  TextSpan(text: context.l10n.dashboardHasLeft(widget.item.onHand, more)),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.baseline,
                     baseline: TextBaseline.alphabetic,
                     child: InkWell(
                       onTap: widget.onTap,
-                      child: const Text(
-                        'View stock',
-                        style: TextStyle(fontWeight: FontWeight.w700, decoration: TextDecoration.underline),
+                      child: Text(
+                        context.l10n.dashboardViewStock,
+                        style: const TextStyle(fontWeight: FontWeight.w700, decoration: TextDecoration.underline),
                       ),
                     ),
                   ),
@@ -571,7 +562,7 @@ class _SalesChartCardState extends ConsumerState<_SalesChartCard> {
       icon: Icons.bar_chart_rounded,
       accent: AppColors.primary,
       tint: AppColors.primarySoft,
-      title: 'Sales',
+      title: context.l10n.dashboardSales,
       trailing: _RangePills(value: _range, onChanged: (SalesRange r) => setState(() => _range = r)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -587,7 +578,7 @@ class _SalesChartCardState extends ConsumerState<_SalesChartCard> {
               children: <Widget>[
                 CircleAvatar(radius: 4, backgroundColor: AppColors.primary),
                 const SizedBox(width: 8),
-                const Text('Total sales  ', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                Text(context.l10n.dashboardTotalSales, style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
                 Text(formatMoney(total), style: const TextStyle(fontWeight: FontWeight.w800)),
               ],
             ),
@@ -774,7 +765,7 @@ class _CustomerMixCardState extends ConsumerState<_CustomerMixCard> {
       icon: Icons.people_alt_outlined,
       accent: AppColors.teal,
       tint: const Color(0xFFE3EFEC),
-      title: 'New vs returning customers',
+      title: context.l10n.dashboardNewVsReturningCustomers,
       trailing: _RangePills(value: _range, onChanged: (SalesRange r) => setState(() => _range = r)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -783,16 +774,16 @@ class _CustomerMixCardState extends ConsumerState<_CustomerMixCard> {
             spacing: 12,
             runSpacing: 12,
             children: <Widget>[
-              _figure('${mix.newCustomers}', 'New customers', _newColor, caption: 'first order in this period'),
+              _figure('${mix.newCustomers}', context.l10n.dashboardNewCustomers, _newColor, caption: context.l10n.dashboardFirstOrderInThis),
               _figure(
                 '${mix.returningCustomers}',
-                'Returning customers',
+                context.l10n.dashboardReturningCustomers,
                 _returningColor,
-                caption: mix.customers == 0 ? '' : '${mix.returningPercent}% of buyers',
+                caption: mix.customers == 0 ? '' : context.l10n.dashboardOfBuyers(mix.returningPercent),
               ),
               _figure(
                 '${mix.walkInOrders}',
-                'Walk-in orders',
+                context.l10n.dashboardWalkInOrders,
                 AppColors.amber,
                 caption: mix.walkInOrders == 0 ? '' : formatMoney(mix.walkInSales),
               ),
@@ -802,7 +793,7 @@ class _CustomerMixCardState extends ConsumerState<_CustomerMixCard> {
           SizedBox(
             height: 220,
             child: mix.customers == 0
-                ? const _Empty('No named customers bought in this period.')
+                ? _Empty(context.l10n.dashboardNoNamedCustomersBought)
                 : BarChart(
                     BarChartData(
                       maxY: ceiling,
@@ -879,9 +870,9 @@ class _CustomerMixCardState extends ConsumerState<_CustomerMixCard> {
                   ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Walk-in sales have no customer record, so they are counted on their own and are never new or returning.',
-            style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+          Text(
+            context.l10n.dashboardWalkInSalesHave,
+            style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
           ),
         ],
       ),
@@ -918,14 +909,14 @@ class _OverallCard extends ConsumerWidget {
       icon: Icons.info_outline,
       accent: AppColors.sky,
       tint: AppColors.skySoft,
-      title: 'Overall information',
+      title: context.l10n.dashboardOverallInformation,
       child: Row(
         children: <Widget>[
-          tile(Icons.local_shipping_outlined, AppColors.sky, AppColors.skySoft, 'Vendors', c.vendors),
+          tile(Icons.local_shipping_outlined, AppColors.sky, AppColors.skySoft, context.l10n.vendorsVendors, c.vendors),
           const SizedBox(width: 10),
-          tile(Icons.groups_outlined, AppColors.primary, AppColors.primarySoft, 'Customers', c.customers),
+          tile(Icons.groups_outlined, AppColors.primary, AppColors.primarySoft, context.l10n.onboardingContentCustomers, c.customers),
           const SizedBox(width: 10),
-          tile(Icons.shopping_cart_outlined, AppColors.teal, AppColors.tealSoft, 'Orders', c.orders),
+          tile(Icons.shopping_cart_outlined, AppColors.teal, AppColors.tealSoft, context.l10n.dashboardOrders, c.orders),
         ],
       ),
     );
@@ -951,7 +942,7 @@ class _TopSellingCardState extends ConsumerState<_TopSellingCard> {
       icon: Icons.emoji_events_outlined,
       accent: AppColors.primary,
       tint: AppColors.primarySoft,
-      title: 'Top selling',
+      title: context.l10n.dashboardTopSelling,
       trailing: DropdownButtonHideUnderline(
         child: DropdownButton<TopSellerPeriod>(
           value: _period,
@@ -965,7 +956,7 @@ class _TopSellingCardState extends ConsumerState<_TopSellingCard> {
         ),
       ),
       child: sellers.isEmpty
-          ? const _Empty('No sales in this period yet.')
+          ? _Empty(context.l10n.dashboardNoSalesInThis)
           : Column(
               children: <Widget>[
                 for (int i = 0; i < sellers.length; i++)
@@ -977,7 +968,7 @@ class _TopSellingCardState extends ConsumerState<_TopSellingCard> {
                     ),
                     title: sellers[i].productName,
                     subtitle: formatMoney(sellers[i].revenue),
-                    trailing: '${sellers[i].units} sold',
+                    trailing: context.l10n.dashboardSold(sellers[i].units),
                     last: i == sellers.length - 1,
                   ),
               ],
@@ -996,15 +987,15 @@ class _LowStockCard extends ConsumerWidget {
       icon: Icons.warning_amber_rounded,
       accent: AppColors.amber,
       tint: AppColors.amberSoft,
-      title: 'Low stock',
+      title: context.l10n.dashboardLowStock,
       trailing: TextButton(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute<void>(builder: (BuildContext context) => const StockScreen(showLowStockOnly: true)),
         ),
-        child: const Text('View all'),
+        child: Text(context.l10n.dashboardViewAll),
       ),
       child: items.isEmpty
-          ? const _Empty('Nothing is running low.')
+          ? _Empty(context.l10n.dashboardNothingIsRunningLow)
           : Column(
               children: <Widget>[
                 for (int i = 0; i < items.length; i++)
@@ -1012,7 +1003,7 @@ class _LowStockCard extends ConsumerWidget {
                     leading: _Thumb(url: items[i].imageUrl),
                     title: items[i].productName,
                     subtitle: '${items[i].variantLabel} · ${items[i].sku}',
-                    trailing: '${items[i].onHand} left',
+                    trailing: context.l10n.dashboardLeft(items[i].onHand),
                     trailingColor: items[i].onHand <= 0 ? AppColors.danger : AppColors.amber,
                     last: i == items.length - 1,
                   ),
@@ -1032,9 +1023,9 @@ class _RecentSalesCard extends ConsumerWidget {
       icon: Icons.receipt_long_outlined,
       accent: AppColors.sky,
       tint: AppColors.skySoft,
-      title: 'Recent sales',
+      title: context.l10n.dashboardRecentSales,
       child: orders.isEmpty
-          ? const _Empty('No sales yet.')
+          ? _Empty(context.l10n.dashboardNoSalesYet)
           : Column(
               children: <Widget>[
                 for (int i = 0; i < orders.length; i++)
@@ -1048,7 +1039,7 @@ class _RecentSalesCard extends ConsumerWidget {
                         color: AppColors.sky,
                       ),
                     ),
-                    title: orders[i].customerName.isEmpty ? 'Walk-in customer' : orders[i].customerName,
+                    title: orders[i].customerName.isEmpty ? context.l10n.dashboardWalkInCustomer : orders[i].customerName,
                     subtitle: '${orders[i].orderNo} · ${formatDate(orders[i].orderDate)}',
                     trailing: formatMoney(orders[i].totalAmount),
                     badge: orders[i].status,
@@ -1070,16 +1061,16 @@ class _TopCustomersCard extends ConsumerWidget {
       icon: Icons.groups_outlined,
       accent: AppColors.primary,
       tint: AppColors.primarySoft,
-      title: 'Top customers',
+      title: context.l10n.dashboardTopCustomers,
       child: list.isEmpty
-          ? const _Empty('No named customers have bought yet.')
+          ? _Empty(context.l10n.dashboardNoNamedCustomersHave)
           : Column(
               children: <Widget>[
                 for (int i = 0; i < list.length; i++)
                   _ListRow(
                     leading: PhotoAvatar(url: '', label: list[i].name, radius: 18),
                     title: list[i].name,
-                    subtitle: '${list[i].orders} order(s)',
+                    subtitle: context.l10n.dashboardOrderS(list[i].orders),
                     trailing: formatMoney(list[i].total),
                     last: i == list.length - 1,
                   ),
@@ -1193,9 +1184,9 @@ class _TopCategoriesCard extends ConsumerWidget {
       icon: Icons.donut_large_outlined,
       accent: AppColors.violet,
       tint: const Color(0xFFE9E7F3),
-      title: 'Top categories',
+      title: context.l10n.dashboardTopCategories,
       child: shares.isEmpty || total <= 0
-          ? const _Empty('No category sales yet.')
+          ? _Empty(context.l10n.dashboardNoCategorySalesYet)
           : LayoutBuilder(
               builder: (BuildContext context, BoxConstraints box) {
                 final Widget donut = SizedBox(

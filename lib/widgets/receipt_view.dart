@@ -2,6 +2,7 @@ import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 
 /// The receipt as it looks on screen: shop, customer and number, the
 /// items in a table, the totals, a bar code of the receipt number and a thank
@@ -36,7 +37,7 @@ class ReceiptView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String customer = receipt.customerName.isEmpty ? 'Walk-in customer' : receipt.customerName;
+    final String customer = receipt.customerName.isEmpty ? context.l10n.dashboardWalkInCustomer : receipt.customerName;
     return Container(
       width: 380,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
@@ -68,10 +69,10 @@ class ReceiptView extends StatelessWidget {
           if (receipt.shopPhone.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 6),
-              child: Center(child: Text('Phone Number : ${receipt.shopPhone}', style: _base)),
+              child: Center(child: Text(context.l10n.receiptPhoneNumber(receipt.shopPhone), style: _base)),
             ),
           const SizedBox(height: 14),
-          const _Dashed(label: 'Sales Receipt'),
+          _Dashed(label: context.l10n.receiptSalesReceipt),
           const SizedBox(height: 10),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,9 +81,9 @@ class ReceiptView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _info('Name', customer),
+                    _info(context.l10n.categoryFormName, customer),
                     const SizedBox(height: 8),
-                    if (receipt.cashier.isNotEmpty) _info('Served by', receipt.cashier),
+                    if (receipt.cashier.isNotEmpty) _info(context.l10n.receiptServedBy, receipt.cashier),
                   ],
                 ),
               ),
@@ -91,9 +92,9 @@ class ReceiptView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    _info('Receipt No', receipt.orderNo),
+                    _info(context.l10n.receiptReceiptNo, receipt.orderNo),
                     const SizedBox(height: 8),
-                    _info('Date', ReceiptData.dateText(receipt.date)),
+                    _info(context.l10n.ledgerEntryDate, ReceiptData.dateText(receipt.date)),
                   ],
                 ),
               ),
@@ -101,14 +102,14 @@ class ReceiptView extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           const _Solid(),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: <Widget>[
-                Expanded(child: Text('# Item', style: _strong)),
-                SizedBox(width: 64, child: Text('Price', textAlign: TextAlign.end, style: _strong)),
-                SizedBox(width: 34, child: Text('Qty', textAlign: TextAlign.end, style: _strong)),
-                SizedBox(width: 68, child: Text('Total', textAlign: TextAlign.end, style: _strong)),
+                Expanded(child: Text(context.l10n.receiptItem, style: _strong)),
+                SizedBox(width: 64, child: Text(context.l10n.receiptPrice, textAlign: TextAlign.end, style: _strong)),
+                SizedBox(width: 34, child: Text(context.l10n.receiptQty, textAlign: TextAlign.end, style: _strong)),
+                SizedBox(width: 68, child: Text(context.l10n.orderReceiptCardTotal, textAlign: TextAlign.end, style: _strong)),
               ],
             ),
           ),
@@ -148,7 +149,7 @@ class ReceiptView extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Discount -${ReceiptData.plain(receipt.lines[i].discount)}',
+                    context.l10n.receiptDiscount(ReceiptData.plain(receipt.lines[i].discount)),
                     style: const TextStyle(fontSize: 12, color: AppColors.danger),
                   ),
                 ),
@@ -157,9 +158,9 @@ class ReceiptView extends StatelessWidget {
           const SizedBox(height: 6),
           const _Solid(),
           const SizedBox(height: 6),
-          _kv('Sub Total :', ReceiptData.money(receipt.subtotal)),
-          if (receipt.discount > 0.005) _kv('Discount :', '-${ReceiptData.money(receipt.discount)}'),
-          if (receipt.shippingFee > 0.005) _kv('Delivery :', ReceiptData.money(receipt.shippingFee)),
+          _kv(context.l10n.receiptSubTotal, ReceiptData.money(receipt.subtotal)),
+          if (receipt.discount > 0.005) _kv(context.l10n.receiptDiscount2, '-${ReceiptData.money(receipt.discount)}'),
+          if (receipt.shippingFee > 0.005) _kv(context.l10n.receiptDelivery, ReceiptData.money(receipt.shippingFee)),
           const SizedBox(height: 4),
           const _Solid(),
           const SizedBox(height: 6),
@@ -168,15 +169,15 @@ class ReceiptView extends StatelessWidget {
               '${p.label}${p.reference.isEmpty ? '' : ' (${p.reference})'} :',
               ReceiptData.money(p.amount),
             ),
-          if (receipt.change > 0.005) _kv('Change :', ReceiptData.money(receipt.change)),
-          _kv('Due :', ReceiptData.money(receipt.due)),
+          if (receipt.change > 0.005) _kv(context.l10n.receiptChange, ReceiptData.money(receipt.change)),
+          _kv(context.l10n.receiptDue, ReceiptData.money(receipt.due)),
           const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Flexible(child: Text('Total Payable', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800))),
+                Flexible(child: Text(context.l10n.posTotalPayable, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800))),
                 Text(
                   ReceiptData.money(receipt.total),
                   style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.navy),
@@ -201,9 +202,9 @@ class ReceiptView extends StatelessWidget {
           const SizedBox(height: 6),
           Center(child: Text(receipt.orderNo, style: _strong)),
           const SizedBox(height: 14),
-          const Center(
+          Center(
             child: Text(
-              'Thank you for shopping with us. Please come again.',
+              context.l10n.receiptThankYouForShopping,
               textAlign: TextAlign.center,
               style: _base,
             ),

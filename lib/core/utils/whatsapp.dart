@@ -1,3 +1,4 @@
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/core/utils/currency.dart';
 
@@ -35,12 +36,12 @@ class WhatsApp {
     final String who = order.customerName.trim().isEmpty ? '' : ' ${order.customerName.trim()}';
     final String total = order.totalAmount.toStringAsFixed(order.totalAmount % 1 == 0 ? 0 : 2);
     final String status = switch (order.status) {
-      OrderStatus.pending => 'has been received',
-      OrderStatus.processing => 'is being prepared',
-      OrderStatus.shipped => 'is on its way to you',
-      OrderStatus.delivered => 'has been delivered. Thank you for shopping with us!',
-      OrderStatus.cancelled => 'has been cancelled',
+      OrderStatus.pending => L10n.current.whatsappHasBeenReceived,
+      OrderStatus.processing => L10n.current.whatsappIsBeingPrepared,
+      OrderStatus.shipped => L10n.current.whatsappIsOnItsWay,
+      OrderStatus.delivered => L10n.current.whatsappHasBeenDeliveredThank,
+      OrderStatus.cancelled => L10n.current.whatsappHasBeenCancelled,
     };
-    return 'Hello$who, your order ${order.orderNo} (${MoneyFormat.withSymbol(total)}) $status. - $shopName';
+    return L10n.current.whatsappHelloYourOrder(who, order.orderNo, MoneyFormat.withSymbol(total), status, shopName);
   }
 }

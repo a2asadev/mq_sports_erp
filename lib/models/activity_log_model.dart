@@ -1,13 +1,9 @@
 import 'package:uuid/uuid.dart';
 
 enum LogLevel {
-  info('Info'),
-  warning('Warning'),
-  error('Error');
-
-  const LogLevel(this.label);
-
-  final String label;
+  info,
+  warning,
+  error;
 
   static LogLevel fromName(String? name) {
     for (final LogLevel level in LogLevel.values) {
@@ -22,23 +18,19 @@ enum LogLevel {
 /// What sort of event a log entry describes.
 enum LogKind {
   /// A record was created, edited or deleted.
-  record('Record change'),
+  record,
 
   /// A business action, for example "order confirmed".
-  action('Action'),
+  action,
 
   /// An action that was rejected or failed.
-  failure('Failure'),
+  failure,
 
   /// A sync upload/download/conflict.
-  sync('Sync'),
+  sync,
 
   /// Sign in / sign out.
-  session('Session');
-
-  const LogKind(this.label);
-
-  final String label;
+  session;
 
   static LogKind fromName(String? name) {
     for (final LogKind kind in LogKind.values) {

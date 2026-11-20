@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
 import 'package:a2_stocks/models/party_enums.dart';
@@ -122,11 +124,11 @@ class PartyDetailScreen extends ConsumerWidget {
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.categoriesCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Delete'),
+            child: Text(context.l10n.categoriesDelete),
           ),
         ],
       ),
@@ -137,8 +139,8 @@ class PartyDetailScreen extends ConsumerWidget {
   Future<void> _deleteParty(BuildContext context, WidgetRef ref, String name) async {
     final bool confirmed = await _confirm(
       context,
-      'Delete ${partyType.label.toLowerCase()}',
-      'Delete "$name"?',
+      context.l10n.partyDetailDelete2(partyType.label.toLowerCase()),
+      context.l10n.partyDetailDelete(name),
     );
     if (!confirmed) {
       return;
@@ -171,8 +173,8 @@ class PartyDetailScreen extends ConsumerWidget {
   Future<void> _deleteEntry(BuildContext context, WidgetRef ref, LedgerModel entry) async {
     final bool confirmed = await _confirm(
       context,
-      'Delete entry',
-      'Delete this ${entry.entryType.labelFor(partyType).toLowerCase()} of ${formatAmount(entry.amount)}?',
+      context.l10n.partyDetailDeleteEntry,
+      context.l10n.partyDetailDeleteThisOf(entry.entryType.labelFor(partyType).toLowerCase(), formatAmount(entry.amount)),
     );
     if (confirmed) {
       await ref.read(ledgerEntriesProvider.notifier).deleteEntry(entry.id);
@@ -214,7 +216,7 @@ class PartyDetailScreen extends ConsumerWidget {
     if (party == null) {
       return Scaffold(
         appBar: AppBar(title: Text(partyType.label)),
-        body: const Center(child: Text('This record no longer exists.')),
+        body: Center(child: Text(context.l10n.partyDetailThisRecordNoLonger)),
       );
     }
 
@@ -256,14 +258,14 @@ class PartyDetailScreen extends ConsumerWidget {
                 }
               },
               itemBuilder: (BuildContext context) =>
-                  const <PopupMenuEntry<_DetailAction>>[
+                  <PopupMenuEntry<_DetailAction>>[
                 PopupMenuItem<_DetailAction>(
                   value: _DetailAction.edit,
-                  child: Text('Edit'),
+                  child: Text(context.l10n.categoriesEdit),
                 ),
                 PopupMenuItem<_DetailAction>(
                   value: _DetailAction.delete,
-                  child: Text('Delete'),
+                  child: Text(context.l10n.categoriesDelete),
                 ),
               ],
             ),
@@ -286,8 +288,8 @@ class PartyDetailScreen extends ConsumerWidget {
                       ),
                       if (!party.isActive) ...<Widget>[
                         const SizedBox(width: 8),
-                        const Chip(
-                          label: Text('Inactive'),
+                        Chip(
+                          label: Text(context.l10n.productsInactive),
                           visualDensity: VisualDensity.compact,
                         ),
                       ],
@@ -306,8 +308,8 @@ class PartyDetailScreen extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         overLimit
-                            ? 'Over the credit limit of ${formatAmount(party.creditLimit)}'
-                            : 'Credit limit ${formatAmount(party.creditLimit)}',
+                            ? context.l10n.partyDetailOverTheCreditLimit(formatAmount(party.creditLimit))
+                            : context.l10n.partyDetailCreditLimit(formatAmount(party.creditLimit)),
                         style: TextStyle(
                           color: overLimit ? theme.colorScheme.error : null,
                         ),
@@ -329,20 +331,20 @@ class PartyDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text('Ledger', style: theme.textTheme.titleMedium),
+          Text(context.l10n.partyDetailLedger, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           if (party.openingBalance.abs() >= 0.005)
             Card(
               child: ListTile(
                 leading: const Icon(Icons.flag_outlined),
-                title: const Text('Opening balance'),
+                title: Text(context.l10n.partyDetailOpeningBalance),
                 trailing: Text(formatAmount(party.openingBalance)),
               ),
             ),
           if (newestFirst.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Text('No ledger entries yet.'),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(context.l10n.partyDetailNoLedgerEntriesYet),
             )
           else
             for (final MapEntry<LedgerModel, double> row in newestFirst)
@@ -360,7 +362,7 @@ class PartyDetailScreen extends ConsumerWidget {
                     <String>[
                       formatDate(row.key.entryDate),
                       row.key.entryType.labelFor(partyType),
-                      if (row.key.reference.isNotEmpty) 'Ref ${row.key.reference}',
+                      if (row.key.reference.isNotEmpty) context.l10n.partyDetailRef(row.key.reference),
                     ].join(' · '),
                   ),
                   trailing: Row(
@@ -375,13 +377,13 @@ class PartyDetailScreen extends ConsumerWidget {
                             '${formatAmount(row.key.amount)}',
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          Text('Bal ${formatAmount(row.value)}',
+                          Text(context.l10n.partyDetailBal(formatAmount(row.value)),
                               style: theme.textTheme.bodySmall),
                         ],
                       ),
                       if (canManage && row.key.purchaseId.isEmpty)
                         IconButton(
-                          tooltip: 'Delete entry',
+                          tooltip: context.l10n.partyDetailDeleteEntry,
                           icon: const Icon(Icons.delete_outline),
                           onPressed: () => _deleteEntry(context, ref, row.key),
                         ),
@@ -396,7 +398,7 @@ class PartyDetailScreen extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _addEntry(context, ref),
               icon: const Icon(Icons.post_add),
-              label: const Text('Add entry'),
+              label: Text(context.l10n.partyDetailAddEntry),
             )
           : null,
     );

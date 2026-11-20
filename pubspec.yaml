@@ -25,6 +25,13 @@ dependencies:
   fl_chart: ^0.69.2
   barcode_widget: ^2.0.4
   image: ^4.13.1
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+  fetch_client: ^1.2.1
+  audioplayers: ^6.8.1
+  local_notifier: ^0.1.6
+  web: ^1.1.2
 
 dev_dependencies:
   flutter_test:
@@ -36,9 +43,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
   assets:
     - assets/images/a2stocks_logo.png
     - assets/images/a2stocks_mark.png
+    # Alert sounds (synthesised for this app: no licence to carry).
+    - assets/sounds/new_order.wav
+    - assets/sounds/stock_alert.wav
   fonts:
     # Inter (SIL Open Font License, see assets/fonts/Inter-LICENSE.txt).
     - family: Inter

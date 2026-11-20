@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:a2_stocks/core/constants/walk_in.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/core/utils/pos_payment_plan.dart';
 import 'package:a2_stocks/core/utils/receipt.dart';
@@ -128,8 +129,8 @@ void main() {
       expect(PaymentMethod.fromName('easypaisa'), PaymentMethod.easypaisa);
       expect(PaymentMethod.fromName(''), isNull);
       expect(PaymentMethod.fromName('cheque'), isNull);
-      expect(PaymentMethod.labelOf('bank'), 'Bank transfer');
-      expect(PaymentMethod.labelOf(''), 'Payment');
+      expect(paymentMethodLabelOf('bank'), 'Bank transfer');
+      expect(paymentMethodLabelOf(''), 'Payment');
       final List<PaymentLine> back = PaymentLine.listFrom(<Object?>[
         const PaymentLine(method: PaymentMethod.jazzcash, amount: 40, reference: 'J9').toMap(),
         <String, dynamic>{'method': 'cheque', 'amount': 5},

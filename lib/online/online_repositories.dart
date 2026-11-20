@@ -1,5 +1,6 @@
 import 'package:a2_stocks/core/constants/storage_keys.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
@@ -146,7 +147,7 @@ class OnlineLedgerRepository extends OnlineRepository<LedgerModel> {
   @override
   Future<void> write(LedgerModel item, {required bool exists}) {
     if (exists) {
-      throw unsupported('Ledger entries cannot be edited. Delete the entry and add it again.');
+      throw unsupported(L10n.current.onlineRepositoriesLedgerEntriesCannotBe);
     }
     if (item.purchaseId.isNotEmpty) {
       return commands.purchasePayment(item);
@@ -166,7 +167,7 @@ class OnlineStockLedgerRepository extends OnlineRepository<StockLedgerModel> {
   OnlineStockLedgerRepository(ApiClient api, RemoteStore store)
       : super(api: api, store: store, collectionName: StorageKeys.stockLedgers, fromMap: StockLedgerModel.fromMap);
 
-  static const String _message = 'Stock changes only through purchases, sales and stock counts.';
+  static String get _message => L10n.current.onlineRepositoriesStockChangesOnlyThrough;
 
   @override
   Future<void> write(StockLedgerModel item, {required bool exists}) =>
@@ -190,11 +191,11 @@ class OnlinePurchaseRepository extends OnlineRepository<PurchaseModel> implement
 
   @override
   Future<void> write(PurchaseModel item, {required bool exists}) =>
-      Future<void>.error(unsupported('A confirmed purchase cannot be changed.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAConfirmedPurchaseCannot2));
 
   @override
   Future<void> remove(String id) =>
-      Future<void>.error(unsupported('A confirmed purchase cannot be deleted.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAConfirmedPurchaseCannot));
 }
 
 class OnlineOrderRepository extends OnlineRepository<OrderModel> implements OrderOperations {
@@ -222,14 +223,14 @@ class OnlineOrderRepository extends OnlineRepository<OrderModel> implements Orde
   @override
   Future<void> write(OrderModel item, {required bool exists}) {
     if (!exists) {
-      throw unsupported('An order is created by confirming it.');
+      throw unsupported(L10n.current.onlineRepositoriesAnOrderIsCreated);
     }
     return commands.setOrderStatus(item.id, item.status);
   }
 
   @override
   Future<void> remove(String id) =>
-      Future<void>.error(unsupported('An order cannot be deleted. Cancel it instead.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAnOrderCannotBe));
 }
 
 class OnlineStockAuditRepository extends OnlineRepository<StockAuditModel>
@@ -246,11 +247,11 @@ class OnlineStockAuditRepository extends OnlineRepository<StockAuditModel>
 
   @override
   Future<void> write(StockAuditModel item, {required bool exists}) =>
-      Future<void>.error(unsupported('A stock count is created by confirming it.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAStockCountIs));
 
   @override
   Future<void> remove(String id) =>
-      Future<void>.error(unsupported('A stock count cannot be deleted.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAStockCountCannot));
 }
 
 /// Users. A login is created through [ApiAuthAdminService]; this saves the
@@ -263,7 +264,7 @@ class OnlineUserRepository extends OnlineRepository<UserModel> {
   @override
   Future<void> write(UserModel item, {required bool exists}) {
     if (!exists) {
-      throw unsupported('Users are created with a login (email and password).');
+      throw unsupported(L10n.current.onlineRepositoriesUsersAreCreatedWith);
     }
     return commands.updateUser(item);
   }

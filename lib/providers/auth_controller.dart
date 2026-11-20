@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/activity_log_model.dart';
 import 'package:a2_stocks/providers/activity_log_providers.dart';
 import 'package:a2_stocks/providers/core_providers.dart';
@@ -24,7 +25,7 @@ class AuthController extends AsyncNotifier<void> {
             kind: LogKind.session,
             action: 'login',
             module: 'session',
-            summary: 'Signed in',
+            summary: L10n.current.authControllerSignedIn,
           );
     } on AppException catch (e, st) {
       state = AsyncError<void>(e, st);
@@ -39,7 +40,7 @@ class AuthController extends AsyncNotifier<void> {
             kind: LogKind.session,
             action: 'logout',
             module: 'session',
-            summary: 'Signed out',
+            summary: L10n.current.authControllerSignedOut,
           );
       await ref.read(authServiceProvider).signOut();
       state = const AsyncData<void>(null);

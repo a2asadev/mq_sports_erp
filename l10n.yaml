@@ -1,0 +1,13 @@
+# Translations: one .arb file per language in lib/l10n. app_en.arb is the template
+# (every key and its description live there). To add a language, copy app_en.arb to
+# app_<code>.arb (e.g. app_ur.arb), translate the values, and run `flutter gen-l10n`
+# (flutter run / flutter test do it too). Nothing else needs to change.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-dir: lib/l10n
+nullable-getter: false
+# Lists, per language, the messages its .arb file still lacks (they show in English
+# meanwhile). The file is rewritten by `flutter gen-l10n`; it is {} while every
+# language is complete. Check it before releasing a new language.
+untranslated-messages-file: lib/l10n/untranslated.json

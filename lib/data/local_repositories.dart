@@ -4,6 +4,8 @@ import 'package:a2_stocks/data/local/collections.dart';
 import 'package:a2_stocks/data/outbox_entry.dart';
 import 'package:a2_stocks/data/outbox_store.dart';
 import 'package:a2_stocks/data/pending_effects.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/payment_method.dart';
@@ -115,7 +117,7 @@ class LocalUserRepository extends LocalRepository<UserModel> {
   LocalUserRepository({required super.collection, required super.outbox})
       : super(
           overlay: _overlay,
-          entityLabel: 'User',
+          entityLabel: L10n.current.activityLogsUser,
           labelOf: (UserModel u) => u.displayName.isNotEmpty ? u.displayName : u.email,
         );
 
@@ -138,14 +140,14 @@ class LocalLedgerRepository extends LocalRepository<LedgerModel> {
   LocalLedgerRepository({required super.collection, required super.outbox})
       : super(
           overlay: overlayLedgers,
-          entityLabel: 'Ledger entry',
+          entityLabel: L10n.current.localRepositoriesLedgerEntry,
           labelOf: (LedgerModel e) => '${e.entryType.name} ${e.amount.toStringAsFixed(2)}',
         );
 
   @override
   Future<void> save(LedgerModel item, {String groupId = ''}) async {
     if (await collection.byId(item.id) != null) {
-      throw unsupported('Ledger entries cannot be edited. Delete the entry and add it again.');
+      throw unsupported(L10n.current.onlineRepositoriesLedgerEntriesCannotBe);
     }
     final OutboxKind kind = item.purchaseId.isNotEmpty
         ? OutboxKind.purchasePayment
@@ -157,8 +159,8 @@ class LocalLedgerRepository extends LocalRepository<LedgerModel> {
       collection: collectionName,
       entityId: item.id,
       label: switch (kind) {
-        OutboxKind.purchasePayment => 'Payment ${item.amount.toStringAsFixed(2)} for ${item.reference}',
-        OutboxKind.orderPayment => 'Payment ${item.amount.toStringAsFixed(2)} for ${item.reference}',
+        OutboxKind.purchasePayment => L10n.current.localRepositoriesPaymentFor(item.amount.toStringAsFixed(2), item.reference),
+        OutboxKind.orderPayment => L10n.current.localRepositoriesPaymentFor(item.amount.toStringAsFixed(2), item.reference),
         _ => describe(item),
       },
       payload: <String, dynamic>{'entry': item.toMap()},
@@ -171,11 +173,11 @@ class LocalStockLedgerRepository extends LocalRepository<StockLedgerModel> {
   LocalStockLedgerRepository({required super.collection, required super.outbox})
       : super(
           overlay: overlayStock,
-          entityLabel: 'Stock entry',
+          entityLabel: L10n.current.localRepositoriesStockEntry,
           labelOf: (StockLedgerModel e) => '${e.sku} ${e.quantity >= 0 ? '+' : ''}${e.quantity}',
         );
 
-  static const String _message = 'Stock changes only through purchases, sales and stock counts.';
+  static String get _message => L10n.current.onlineRepositoriesStockChangesOnlyThrough;
 
   @override
   Future<void> save(StockLedgerModel item, {String groupId = ''}) =>
@@ -189,7 +191,7 @@ class LocalPurchaseRepository extends LocalRepository<PurchaseModel> implements 
   LocalPurchaseRepository({required super.collection, required super.outbox})
       : super(
           overlay: overlayPurchases,
-          entityLabel: 'Purchase',
+          entityLabel: L10n.current.stockMovementPurchase,
           labelOf: (PurchaseModel p) => p.purchaseNo,
         );
 
@@ -199,25 +201,25 @@ class LocalPurchaseRepository extends LocalRepository<PurchaseModel> implements 
       OutboxKind.purchaseConfirm,
       collection: collectionName,
       entityId: purchase.id,
-      label: 'Purchase ${purchase.purchaseNo}',
+      label: L10n.current.localRepositoriesPurchase(purchase.purchaseNo),
       payload: <String, dynamic>{'purchase': purchase.toMap(), 'paidNow': paidNow},
     );
   }
 
   @override
   Future<void> save(PurchaseModel item, {String groupId = ''}) =>
-      Future<void>.error(unsupported('A confirmed purchase cannot be changed.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAConfirmedPurchaseCannot2));
 
   @override
   Future<void> delete(String id) =>
-      Future<void>.error(unsupported('A confirmed purchase cannot be deleted.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAConfirmedPurchaseCannot));
 }
 
 class LocalOrderRepository extends LocalRepository<OrderModel> implements OrderOperations {
   LocalOrderRepository({required super.collection, required super.outbox})
       : super(
           overlay: overlayOrders,
-          entityLabel: 'Order',
+          entityLabel: L10n.current.orderDetailOrder,
           labelOf: (OrderModel o) => o.orderNo,
         );
 
@@ -231,7 +233,7 @@ class LocalOrderRepository extends LocalRepository<OrderModel> implements OrderO
       OutboxKind.orderConfirm,
       collection: collectionName,
       entityId: order.id,
-      label: 'Order ${order.orderNo}',
+      label: L10n.current.localRepositoriesOrder(order.orderNo),
       payload: <String, dynamic>{
         'order': order.toMap(),
         'paidNow': paidNow,
@@ -246,7 +248,7 @@ class LocalOrderRepository extends LocalRepository<OrderModel> implements OrderO
       OutboxKind.orderCancel,
       collection: collectionName,
       entityId: cancelled.id,
-      label: 'Cancel order ${cancelled.orderNo}',
+      label: L10n.current.localRepositoriesCancelOrder(cancelled.orderNo),
       payload: <String, dynamic>{'order': cancelled.toMap()},
     );
   }
@@ -256,7 +258,7 @@ class LocalOrderRepository extends LocalRepository<OrderModel> implements OrderO
   Future<void> save(OrderModel item, {String groupId = ''}) async {
     final OrderModel? current = await getLocalById(item.id);
     if (current == null) {
-      throw unsupported('An order is created by confirming it.');
+      throw unsupported(L10n.current.onlineRepositoriesAnOrderIsCreated);
     }
     if (item.status == current.status || item.statusHistory.isEmpty) {
       return;
@@ -275,14 +277,14 @@ class LocalOrderRepository extends LocalRepository<OrderModel> implements OrderO
 
   @override
   Future<void> delete(String id) =>
-      Future<void>.error(unsupported('An order cannot be deleted. Cancel it instead.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAnOrderCannotBe));
 }
 
 class LocalStockAuditRepository extends LocalRepository<StockAuditModel> implements StockAuditOperations {
   LocalStockAuditRepository({required super.collection, required super.outbox})
       : super(
           overlay: overlayAudits,
-          entityLabel: 'Stock count',
+          entityLabel: L10n.current.localRepositoriesStockCount2,
           labelOf: (StockAuditModel a) => a.auditNo,
         );
 
@@ -292,16 +294,16 @@ class LocalStockAuditRepository extends LocalRepository<StockAuditModel> impleme
       OutboxKind.auditConfirm,
       collection: collectionName,
       entityId: audit.id,
-      label: 'Stock count ${audit.auditNo}',
+      label: L10n.current.localRepositoriesStockCount(audit.auditNo),
       payload: <String, dynamic>{'audit': audit.toMap()},
     );
   }
 
   @override
   Future<void> save(StockAuditModel item, {String groupId = ''}) =>
-      Future<void>.error(unsupported('A stock count is created by confirming it.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAStockCountIs));
 
   @override
   Future<void> delete(String id) =>
-      Future<void>.error(unsupported('A stock count cannot be deleted.'));
+      Future<void>.error(unsupported(L10n.current.onlineRepositoriesAStockCountCannot));
 }

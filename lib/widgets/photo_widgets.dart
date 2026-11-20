@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/product_image.dart';
 import 'package:a2_stocks/online/photo_service.dart';
 import 'package:a2_stocks/providers/core_providers.dart';
@@ -76,7 +77,7 @@ class PhotoAvatar extends StatelessWidget {
 }
 
 String _messageOf(Object error) =>
-    error is AppException ? error.message : 'The photo could not be saved. Please try again.';
+    error is AppException ? error.message : L10n.current.photoWidgetsThePhotoCouldNot;
 
 /// The photo of one record (user, category, customer or vendor) with buttons to
 /// add, change and remove it. The upload happens at once, not with "Save".
@@ -87,7 +88,7 @@ class PhotoEditor extends ConsumerStatefulWidget {
     required this.entityId,
     required this.photoUrl,
     required this.onChanged,
-    this.title = 'Photo',
+    this.title,
     this.enabled = true,
   });
 
@@ -97,7 +98,7 @@ class PhotoEditor extends ConsumerStatefulWidget {
 
   /// Called with the new address ('' after removing).
   final ValueChanged<String> onChanged;
-  final String title;
+  final String? title;
   final bool enabled;
 
   @override
@@ -168,7 +169,7 @@ class _PhotoEditorState extends ConsumerState<PhotoEditor> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(widget.title, style: Theme.of(context).textTheme.titleSmall),
+              Text(widget.title ?? context.l10n.photoWidgetsPhoto, style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
@@ -179,13 +180,13 @@ class _PhotoEditorState extends ConsumerState<PhotoEditor> {
                     icon: _busy
                         ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                         : const Icon(Icons.upload_outlined),
-                    label: Text(_url.isEmpty ? 'Add photo' : 'Change photo'),
+                    label: Text(_url.isEmpty ? context.l10n.photoWidgetsAddPhoto : context.l10n.photoWidgetsChangePhoto),
                   ),
                   if (_url.isNotEmpty)
                     OutlinedButton.icon(
                       onPressed: locked ? null : _remove,
                       icon: const Icon(Icons.delete_outline),
-                      label: const Text('Remove'),
+                      label: Text(context.l10n.photoWidgetsRemove),
                     ),
                 ],
               ),
@@ -204,9 +205,9 @@ class _PhotoEditorState extends ConsumerState<PhotoEditor> {
 
 /// Shown instead of the editor on a record that has not been saved yet.
 class PhotoAfterSaveHint extends StatelessWidget {
-  const PhotoAfterSaveHint({super.key, this.what = 'a photo'});
+  const PhotoAfterSaveHint({super.key, this.what});
 
-  final String what;
+  final String? what;
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +217,7 @@ class PhotoAfterSaveHint extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: Text(
-            'Save first, then open this again to add $what.',
+            context.l10n.photoWidgetsSaveFirstThenOpen(what ?? context.l10n.photoWidgetsAPhoto),
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
@@ -301,23 +302,23 @@ class _ProductPhotosEditorState extends ConsumerState<ProductPhotosEditor> {
       children: <Widget>[
         Row(
           children: <Widget>[
-            Text('Photos', style: Theme.of(context).textTheme.titleMedium),
+            Text(context.l10n.onboardingContentPhotos, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(width: 8),
-            Text('(${_images.length} of 10)', style: Theme.of(context).textTheme.bodySmall),
+            Text(context.l10n.photoWidgetsOf10(_images.length), style: Theme.of(context).textTheme.bodySmall),
             const Spacer(),
             FilledButton.tonalIcon(
               onPressed: locked || _images.length >= 10 ? null : _add,
               icon: _busy
                   ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.add_a_photo_outlined),
-              label: const Text('Add photo'),
+              label: Text(context.l10n.photoWidgetsAddPhoto),
             ),
           ],
         ),
         const SizedBox(height: 8),
         if (_images.isEmpty)
           Text(
-            'No photos yet. The first photo is the main one shown in the shop and on the online store.',
+            context.l10n.photoWidgetsNoPhotosYetThe,
             style: Theme.of(context).textTheme.bodySmall,
           )
         else
@@ -342,7 +343,7 @@ class _ProductPhotosEditorState extends ConsumerState<ProductPhotosEditor> {
                             left: 4,
                             top: 4,
                             child: Chip(
-                              label: const Text('Main'),
+                              label: Text(context.l10n.photoWidgetsMain),
                               visualDensity: VisualDensity.compact,
                               padding: EdgeInsets.zero,
                               backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -354,13 +355,13 @@ class _ProductPhotosEditorState extends ConsumerState<ProductPhotosEditor> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         IconButton(
-                          tooltip: 'Make main photo',
+                          tooltip: context.l10n.photoWidgetsMakeMainPhoto,
                           visualDensity: VisualDensity.compact,
                           onPressed: locked || index == 0 ? null : () => _makeMain(image),
                           icon: const Icon(Icons.star_outline),
                         ),
                         IconButton(
-                          tooltip: 'Delete photo',
+                          tooltip: context.l10n.photoWidgetsDeletePhoto,
                           visualDensity: VisualDensity.compact,
                           onPressed: locked ? null : () => _remove(image),
                           icon: const Icon(Icons.delete_outline),

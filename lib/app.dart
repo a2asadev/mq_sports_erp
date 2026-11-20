@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/providers/business_provider.dart';
@@ -25,7 +26,14 @@ class MqSportsApp extends ConsumerWidget {
     final String currency = ref.watch(businessProvider.select((BusinessInfo b) => b.currency));
     final String brand = ref.watch(businessProvider.select((BusinessInfo b) => b.brandColor));
     return MaterialApp(
-      title: 'A2 Stocks',
+      onGenerateTitle: (BuildContext context) => context.l10n.appTitle,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      builder: (BuildContext context, Widget? child) {
+        // Text from code without a BuildContext (L10n.current) follows the app's language.
+        L10n.use(AppLocalizations.of(context));
+        return child ?? const SizedBox.shrink();
+      },
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       home: KeyedSubtree(key: ValueKey<String>('$currency|$brand'), child: const _AuthGate()),
@@ -47,7 +55,7 @@ class _AuthGate extends ConsumerWidget {
         body: Center(child: CircularProgressIndicator()),
       ),
       error: (Object error, StackTrace stackTrace) => Scaffold(
-        body: Center(child: Text('Authentication error: $error')),
+        body: Center(child: Text(context.l10n.authError(error))),
       ),
     );
   }
@@ -63,15 +71,10 @@ class _AccessGate extends ConsumerWidget {
     return current.when(
       data: (UserModel? user) {
         if (user == null) {
-          return const AccessDeniedScreen(
-            message: 'Your account is not registered in A2 Stocks. '
-                'Contact your administrator.',
-          );
+          return AccessDeniedScreen(message: context.l10n.accessNotRegistered);
         }
         if (!user.isActive) {
-          return const AccessDeniedScreen(
-            message: 'Your account is inactive. Contact your administrator.',
-          );
+          return AccessDeniedScreen(message: context.l10n.accessInactive);
         }
         // Keeps this device in step with the server while someone is signed in
         // (mobile and desktop; the web app has nothing to sync).
@@ -86,7 +89,7 @@ class _AccessGate extends ConsumerWidget {
       error: (Object error, StackTrace stackTrace) => AccessDeniedScreen(
         message: error is AppException
             ? error.message
-            : 'Your account could not be verified.',
+            : context.l10n.accessCouldNotVerify,
         onRetry: () => ref.invalidate(currentUserProvider),
       ),
     );

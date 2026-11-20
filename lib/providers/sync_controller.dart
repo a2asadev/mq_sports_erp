@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/outbox_entry.dart';
 import 'package:a2_stocks/data/sync_engine.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/user_model.dart';
+import 'package:a2_stocks/online/change_feed.dart';
 import 'package:a2_stocks/online/online_providers.dart';
 import 'package:a2_stocks/providers/auth_controller.dart';
 import 'package:a2_stocks/providers/core_providers.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
+import 'package:a2_stocks/providers/notification_providers.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 
 /// How often a signed-in device checks with the server on its own.
@@ -84,8 +87,18 @@ class SyncController extends Notifier<SyncUiState> {
       _debounce?.cancel();
     });
 
+    // Live updates: when the server says something changed, sync at once instead of
+    // waiting for the timer (which stays as the safety net).
+    final ChangeFeed feed = ChangeFeed(
+      open: ref.read(apiClientProvider).openChangeStream,
+      onSignal: syncNow,
+      onNotification: () => ref.read(notificationsProvider.notifier).refresh(),
+    )..start();
+    ref.onDispose(() => unawaited(feed.stop()));
+
     ref.listen<AsyncValue<bool>>(isOnlineProvider, (AsyncValue<bool>? before, AsyncValue<bool> now) {
       if ((now.valueOrNull ?? false) && !(before?.valueOrNull ?? false)) {
+        feed.reconnectNow();
         unawaited(syncNow());
       }
     });
@@ -144,7 +157,7 @@ class SyncController extends Notifier<SyncUiState> {
       outcome = await engine.sync();
     } on Object catch (e) {
       if (!_disposed) {
-        state = state.copyWith(message: 'Sync failed: $e', messageIsError: true);
+        state = state.copyWith(message: L10n.current.syncControllerSyncFailed(e), messageIsError: true);
       }
       return;
     }
@@ -162,7 +175,7 @@ class SyncController extends Notifier<SyncUiState> {
     if (outcome.offline) {
       state = state.copyWith(
         offline: true,
-        message: manual ? 'The server cannot be reached. Your work is saved on this device.' : null,
+        message: manual ? L10n.current.syncControllerTheServerCannotBe : null,
         messageIsError: manual,
       );
       return;
@@ -173,8 +186,8 @@ class SyncController extends Notifier<SyncUiState> {
       lastSyncedAt: last,
       message: manual
           ? outcome.refused > 0
-              ? '${outcome.refused} change(s) were refused by the server. See the list below.'
-              : 'Everything is in step with the server.'
+              ? L10n.current.syncControllerChangeSWereRefused(outcome.refused)
+              : L10n.current.syncControllerEverythingIsInStep
           : null,
       messageIsError: outcome.refused > 0,
     );

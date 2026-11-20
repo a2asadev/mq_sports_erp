@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
 import 'package:a2_stocks/providers/onboarding_providers.dart';
@@ -20,7 +22,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int _page = 0;
 
-  late final List<OnboardingStep> _steps = onboardingStepsFor(widget.role);
+  List<OnboardingStep> get _steps => onboardingStepsFor(widget.role, context.l10n);
 
   bool get _last => _page == _steps.length - 1;
 
@@ -44,12 +46,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Welcome · ${widget.role.label}'),
+        title: Text(context.l10n.onboardingWelcome(widget.role.label)),
         actions: <Widget>[
           if (!_last)
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Skip'),
+              child: Text(context.l10n.onboardingSkip),
             ),
         ],
       ),
@@ -125,7 +127,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const Spacer(),
                   FilledButton(
                     onPressed: _next,
-                    child: Text(_last ? 'Get started' : 'Next'),
+                    child: Text(_last ? context.l10n.onboardingGetStarted : context.l10n.onboardingNext),
                   ),
                 ],
               ),

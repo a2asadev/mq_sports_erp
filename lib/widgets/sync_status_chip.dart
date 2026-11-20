@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/sync_controller.dart';
 import 'package:a2_stocks/screens/sync_screen.dart';
 
@@ -13,23 +14,23 @@ class SyncStatusChip extends ConsumerWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
     final (IconData icon, String label, Color? color) = switch (summary.status) {
-      SyncStatus.syncing => (Icons.sync, 'Syncing', null),
+      SyncStatus.syncing => (Icons.sync, context.l10n.syncStatusChipSyncing, null),
       SyncStatus.needsAttention => (
           Icons.error_outline,
-          '${summary.failed} need attention',
+          context.l10n.syncStatusChipNeedAttention(summary.failed),
           colors.errorContainer,
         ),
       SyncStatus.offline => (
           Icons.cloud_off_outlined,
-          summary.waiting > 0 ? '${summary.waiting} waiting (offline)' : 'Offline',
+          summary.waiting > 0 ? context.l10n.syncStatusChipWaitingOffline(summary.waiting) : context.l10n.syncStatusChipOffline,
           summary.waiting > 0 ? colors.tertiaryContainer : null,
         ),
       SyncStatus.pending => (
           Icons.cloud_upload_outlined,
-          '${summary.waiting} to upload',
+          context.l10n.syncStatusChipToUpload(summary.waiting),
           colors.tertiaryContainer,
         ),
-      SyncStatus.upToDate => (Icons.cloud_done_outlined, 'Synced', null),
+      SyncStatus.upToDate => (Icons.cloud_done_outlined, context.l10n.syncStatusChipSynced, null),
     };
 
     return ActionChip(

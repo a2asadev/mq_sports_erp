@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
@@ -72,7 +73,7 @@ void main() {
         currentUserProvider.overrideWith(() => _FakeCurrentUser(user)),
         businessProvider.overrideWithValue(business),
       ],
-      child: const MaterialApp(home: SettingsScreen()),
+      child: const MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, home: SettingsScreen()),
     ));
     await tester.pumpAndSettle();
   }

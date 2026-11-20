@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/currency.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/widgets/brand_logo.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:a2_stocks/models/business_info.dart';
@@ -16,6 +18,7 @@ import 'package:a2_stocks/online/photo_service.dart';
 import 'package:a2_stocks/online/store_settings_service.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/onboarding/onboarding_screen.dart';
+import 'package:a2_stocks/screens/settings/notification_settings_card.dart';
 
 final Provider<BusinessService> businessServiceProvider =
     Provider<BusinessService>((Ref ref) => BusinessService(ref.watch(apiClientProvider)));
@@ -30,19 +33,48 @@ final AutoDisposeFutureProvider<StoreSettingsModel> storeSettingsProvider =
 });
 
 String _problemText(Object error) =>
-    error is AppException ? error.message : 'Something went wrong. Please try again.';
+    error is AppException ? error.message : L10n.current.settingsSomethingWentWrongPlease;
 
 enum _SettingsSection {
-  profile('Profile', Icons.person_outline, 'Your name, e-mail and photo'),
-  store('Online store', Icons.storefront_outlined, 'Opening, delivery and alerts'),
-  shop('Shop details', Icons.store_mall_directory_outlined, 'Currency and receipt details'),
-  help('Help & guide', Icons.help_outline, 'The welcome tour');
+  profile(Icons.person_outline),
+  notifications(Icons.notifications_none),
+  store(Icons.storefront_outlined),
+  shop(Icons.store_mall_directory_outlined),
+  help(Icons.help_outline);
 
-  const _SettingsSection(this.title, this.icon, this.subtitle);
+  const _SettingsSection(this.icon);
 
-  final String title;
   final IconData icon;
-  final String subtitle;
+
+  String title(AppLocalizations l10n) {
+    switch (this) {
+      case _SettingsSection.profile:
+        return l10n.settingsProfile;
+      case _SettingsSection.notifications:
+        return l10n.settingsNotifications;
+      case _SettingsSection.store:
+        return l10n.settingsOnlineStore;
+      case _SettingsSection.shop:
+        return l10n.settingsShopDetails;
+      case _SettingsSection.help:
+        return l10n.settingsHelpGuide;
+    }
+  }
+
+  String subtitle(AppLocalizations l10n) {
+    switch (this) {
+      case _SettingsSection.profile:
+        return l10n.settingsYourNameEMail;
+      case _SettingsSection.notifications:
+        return l10n.settingsNotificationsSubtitle;
+      case _SettingsSection.store:
+        return l10n.settingsOpeningDeliveryAndAlerts;
+      case _SettingsSection.shop:
+        return l10n.settingsCurrencyAndReceiptDetails;
+      case _SettingsSection.help:
+        return l10n.settingsTheWelcomeTour;
+    }
+  }
 }
 
 /// Settings, grouped into sections: Profile and Help for everyone. Admins and
@@ -64,6 +96,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     switch (section) {
       case _SettingsSection.profile:
         return _ProfileCard(user: user);
+      case _SettingsSection.notifications:
+        return const NotificationSettingsCard();
       case _SettingsSection.store:
         return _StoreSettingsCard(canEdit: user.role == UserRole.admin, myEmail: user.email);
       case _SettingsSection.shop:
@@ -75,8 +109,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.tour_outlined),
-                title: const Text('Welcome guide'),
-                subtitle: Text('A short tour of what you can do as ${user.role.label}.'),
+                title: Text(context.l10n.settingsWelcomeGuide),
+                subtitle: Text(context.l10n.settingsAShortTourOf(user.role.label)),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.of(context).push<bool>(
                   MaterialPageRoute<bool>(builder: (BuildContext c) => OnboardingScreen(role: user.role)),
@@ -118,7 +152,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ],
     );
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(context.l10n.settingsSettings)),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints box) {
@@ -139,8 +173,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               selectedTileColor: AppColors.primarySoft,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               leading: Icon(s.icon),
-                              title: Text(s.title, style: const TextStyle(fontWeight: FontWeight.w600)),
-                              subtitle: Text(s.subtitle, style: const TextStyle(fontSize: 12)),
+                              title: Text(s.title(context.l10n), style: const TextStyle(fontWeight: FontWeight.w600)),
+                              subtitle: Text(s.subtitle(context.l10n), style: const TextStyle(fontSize: 12)),
                               onTap: () => setState(() => _section = s),
                             ),
                           ),
@@ -164,7 +198,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           padding: const EdgeInsets.only(right: 8),
                           child: ChoiceChip(
                             avatar: Icon(s.icon, size: 18),
-                            label: Text(s.title),
+                            label: Text(s.title(context.l10n)),
                             selected: s == current,
                             onSelected: (bool _) => setState(() => _section = s),
                           ),
@@ -203,7 +237,7 @@ class _ProfileCard extends StatelessWidget {
               kind: PhotoKind.user,
               entityId: user.id,
               photoUrl: user.photoUrl,
-              title: 'Your photo',
+              title: context.l10n.settingsYourPhoto,
               onChanged: (String url) {},
             ),
           ],
@@ -238,17 +272,17 @@ class _ShopDetailsCard extends ConsumerWidget {
           error: (Object error, StackTrace stack) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Shop details', style: Theme.of(context).textTheme.titleLarge),
+              Text(context.l10n.settingsShopDetails, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
               Text(
-                '${_problemText(error)}\nThe shop details need a connection to the server.',
+                context.l10n.settingsTheShopDetailsNeed(_problemText(error)),
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: () => ref.invalidate(storeSettingsProvider),
                 icon: const Icon(Icons.refresh),
-                label: const Text('Try again'),
+                label: Text(context.l10n.commonTryAgain),
               ),
             ],
           ),
@@ -354,15 +388,15 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text('Shop details', style: Theme.of(context).textTheme.titleLarge),
+          Text(context.l10n.settingsShopDetails, style: Theme.of(context).textTheme.titleLarge),
           Padding(
             padding: const EdgeInsets.only(top: 4, bottom: 16),
             child: Text(
               widget.canEdit
                   ? (widget.initial == null
-                      ? 'The currency every amount in the app is written in.'
-                      : 'Printed at the top of your receipts and in messages to customers.')
-                  : 'Only an admin can change these.',
+                      ? context.l10n.settingsTheCurrencyEveryAmount
+                      : context.l10n.settingsPrintedAtTheTop)
+                  : context.l10n.settingsOnlyAnAdminCan,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
@@ -370,17 +404,17 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
             kind: PhotoKind.business,
             entityId: ref.watch(businessProvider).id,
             photoUrl: ref.watch(businessProvider).logoUrl,
-            title: 'Logo',
+            title: context.l10n.settingsLogo,
             enabled: widget.canEdit && !_busy,
             onChanged: (String url) => ref.read(businessUpdaterProvider)(
               ref.read(businessProvider).copyWith(logoUrl: url),
             ),
           ),
           const SizedBox(height: 16),
-          Text('Brand colour', style: Theme.of(context).textTheme.titleSmall),
+          Text(context.l10n.settingsBrandColour, style: Theme.of(context).textTheme.titleSmall),
           const SizedBox(height: 4),
           Text(
-            'Buttons, selections and charts. A2 Stocks teal unless you pick your own.',
+            context.l10n.settingsButtonsSelectionsAndCharts,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 10),
@@ -401,24 +435,24 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
             TextFormField(
               controller: _name,
               enabled: !locked,
-              decoration: const InputDecoration(labelText: 'Shop name', border: OutlineInputBorder()),
-              validator: (String? v) => (v == null || v.trim().isEmpty) ? 'Enter the shop name.' : null,
+              decoration: InputDecoration(labelText: context.l10n.settingsShopName, border: const OutlineInputBorder()),
+              validator: (String? v) => (v == null || v.trim().isEmpty) ? context.l10n.settingsEnterTheShopName : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _phone,
               enabled: !locked,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(labelText: 'Phone', border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: context.l10n.partyFormPhone, border: const OutlineInputBorder()),
             ),
             const SizedBox(height: 12),
           ],
           DropdownButtonFormField<String>(
             initialValue: _currency,
-            decoration: const InputDecoration(
-              labelText: 'Currency',
-              border: OutlineInputBorder(),
-              helperText: 'Amounts already recorded are not converted: they keep their numbers.',
+            decoration: InputDecoration(
+              labelText: context.l10n.settingsCurrency,
+              border: const OutlineInputBorder(),
+              helperText: context.l10n.settingsAmountsAlreadyRecordedAre,
               helperMaxLines: 2,
             ),
             items: <DropdownMenuItem<String>>[
@@ -444,7 +478,7 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
                 icon: _busy
                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                     : const Icon(Icons.save_outlined),
-                label: const Text('Save'),
+                label: Text(context.l10n.settingsSave),
               ),
             ),
           ],
@@ -459,24 +493,24 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
 class BrandChoice {
   const BrandChoice(this.label, this.hex);
 
-  final String label;
+  final String Function(AppLocalizations l10n) label;
 
   /// "#RRGGBB", or '' for the default A2 Stocks teal.
   final String hex;
 }
 
-const List<BrandChoice> brandChoices = <BrandChoice>[
-  BrandChoice('A2 Stocks teal', ''),
-  BrandChoice('Blue', '#2563EB'),
-  BrandChoice('Violet', '#7C3AED'),
-  BrandChoice('Magenta', '#C026D3'),
-  BrandChoice('Pink', '#DB2777'),
-  BrandChoice('Red', '#DC2626'),
-  BrandChoice('Orange', '#EA580C'),
-  BrandChoice('Gold', '#CA8A04'),
-  BrandChoice('Green', '#16A34A'),
-  BrandChoice('Dark teal', '#0F766E'),
-  BrandChoice('Slate', '#475569'),
+final List<BrandChoice> brandChoices = <BrandChoice>[
+  BrandChoice((AppLocalizations l10n) => l10n.settingsA2StocksTeal, ''),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsBlue, '#2563EB'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsViolet, '#7C3AED'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsMagenta, '#C026D3'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsPink, '#DB2777'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsRed, '#DC2626'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsOrange, '#EA580C'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsGold, '#CA8A04'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsGreen, '#16A34A'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsDarkTeal, '#0F766E'),
+  BrandChoice((AppLocalizations l10n) => l10n.settingsSlate, '#475569'),
 ];
 
 /// One round colour choice; the chosen one carries a tick.
@@ -491,7 +525,7 @@ class BrandSwatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color color = AppColors.readableOnWhite(AppColors.tryParseHex(choice.hex) ?? AppColors.a2Primary);
     return Tooltip(
-      message: choice.label,
+      message: choice.label(context.l10n),
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,
@@ -529,10 +563,10 @@ class _AboutCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('A2 Stocks', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
-                  const Text('POS & Inventory Software'),
+                  Text(context.l10n.settingsPosInventorySoftware),
                   const SizedBox(height: 6),
                   Text(
-                    'Crafted with love by A2 Devs.',
+                    context.l10n.settingsCraftedWithLoveBy,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
@@ -562,17 +596,17 @@ class _StoreSettingsCard extends ConsumerWidget {
           error: (Object error, StackTrace stack) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Online store', style: Theme.of(context).textTheme.titleLarge),
+              Text(context.l10n.settingsOnlineStore, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
               Text(
-                '${_problemText(error)}\nThe store settings need a connection to the server.',
+                context.l10n.settingsTheStoreSettingsNeed(_problemText(error)),
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: () => ref.invalidate(storeSettingsProvider),
                 icon: const Icon(Icons.refresh),
-                label: const Text('Try again'),
+                label: Text(context.l10n.commonTryAgain),
               ),
             ],
           ),
@@ -620,20 +654,20 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
     super.dispose();
   }
 
-  static String? _amount(String? value) {
+  String? _amount(String? value) {
     final double? parsed = double.tryParse((value ?? '').trim());
     if (parsed == null || parsed < 0) {
-      return 'Enter an amount of 0 or more.';
+      return context.l10n.settingsEnterAnAmountOf;
     }
     return null;
   }
 
-  static String? _email(String? value) {
+  String? _email(String? value) {
     final String text = (value ?? '').trim();
     if (text.isEmpty) {
       return null;
     }
-    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(text) ? null : 'Enter a valid e-mail address.';
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(text) ? null : context.l10n.settingsEnterAValidE;
   }
 
   Future<void> _save() async {
@@ -669,7 +703,7 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
       }
       setState(() {
         _failed = false;
-        _message = saved.enabled ? 'Saved. The store is open.' : 'Saved. The store is closed: it takes no orders.';
+        _message = saved.enabled ? context.l10n.settingsSavedTheStoreIs2 : context.l10n.settingsSavedTheStoreIs;
       });
     } catch (error) {
       if (mounted) {
@@ -690,15 +724,15 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
     final String? address = await showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('Send test e-mail'),
+        title: Text(context.l10n.settingsSendTestEMail),
         content: TextField(
           controller: to,
           keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(labelText: 'Send to', border: OutlineInputBorder()),
+          decoration: InputDecoration(labelText: context.l10n.settingsSendTo, border: const OutlineInputBorder()),
         ),
         actions: <Widget>[
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.of(context).pop(to.text.trim()), child: const Text('Send')),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.l10n.categoriesCancel)),
+          FilledButton(onPressed: () => Navigator.of(context).pop(to.text.trim()), child: Text(context.l10n.settingsSend)),
         ],
       ),
     );
@@ -709,7 +743,7 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
     if (_email(address) != null) {
       setState(() {
         _failed = true;
-        _message = 'Enter a valid e-mail address.';
+        _message = context.l10n.settingsEnterAValidE;
       });
       return;
     }
@@ -725,10 +759,10 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
       setState(() {
         _failed = !result.sent;
         _message = result.sent
-            ? 'Test e-mail sent to $address. Check the inbox (and the spam folder).'
+            ? context.l10n.settingsTestEMailSent(address)
             : result.configured
-                ? 'The mail server refused or could not be reached. Check the SMTP settings on the server.'
-                : 'E-mail is not set up on the server yet (SMTP_HOST is empty). See docs/deploy.md.';
+                ? context.l10n.settingsTheMailServerRefused
+                : context.l10n.settingsEMailIsNot;
       });
     } catch (error) {
       if (mounted) {
@@ -778,48 +812,48 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text('Online store', style: Theme.of(context).textTheme.titleLarge),
+          Text(context.l10n.settingsOnlineStore, style: Theme.of(context).textTheme.titleLarge),
           if (!widget.canEdit)
             Padding(
               padding: const EdgeInsets.only(top: 4),
-              child: Text('Only an admin can change these.', style: Theme.of(context).textTheme.bodySmall),
+              child: Text(context.l10n.settingsOnlyAnAdminCan, style: Theme.of(context).textTheme.bodySmall),
             ),
-          _heading(context, 'Status', Icons.power_settings_new),
+          _heading(context, context.l10n.categoriesStatus, Icons.power_settings_new),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Store is open'),
-            subtitle: const Text('When off, the website shows a closed notice and takes no orders.'),
+            title: Text(context.l10n.settingsStoreIsOpen),
+            subtitle: Text(context.l10n.settingsWhenOffTheWebsite),
             value: _enabled,
             onChanged: locked ? null : (bool v) => setState(() => _enabled = v),
           ),
-          _heading(context, 'Contact & alerts', Icons.contact_phone_outlined),
+          _heading(context, context.l10n.settingsContactAlerts, Icons.contact_phone_outlined),
           TextFormField(
             controller: _name,
             enabled: !locked,
-            decoration: deco('Store name'),
-            validator: (String? v) => (v == null || v.trim().isEmpty) ? 'Enter the store name.' : null,
+            decoration: deco(context.l10n.settingsStoreName),
+            validator: (String? v) => (v == null || v.trim().isEmpty) ? context.l10n.settingsEnterTheStoreName : null,
           ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _phone,
             enabled: !locked,
             keyboardType: TextInputType.phone,
-            decoration: deco('Contact phone', helper: 'Shown in the website footer.'),
+            decoration: deco(context.l10n.settingsContactPhone, helper: context.l10n.settingsShownInTheWebsite),
           ),
           const SizedBox(height: 12),
           TextFormField(
             controller: _notify,
             enabled: !locked,
             keyboardType: TextInputType.emailAddress,
-            decoration: deco('Send new-order alerts to (e-mail)', helper: 'Leave empty for no alerts.'),
+            decoration: deco(context.l10n.settingsSendNewOrderAlerts, helper: context.l10n.settingsLeaveEmptyForNo),
             validator: _email,
           ),
-          _heading(context, 'Checkout & delivery', Icons.local_shipping_outlined),
+          _heading(context, context.l10n.settingsCheckoutDelivery, Icons.local_shipping_outlined),
           TextFormField(
             controller: _note,
             enabled: !locked,
             maxLines: 2,
-            decoration: deco('Note at checkout', helper: 'For example delivery times.'),
+            decoration: deco(context.l10n.settingsNoteAtCheckout, helper: context.l10n.settingsForExampleDeliveryTimes),
           ),
           const SizedBox(height: 12),
           Row(
@@ -830,7 +864,7 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
                   controller: _fee,
                   enabled: !locked,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: deco('Delivery fee'),
+                  decoration: deco(context.l10n.settingsDeliveryFee),
                   validator: _amount,
                 ),
               ),
@@ -840,21 +874,21 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
                   controller: _free,
                   enabled: !locked,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: deco('Free delivery from', helper: '0 = never free'),
+                  decoration: deco(context.l10n.settingsFreeDeliveryFrom, helper: context.l10n.settings0NeverFree),
                   validator: _amount,
                 ),
               ),
             ],
           ),
-          _heading(context, 'Stock display', Icons.inventory_2_outlined),
+          _heading(context, context.l10n.settingsStockDisplay, Icons.inventory_2_outlined),
           TextFormField(
             controller: _low,
             enabled: !locked,
             keyboardType: TextInputType.number,
-            decoration: deco('Show "Low stock" at or below', helper: 'Customers never see exact numbers.'),
+            decoration: deco(context.l10n.settingsShowLowStockAt, helper: context.l10n.settingsCustomersNeverSeeExact),
             validator: (String? v) {
               final int? n = int.tryParse((v ?? '').trim());
-              return (n == null || n < 0) ? 'Enter a whole number, 0 or more.' : null;
+              return (n == null || n < 0) ? context.l10n.settingsEnterAWholeNumber : null;
             },
           ),
           if (_message.isNotEmpty)
@@ -876,12 +910,12 @@ class _StoreSettingsFormState extends ConsumerState<StoreSettingsForm> {
                   icon: _busy
                       ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                       : const Icon(Icons.save_outlined),
-                  label: const Text('Save settings'),
+                  label: Text(context.l10n.settingsSaveSettings),
                 ),
                 OutlinedButton.icon(
                   onPressed: _busy ? null : _testEmail,
                   icon: const Icon(Icons.mark_email_read_outlined),
-                  label: const Text('Send test e-mail'),
+                  label: Text(context.l10n.settingsSendTestEMail),
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/variant_model.dart';
 import 'package:a2_stocks/providers/catalog_providers.dart';
@@ -118,11 +119,11 @@ class _VariantPickerBodyState extends State<_VariantPickerBody> {
           child: Row(
             children: <Widget>[
               Expanded(
-                child: Text('Select item',
+                child: Text(context.l10n.variantPickerSelectItem,
                     style: Theme.of(context).textTheme.titleLarge),
               ),
               IconButton(
-                tooltip: 'Close',
+                tooltip: context.l10n.starterPackClose,
                 icon: const Icon(Icons.close),
                 onPressed: widget.onClose,
               ),
@@ -133,10 +134,10 @@ class _VariantPickerBodyState extends State<_VariantPickerBody> {
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: TextField(
             autofocus: true,
-            decoration: const InputDecoration(
-              hintText: 'Search product, SKU, barcode…',
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              hintText: context.l10n.stockAuditSearchProductSkuBarcode,
+              prefixIcon: const Icon(Icons.search),
+              border: const OutlineInputBorder(),
               isDense: true,
             ),
             onChanged: (String value) => setState(() => _query = value),
@@ -144,7 +145,7 @@ class _VariantPickerBodyState extends State<_VariantPickerBody> {
         ),
         Expanded(
           child: matches.isEmpty
-              ? const Center(child: Text('No matching items.'))
+              ? Center(child: Text(context.l10n.variantPickerNoMatchingItems))
               : ListView.separated(
                   controller: widget.controller,
                   itemCount: matches.length,
@@ -157,10 +158,10 @@ class _VariantPickerBodyState extends State<_VariantPickerBody> {
                       title: Text('${pick.product.name} · ${pick.variant.label}'),
                       subtitle: Text(
                         widget.forSale
-                            ? 'SKU ${pick.variant.sku} · Price ${formatAmount(pick.variant.salePrice)}'
-                            : 'SKU ${pick.variant.sku} · Cost ${formatAmount(pick.variant.costPrice)}',
+                            ? context.l10n.variantPickerSkuPrice(pick.variant.sku, formatAmount(pick.variant.salePrice))
+                            : context.l10n.variantPickerSkuCost(pick.variant.sku, formatAmount(pick.variant.costPrice)),
                       ),
-                      trailing: Text('Stock $onHand'),
+                      trailing: Text(context.l10n.variantPickerStock(onHand)),
                       onTap: () => widget.onPicked(pick),
                     );
                   },

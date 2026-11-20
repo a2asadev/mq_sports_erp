@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/receipt.dart';
 import 'package:a2_stocks/core/utils/whatsapp.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/payment_method.dart';
 import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/providers/pos_providers.dart';
@@ -52,11 +54,12 @@ class OrderDetailScreen extends ConsumerWidget {
   /// Opens WhatsApp with a ready message; the person presses send.
   Future<void> _whatsApp(BuildContext context, WidgetRef ref, OrderModel order) async {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final AppLocalizations l10n = context.l10n;
     final String shopName = await ref.read(shopNameProvider.future);
     final Uri? link = WhatsApp.link(_phoneFor(ref, order), WhatsApp.orderMessage(order, shopName: shopName));
     if (link == null) {
-      messenger.showSnackBar(const SnackBar(
-        content: Text('This customer has no usable phone number. Add one to their record.'),
+      messenger.showSnackBar(SnackBar(
+        content: Text(l10n.orderDetailThisCustomerHasNo),
       ));
       return;
     }
@@ -67,7 +70,7 @@ class OrderDetailScreen extends ConsumerWidget {
       opened = false;
     }
     if (!opened) {
-      messenger.showSnackBar(const SnackBar(content: Text('WhatsApp could not be opened on this device.')));
+      messenger.showSnackBar(SnackBar(content: Text(l10n.orderDetailWhatsappCouldNotBe)));
     }
   }
 
@@ -99,21 +102,18 @@ class OrderDetailScreen extends ConsumerWidget {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Cancel this order?'),
+          title: Text(context.l10n.orderDetailCancelThisOrder),
           content: Text(
-            '${order.orderNo} will be cancelled. ${order.totalUnits} unit(s) go '
-            'back into stock and the charge on ${order.customerName}\'s ledger '
-            'is reversed. Money already received stays on the ledger as '
-            'customer credit.',
+            context.l10n.orderDetailWillBeCancelledUnit(order.orderNo, order.totalUnits, order.customerName),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Keep order'),
+              child: Text(context.l10n.orderDetailKeepOrder),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Cancel order'),
+              child: Text(context.l10n.orderDetailCancelOrder),
             ),
           ],
         );
@@ -213,8 +213,8 @@ class OrderDetailScreen extends ConsumerWidget {
 
     if (order == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Order')),
-        body: const Center(child: Text('This order no longer exists.')),
+        appBar: AppBar(title: Text(context.l10n.orderDetailOrder)),
+        body: Center(child: Text(context.l10n.orderDetailThisOrderNoLonger)),
       );
     }
 
@@ -259,7 +259,9 @@ class OrderDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                      '${formatDate(order.orderDate)} · ${order.saleType.label} sale${order.isWebOrder ? ' · Online store' : ''}'),
+                      order.isWebOrder
+                          ? context.l10n.orderDetailSaleLineOnline(formatDate(order.orderDate), order.saleType.label)
+                          : context.l10n.orderDetailSaleLine(formatDate(order.orderDate), order.saleType.label)),
                   if (order.shippingAddress.isNotEmpty) ...<Widget>[
                     const SizedBox(height: 4),
                     Row(
@@ -281,22 +283,22 @@ class OrderDetailScreen extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 12),
                       child: Text(
-                        'Cancelled. The stock was returned and the ledger charge reversed.',
+                        context.l10n.orderDetailCancelledTheStockWas,
                         style: TextStyle(color: theme.colorScheme.error),
                       ),
                     ),
                   const Divider(height: 24),
-                  _amountRow('Subtotal', formatAmount(order.subtotal)),
+                  _amountRow(context.l10n.orderDetailSubtotal, formatAmount(order.subtotal)),
                   if (order.totalDiscount > 0.005)
-                    _amountRow('Discounts (lines and order)',
+                    _amountRow(context.l10n.orderDetailDiscountsLinesAndOrder,
                         '- ${formatAmount(order.totalDiscount)}'),
                   if (order.shippingFee > 0.005)
-                    _amountRow('Delivery', formatAmount(order.shippingFee)),
-                  _amountRow('Total', formatAmount(total), bold: true),
+                    _amountRow(context.l10n.orderDetailDelivery, formatAmount(order.shippingFee)),
+                  _amountRow(context.l10n.orderReceiptCardTotal, formatAmount(total), bold: true),
                   if (!cancelled) ...<Widget>[
-                    _amountRow('Paid', formatAmount(paid)),
+                    _amountRow(context.l10n.purchaseDetailPaid, formatAmount(paid)),
                     _amountRow(
-                      'Due',
+                      context.l10n.purchaseDetailDue2,
                       formatAmount(due),
                       bold: due > 0.005,
                       color: due > 0.005 ? theme.colorScheme.error : null,
@@ -312,7 +314,7 @@ class OrderDetailScreen extends ConsumerWidget {
               onPressed: () =>
                   ref.read(ordersProvider.notifier).advanceStatus(order),
               icon: const Icon(Icons.arrow_forward),
-              label: Text('Mark as ${next.label}'),
+              label: Text(context.l10n.orderDetailMarkAs(next.label)),
             ),
           ],
           if (canCancel && !order.status.isFinal) ...<Widget>[
@@ -320,7 +322,7 @@ class OrderDetailScreen extends ConsumerWidget {
             OutlinedButton.icon(
               onPressed: () => _cancel(context, ref, order),
               icon: const Icon(Icons.cancel_outlined),
-              label: const Text('Cancel order'),
+              label: Text(context.l10n.orderDetailCancelOrder),
               style: OutlinedButton.styleFrom(
                 foregroundColor: theme.colorScheme.error,
               ),
@@ -330,15 +332,15 @@ class OrderDetailScreen extends ConsumerWidget {
           OutlinedButton.icon(
             onPressed: () => _whatsApp(context, ref, order),
             icon: const Icon(Icons.chat_outlined),
-            label: const Text('Message on WhatsApp'),
+            label: Text(context.l10n.orderDetailMessageOnWhatsapp),
           ),
           const SizedBox(height: 16),
-          Text('Status history', style: theme.textTheme.titleMedium),
+          Text(context.l10n.orderDetailStatusHistory, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           if (history.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Text('No history recorded.'),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(context.l10n.orderDetailNoHistoryRecorded),
             )
           else
             for (final OrderStatusEntry entry in history)
@@ -352,12 +354,12 @@ class OrderDetailScreen extends ConsumerWidget {
                   <String>[
                     '${formatDate(entry.changedAt)} '
                         '${TimeOfDay.fromDateTime(entry.changedAt.toLocal()).format(context)}',
-                    if (entry.byName.isNotEmpty) 'by ${entry.byName}',
+                    if (entry.byName.isNotEmpty) context.l10n.orderDetailBy(entry.byName),
                   ].join(' · '),
                 ),
               ),
           const SizedBox(height: 16),
-          Text('Items (${order.items.length} · ${order.totalUnits} units)',
+          Text(context.l10n.purchaseDetailItemsUnits(order.items.length, order.totalUnits),
               style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           for (final OrderItem item in order.items)
@@ -365,8 +367,8 @@ class OrderDetailScreen extends ConsumerWidget {
               child: ListTile(
                 title: Text('${item.productName} · ${item.variantLabel}'),
                 subtitle: Text(<String>[
-                  'SKU ${item.sku}',
-                  if (item.discount > 0.005) 'Discount ${formatAmount(item.discount)}',
+                  context.l10n.orderDetailSku(item.sku),
+                  if (item.discount > 0.005) context.l10n.orderDetailDiscount(formatAmount(item.discount)),
                 ].join(' · ')),
                 trailing: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -380,7 +382,7 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
             ),
           const SizedBox(height: 16),
-          Text('Receipt', style: theme.textTheme.titleMedium),
+          Text(context.l10n.orderDetailReceipt, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           ReceiptActions(
             receipt: ReceiptData.fromOrder(
@@ -394,12 +396,12 @@ class OrderDetailScreen extends ConsumerWidget {
             phone: _phoneFor(ref, order),
           ),
           const SizedBox(height: 16),
-          Text('Payments', style: theme.textTheme.titleMedium),
+          Text(context.l10n.purchaseDetailPayments, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           if (payments.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Text('No payments recorded yet.'),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(context.l10n.purchaseDetailNoPaymentsRecordedYet),
             )
           else
             for (final LedgerModel payment in payments)
@@ -409,7 +411,7 @@ class OrderDetailScreen extends ConsumerWidget {
                   title: Text(payment.description),
                   subtitle: Text(<String>[
                     formatDate(payment.entryDate),
-                    if (payment.paymentMethod.isNotEmpty) PaymentMethod.labelOf(payment.paymentMethod),
+                    if (payment.paymentMethod.isNotEmpty) paymentMethodLabelOf(payment.paymentMethod),
                     if (payment.paymentRef.isNotEmpty) payment.paymentRef,
                   ].join(' · ')),
                   trailing: Text(formatAmount(payment.amount),
@@ -423,7 +425,7 @@ class OrderDetailScreen extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _recordPayment(context, ref, order, due),
               icon: const Icon(Icons.payments_outlined),
-              label: const Text('Record payment'),
+              label: Text(context.l10n.purchaseDetailRecordPayment),
             )
           : null,
     );
@@ -490,7 +492,7 @@ class _PaymentDialogState extends State<_PaymentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Record payment'),
+      title: Text(context.l10n.purchaseDetailRecordPayment),
       content: Form(
         key: _formKey,
         child: Column(
@@ -502,16 +504,16 @@ class _PaymentDialogState extends State<_PaymentDialog> {
               autofocus: true,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
-                labelText: 'Amount',
-                helperText: 'Due: ${formatAmount(widget.due)}',
+                labelText: context.l10n.ledgerEntryAmount,
+                helperText: context.l10n.purchaseDetailDue(formatAmount(widget.due)),
               ),
               validator: (String? value) {
                 final double? parsed = double.tryParse((value ?? '').trim());
                 if (parsed == null || parsed <= 0) {
-                  return 'Enter an amount greater than zero.';
+                  return context.l10n.ledgerEntryEnterAnAmountGreater;
                 }
                 if (parsed > widget.due + 0.005) {
-                  return 'More than the amount due.';
+                  return context.l10n.purchaseDetailMoreThanTheAmount;
                 }
                 return null;
               },
@@ -532,21 +534,21 @@ class _PaymentDialogState extends State<_PaymentDialog> {
               TextFormField(
                 controller: _refController,
                 decoration: InputDecoration(
-                  labelText: _method == PaymentMethod.bank ? 'Bank and transaction no.' : 'Transaction no.',
+                  labelText: _method == PaymentMethod.bank ? context.l10n.posPaymentBankAndTransactionNo : context.l10n.posPaymentTransactionNo,
                 ),
-                validator: (String? v) => (v == null || v.trim().isEmpty) ? 'Enter the transaction number.' : null,
+                validator: (String? v) => (v == null || v.trim().isEmpty) ? context.l10n.orderDetailEnterTheTransactionNumber : null,
               ),
             const SizedBox(height: 8),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Date'),
+              title: Text(context.l10n.ledgerEntryDate),
               subtitle: Text(formatDate(_date)),
               trailing: const Icon(Icons.calendar_today_outlined),
               onTap: _pickDate,
             ),
             TextFormField(
               controller: _noteController,
-              decoration: const InputDecoration(labelText: 'Note (optional)'),
+              decoration: InputDecoration(labelText: context.l10n.purchaseDetailNoteOptional),
             ),
           ],
         ),
@@ -554,9 +556,9 @@ class _PaymentDialogState extends State<_PaymentDialog> {
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.categoriesCancel),
         ),
-        FilledButton(onPressed: _save, child: const Text('Save payment')),
+        FilledButton(onPressed: _save, child: Text(context.l10n.purchaseDetailSavePayment)),
       ],
     );
   }

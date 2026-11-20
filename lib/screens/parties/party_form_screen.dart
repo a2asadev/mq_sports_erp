@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/online/photo_service.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:a2_stocks/models/party_enums.dart';
@@ -150,7 +152,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
     final bool locked = _isSubmitting;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? 'Edit $noun' : 'Add $noun')),
+      appBar: AppBar(title: Text(isEdit ? context.l10n.partyFormEdit(noun) : context.l10n.partyFormAdd(noun))),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -167,7 +169,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                         kind: _isCustomer ? PhotoKind.customer : PhotoKind.vendor,
                         entityId: widget.entityId!,
                         photoUrl: _photoUrl,
-                        title: _isCustomer ? 'Customer photo / shop front' : 'Vendor photo / logo',
+                        title: _isCustomer ? context.l10n.partyFormCustomerPhotoShopFront : context.l10n.partyFormVendorPhotoLogo,
                         enabled: !locked,
                         onChanged: (String url) => _photoUrl = url,
                       )
@@ -179,20 +181,20 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       enabled: !locked,
                       textCapitalization: TextCapitalization.words,
                       decoration: InputDecoration(
-                        labelText: _isCustomer ? 'Name / shop name' : 'Name / business name',
+                        labelText: _isCustomer ? context.l10n.partyFormNameShopName : context.l10n.partyFormNameBusinessName,
                         border: const OutlineInputBorder(),
                       ),
                       validator: (String? value) =>
                           (value == null || value.trim().isEmpty)
-                              ? 'Name is required.'
+                              ? context.l10n.categoryFormNameIsRequired
                               : null,
                     ),
                     _gap(),
                     DropdownButtonFormField<String>(
                       value: _typeKey,
-                      decoration: const InputDecoration(
-                        labelText: 'Type',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.activityLogsType,
+                        border: const OutlineInputBorder(),
                       ),
                       items: widget.typeOptions
                           .map((MapEntry<String, String> option) =>
@@ -214,9 +216,9 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       controller: _contactController,
                       enabled: !locked,
                       textCapitalization: TextCapitalization.words,
-                      decoration: const InputDecoration(
-                        labelText: 'Contact person (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.partyFormContactPersonOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     _gap(),
@@ -224,15 +226,15 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       controller: _phoneController,
                       enabled: !locked,
                       keyboardType: TextInputType.phone,
-                      decoration: const InputDecoration(
-                        labelText: 'Phone',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.partyFormPhone,
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (String? value) {
                         final String phone = value?.trim() ?? '';
                         if (phone.isNotEmpty &&
                             !RegExp(r'^[0-9+\-\s()]{6,20}$').hasMatch(phone)) {
-                          return 'Enter a valid phone number.';
+                          return context.l10n.partyFormEnterAValidPhone;
                         }
                         return null;
                       },
@@ -242,16 +244,16 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       controller: _emailController,
                       enabled: !locked,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'Email (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.partyFormEmailOptional,
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (String? value) {
                         final String email = value?.trim() ?? '';
                         if (email.isNotEmpty &&
                             !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
                                 .hasMatch(email)) {
-                          return 'Enter a valid email address.';
+                          return context.l10n.authEmailInvalid;
                         }
                         return null;
                       },
@@ -261,9 +263,9 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       controller: _addressController,
                       enabled: !locked,
                       maxLines: 2,
-                      decoration: const InputDecoration(
-                        labelText: 'Address (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.partyFormAddressOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     _gap(),
@@ -271,9 +273,9 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       controller: _cityController,
                       enabled: !locked,
                       textCapitalization: TextCapitalization.words,
-                      decoration: const InputDecoration(
-                        labelText: 'City (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.partyFormCityOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     if (_isCustomer) ...<Widget>[
@@ -283,16 +285,16 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                         enabled: !locked,
                         keyboardType:
                             const TextInputType.numberWithOptions(decimal: true),
-                        decoration: const InputDecoration(
-                          labelText: 'Credit limit',
-                          helperText: '0 means no limit.',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: context.l10n.partyFormCreditLimit,
+                          helperText: context.l10n.partyForm0MeansNoLimit,
+                          border: const OutlineInputBorder(),
                         ),
                         validator: (String? value) {
                           final double? parsed =
                               double.tryParse((value ?? '').trim());
                           return (parsed == null || parsed < 0)
-                              ? 'Enter a valid amount.'
+                              ? context.l10n.partyFormEnterAValidAmount
                               : null;
                         },
                       ),
@@ -304,15 +306,15 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       keyboardType: const TextInputType.numberWithOptions(
                           decimal: true, signed: true),
                       decoration: InputDecoration(
-                        labelText: 'Opening balance',
+                        labelText: context.l10n.partyDetailOpeningBalance,
                         helperText: _isCustomer
-                            ? 'Positive: the customer owes you. Negative: advance received.'
-                            : 'Positive: you owe the vendor. Negative: advance paid.',
+                            ? context.l10n.partyFormPositiveTheCustomerOwes
+                            : context.l10n.partyFormPositiveYouOweThe,
                         border: const OutlineInputBorder(),
                       ),
                       validator: (String? value) =>
                           double.tryParse((value ?? '').trim()) == null
-                              ? 'Enter a valid amount.'
+                              ? context.l10n.partyFormEnterAValidAmount
                               : null,
                     ),
                     _gap(),
@@ -320,15 +322,15 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       controller: _notesController,
                       enabled: !locked,
                       maxLines: 3,
-                      decoration: const InputDecoration(
-                        labelText: 'Notes (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.partyFormNotesOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Active'),
-                      subtitle: const Text('Inactive parties are hidden from pickers.'),
+                      title: Text(context.l10n.categoryFormActive),
+                      subtitle: Text(context.l10n.partyFormInactivePartiesAreHidden),
                       value: _isActive,
                       onChanged: locked
                           ? null
@@ -343,7 +345,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : Text(isEdit ? 'Save changes' : 'Create $noun'),
+                          : Text(isEdit ? context.l10n.categoryFormSaveChanges : context.l10n.partyFormCreate(noun)),
                     ),
                   ],
                 ),

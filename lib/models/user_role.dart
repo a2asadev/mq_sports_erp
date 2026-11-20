@@ -1,12 +1,8 @@
 /// Roles available in A2 Stocks.
 enum UserRole {
-  admin('Admin'),
-  manager('Manager'),
-  staff('Staff');
-
-  const UserRole(this.label);
-
-  final String label;
+  admin,
+  manager,
+  staff;
 
   /// Parses a stored role name. Unknown values fall back to the least
   /// privileged role.

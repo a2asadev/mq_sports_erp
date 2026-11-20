@@ -4,6 +4,8 @@ import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
 import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/widgets/stat_strip.dart';
 import 'package:a2_stocks/models/purchase_model.dart';
 import 'package:a2_stocks/providers/purchasing_providers.dart';
@@ -77,25 +79,25 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
               StatItem(
                 icon: Icons.receipt_long_outlined,
                 color: AppColors.sky,
-                label: 'Purchases',
+                label: context.l10n.purchasesPurchases,
                 value: '${stats.count}',
               ),
               StatItem(
                 icon: Icons.shopping_bag_outlined,
                 color: AppColors.navy,
-                label: 'Total purchased',
+                label: context.l10n.purchasesTotalPurchased,
                 value: formatMoney(stats.total),
               ),
               StatItem(
                 icon: Icons.account_balance_wallet_outlined,
                 color: stats.due > 0.005 ? AppColors.danger : AppColors.textMuted,
-                label: 'Owed to vendors',
+                label: context.l10n.purchasesOwedToVendors,
                 value: formatMoney(stats.due),
               ),
               StatItem(
                 icon: Icons.pending_actions_outlined,
                 color: AppColors.amber,
-                label: 'Not fully paid',
+                label: context.l10n.purchasesNotFullyPaid,
                 value: '${stats.unpaidCount}',
               ),
             ],
@@ -103,10 +105,10 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
             child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search purchase no., vendor, invoice…',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: context.l10n.purchasesSearchPurchaseNoVendor,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
                 isDense: true,
               ),
               onChanged: (String value) => setState(() => _query = value),
@@ -119,7 +121,7 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                    label: const Text('All'),
+                    label: Text(context.l10n.posAll),
                     selected: _status == null,
                     onSelected: (bool _) => setState(() => _status = null),
                   ),
@@ -142,7 +144,7 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '${purchases.length} of ${loaded.length} purchase(s) shown',
+                context.l10n.purchasesOfPurchaseSShown(purchases.length, loaded.length),
                 style: theme.textTheme.bodySmall,
               ),
             ),
@@ -151,8 +153,8 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
             child: purchases.isEmpty
                 ? Center(
                     child: Text(loaded.isEmpty
-                        ? 'No purchases yet.'
-                        : 'No purchases match your search.'),
+                        ? context.l10n.purchasesNoPurchasesYet
+                        : context.l10n.purchasesNoPurchasesMatchYour),
                   )
                 : ListView.separated(
                     itemCount: purchases.length,
@@ -170,9 +172,9 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
                         subtitle: Text(
                           <String>[
                             formatDate(purchase.purchaseDate),
-                            '${purchase.items.length} item(s)',
+                            context.l10n.purchasesItemS(purchase.items.length),
                             if (purchase.invoiceNo.isNotEmpty)
-                              'Inv ${purchase.invoiceNo}',
+                              context.l10n.purchasesInv(purchase.invoiceNo),
                           ].join(' · '),
                         ),
                         trailing: Column(
@@ -201,7 +203,7 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Purchases')),
+      appBar: AppBar(title: Text(context.l10n.purchasesPurchases)),
       body: body,
       floatingActionButton: canManage
           ? FloatingActionButton.extended(
@@ -211,7 +213,7 @@ class _PurchasesScreenState extends ConsumerState<PurchasesScreen> {
                 ),
               ),
               icon: const Icon(Icons.add_shopping_cart),
-              label: const Text('New purchase'),
+              label: Text(context.l10n.purchasesNewPurchase),
             )
           : null,
     );

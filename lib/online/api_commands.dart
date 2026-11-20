@@ -1,5 +1,6 @@
 import 'package:a2_stocks/core/constants/storage_keys.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
@@ -55,7 +56,7 @@ class ApiCommands {
       case StorageKeys.users:
         return updateUser(UserModel.fromMap(map), key: key);
     }
-    throw ValidationException('Records of "$collection" cannot be saved directly.');
+    throw ValidationException(L10n.current.apiCommandsRecordsOfCannotBe2(collection));
   }
 
   Future<void> deleteRecord(String collection, String id, {String? key}) async {
@@ -66,7 +67,7 @@ class ApiCommands {
       StorageKeys.customers => '/v1/customers/$id',
       StorageKeys.ledgers => '/v1/ledger/$id',
       StorageKeys.users => '/v1/users/$id',
-      _ => throw ValidationException('Records of "$collection" cannot be deleted.'),
+      _ => throw ValidationException(L10n.current.apiCommandsRecordsOfCannotBe(collection)),
     };
     if (collection == StorageKeys.users) {
       // Users are never deleted (their history refers to them): turn the login off.

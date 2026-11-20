@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/stock_audit_model.dart';
 import 'package:a2_stocks/models/variant_model.dart';
@@ -62,16 +63,16 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Apply stock count'),
+          title: Text(context.l10n.stockAuditApplyStockCount),
           content: SizedBox(
             width: 420,
             child: changed.isEmpty
-                ? const Text(
-                    'Every counted quantity matches the system, so nothing will be adjusted.')
+                ? Text(
+                    context.l10n.stockAuditEveryCountedQuantityMatches)
                 : ListView(
                     shrinkWrap: true,
                     children: <Widget>[
-                      Text('${changed.length} item(s) will be adjusted:'),
+                      Text(context.l10n.stockAuditItemSWillBe(changed.length)),
                       const SizedBox(height: 8),
                       for (final _AuditLine l in changed)
                         Padding(
@@ -88,11 +89,11 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Back'),
+              child: Text(context.l10n.posPaymentBack),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Apply'),
+              child: Text(context.l10n.posApply),
             ),
           ],
         );
@@ -120,7 +121,7 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
     setState(() => _isSubmitting = false);
     if (saved) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Stock count applied.')),
+        SnackBar(content: Text(context.l10n.stockAuditStockCountApplied)),
       );
       Navigator.of(context).pop();
     }
@@ -148,9 +149,9 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
 
     if (!canAudit) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Stock audit')),
-        body: const Center(
-          child: Text('Only admins and managers can count and adjust stock.'),
+        appBar: AppBar(title: Text(context.l10n.stockAuditStockAudit)),
+        body: Center(
+          child: Text(context.l10n.stockAuditOnlyAdminsAndManagers),
         ),
       );
     }
@@ -189,10 +190,10 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stock audit'),
+        title: Text(context.l10n.stockAuditStockAudit),
         actions: <Widget>[
           IconButton(
-            tooltip: 'Audit history',
+            tooltip: context.l10n.stockAuditAuditHistory,
             icon: const Icon(Icons.history),
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -207,10 +208,10 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
             child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search product, SKU, barcode…',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: context.l10n.stockAuditSearchProductSkuBarcode,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
                 isDense: true,
               ),
               onChanged: (String value) => setState(() => _query = value),
@@ -221,7 +222,7 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
             child: Row(
               children: <Widget>[
                 FilterChip(
-                  label: Text('Counted only (${_counted.length})'),
+                  label: Text(context.l10n.stockAuditCountedOnly(_counted.length)),
                   selected: _onlyCounted,
                   onSelected: (bool v) => setState(() => _onlyCounted = v),
                 ),
@@ -230,14 +231,14 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
                   TextButton(
                     onPressed:
                         _isSubmitting ? null : () => setState(_counted.clear),
-                    child: const Text('Clear counts'),
+                    child: Text(context.l10n.stockAuditClearCounts),
                   ),
               ],
             ),
           ),
           Expanded(
             child: visible.isEmpty
-                ? const Center(child: Text('No items to show.'))
+                ? Center(child: Text(context.l10n.stockAuditNoItemsToShow))
                 : ListView.separated(
                     itemCount: visible.length,
                     separatorBuilder: (BuildContext context, int index) =>
@@ -270,10 +271,10 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
                     TextField(
                       controller: _noteController,
                       enabled: !_isSubmitting,
-                      decoration: const InputDecoration(
-                        labelText: 'Reason / note (optional)',
+                      decoration: InputDecoration(
+                        labelText: context.l10n.stockAuditReasonNoteOptional,
                         isDense: true,
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -281,7 +282,7 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            '${_counted.length} counted · $differences difference(s)',
+                            context.l10n.stockAuditCountedDifferenceS(_counted.length, differences),
                             style: theme.textTheme.bodyMedium,
                           ),
                         ),
@@ -296,14 +297,13 @@ class _StockAuditScreenState extends ConsumerState<StockAuditScreen> {
                                   child: CircularProgressIndicator(strokeWidth: 2),
                                 )
                               : const Icon(Icons.fact_check_outlined),
-                          label: const Text('Apply count'),
+                          label: Text(context.l10n.stockAuditApplyCount),
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Each difference becomes a stock adjustment and is uploaded '
-                      'as one atomic change when you sync.',
+                      context.l10n.stockAuditEachDifferenceBecomesA,
                       style: theme.textTheme.bodySmall,
                     ),
                   ],
@@ -389,13 +389,14 @@ class _AuditRowState extends State<_AuditRow> {
                   style: theme.textTheme.titleSmall,
                 ),
                 Text(
-                  'SKU ${widget.variant.sku} · System ${widget.onHand}'
-                  '${widget.variant.isActive ? '' : ' · inactive'}',
+                  widget.variant.isActive
+                      ? context.l10n.stockAuditSystemLine(widget.variant.sku, widget.onHand)
+                      : context.l10n.stockAuditSystemLineInactive(widget.variant.sku, widget.onHand),
                   style: theme.textTheme.bodySmall,
                 ),
                 if (variance != null && variance != 0)
                   Text(
-                    'Difference ${variance > 0 ? '+$variance' : '$variance'}',
+                    context.l10n.stockAuditDifference(variance > 0 ? '+$variance' : '$variance'),
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: varianceColor,
                       fontWeight: FontWeight.w700,
@@ -405,7 +406,7 @@ class _AuditRowState extends State<_AuditRow> {
             ),
           ),
           IconButton(
-            tooltip: 'One less',
+            tooltip: context.l10n.stockAuditOneLess,
             icon: const Icon(Icons.remove_circle_outline),
             onPressed: widget.enabled ? () => _step(-1) : null,
           ),
@@ -425,7 +426,7 @@ class _AuditRowState extends State<_AuditRow> {
             ),
           ),
           IconButton(
-            tooltip: 'One more',
+            tooltip: context.l10n.stockAuditOneMore,
             icon: const Icon(Icons.add_circle_outline),
             onPressed: widget.enabled ? () => _step(1) : null,
           ),
@@ -452,7 +453,7 @@ class StockAuditHistoryScreen extends ConsumerWidget {
               children: <Widget>[
                 Text(<String>[
                   formatDate(audit.auditDate),
-                  if (audit.countedByName.isNotEmpty) 'by ${audit.countedByName}',
+                  if (audit.countedByName.isNotEmpty) context.l10n.stockAuditBy(audit.countedByName),
                 ].join(' · ')),
                 if (audit.note.isNotEmpty) ...<Widget>[
                   const SizedBox(height: 4),
@@ -463,9 +464,8 @@ class StockAuditHistoryScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3),
                     child: Text(
-                      '${item.productName} · ${item.variantLabel} (${item.sku}): '
-                      'system ${item.systemQuantity}, counted ${item.countedQuantity} '
-                      '(${item.variance > 0 ? '+' : ''}${item.variance})',
+                      context.l10n.stockAuditItemLine(item.productName, item.variantLabel, item.sku, item.systemQuantity, item.countedQuantity,
+                          '${item.variance > 0 ? '+' : ''}${item.variance}'),
                     ),
                   ),
               ],
@@ -474,7 +474,7 @@ class StockAuditHistoryScreen extends ConsumerWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Close'),
+              child: Text(context.l10n.starterPackClose),
             ),
           ],
         );
@@ -489,9 +489,9 @@ class StockAuditHistoryScreen extends ConsumerWidget {
           ..sort((StockAuditModel a, StockAuditModel b) =>
               b.auditDate.compareTo(a.auditDate));
     return Scaffold(
-      appBar: AppBar(title: const Text('Audit history')),
+      appBar: AppBar(title: Text(context.l10n.stockAuditAuditHistory)),
       body: audits.isEmpty
-          ? const Center(child: Text('No stock audits yet.'))
+          ? Center(child: Text(context.l10n.stockAuditNoStockAuditsYet))
           : ListView.separated(
               itemCount: audits.length,
               separatorBuilder: (BuildContext context, int index) =>
@@ -505,7 +505,7 @@ class StockAuditHistoryScreen extends ConsumerWidget {
                   subtitle: Text(<String>[
                     formatDate(audit.auditDate),
                     if (audit.countedByName.isNotEmpty) audit.countedByName,
-                    '${audit.items.length} item(s)',
+                    context.l10n.purchasesItemS(audit.items.length),
                   ].join(' · ')),
                   trailing: Text(
                     net > 0 ? '+$net' : '$net',

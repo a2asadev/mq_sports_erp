@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/order_model.dart';
 
 /// Colored pipeline label of an order (Pending ... Delivered, Cancelled).

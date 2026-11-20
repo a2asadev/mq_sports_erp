@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/activity_log_model.dart';
 import 'package:a2_stocks/online/api_client.dart';
 import 'package:a2_stocks/online/online_providers.dart';
@@ -86,7 +87,7 @@ class ActivityLogsNotifier extends AutoDisposeAsyncNotifier<ActivityLogsState> {
     try {
       final ActivityLogsState fresh = await _load(cloudLogLimit);
       state = AsyncData<ActivityLogsState>(
-          fresh.copyWith(message: 'Loaded ${fresh.logs.length} log(s).'));
+          fresh.copyWith(message: L10n.current.activityLogLoadedLogS(fresh.logs.length)));
     } on AppException catch (e) {
       state = AsyncData<ActivityLogsState>(
           current.copyWith(isLoadingCloud: false, message: e.message));

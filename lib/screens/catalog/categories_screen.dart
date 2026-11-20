@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/category_stats.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/providers/catalog_providers.dart';
@@ -47,8 +48,8 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
     if (result == null || !mounted) {
       return;
     }
-    final String already = result.skipped > 0 ? ' (${result.skipped} you already had were left as they are)' : '';
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Added ${result.created} categories$already.')));
+    final String already = result.skipped > 0 ? context.l10n.categoriesYouAlreadyHadWere(result.skipped) : '';
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.categoriesAddedCategories(result.created, already))));
   }
 
   void _openForm({CategoryModel? category, String parentId = ''}) {
@@ -64,16 +65,16 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
-        title: const Text('Delete category'),
-        content: Text('Delete "${category.name}"?'),
+        title: Text(context.l10n.categoriesDeleteCategory),
+        content: Text(context.l10n.categoriesDelete2(category.name)),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.categoriesCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Delete'),
+            child: Text(context.l10n.categoriesDelete),
           ),
         ],
       ),
@@ -89,7 +90,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
       });
 
   Widget _actions(CategoryModel category) => PopupMenuButton<_CategoryAction>(
-        tooltip: 'Actions',
+        tooltip: context.l10n.categoriesActions,
         icon: const Icon(Icons.more_horiz, size: 20),
         onSelected: (_CategoryAction action) async {
           switch (action) {
@@ -101,10 +102,10 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
               await _confirmDelete(category);
           }
         },
-        itemBuilder: (BuildContext context) => const <PopupMenuEntry<_CategoryAction>>[
-          PopupMenuItem<_CategoryAction>(value: _CategoryAction.addChild, child: Text('Add subcategory')),
-          PopupMenuItem<_CategoryAction>(value: _CategoryAction.edit, child: Text('Edit')),
-          PopupMenuItem<_CategoryAction>(value: _CategoryAction.delete, child: Text('Delete')),
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<_CategoryAction>>[
+          PopupMenuItem<_CategoryAction>(value: _CategoryAction.addChild, child: Text(context.l10n.categoriesAddSubcategory)),
+          PopupMenuItem<_CategoryAction>(value: _CategoryAction.edit, child: Text(context.l10n.categoriesEdit)),
+          PopupMenuItem<_CategoryAction>(value: _CategoryAction.delete, child: Text(context.l10n.categoriesDelete)),
         ],
       );
 
@@ -134,18 +135,18 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const Text('No categories yet.'),
+            Text(context.l10n.categoriesNoCategoriesYet),
             if (canManage) ...<Widget>[
               const SizedBox(height: 4),
-              const Text(
-                'Start from a ready-made set for your kind of business, or add them one by one.',
-                style: TextStyle(color: AppColors.textMuted),
+              Text(
+                context.l10n.categoriesStartFromAReady,
+                style: const TextStyle(color: AppColors.textMuted),
               ),
               const SizedBox(height: 14),
               FilledButton.icon(
                 onPressed: _openStarterPacks,
                 icon: const Icon(Icons.auto_awesome_outlined),
-                label: const Text('Start from a template'),
+                label: Text(context.l10n.categoriesStartFromATemplate),
               ),
             ],
           ],
@@ -162,27 +163,27 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
               StatItem(
                 icon: Icons.category_outlined,
                 color: AppColors.primary,
-                label: 'Main categories',
+                label: context.l10n.categoriesMainCategories,
                 value: '$mainCount',
               ),
               StatItem(
                 icon: Icons.subdirectory_arrow_right,
                 color: AppColors.sky,
-                label: 'Subcategories in total',
+                label: context.l10n.categoriesSubcategoriesInTotal,
                 value: '${stats.length - mainCount}',
               ),
               StatItem(
                 icon: Icons.inventory_2_outlined,
                 color: AppColors.teal,
-                label: 'Products',
+                label: context.l10n.categoriesProducts,
                 value: '${products.length}',
               ),
               StatItem(
                 icon: Icons.folder_off_outlined,
                 color: emptyCount > 0 ? AppColors.amber : AppColors.textMuted,
-                label: 'Without products',
+                label: context.l10n.categoriesWithoutProducts,
                 value: '$emptyCount',
-                caption: emptyCount > 0 ? 'categories with nothing in them' : '',
+                caption: emptyCount > 0 ? context.l10n.categoriesCategoriesWithNothingIn : '',
               ),
             ],
           ),
@@ -195,10 +196,10 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
               children: <Widget>[
                 SegmentedButton<int>(
                   showSelectedIcon: false,
-                  segments: const <ButtonSegment<int>>[
-                    ButtonSegment<int>(value: 0, label: Text('Categories'), icon: Icon(Icons.category_outlined, size: 18)),
+                  segments: <ButtonSegment<int>>[
+                    ButtonSegment<int>(value: 0, label: Text(context.l10n.categoriesCategories), icon: const Icon(Icons.category_outlined, size: 18)),
                     ButtonSegment<int>(
-                        value: 1, label: Text('Subcategories'), icon: Icon(Icons.account_tree_outlined, size: 18)),
+                        value: 1, label: Text(context.l10n.categoriesSubcategories), icon: const Icon(Icons.account_tree_outlined, size: 18)),
                   ],
                   selected: <int>{_tab},
                   onSelectionChanged: (Set<int> value) => setState(() => _tab = value.first),
@@ -208,7 +209,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                 child: TextField(
                   controller: _search,
                   decoration: InputDecoration(
-                    hintText: 'Search categories',
+                    hintText: context.l10n.categoriesSearchCategories,
                     prefixIcon: const Icon(Icons.search, size: 20),
                     suffixIcon: _query.isEmpty
                         ? null
@@ -265,13 +266,13 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Categories'),
+        title: Text(context.l10n.categoriesCategories),
         actions: <Widget>[
           if (canManage)
             TextButton.icon(
               onPressed: _openStarterPacks,
               icon: const Icon(Icons.auto_awesome_outlined, size: 18),
-              label: const Text('Starter packs'),
+              label: Text(context.l10n.categoriesStarterPacks),
             ),
           const SizedBox(width: 8),
         ],
@@ -281,7 +282,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
           ? FloatingActionButton.extended(
               onPressed: () => _openForm(),
               icon: const Icon(Icons.add),
-              label: const Text('Add category'),
+              label: Text(context.l10n.categoriesAddCategory),
             )
           : null,
     );
@@ -404,14 +405,12 @@ class _StatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        active ? 'Active' : 'Inactive',
+        active ? context.l10n.categoryFormActive : context.l10n.productsInactive,
         style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w700),
       ),
     );
   }
 }
-
-String _plural(int n, String one, [String? many]) => '$n ${n == 1 ? one : (many ?? '${one}s')}';
 
 /// A count that shows [message] when the pointer rests on it (long-press on
 /// a touch screen).
@@ -467,20 +466,19 @@ class _CountWithTip extends StatelessWidget {
 }
 
 /// "Bats — 12 products" lines of a category's subcategories.
-InlineSpan _subcategoryTip(CategoryStat stat, Map<String, CategoryStat> byId) {
+InlineSpan _subcategoryTip(AppLocalizations l10n, CategoryStat stat, Map<String, CategoryStat> byId) {
   final List<InlineSpan> lines = <InlineSpan>[
     TextSpan(
-      text: '${stat.category.name} · ${_plural(stat.subcategoryCount, 'subcategory', 'subcategories')}',
+      text: l10n.categoriesTipHeader(stat.category.name, l10n.countSubcategories(stat.subcategoryCount)),
       style: const TextStyle(fontWeight: FontWeight.w800),
     ),
   ];
   for (final CategoryModel child in stat.children) {
     final int n = byId[child.id]?.totalProducts ?? 0;
-    lines.add(TextSpan(text: '\n•  ${child.name} — ${_plural(n, 'product')}'));
+    lines.add(TextSpan(text: '\n${l10n.categoriesTipChild(child.name, l10n.countProducts(n))}'));
   }
   lines.add(TextSpan(
-    text: '\nTotal: ${_plural(stat.totalProducts, 'product')}'
-        ' (${stat.directProducts} directly in ${stat.category.name})',
+    text: '\n${l10n.categoriesTipTotal(l10n.countProducts(stat.totalProducts), stat.directProducts, stat.category.name)}',
     style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFFD9DEE5)),
   ));
   return TextSpan(children: lines);
@@ -527,7 +525,7 @@ class _CategoriesTable extends StatelessWidget {
       return ascending ? c : -c;
     });
     if (rows.isEmpty) {
-      return const Center(child: Text('No categories match.'));
+      return Center(child: Text(context.l10n.categoriesNoCategoriesMatch));
     }
     final int sortIndex = _Sort.values.indexOf(sort);
     return _TableCard(
@@ -539,20 +537,20 @@ class _CategoriesTable extends StatelessWidget {
           showCheckboxColumn: false,
           columns: <DataColumn>[
             DataColumn(
-              label: const Text('Category'),
+              label: Text(context.l10n.categoriesCategory),
               onSort: (int i, bool asc) => onSort(_Sort.name, asc),
             ),
             DataColumn(
-              label: const Text('Subcategories'),
+              label: Text(context.l10n.categoriesSubcategories),
               numeric: true,
               onSort: (int i, bool asc) => onSort(_Sort.subcategories, asc),
             ),
             DataColumn(
-              label: const Text('Products'),
+              label: Text(context.l10n.categoriesProducts),
               numeric: true,
               onSort: (int i, bool asc) => onSort(_Sort.products, asc),
             ),
-            const DataColumn(label: Text('Status')),
+            DataColumn(label: Text(context.l10n.categoriesStatus)),
             if (canManage) const DataColumn(label: Text('')),
           ],
           rows: <DataRow>[
@@ -567,7 +565,7 @@ class _CategoriesTable extends StatelessWidget {
                     _CountWithTip(
                       count: s.subcategoryCount,
                       icon: Icons.account_tree_outlined,
-                      message: s.subcategoryCount == 0 ? null : _subcategoryTip(s, byId),
+                      message: s.subcategoryCount == 0 ? null : _subcategoryTip(context.l10n, s, byId),
                     ),
                   ),
                   DataCell(
@@ -577,8 +575,7 @@ class _CategoriesTable extends StatelessWidget {
                       message: s.subcategoryCount == 0
                           ? null
                           : TextSpan(
-                              text: '${s.directProducts} directly in ${s.category.name}\n'
-                                  '${s.productsInSubcategories} in its subcategories',
+                              text: context.l10n.categoriesDirectlyInInIts(s.directProducts, s.category.name, s.productsInSubcategories),
                             ),
                     ),
                   ),
@@ -643,7 +640,7 @@ class _SubcategoriesTable extends StatelessWidget {
               Text(head.category.name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
               const SizedBox(width: 10),
               Text(
-                _plural(head.subcategoryCount, 'subcategory', 'subcategories'),
+                context.l10n.countSubcategories(head.subcategoryCount),
                 style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
               ),
             ],
@@ -669,8 +666,7 @@ class _SubcategoriesTable extends StatelessWidget {
                 message: s.subcategoryCount == 0
                     ? null
                     : TextSpan(
-                        text: '${s.directProducts} directly in ${s.category.name}\n'
-                            '${s.productsInSubcategories} in its subcategories',
+                        text: context.l10n.categoriesDirectlyInInIts(s.directProducts, s.category.name, s.productsInSubcategories),
                       ),
               ),
             ),
@@ -683,7 +679,7 @@ class _SubcategoriesTable extends StatelessWidget {
 
     if (rows.isEmpty) {
       return Center(
-        child: Text(query.isEmpty ? 'No subcategories yet.' : 'No subcategories match.'),
+        child: Text(query.isEmpty ? context.l10n.categoriesNoSubcategoriesYet : context.l10n.categoriesNoSubcategoriesMatch),
       );
     }
     return _TableCard(
@@ -692,10 +688,10 @@ class _SubcategoriesTable extends StatelessWidget {
         child: DataTable(
           showCheckboxColumn: false,
           columns: <DataColumn>[
-            const DataColumn(label: Text('Category / Subcategory')),
-            const DataColumn(label: Text('Parent')),
-            const DataColumn(label: Text('Products'), numeric: true),
-            const DataColumn(label: Text('Status')),
+            DataColumn(label: Text(context.l10n.categoriesCategorySubcategory)),
+            DataColumn(label: Text(context.l10n.categoriesParent)),
+            DataColumn(label: Text(context.l10n.categoriesProducts), numeric: true),
+            DataColumn(label: Text(context.l10n.categoriesStatus)),
             if (canManage) const DataColumn(label: Text('')),
           ],
           rows: rows,

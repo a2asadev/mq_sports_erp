@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/auth_controller.dart';
 import 'package:a2_stocks/providers/data_mode.dart';
 import 'package:a2_stocks/providers/sync_controller.dart';
@@ -17,20 +18,18 @@ class LogoutButton extends ConsumerWidget {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Sign out'),
+          title: Text(context.l10n.commonSignOut),
           content: Text(pendingCount > 0
-              ? 'You have $pendingCount change(s) that were not uploaded. '
-                  'They stay on this device and are uploaded when you sign in '
-                  'again with a connection. Sign out anyway?'
-              : 'Do you want to sign out of A2 Stocks?'),
+              ? context.l10n.logoutButtonYouHaveChangeS(pendingCount)
+              : context.l10n.logoutButtonDoYouWantTo),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.categoriesCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Sign out'),
+              child: Text(context.l10n.commonSignOut),
             ),
           ],
         );
@@ -46,7 +45,7 @@ class LogoutButton extends ConsumerWidget {
     final Object? error = ref.read(authControllerProvider).error;
     if (error != null) {
       final String message =
-          error is AppException ? error.message : 'Sign out failed.';
+          error is AppException ? error.message : context.l10n.logoutButtonSignOutFailed;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));
     }
@@ -56,7 +55,7 @@ class LogoutButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isLoading = ref.watch(authControllerProvider).isLoading;
     return IconButton(
-      tooltip: 'Sign out',
+      tooltip: context.l10n.commonSignOut,
       icon: const Icon(Icons.logout),
       onPressed: isLoading ? null : () => _onPressed(context, ref),
     );

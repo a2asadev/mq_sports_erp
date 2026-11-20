@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/purchase_model.dart';
 
 /// Colored Paid / Partial / Pending label.

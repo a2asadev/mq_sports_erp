@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/auth_controller.dart';
 
 /// Shown when a login has no active user record.
@@ -35,14 +36,14 @@ class AccessDeniedScreen extends ConsumerWidget {
                   if (onRetry != null) ...<Widget>[
                     OutlinedButton(
                       onPressed: onRetry,
-                      child: const Text('Try again'),
+                      child: Text(context.l10n.commonTryAgain),
                     ),
                     const SizedBox(height: 12),
                   ],
                   FilledButton(
                     onPressed: () =>
                         ref.read(authControllerProvider.notifier).signOut(),
-                    child: const Text('Sign out'),
+                    child: Text(context.l10n.commonSignOut),
                   ),
                 ],
               ),

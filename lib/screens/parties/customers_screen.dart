@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/party_list_item.dart';
@@ -45,7 +47,7 @@ class CustomersScreen extends ConsumerWidget {
             MapEntry<String, String>(t.name, t.label),
         ],
         showCreditFilter: true,
-        emptyText: 'No customers yet.',
+        emptyText: context.l10n.customersNoCustomersYet,
         asCards: true,
         onSelected: (PartyListItem item) => Navigator.of(context).push(
           MaterialPageRoute<void>(
@@ -59,7 +61,7 @@ class CustomersScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Customers')),
+      appBar: AppBar(title: Text(context.l10n.onboardingContentCustomers)),
       body: body,
       floatingActionButton: canManage
           ? FloatingActionButton.extended(
@@ -69,7 +71,7 @@ class CustomersScreen extends ConsumerWidget {
                 ),
               ),
               icon: const Icon(Icons.person_add_alt_1),
-              label: const Text('Add customer'),
+              label: Text(context.l10n.customersAddCustomer),
             )
           : null,
     );

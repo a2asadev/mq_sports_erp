@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/category_tree.dart';
@@ -134,14 +135,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     final String cost = variant.costPrice.toStringAsFixed(2);
     final String sale = variant.salePrice.toStringAsFixed(2);
     final String prices = variant.isWholesale
-        ? 'Cost $cost · Wholesale ${variant.wholesalePrice.toStringAsFixed(2)} · Retail $sale'
-        : 'Cost $cost · Sale $sale';
+        ? context.l10n.productFormCostWholesaleRetail(cost, variant.wholesalePrice.toStringAsFixed(2), sale)
+        : context.l10n.productFormCostSale(cost, sale);
     return Card(
       child: ListTile(
         isThreeLine: true,
         title: Text(variant.label),
         subtitle: Text(
-          'SKU ${variant.sku}${variant.isActive ? '' : ' · Inactive'}\n$prices',
+          '${variant.isActive ? context.l10n.productFormSku(variant.sku) : context.l10n.productFormSkuInactive(variant.sku)}\n$prices',
         ),
         onTap: _isSubmitting
             ? null
@@ -159,7 +160,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                     ),
                   if (!locked)
                     IconButton(
-                      tooltip: 'Remove variant',
+                      tooltip: context.l10n.productFormRemoveVariant,
                       icon: const Icon(Icons.delete_outline),
                       onPressed: () => setState(() {
                         _variants = <VariantModel>[
@@ -193,10 +194,10 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(readOnly
-            ? 'Product'
+            ? context.l10n.productFormProduct
             : isEdit
-                ? 'Edit product'
-                : 'Add product'),
+                ? context.l10n.productFormEditProduct
+                : context.l10n.productsAddProduct),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -217,20 +218,20 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                         onChanged: (List<ProductImage> images) => _images = images,
                       )
                     else
-                      const PhotoAfterSaveHint(what: 'photos'),
+                      PhotoAfterSaveHint(what: context.l10n.photoWidgetsPhotos),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _nameController,
                       enabled: !locked,
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Product name',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.productFormProductName,
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (String? value) =>
                           (value == null || value.trim().isEmpty)
-                              ? 'Name is required.'
+                              ? context.l10n.categoryFormNameIsRequired
                               : null,
                     ),
                     const SizedBox(height: 16),
@@ -238,9 +239,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       value: categoryValue,
                       isExpanded: true,
                       decoration: InputDecoration(
-                        labelText: 'Category',
+                        labelText: context.l10n.categoriesCategory,
                         helperText: options.isEmpty
-                            ? 'Create a category first.'
+                            ? context.l10n.productFormCreateACategoryFirst
                             : null,
                         border: const OutlineInputBorder(),
                       ),
@@ -257,16 +258,16 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                           : (String? value) =>
                               setState(() => _categoryId = value),
                       validator: (String? value) =>
-                          value == null ? 'Choose a category.' : null,
+                          value == null ? context.l10n.productFormChooseACategory : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _brandController,
                       enabled: !locked,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Brand (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.productFormBrandOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -274,14 +275,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       controller: _descriptionController,
                       enabled: !locked,
                       maxLines: 3,
-                      decoration: const InputDecoration(
-                        labelText: 'Description (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.categoryFormDescriptionOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Active'),
+                      title: Text(context.l10n.categoryFormActive),
                       value: _isActive,
                       onChanged: locked
                           ? null
@@ -291,14 +292,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text('Variants (${_variants.length})',
+                          child: Text(context.l10n.productFormVariants(_variants.length),
                               style: theme.textTheme.titleMedium),
                         ),
                         if (!locked)
                           TextButton.icon(
                             onPressed: () => _editVariant(),
                             icon: const Icon(Icons.add),
-                            label: const Text('Add variant'),
+                            label: Text(context.l10n.productFormAddVariant),
                           ),
                       ],
                     ),
@@ -306,7 +307,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Add at least one variant.',
+                          context.l10n.productFormAddAtLeastOne,
                           style: TextStyle(color: theme.colorScheme.error),
                         ),
                       ),
@@ -323,7 +324,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                                 child:
                                     CircularProgressIndicator(strokeWidth: 2),
                               )
-                            : Text(isEdit ? 'Save changes' : 'Create product'),
+                            : Text(isEdit ? context.l10n.categoryFormSaveChanges : context.l10n.productFormCreateProduct),
                       ),
                     ],
                   ],

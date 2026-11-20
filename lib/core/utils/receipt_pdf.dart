@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:a2_stocks/core/utils/receipt.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:pdf/pdf.dart';
@@ -20,7 +21,7 @@ Future<Uint8List> buildReceiptPdf(
   ReceiptData r, {
   Future<Uint8List?> Function(String url)? fetchLogo,
 }) async {
-  final pw.Document doc = pw.Document(title: 'Receipt ${r.orderNo}', author: r.shopName);
+  final pw.Document doc = pw.Document(title: L10n.current.receiptReceipt(r.orderNo), author: r.shopName);
   final pw.MemoryImage? logo = await _logoImage(r.logoUrl, fetchLogo ?? _downloadLogo);
 
   const PdfColor muted = PdfColor.fromInt(0xFF4B5563);
@@ -64,7 +65,7 @@ Future<Uint8List> buildReceiptPdf(
         child: pw.Text(text, textAlign: pw.TextAlign.right, style: style ?? base),
       );
 
-  final String customer = r.customerName.isEmpty ? 'Walk-in customer' : r.customerName;
+  final String customer = r.customerName.isEmpty ? L10n.current.dashboardWalkInCustomer : r.customerName;
 
   doc.addPage(
     pw.Page(
@@ -91,21 +92,21 @@ Future<Uint8List> buildReceiptPdf(
           if (r.shopPhone.isNotEmpty)
             pw.Padding(
               padding: const pw.EdgeInsets.only(top: 3),
-              child: pw.Center(child: pw.Text('Phone Number : ${r.shopPhone}', style: base)),
+              child: pw.Center(child: pw.Text(L10n.current.receiptPdfPhoneNumber(r.shopPhone), style: base)),
             ),
           pw.SizedBox(height: 8),
           dashed(),
           pw.Center(
-            child: pw.Text('Sales Receipt', style: const pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
+            child: pw.Text(L10n.current.receiptSalesReceipt, style: const pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
           ),
           dashed(),
           pw.SizedBox(height: 4),
-          info('Name', customer),
+          info(L10n.current.categoryFormName, customer),
           pw.SizedBox(height: 2),
-          info('Receipt No', r.orderNo),
+          info(L10n.current.receiptReceiptNo, r.orderNo),
           pw.SizedBox(height: 2),
-          info('Date', ReceiptData.dateText(r.date)),
-          if (r.cashier.isNotEmpty) ...<pw.Widget>[pw.SizedBox(height: 2), info('Served by', r.cashier)],
+          info(L10n.current.ledgerEntryDate, ReceiptData.dateText(r.date)),
+          if (r.cashier.isNotEmpty) ...<pw.Widget>[pw.SizedBox(height: 2), info(L10n.current.receiptServedBy, r.cashier)],
           pw.SizedBox(height: 4),
           solid(),
           pw.Padding(
@@ -113,9 +114,9 @@ Future<Uint8List> buildReceiptPdf(
             child: pw.Row(
               children: <pw.Widget>[
                 pw.Expanded(child: pw.Text('# Item', style: bold)),
-                cell('Price', 38, style: bold),
-                cell('Qty', 20, style: bold),
-                cell('Total', 42, style: bold),
+                cell(L10n.current.receiptPrice, 38, style: bold),
+                cell(L10n.current.receiptQty, 20, style: bold),
+                cell(L10n.current.orderReceiptCardTotal, 42, style: bold),
               ],
             ),
           ),
@@ -142,24 +143,24 @@ Future<Uint8List> buildReceiptPdf(
             if (r.lines[i].discount > 0.005)
               pw.Padding(
                 padding: const pw.EdgeInsets.only(left: 10),
-                child: pw.Text('Discount -${ReceiptData.plain(r.lines[i].discount)}', style: base),
+                child: pw.Text(L10n.current.receiptPdfDiscount(ReceiptData.plain(r.lines[i].discount)), style: base),
               ),
           ],
           pw.SizedBox(height: 2),
           solid(),
-          kv('Sub Total :', ReceiptData.money(r.subtotal)),
-          if (r.discount > 0.005) kv('Discount :', '-${ReceiptData.money(r.discount)}'),
-          if (r.shippingFee > 0.005) kv('Delivery :', ReceiptData.money(r.shippingFee)),
+          kv(L10n.current.receiptSubTotal, ReceiptData.money(r.subtotal)),
+          if (r.discount > 0.005) kv(L10n.current.receiptDiscount2, '-${ReceiptData.money(r.discount)}'),
+          if (r.shippingFee > 0.005) kv(L10n.current.receiptDelivery, ReceiptData.money(r.shippingFee)),
           solid(),
           for (final ReceiptPayment p in r.payments)
             kv('${p.label}${p.reference.isEmpty ? '' : ' (${p.reference})'} :', ReceiptData.money(p.amount)),
-          if (r.change > 0.005) kv('Change :', ReceiptData.money(r.change)),
-          kv('Due :', ReceiptData.money(r.due)),
+          if (r.change > 0.005) kv(L10n.current.receiptChange, ReceiptData.money(r.change)),
+          kv(L10n.current.receiptDue, ReceiptData.money(r.due)),
           pw.SizedBox(height: 4),
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: <pw.Widget>[
-              pw.Text('Total Payable', style: const pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
+              pw.Text(L10n.current.posTotalPayable, style: const pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold)),
               pw.Text(
                 ReceiptData.money(r.total),
                 style: const pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold, color: navy),
@@ -184,7 +185,7 @@ Future<Uint8List> buildReceiptPdf(
           pw.SizedBox(height: 8),
           pw.Center(
             child: pw.Text(
-              'Thank you for shopping with us. Please come again.',
+              L10n.current.receiptThankYouForShopping,
               textAlign: pw.TextAlign.center,
               style: base,
             ),

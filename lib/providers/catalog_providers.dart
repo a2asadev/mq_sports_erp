@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
 import 'package:a2_stocks/data/outbox_entry.dart';
 import 'package:a2_stocks/data/pending_effects.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
 import 'package:a2_stocks/repositories/repository.dart';
 import 'package:a2_stocks/providers/data_mode.dart';
@@ -31,7 +32,7 @@ final Provider<Repository<CategoryModel>> categoryRepositoryProvider =
   return LocalRepository<CategoryModel>(
     collection: ref.watch(localCollectionsProvider).categories,
     outbox: ref.watch(outboxStoreProvider),
-    entityLabel: 'Category',
+    entityLabel: L10n.current.categoriesCategory,
     labelOf: (CategoryModel category) => category.name,
     overlay: (List<CategoryModel> base, List<OutboxEntry> entries) =>
         overlayRecords<CategoryModel>(
@@ -45,13 +46,13 @@ final Provider<Repository<CategoryModel>> categoryRepositoryProvider =
       final List<CategoryModel> categories =
           await ref.read(categoryRepositoryProvider).getLocal();
       if (categories.any((CategoryModel c) => c.parentId == id)) {
-        return 'it has subcategories';
+        return L10n.current.catalogItHasSubcategories;
       }
       final List<ProductModel> products =
           await ref.read(productRepositoryProvider).getLocal();
       final int used =
           products.where((ProductModel p) => p.categoryId == id).length;
-      return used > 0 ? 'it is used by $used product(s)' : null;
+      return used > 0 ? L10n.current.catalogItIsUsedBy(used) : null;
     },
   );
 });
@@ -67,7 +68,7 @@ final Provider<Repository<ProductModel>> productRepositoryProvider =
   return LocalRepository<ProductModel>(
     collection: ref.watch(localCollectionsProvider).products,
     outbox: ref.watch(outboxStoreProvider),
-    entityLabel: 'Product',
+    entityLabel: L10n.current.productFormProduct,
     labelOf: (ProductModel product) => product.name,
     overlay: (List<ProductModel> base, List<OutboxEntry> entries) =>
         overlayRecords<ProductModel>(
@@ -81,7 +82,7 @@ final Provider<Repository<ProductModel>> productRepositoryProvider =
       final List<StockLedgerModel> entries =
           await ref.read(stockLedgerRepositoryProvider).getLocal();
       return entries.any((StockLedgerModel e) => e.productId == id)
-          ? 'it has stock history'
+          ? L10n.current.catalogItHasStockHistory
           : null;
     },
   );
@@ -95,8 +96,7 @@ final Provider<bool> canManageCatalogProvider = Provider<bool>((Ref ref) {
       (user.role == UserRole.admin || user.role == UserRole.manager);
 });
 
-const String _noPermissionMessage =
-    'Only admins and managers can change the catalog.';
+String get _noPermissionMessage => L10n.current.catalogOnlyAdminsAndManagers;
 
 class CategoriesNotifier extends BaseListNotifier<CategoryModel> {
   @override
@@ -107,25 +107,25 @@ class CategoriesNotifier extends BaseListNotifier<CategoryModel> {
 
   String? _validate(CategoryModel category) {
     if (category.name.trim().isEmpty) {
-      return 'Category name is required.';
+      return L10n.current.catalogCategoryNameIsRequired;
     }
     final bool duplicate = _items.any((CategoryModel other) =>
         other.id != category.id &&
         other.parentId == category.parentId &&
         other.name.trim().toLowerCase() == category.name.trim().toLowerCase());
     if (duplicate) {
-      return 'A category named "${category.name.trim()}" already exists here.';
+      return L10n.current.catalogACategoryNamedAlready(category.name.trim());
     }
     if (category.parentId.isNotEmpty) {
       if (category.parentId == category.id ||
           CategoryTree.descendantIds(category.id, _items)
               .contains(category.parentId)) {
-        return 'A category cannot be placed inside itself or its subcategories.';
+        return L10n.current.catalogACategoryCannotBe;
       }
       final bool parentExists =
           _items.any((CategoryModel other) => other.id == category.parentId);
       if (!parentExists) {
-        return 'The selected parent category no longer exists.';
+        return L10n.current.catalogTheSelectedParentCategory;
       }
     }
     return null;
@@ -138,7 +138,7 @@ class CategoriesNotifier extends BaseListNotifier<CategoryModel> {
     required bool isActive,
   }) async {
     if (!ref.read(canManageCatalogProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final CategoryModel category = CategoryModel(
       name: name.trim(),
@@ -156,7 +156,7 @@ class CategoriesNotifier extends BaseListNotifier<CategoryModel> {
 
   Future<bool> updateCategory(CategoryModel updated) async {
     if (!ref.read(canManageCatalogProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final CategoryModel normalized = updated.copyWith(
       name: updated.name.trim(),
@@ -172,13 +172,13 @@ class CategoriesNotifier extends BaseListNotifier<CategoryModel> {
 
   Future<bool> deleteCategory(String id) async {
     if (!ref.read(canManageCatalogProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     try {
       final String? reason = await repository.deleteBlockReason(id);
       if (reason != null) {
         return reportFailure(ValidationException(
-            'This category cannot be deleted because $reason.'));
+            L10n.current.catalogThisCategoryCannotBe(reason)));
       }
     } on AppException catch (e) {
       return reportFailure(e);
@@ -203,22 +203,22 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
 
   Future<String?> _validate(ProductModel product) async {
     if (product.name.trim().isEmpty) {
-      return 'Product name is required.';
+      return L10n.current.catalogProductNameIsRequired;
     }
     if (product.categoryId.isEmpty) {
-      return 'Choose a category.';
+      return L10n.current.productFormChooseACategory;
     }
     if (product.variants.isEmpty) {
-      return 'Add at least one variant.';
+      return L10n.current.productFormAddAtLeastOne;
     }
     final Set<String> skus = <String>{};
     for (final VariantModel variant in product.variants) {
       final String sku = variant.sku.trim().toLowerCase();
       if (sku.isEmpty) {
-        return 'Every variant needs a SKU.';
+        return L10n.current.catalogEveryVariantNeedsA;
       }
       if (!skus.add(sku)) {
-        return 'SKU "${variant.sku.trim()}" is used twice in this product.';
+        return L10n.current.catalogSkuIsUsedTwice(variant.sku.trim());
       }
     }
     for (final ProductModel other in _items) {
@@ -227,7 +227,7 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
       }
       for (final VariantModel variant in other.variants) {
         if (skus.contains(variant.sku.trim().toLowerCase())) {
-          return 'SKU "${variant.sku.trim()}" already belongs to "${other.name}".';
+          return L10n.current.catalogSkuAlreadyBelongsTo(variant.sku.trim(), other.name);
         }
       }
     }
@@ -235,7 +235,7 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
         .read(categoryRepositoryProvider)
         .getLocalById(product.categoryId);
     if (category == null) {
-      return 'The selected category no longer exists.';
+      return L10n.current.catalogTheSelectedCategoryNo;
     }
     return null;
   }
@@ -249,7 +249,7 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
     required List<VariantModel> variants,
   }) async {
     if (!ref.read(canManageCatalogProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final ProductModel product = ProductModel(
       name: name.trim(),
@@ -273,7 +273,7 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
 
   Future<bool> updateProduct(ProductModel updated) async {
     if (!ref.read(canManageCatalogProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final ProductModel normalized = updated.copyWith(
       name: updated.name.trim(),
@@ -308,8 +308,7 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
               .toList();
           if (withHistory.isNotEmpty) {
             return reportFailure(ValidationException(
-                '"${withHistory.first.label}" has stock history and cannot be '
-                'removed. Mark it inactive instead.'));
+                L10n.current.catalogHasStockHistoryAnd(withHistory.first.label)));
           }
         } on AppException catch (e) {
           return reportFailure(e);
@@ -322,13 +321,13 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
 
   Future<bool> deleteProduct(String id) async {
     if (!ref.read(canManageCatalogProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     try {
       final String? reason = await repository.deleteBlockReason(id);
       if (reason != null) {
         return reportFailure(ValidationException(
-            'This product cannot be deleted because $reason. Mark it inactive instead.'));
+            L10n.current.catalogThisProductCannotBe(reason)));
       }
     } on AppException catch (e) {
       return reportFailure(e);

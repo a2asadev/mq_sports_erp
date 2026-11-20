@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
 import 'package:a2_stocks/models/user_model.dart';
@@ -85,8 +86,8 @@ class UsersNotifier extends BaseListNotifier<UserModel> {
     required UserRole role,
   }) async {
     if (_activeAdmin() == null) {
-      return _fail(const PermissionDeniedException(
-          'Only an active admin can add users.'));
+      return _fail(PermissionDeniedException(
+          L10n.current.usersOnlyAnActiveAdmin3));
     }
     final List<UserModel> previous = state.valueOrNull ?? <UserModel>[];
     try {
@@ -119,16 +120,16 @@ class UsersNotifier extends BaseListNotifier<UserModel> {
   Future<bool> updateUser(UserModel updated) async {
     final UserModel? actor = _activeAdmin();
     if (actor == null) {
-      return _fail(const PermissionDeniedException(
-          'Only an active admin can update users.'));
+      return _fail(PermissionDeniedException(
+          L10n.current.usersOnlyAnActiveAdmin2));
     }
     final UserModel? existing = _find(updated.id);
     if (existing != null &&
         existing.id == actor.id &&
         (existing.role != updated.role ||
             existing.isActive != updated.isActive)) {
-      return _fail(const PermissionDeniedException(
-          'You cannot change your own role or active status.'));
+      return _fail(PermissionDeniedException(
+          L10n.current.usersYouCannotChangeYour));
     }
     await updateItem(updated);
     final bool succeeded = !state.hasError;
@@ -141,7 +142,7 @@ class UsersNotifier extends BaseListNotifier<UserModel> {
   Future<bool> setActive(String id, {required bool isActive}) async {
     final UserModel? existing = _find(id);
     if (existing == null) {
-      return _fail(const PermissionDeniedException('User not found.'));
+      return _fail(PermissionDeniedException(L10n.current.usersUserNotFound));
     }
     return updateUser(existing.copyWith(isActive: isActive));
   }
@@ -150,12 +151,12 @@ class UsersNotifier extends BaseListNotifier<UserModel> {
   Future<bool> deleteUser(String id) async {
     final UserModel? actor = _activeAdmin();
     if (actor == null) {
-      return _fail(const PermissionDeniedException(
-          'Only an active admin can delete users.'));
+      return _fail(PermissionDeniedException(
+          L10n.current.usersOnlyAnActiveAdmin));
     }
     if (actor.id == id) {
       return _fail(
-          const PermissionDeniedException('You cannot delete your own account.'));
+          PermissionDeniedException(L10n.current.usersYouCannotDeleteYour));
     }
     await remove(id);
     return !state.hasError;

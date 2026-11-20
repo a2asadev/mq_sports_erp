@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:a2_stocks/core/utils/receipt.dart';
 import 'package:a2_stocks/core/utils/receipt_pdf.dart';
 import 'package:a2_stocks/core/utils/whatsapp.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:a2_stocks/widgets/receipt_view.dart';
 import 'package:printing/printing.dart';
@@ -37,7 +38,7 @@ Future<void> showReceiptDialog(
                     ReceiptActions(receipt: receipt, phone: phone, showView: false),
                     if (footer != null) ...<Widget>[const SizedBox(height: 8), footer],
                     if (footer == null)
-                      TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close')),
+                      TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.l10n.starterPackClose)),
                   ],
                 ),
               ),
@@ -68,26 +69,28 @@ class ReceiptActions extends StatelessWidget {
 
   Future<void> _guard(BuildContext context, Future<void> Function() action) async {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final AppLocalizations l10n = context.l10n;
     try {
       await action();
     } catch (_) {
-      messenger.showSnackBar(const SnackBar(content: Text('That did not work on this device. Please try again.')));
+      messenger.showSnackBar(SnackBar(content: Text(l10n.receiptActionsThatDidNotWork)));
     }
   }
 
-  Future<void> _print() async {
+  Future<void> _print(BuildContext context) async {
     await Printing.layoutPdf(
-      name: 'Receipt ${receipt.orderNo}',
+      name: context.l10n.receiptActionsReceipt(receipt.orderNo),
       onLayout: (_) => buildReceiptPdf(receipt),
     );
   }
 
-  Future<void> _share() async {
+  Future<void> _share(BuildContext context) async {
     await Printing.sharePdf(bytes: await buildReceiptPdf(receipt), filename: 'receipt-${receipt.orderNo}.pdf');
   }
 
   Future<void> _whatsApp(BuildContext context) async {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final AppLocalizations l10n = context.l10n;
     String number = phone;
     if (WhatsApp.internationalPhone(number).isEmpty) {
       final String? typed = await _askPhone(context);
@@ -98,7 +101,7 @@ class ReceiptActions extends StatelessWidget {
     }
     final Uri? link = WhatsApp.link(number, receipt.toText());
     if (link == null) {
-      messenger.showSnackBar(const SnackBar(content: Text('That is not a usable phone number.')));
+      messenger.showSnackBar(SnackBar(content: Text(l10n.receiptActionsThatIsNotA)));
       return;
     }
     bool opened = false;
@@ -108,7 +111,7 @@ class ReceiptActions extends StatelessWidget {
       opened = false;
     }
     if (!opened) {
-      messenger.showSnackBar(const SnackBar(content: Text('WhatsApp could not be opened on this device.')));
+      messenger.showSnackBar(SnackBar(content: Text(l10n.orderDetailWhatsappCouldNotBe)));
     }
   }
 
@@ -117,20 +120,20 @@ class ReceiptActions extends StatelessWidget {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('WhatsApp number'),
+        title: Text(context.l10n.receiptActionsWhatsappNumber),
         content: TextField(
           controller: controller,
           autofocus: true,
           keyboardType: TextInputType.phone,
-          decoration: const InputDecoration(
-            labelText: 'Customer phone',
+          decoration: InputDecoration(
+            labelText: context.l10n.receiptActionsCustomerPhone,
             hintText: '0300 1234567',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
           ),
         ),
         actions: <Widget>[
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.of(context).pop(controller.text.trim()), child: const Text('Open WhatsApp')),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.l10n.categoriesCancel)),
+          FilledButton(onPressed: () => Navigator.of(context).pop(controller.text.trim()), child: Text(context.l10n.receiptActionsOpenWhatsapp)),
         ],
       ),
     ).whenComplete(() => disposeControllerLater(controller));
@@ -144,25 +147,25 @@ class ReceiptActions extends StatelessWidget {
       alignment: WrapAlignment.center,
       children: <Widget>[
         FilledButton.icon(
-          onPressed: () => _guard(context, _print),
+          onPressed: () => _guard(context, () => _print(context)),
           icon: const Icon(Icons.print_outlined),
-          label: const Text('Print Receipt'),
+          label: Text(context.l10n.receiptActionsPrintReceipt),
         ),
         if (showView)
           OutlinedButton.icon(
             onPressed: () => showReceiptDialog(context, receipt, phone: phone),
             icon: const Icon(Icons.receipt_long_outlined),
-            label: const Text('View receipt'),
+            label: Text(context.l10n.receiptActionsViewReceipt),
           ),
         OutlinedButton.icon(
-          onPressed: () => _guard(context, _share),
+          onPressed: () => _guard(context, () => _share(context)),
           icon: const Icon(Icons.ios_share),
-          label: const Text('Share PDF'),
+          label: Text(context.l10n.receiptActionsSharePdf),
         ),
         OutlinedButton.icon(
           onPressed: () => _guard(context, () => _whatsApp(context)),
           icon: const Icon(Icons.chat_outlined),
-          label: const Text('WhatsApp'),
+          label: Text(context.l10n.receiptActionsWhatsapp),
         ),
       ],
     );

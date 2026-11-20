@@ -1,3 +1,4 @@
+import 'package:a2_stocks/core/constants/server_text.dart';
 import 'package:a2_stocks/core/constants/storage_keys.dart';
 import 'package:a2_stocks/data/outbox_entry.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
@@ -254,7 +255,7 @@ List<LedgerModel> overlayLedgers(List<LedgerModel> base, List<OutboxEntry> entri
       (LedgerModel e) =>
           e.orderId == orderId &&
           (descriptionStart == null
-              ? e.description.startsWith('Cancelled order') == false
+              ? e.description.startsWith(ServerText.cancelledOrderLedgerPrefix) == false
               : e.description.startsWith(descriptionStart)));
   bool serverHasPurchase(String purchaseId) =>
       base.any((LedgerModel e) => e.purchaseId == purchaseId);
@@ -310,7 +311,7 @@ List<LedgerModel> overlayLedgers(List<LedgerModel> base, List<OutboxEntry> entri
         }
       case OutboxKind.orderCancel:
         final OrderModel order = _order(entry.payload);
-        if (serverHasOrder(order.id, descriptionStart: 'Cancelled order') ||
+        if (serverHasOrder(order.id, descriptionStart: ServerText.cancelledOrderLedgerPrefix) ||
             order.totalAmount <= 0) {
           continue;
         }

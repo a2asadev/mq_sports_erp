@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/party_list_item.dart';
@@ -7,7 +8,7 @@ import 'package:a2_stocks/widgets/order_receipt_card.dart';
 import 'package:a2_stocks/widgets/party_list_view.dart';
 
 void main() {
-  Widget host(Widget child, {double width = 340, double height = 330}) => MaterialApp(
+  Widget host(Widget child, {double width = 340, double height = 330}) => MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, 
         home: Scaffold(body: Center(child: SizedBox(width: width, height: height, child: child))),
       );
 

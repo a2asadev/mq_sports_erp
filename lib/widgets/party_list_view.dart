@@ -3,6 +3,8 @@ import 'package:a2_stocks/core/utils/currency.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
 import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/widgets/stat_strip.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/party_list_item.dart';
@@ -22,7 +24,7 @@ class PartyListView extends StatefulWidget {
     this.showCreditFilter = false,
     this.scrollController,
     this.autofocusSearch = false,
-    this.emptyText = 'Nothing here yet.',
+    this.emptyText,
     this.asCards = false,
   });
 
@@ -37,7 +39,7 @@ class PartyListView extends StatefulWidget {
   final bool showCreditFilter;
   final ScrollController? scrollController;
   final bool autofocusSearch;
-  final String emptyText;
+  final String? emptyText;
 
   /// Show a grid of cards (the screens) instead of a compact list (the pickers).
   final bool asCards;
@@ -84,40 +86,40 @@ class _PartyListViewState extends State<PartyListView> {
   List<StatItem> _stats() {
     final PartyStats stats = computePartyStats(widget.items);
     final bool customers = widget.partyType == PartyType.customer;
-    final String noun = customers ? 'Customers' : 'Vendors';
+    final String noun = customers ? context.l10n.onboardingContentCustomers : context.l10n.vendorsVendors;
     return <StatItem>[
       StatItem(
         icon: customers ? Icons.groups_outlined : Icons.local_shipping_outlined,
         color: AppColors.primary,
-        label: 'Total ${noun.toLowerCase()}',
+        label: context.l10n.purchaseFormTotal(noun.toLowerCase()),
         value: '${stats.total}',
       ),
       StatItem(
         icon: Icons.check_circle_outline,
         color: AppColors.teal,
-        label: 'Active',
+        label: context.l10n.categoryFormActive,
         value: '${stats.active}',
-        caption: stats.total > stats.active ? '${stats.total - stats.active} inactive' : '',
+        caption: stats.total > stats.active ? context.l10n.productsInactive2(stats.total - stats.active) : '',
       ),
       StatItem(
         icon: Icons.account_balance_wallet_outlined,
         color: stats.outstanding > 0.005 ? AppColors.amber : AppColors.textMuted,
-        label: customers ? 'To collect' : 'To pay',
+        label: customers ? context.l10n.ordersToCollect : context.l10n.partyListToPay,
         value: formatMoney(stats.outstanding),
-        caption: '${stats.withBalance} with a balance',
+        caption: context.l10n.partyListWithABalance2(stats.withBalance),
       ),
       if (customers)
         StatItem(
           icon: Icons.warning_amber_rounded,
           color: stats.overLimit > 0 ? AppColors.danger : AppColors.textMuted,
-          label: 'Over credit limit',
+          label: context.l10n.partyListOverCreditLimit,
           value: '${stats.overLimit}',
         )
       else
         StatItem(
           icon: Icons.paid_outlined,
           color: AppColors.sky,
-          label: 'With a balance',
+          label: context.l10n.partyListWithABalance,
           value: '${stats.withBalance}',
         ),
     ];
@@ -142,7 +144,7 @@ class _PartyListViewState extends State<PartyListView> {
               item.typeLabel,
               if (item.subtitle.isNotEmpty) item.subtitle,
               if (item.phone.isNotEmpty) item.phone,
-              if (!item.isActive) 'Inactive',
+              if (!item.isActive) context.l10n.productsInactive,
             ].join(' · '),
           ),
           trailing: item.hasBalance
@@ -158,12 +160,12 @@ class _PartyListViewState extends State<PartyListView> {
                       ),
                     ),
                     Text(
-                      item.isOverLimit ? 'Over limit' : widget.partyType.balanceCaption(item.balance),
+                      item.isOverLimit ? context.l10n.partyListOverLimit : widget.partyType.balanceCaption(item.balance),
                       style: theme.textTheme.bodySmall,
                     ),
                   ],
                 )
-              : Text('Settled', style: theme.textTheme.bodySmall),
+              : Text(context.l10n.partyListSettled, style: theme.textTheme.bodySmall),
           onTap: () => widget.onSelected(item),
         );
       },
@@ -205,9 +207,9 @@ class _PartyListViewState extends State<PartyListView> {
               constraints: BoxConstraints(maxWidth: widget.asCards ? 420 : double.infinity),
               child: TextField(
                 autofocus: widget.autofocusSearch,
-                decoration: const InputDecoration(
-                  hintText: 'Search name, phone, city…',
-                  prefixIcon: Icon(Icons.search),
+                decoration: InputDecoration(
+                  hintText: context.l10n.partyListSearchNamePhoneCity,
+                  prefixIcon: const Icon(Icons.search),
                 ),
                 onChanged: (String value) => setState(() => _query = value),
               ),
@@ -221,7 +223,7 @@ class _PartyListViewState extends State<PartyListView> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: <Widget>[
               _chipPadding(ChoiceChip(
-                label: const Text('All'),
+                label: Text(context.l10n.posAll),
                 selected: _typeKey == null,
                 onSelected: (bool _) => setState(() => _typeKey = null),
               )),
@@ -232,18 +234,18 @@ class _PartyListViewState extends State<PartyListView> {
                   onSelected: (bool selected) => setState(() => _typeKey = selected ? option.key : null),
                 )),
               _chipPadding(FilterChip(
-                label: const Text('With balance'),
+                label: Text(context.l10n.partyListWithBalance),
                 selected: _onlyWithBalance,
                 onSelected: (bool value) => setState(() => _onlyWithBalance = value),
               )),
               if (widget.showCreditFilter)
                 _chipPadding(FilterChip(
-                  label: const Text('Over credit limit'),
+                  label: Text(context.l10n.partyListOverCreditLimit),
                   selected: _onlyOverLimit,
                   onSelected: (bool value) => setState(() => _onlyOverLimit = value),
                 )),
               _chipPadding(FilterChip(
-                label: const Text('Show inactive'),
+                label: Text(context.l10n.partyListShowInactive),
                 selected: _showInactive,
                 onSelected: (bool value) => setState(() => _showInactive = value),
               )),
@@ -254,8 +256,8 @@ class _PartyListViewState extends State<PartyListView> {
           child: visible.isEmpty
               ? Center(
                   child: Text(widget.items.isEmpty
-                      ? widget.emptyText
-                      : 'No matches. Try changing the search or filters.'),
+                      ? (widget.emptyText ?? context.l10n.partyListNothingHereYet)
+                      : context.l10n.partyListNoMatchesTryChanging),
                 )
               : (widget.asCards ? _cards(visible) : _list(visible, theme)),
         ),
@@ -316,7 +318,7 @@ class PartyCard extends StatelessWidget {
                               _Pill(text: item.typeLabel, color: AppColors.sky),
                               if (!item.isActive) ...<Widget>[
                                 const SizedBox(width: 6),
-                                const _Pill(text: 'Inactive', color: AppColors.textMuted),
+                                _Pill(text: context.l10n.productsInactive, color: AppColors.textMuted),
                               ],
                             ],
                           ),
@@ -326,11 +328,11 @@ class PartyCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                _Detail(icon: Icons.phone_outlined, text: item.phone.isEmpty ? 'No phone' : item.phone),
+                _Detail(icon: Icons.phone_outlined, text: item.phone.isEmpty ? context.l10n.partyListNoPhone : item.phone),
                 const SizedBox(height: 4),
                 _Detail(
                   icon: Icons.place_outlined,
-                  text: item.subtitle.isEmpty ? 'No city' : item.subtitle,
+                  text: item.subtitle.isEmpty ? context.l10n.partyListNoCity : item.subtitle,
                 ),
                 const Spacer(),
                 const Divider(height: 16),
@@ -338,7 +340,7 @@ class PartyCard extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        over ? 'Over credit limit' : partyType.balanceCaption(item.balance),
+                        over ? context.l10n.partyListOverCreditLimit : partyType.balanceCaption(item.balance),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,

@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'package:a2_stocks/core/utils/formatters.dart';
 import 'package:a2_stocks/core/utils/currency.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/category_tree.dart';
@@ -36,12 +39,6 @@ import 'package:a2_stocks/widgets/receipt_actions.dart';
 import 'package:a2_stocks/widgets/sync_status_chip.dart';
 
 String _fmt(double v) => v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
-
-const List<String> _weekdays = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const List<String> _months = <String>[
-  'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
-  'September', 'October', 'November', 'December',
-];
 
 IconData _methodIcon(PaymentMethod m) {
   switch (m) {
@@ -99,8 +96,8 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     final int onHand = ref.read(stockOnHandProvider)[variant.id] ?? 0;
     if (cart.quantityOf(variant.id) + 1 > onHand) {
       _message(onHand <= 0
-          ? '"${product.name} · ${variant.label}" is out of stock.'
-          : 'Only $onHand of "${product.name} · ${variant.label}" in stock.');
+          ? context.l10n.posIsOutOfStock(product.name, variant.label)
+          : context.l10n.posOnlyOfInStock(onHand, product.name, variant.label));
       return;
     }
     ref.read(posCartProvider.notifier).set(cart.add(product, variant));
@@ -110,7 +107,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     final List<VariantModel> variants =
         product.variants.where((VariantModel v) => v.isActive).toList();
     if (variants.isEmpty) {
-      _message('"${product.name}" has no active variant.');
+      _message(context.l10n.posHasNoActiveVariant(product.name));
       return;
     }
     if (variants.length == 1) {
@@ -133,7 +130,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
               ListTile(
                 enabled: (stock[v.id] ?? 0) > 0,
                 title: Text(v.label),
-                subtitle: Text('${stock[v.id] ?? 0} in stock'),
+                subtitle: Text(context.l10n.posInStockCount(stock[v.id] ?? 0)),
                 trailing: Text('${MoneyFormat.prefix}${_fmt(v.salePrice)}', style: Theme.of(context).textTheme.titleMedium),
                 onTap: () => Navigator.of(context).pop(v),
               ),
@@ -174,7 +171,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
         }
       }
     }
-    _message('No product with barcode or SKU "${_search.text.trim()}".');
+    _message(context.l10n.posNoProductWithBarcode(_search.text.trim()));
     _searchFocus.requestFocus();
   }
 
@@ -189,7 +186,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     final List<PartyListItem> items = ref.read(customerItemsProvider);
     final PartyPickResult? picked = await showPartyPickerSheet(
       context,
-      title: 'Customer',
+      title: context.l10n.posCustomer,
       partyType: PartyType.customer,
       items: items.where((PartyListItem i) => i.id != ref.read(businessProvider).walkInCustomerId && i.isActive).toList(),
       typeOptions: <MapEntry<String, String>>[
@@ -197,7 +194,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
       ],
       selectedId: ref.read(posCartProvider).customer?.id,
       showCreditFilter: true,
-      clearLabel: 'Walk-in customer',
+      clearLabel: context.l10n.dashboardWalkInCustomer,
     );
     if (picked == null || !mounted) {
       return;
@@ -214,12 +211,12 @@ class _PosScreenState extends ConsumerState<PosScreen> {
       return;
     }
     if (!ref.read(canCreateOrdersProvider)) {
-      _message('Your login cannot make sales.');
+      _message(context.l10n.posYourLoginCannotMake);
       return;
     }
     final CustomerModel? customer = cart.customer ?? _walkIn();
     if (customer == null) {
-      _message('The walk-in customer is not on this device yet. Sync once, then try again.');
+      _message(context.l10n.posTheWalkInCustomer);
       return;
     }
     final PosPaymentResult? payment = await showPosPaymentDialog(
@@ -250,7 +247,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     setState(() => _charging = false);
     if (!ok) {
       final Object? error = ref.read(ordersProvider).error;
-      _message(error == null ? 'The sale could not be completed.' : errorMessageOf(error));
+      _message(error == null ? context.l10n.posTheSaleCouldNot : errorMessageOf(error));
       return;
     }
     final OrderModel? order = orders.lastConfirmed;
@@ -296,10 +293,10 @@ class _PosScreenState extends ConsumerState<PosScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Sale complete', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
+                  Text(context.l10n.posSaleComplete, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)),
                   if (payment.change > 0.005)
-                    Text('Give change: ${MoneyFormat.prefix}${_fmt(payment.change)}', style: const TextStyle(fontWeight: FontWeight.w700)),
-                  if (receipt.due > 0.005) Text('Balance due: ${MoneyFormat.prefix}${_fmt(receipt.due)}'),
+                    Text(context.l10n.posPaymentGiveChange(MoneyFormat.prefix, _fmt(payment.change)), style: const TextStyle(fontWeight: FontWeight.w700)),
+                  if (receipt.due > 0.005) Text(context.l10n.posBalanceDue(MoneyFormat.prefix, _fmt(receipt.due))),
                 ],
               ),
             ),
@@ -310,7 +307,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
         builder: (BuildContext context) => FilledButton(
           onPressed: () => Navigator.of(context).pop(),
           style: FilledButton.styleFrom(backgroundColor: AppColors.navy, minimumSize: const Size.fromHeight(44)),
-          child: const Text('New sale'),
+          child: Text(context.l10n.posNewSale),
         ),
       ),
     );
@@ -330,7 +327,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     ref.read(heldSalesProvider.notifier).hold(cart);
     ref.read(posCartProvider.notifier).clear();
     setState(() => _showCart = false);
-    _message('Sale put on hold. Find it under "Held".');
+    _message(context.l10n.posSalePutOnHold);
   }
 
   Future<void> _showHeld() async {
@@ -346,7 +343,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     }
     ref.read(posCartProvider.notifier).set(chosen.cart);
     setState(() => _showCart = true);
-    _message(current.isEmpty ? 'Held sale resumed.' : 'Held sale resumed. The previous sale is now on hold.');
+    _message(current.isEmpty ? context.l10n.posHeldSaleResumed : context.l10n.posHeldSaleResumedThe);
   }
 
   void _openOrders() => Navigator.of(context).push(
@@ -435,14 +432,14 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                   selectedIndex: _showCart ? 1 : 0,
                   onDestinationSelected: (int i) => setState(() => _showCart = i == 1),
                   destinations: <Widget>[
-                    const NavigationDestination(icon: Icon(Icons.grid_view_outlined), label: 'Products'),
+                    NavigationDestination(icon: const Icon(Icons.grid_view_outlined), label: context.l10n.categoriesProducts),
                     NavigationDestination(
                       icon: Badge(
                         isLabelVisible: cart.units > 0,
                         label: Text('${cart.units}'),
                         child: const Icon(Icons.shopping_bag_outlined),
                       ),
-                      label: cart.isEmpty ? 'Sale' : 'Sale · ${MoneyFormat.prefix}${_fmt(cart.total)}',
+                      label: cart.isEmpty ? context.l10n.posSale2 : context.l10n.posSale(MoneyFormat.prefix, _fmt(cart.total)),
                     ),
                   ],
                 ),
@@ -478,7 +475,7 @@ class _TopBar extends ConsumerWidget {
       ),
       child: Row(
         children: <Widget>[
-          if (!wide) IconButton(onPressed: onDashboard, icon: const Icon(Icons.arrow_back), tooltip: 'Back'),
+          if (!wide) IconButton(onPressed: onDashboard, icon: const Icon(Icons.arrow_back), tooltip: context.l10n.posPaymentBack),
           Flexible(child: BusinessLockup(markHeight: wide ? 34 : 30, showName: wide)),
           if (wide) ...<Widget>[const SizedBox(width: 20), const _Clock()],
           const Spacer(),
@@ -490,7 +487,7 @@ class _TopBar extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               ),
               icon: const Icon(Icons.space_dashboard_outlined, size: 18),
-              label: const Text('Dashboard'),
+              label: Text(context.l10n.posDashboard),
             ),
             const SizedBox(width: 10),
             Container(
@@ -612,11 +609,11 @@ class _BottomBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          _button('View Orders', Icons.receipt_long_outlined, AppColors.navy, onOrders),
-          _button('Hold', Icons.pause_circle_outline, AppColors.amber, hasItems ? onHold : null),
-          _button(heldCount > 0 ? 'Held ($heldCount)' : 'Held', Icons.history, AppColors.violet, onHeld),
-          _button('Void', Icons.delete_outline, AppColors.danger, hasItems ? onVoid : null),
-          _button('Payment', Icons.payments_outlined, AppColors.teal, enabled ? onPayment : null),
+          _button(context.l10n.posViewOrders, Icons.receipt_long_outlined, AppColors.navy, onOrders),
+          _button(context.l10n.posHold, Icons.pause_circle_outline, AppColors.amber, hasItems ? onHold : null),
+          _button(heldCount > 0 ? context.l10n.posHeld2(heldCount) : context.l10n.posHeld, Icons.history, AppColors.violet, onHeld),
+          _button(context.l10n.posVoid, Icons.delete_outline, AppColors.danger, hasItems ? onVoid : null),
+          _button(context.l10n.posPayment, Icons.payments_outlined, AppColors.teal, enabled ? onPayment : null),
         ],
       ),
     );
@@ -687,7 +684,7 @@ class _CategoryRail extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.all(10),
         children: <Widget>[
-          tile('', 'All', Icon(Icons.grid_view_rounded, color: selected.isEmpty ? AppColors.primary : AppColors.textMuted)),
+          tile('', context.l10n.posAll, Icon(Icons.grid_view_rounded, color: selected.isEmpty ? AppColors.primary : AppColors.textMuted)),
           for (final CategoryModel c in categories)
             tile(
               c.id,
@@ -772,7 +769,7 @@ class _Catalog extends ConsumerWidget {
       autofocus: true,
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
-        hintText: 'Search, or scan barcode / SKU and press Enter',
+        hintText: context.l10n.posSearchOrScanBarcode,
         prefixIcon: const Icon(Icons.search, size: 20),
         suffixIcon: query.isEmpty
             ? null
@@ -795,9 +792,9 @@ class _Catalog extends ConsumerWidget {
     final Widget welcome = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('Welcome, $who', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+        Text(context.l10n.posWelcome(who), style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
         Text(
-          '${_weekdays[now.weekday - 1]}, ${now.day} ${_months[now.month - 1]} ${now.year}',
+          formatShortDate(context, now),
           style: const TextStyle(color: AppColors.textMuted, fontSize: 13),
         ),
       ],
@@ -826,7 +823,7 @@ class _Catalog extends ConsumerWidget {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(label: const Text('All'), selected: categoryId.isEmpty, onSelected: (_) => onCategory('')),
+                  child: ChoiceChip(label: Text(context.l10n.posAll), selected: categoryId.isEmpty, onSelected: (_) => onCategory('')),
                 ),
                 for (final CategoryModel c in categories)
                   Padding(
@@ -840,7 +837,7 @@ class _Catalog extends ConsumerWidget {
           child: loading
               ? const Center(child: CircularProgressIndicator())
               : shown.isEmpty
-                  ? const Center(child: Text('No products found.'))
+                  ? Center(child: Text(context.l10n.posNoProductsFound))
                   : GridView.builder(
                       padding: const EdgeInsets.all(16),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -949,7 +946,7 @@ class _ProductCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      out ? 'Out of stock' : '$onHand left',
+                      out ? context.l10n.stockOutOfStock : context.l10n.posLeft(onHand),
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -1021,19 +1018,19 @@ class _SalePanel extends ConsumerWidget {
     final double? value = await showDialog<double>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text(line == null ? 'Discount on the whole sale' : 'Discount on ${line.productName}'),
+        title: Text(line == null ? context.l10n.posDiscountOnTheWhole : context.l10n.posDiscountOn(line.productName)),
         content: TextField(
           controller: controller,
           autofocus: true,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(labelText: 'Amount', prefixText: MoneyFormat.prefix),
+          decoration: InputDecoration(labelText: context.l10n.ledgerEntryAmount, prefixText: MoneyFormat.prefix),
           onSubmitted: (String t) => Navigator.of(context).pop(double.tryParse(t.trim()) ?? 0),
         ),
         actions: <Widget>[
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.l10n.categoriesCancel)),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(double.tryParse(controller.text.trim()) ?? 0),
-            child: const Text('Apply'),
+            child: Text(context.l10n.posApply),
           ),
         ],
       ),
@@ -1082,8 +1079,8 @@ class _SalePanel extends ConsumerWidget {
       children: <Widget>[
         Row(
           children: <Widget>[
-            const Expanded(
-              child: Text('Order List', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            Expanded(
+              child: Text(context.l10n.posOrderList, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
             ),
             TextButton.icon(
               onPressed: onHeld,
@@ -1093,16 +1090,16 @@ class _SalePanel extends ConsumerWidget {
                 visualDensity: VisualDensity.compact,
               ),
               icon: const Icon(Icons.history, size: 18),
-              label: Text(heldCount > 0 ? 'Held ($heldCount)' : 'Held'),
+              label: Text(heldCount > 0 ? context.l10n.posHeld2(heldCount) : context.l10n.posHeld),
             ),
             const SizedBox(width: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(color: AppColors.navy, borderRadius: BorderRadius.circular(4)),
-              child: const Text('New sale', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
+              child: Text(context.l10n.posNewSale, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
             ),
             IconButton(
-              tooltip: 'Clear sale',
+              tooltip: context.l10n.posClearSale,
               visualDensity: VisualDensity.compact,
               onPressed: cart.isEmpty ? null : onClear,
               icon: const Icon(Icons.delete_outline, color: AppColors.danger, size: 20),
@@ -1110,7 +1107,7 @@ class _SalePanel extends ConsumerWidget {
           ],
         ),
         const Divider(height: 20),
-        _title('Customer Information'),
+        _title(context.l10n.posCustomerInformation),
         InkWell(
           onTap: onCustomer,
           borderRadius: BorderRadius.circular(8),
@@ -1129,9 +1126,9 @@ class _SalePanel extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(cart.customer?.name ?? 'Walk-in customer', style: const TextStyle(fontWeight: FontWeight.w600)),
+                      Text(cart.customer?.name ?? context.l10n.dashboardWalkInCustomer, style: const TextStyle(fontWeight: FontWeight.w600)),
                       Text(
-                        cart.customer == null ? 'Pays in full now' : 'May pay now or later',
+                        cart.customer == null ? context.l10n.posPaysInFullNow : context.l10n.posMayPayNowOr,
                         style: const TextStyle(color: AppColors.textMuted, fontSize: 11),
                       ),
                     ],
@@ -1158,7 +1155,7 @@ class _SalePanel extends ConsumerWidget {
                   child: Icon(Icons.shopping_cart_outlined, size: 30, color: AppColors.primary),
                 ),
                 const SizedBox(height: 10),
-                const Text('No Products Selected', style: TextStyle(color: AppColors.textMuted)),
+                Text(context.l10n.posNoProductsSelected, style: const TextStyle(color: AppColors.textMuted)),
               ],
             ),
           )
@@ -1180,14 +1177,14 @@ class _SalePanel extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         _title(
-          'Order Details',
+          context.l10n.posOrderDetails,
           trailing: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.border),
               borderRadius: BorderRadius.circular(4),
             ),
-            child: Text('Items : ${cart.units}', style: const TextStyle(fontSize: 11)),
+            child: Text(context.l10n.posItems(cart.units), style: const TextStyle(fontSize: 11)),
           ),
         ),
         itemsBody,
@@ -1200,9 +1197,9 @@ class _SalePanel extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         const Divider(height: 24),
-        _summaryRow('Sub Total', '${MoneyFormat.prefix}${_fmt(cart.subtotal)}'),
+        _summaryRow(context.l10n.posSubTotal, '${MoneyFormat.prefix}${_fmt(cart.subtotal)}'),
         _summaryRow(
-          'Discount',
+          context.l10n.posDiscount,
           cart.effectiveOrderDiscount > 0 ? '-${MoneyFormat.prefix}${_fmt(cart.effectiveOrderDiscount)}' : '${MoneyFormat.prefix}0',
           color: AppColors.danger,
           edit: InkWell(
@@ -1213,7 +1210,7 @@ class _SalePanel extends ConsumerWidget {
         const Divider(height: 20),
         Row(
           children: <Widget>[
-            const Text('Total Payable', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+            Text(context.l10n.posTotalPayable, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
             const Spacer(),
             Text(
               '${MoneyFormat.prefix}${_fmt(cart.total)}',
@@ -1250,7 +1247,7 @@ class _SalePanel extends ConsumerWidget {
                       const SizedBox(height: 4),
                       Flexible(
                         child: Text(
-                          m == PaymentMethod.bank ? 'Bank' : m.label,
+                          m == PaymentMethod.bank ? context.l10n.posBank : m.label,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -1277,7 +1274,7 @@ class _SalePanel extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                 ),
                 icon: const Icon(Icons.pause_circle_outline, size: 18),
-                label: const Text('Hold'),
+                label: Text(context.l10n.posHold),
               ),
             ),
             const SizedBox(width: 10),
@@ -1296,15 +1293,15 @@ class _SalePanel extends ConsumerWidget {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
                     : const Icon(Icons.shopping_bag_outlined, size: 18),
-                label: Text(cart.isEmpty ? 'Place Order' : 'Place Order · ${MoneyFormat.prefix}${_fmt(cart.total)}'),
+                label: Text(cart.isEmpty ? context.l10n.posPlaceOrder2 : context.l10n.posPlaceOrder(MoneyFormat.prefix, _fmt(cart.total))),
               ),
             ),
           ],
         ),
         if (!canSell)
-          const Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Text('Your login cannot make sales.', textAlign: TextAlign.center),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(context.l10n.posYourLoginCannotMake, textAlign: TextAlign.center),
           ),
       ],
     );

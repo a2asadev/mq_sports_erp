@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/auth_controller.dart';
 import 'package:a2_stocks/widgets/brand_logo.dart';
 import 'package:a2_stocks/widgets/business_brand.dart';
@@ -30,18 +31,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String? _validateEmail(String? value) {
     final String email = value?.trim() ?? '';
     if (email.isEmpty) {
-      return 'Email is required.';
+      return context.l10n.authEmailRequired;
     }
     final RegExp pattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
     if (!pattern.hasMatch(email)) {
-      return 'Enter a valid email address.';
+      return context.l10n.authEmailInvalid;
     }
     return null;
   }
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password is required.';
+      return context.l10n.authPasswordRequired;
     }
     return null;
   }
@@ -65,7 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final Object? error = authState.error;
     final String? errorMessage = error == null
         ? null
-        : (error is AppException ? error.message : 'Something went wrong.');
+        : (error is AppException ? error.message : context.l10n.commonSomethingWentWrong);
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
@@ -85,14 +86,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const Center(child: BrandLogo(height: 150)),
                     const SizedBox(height: 12),
                     Text(
-                      'Welcome back',
+                      context.l10n.authWelcomeBack,
                       style: theme.textTheme.headlineSmall
                           ?.copyWith(fontWeight: FontWeight.w800),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Sign in to continue',
+                      context.l10n.authSignInToContinue,
                       style: theme.textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
@@ -106,10 +107,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       validator: _validateEmail,
                       onFieldSubmitted: (String _) =>
                           _passwordFocus.requestFocus(),
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.authEmail,
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -123,13 +124,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       validator: _validatePassword,
                       onFieldSubmitted: (String _) => _submit(),
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: context.l10n.authPassword,
                         prefixIcon: const Icon(Icons.lock_outline),
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
                           tooltip: _obscurePassword
-                              ? 'Show password'
-                              : 'Hide password',
+                              ? context.l10n.authShowPassword
+                              : context.l10n.authHidePassword,
                           icon: Icon(_obscurePassword
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined),
@@ -154,7 +155,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Sign in'),
+                          : Text(context.l10n.authSignIn),
                     ),
                   ],
                 ),

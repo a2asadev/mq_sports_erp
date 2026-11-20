@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/widgets/brand_logo.dart';
@@ -89,11 +90,11 @@ class PoweredByFooter extends StatelessWidget {
         spacing: 4,
         runSpacing: 2,
         children: <Widget>[
-          const Text('Powered by', style: plain),
+          Text(context.l10n.businessBrandPoweredBy, style: plain),
           Text(productName, style: strong),
           const Text('·', style: plain),
           const Icon(Icons.favorite, size: 12, color: Color(0xFFE0566A)),
-          const Text('Crafted with love by', style: plain),
+          Text(context.l10n.businessBrandCraftedWithLoveBy, style: plain),
           Text(makerName, style: strong),
         ],
       ),

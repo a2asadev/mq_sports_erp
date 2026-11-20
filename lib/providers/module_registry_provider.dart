@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/erp_module.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
@@ -22,8 +23,8 @@ final Provider<List<ErpModule>> erpModulesProvider =
   return <ErpModule>[
     ErpModule(
       id: 'categories',
-      group: 'Inventory',
-      title: 'Categories',
+      group: ModuleGroup.inventory,
+      title: (AppLocalizations l10n) => l10n.moduleCategories,
       icon: Icons.category_outlined,
       allowedRoles: const <UserRole>{
         UserRole.admin,
@@ -34,8 +35,8 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'products',
-      group: 'Inventory',
-      title: 'Products',
+      group: ModuleGroup.inventory,
+      title: (AppLocalizations l10n) => l10n.moduleProducts,
       icon: Icons.inventory_2_outlined,
       allowedRoles: const <UserRole>{
         UserRole.admin,
@@ -46,8 +47,8 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'customers',
-      group: 'Sales',
-      title: 'Customers',
+      group: ModuleGroup.sales,
+      title: (AppLocalizations l10n) => l10n.moduleCustomers,
       icon: Icons.groups_outlined,
       allowedRoles: const <UserRole>{
         UserRole.admin,
@@ -58,24 +59,24 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'vendors',
-      group: 'Purchasing',
-      title: 'Vendors',
+      group: ModuleGroup.purchasing,
+      title: (AppLocalizations l10n) => l10n.moduleVendors,
       icon: Icons.local_shipping_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
       builder: (BuildContext context) => const VendorsScreen(),
     ),
     ErpModule(
       id: 'purchases',
-      group: 'Purchasing',
-      title: 'Purchases',
+      group: ModuleGroup.purchasing,
+      title: (AppLocalizations l10n) => l10n.modulePurchases,
       icon: Icons.shopping_cart_checkout_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
       builder: (BuildContext context) => const PurchasesScreen(),
     ),
     ErpModule(
       id: 'pos',
-      group: 'Main',
-      title: 'POS',
+      group: ModuleGroup.main,
+      title: (AppLocalizations l10n) => l10n.modulePos,
       icon: Icons.point_of_sale,
       allowedRoles: const <UserRole>{
         UserRole.admin,
@@ -86,8 +87,8 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'sales',
-      group: 'Sales',
-      title: 'Sales & Orders',
+      group: ModuleGroup.sales,
+      title: (AppLocalizations l10n) => l10n.moduleSalesOrders,
       icon: Icons.point_of_sale_outlined,
       allowedRoles: const <UserRole>{
         UserRole.admin,
@@ -98,8 +99,8 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'stock',
-      group: 'Inventory',
-      title: 'Stock',
+      group: ModuleGroup.inventory,
+      title: (AppLocalizations l10n) => l10n.moduleStock,
       icon: Icons.warehouse_outlined,
       allowedRoles: const <UserRole>{
         UserRole.admin,
@@ -110,16 +111,16 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'logs',
-      group: 'System',
-      title: 'Activity Logs',
+      group: ModuleGroup.system,
+      title: (AppLocalizations l10n) => l10n.moduleActivityLogs,
       icon: Icons.history_outlined,
       allowedRoles: const <UserRole>{UserRole.admin},
       builder: (BuildContext context) => const ActivityLogsScreen(),
     ),
     ErpModule(
       id: 'settings',
-      group: 'System',
-      title: 'Settings',
+      group: ModuleGroup.system,
+      title: (AppLocalizations l10n) => l10n.moduleSettings,
       icon: Icons.settings_outlined,
       allowedRoles: const <UserRole>{
         UserRole.admin,
@@ -130,8 +131,8 @@ final Provider<List<ErpModule>> erpModulesProvider =
     ),
     ErpModule(
       id: 'users',
-      group: 'System',
-      title: 'Users',
+      group: ModuleGroup.system,
+      title: (AppLocalizations l10n) => l10n.moduleUsers,
       icon: Icons.people_outline,
       allowedRoles: const <UserRole>{UserRole.admin},
       builder: (BuildContext context) => const UsersScreen(),

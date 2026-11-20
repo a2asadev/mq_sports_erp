@@ -4,6 +4,8 @@ import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
 import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/widgets/stat_strip.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/providers/sales_providers.dart';
@@ -81,39 +83,39 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
               StatItem(
                 icon: Icons.today_outlined,
                 color: AppColors.primary,
-                label: 'Sales today',
+                label: context.l10n.dashboardSalesToday,
                 value: formatMoney(stats.todaySales),
-                caption: '${stats.todayCount} order(s)',
+                caption: context.l10n.ordersOrderS2(stats.todayCount),
               ),
               StatItem(
                 icon: Icons.payments_outlined,
                 color: AppColors.teal,
-                label: 'Total sales',
+                label: context.l10n.ordersTotalSales,
                 value: formatMoney(stats.sales),
-                caption: '${stats.count} order(s)',
+                caption: context.l10n.ordersOrderS(stats.count),
               ),
               StatItem(
                 icon: Icons.account_balance_wallet_outlined,
                 color: stats.toCollect > 0.005 ? AppColors.amber : AppColors.textMuted,
-                label: 'To collect',
+                label: context.l10n.ordersToCollect,
                 value: formatMoney(stats.toCollect),
               ),
               StatItem(
                 icon: Icons.pending_actions_outlined,
                 color: AppColors.sky,
-                label: 'Open orders',
+                label: context.l10n.ordersOpenOrders,
                 value: '${stats.openCount}',
-                caption: 'not yet delivered',
+                caption: context.l10n.ordersNotYetDelivered,
               ),
             ],
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
             child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search order no. or customer…',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: context.l10n.ordersSearchOrderNoOr,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
                 isDense: true,
               ),
               onChanged: (String value) => setState(() => _query = value),
@@ -127,7 +129,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                    label: const Text('All'),
+                    label: Text(context.l10n.posAll),
                     selected: _status == null,
                     onSelected: (bool _) => setState(() => _status = null),
                   ),
@@ -154,7 +156,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                    label: const Text('All types'),
+                    label: Text(context.l10n.ordersAllTypes),
                     selected: _saleType == null,
                     onSelected: (bool _) => setState(() => _saleType = null),
                   ),
@@ -175,7 +177,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Text(
-              '${orders.length} of ${loaded.length} order(s) shown',
+              context.l10n.ordersOfOrderSShown(orders.length, loaded.length),
               style: theme.textTheme.bodySmall,
             ),
           ),
@@ -183,8 +185,8 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             child: orders.isEmpty
                 ? Center(
                     child: Text(loaded.isEmpty
-                        ? 'No orders yet.'
-                        : 'No orders match your search.'),
+                        ? context.l10n.ordersNoOrdersYet
+                        : context.l10n.ordersNoOrdersMatchYour),
                   )
                 : GridView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
@@ -215,7 +217,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sales & Orders')),
+      appBar: AppBar(title: Text(context.l10n.ordersSalesOrders)),
       body: body,
       floatingActionButton: canCreate
           ? FloatingActionButton.extended(
@@ -225,7 +227,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                 ),
               ),
               icon: const Icon(Icons.add_shopping_cart),
-              label: const Text('New order'),
+              label: Text(context.l10n.ordersNewOrder),
             )
           : null,
     );

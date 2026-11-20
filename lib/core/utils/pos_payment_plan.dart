@@ -1,3 +1,5 @@
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/payment_method.dart';
 
 /// How the customer pays for a sale: several payments by different methods,
@@ -28,23 +30,23 @@ class PosPaymentPlan {
   /// Adds a payment. Returns a message when it cannot be added, else null.
   String? add(PaymentMethod method, double entered, {String reference = ''}) {
     if (entered.isNaN || entered <= 0) {
-      return 'Enter an amount above zero.';
+      return L10n.current.posPaymentPlanEnterAnAmountAbove;
     }
     final double rounded = (entered * 100).round() / 100;
     if (isFullyPaid) {
-      return 'The sale is already fully paid.';
+      return L10n.current.posPaymentPlanTheSaleIsAlready;
     }
     final String ref = reference.trim();
     if (method.hasReference && ref.isEmpty) {
       return method == PaymentMethod.bank
-          ? 'Enter the bank and transaction number.'
-          : 'Enter the ${method.label} transaction number.';
+          ? L10n.current.posPaymentPlanEnterTheBankAnd
+          : L10n.current.posPaymentPlanEnterTheTransactionNumber(method.label);
     }
     double change = 0;
     double amount = rounded;
     if (rounded > remaining + 0.005) {
       if (method != PaymentMethod.cash) {
-        return 'That is more than what is left to pay (${remaining.toStringAsFixed(2)}).';
+        return L10n.current.posPaymentPlanThatIsMoreThan(remaining.toStringAsFixed(2));
       }
       amount = remaining;
       change = ((rounded - remaining) * 100).round() / 100;

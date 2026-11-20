@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:a2_stocks/core/utils/currency.dart';
 import 'package:a2_stocks/core/utils/pos_payment_plan.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/payment_method.dart';
 
 /// What the customer paid, as chosen in the payment dialog.
@@ -81,7 +83,7 @@ class _PaymentDialogState extends State<_PaymentDialog> {
     final ThemeData theme = Theme.of(context);
     final bool paid = _plan.isFullyPaid;
     return AlertDialog(
-      title: Text('Pay ${MoneyFormat.prefix}${_fmt(widget.total)}'),
+      title: Text(context.l10n.posPaymentPay(MoneyFormat.prefix, _fmt(widget.total))),
       content: SizedBox(
         width: 420,
         child: SingleChildScrollView(
@@ -97,7 +99,7 @@ class _PaymentDialogState extends State<_PaymentDialog> {
                   title: Text('${_plan.lines[i].method.label}  ${MoneyFormat.prefix}${_fmt(_plan.lines[i].amount)}'),
                   subtitle: _plan.lines[i].reference.isEmpty ? null : Text(_plan.lines[i].reference),
                   trailing: IconButton(
-                    tooltip: 'Remove this payment',
+                    tooltip: context.l10n.posPaymentRemoveThisPayment,
                     icon: const Icon(Icons.close),
                     onPressed: () => setState(() {
                       _plan.removeAt(i);
@@ -107,7 +109,7 @@ class _PaymentDialogState extends State<_PaymentDialog> {
                 ),
               if (_plan.lines.isNotEmpty) const Divider(),
               if (!paid) ...<Widget>[
-                Text('Left to pay: ${MoneyFormat.prefix}${_fmt(_plan.remaining)}', style: theme.textTheme.titleMedium),
+                Text(context.l10n.posPaymentLeftToPay(MoneyFormat.prefix, _fmt(_plan.remaining)), style: theme.textTheme.titleMedium),
                 const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
@@ -128,12 +130,12 @@ class _PaymentDialogState extends State<_PaymentDialog> {
                   controller: _amount,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
-                    labelText: _method == PaymentMethod.cash ? 'Cash received' : 'Amount',
+                    labelText: _method == PaymentMethod.cash ? context.l10n.posPaymentCashReceived : context.l10n.ledgerEntryAmount,
                     prefixText: MoneyFormat.prefix,
                     border: const OutlineInputBorder(),
                     suffixIcon: TextButton(
                       onPressed: () => setState(() => _amount.text = _fmt(_plan.remaining)),
-                      child: const Text('Exact'),
+                      child: Text(context.l10n.posPaymentExact),
                     ),
                   ),
                   onSubmitted: (_) => _addPayment(),
@@ -143,7 +145,7 @@ class _PaymentDialogState extends State<_PaymentDialog> {
                   TextField(
                     controller: _reference,
                     decoration: InputDecoration(
-                      labelText: _method == PaymentMethod.bank ? 'Bank and transaction no.' : 'Transaction no.',
+                      labelText: _method == PaymentMethod.bank ? context.l10n.posPaymentBankAndTransactionNo : context.l10n.posPaymentTransactionNo,
                       border: const OutlineInputBorder(),
                     ),
                   ),
@@ -157,14 +159,14 @@ class _PaymentDialogState extends State<_PaymentDialog> {
                 FilledButton.tonalIcon(
                   onPressed: _addPayment,
                   icon: const Icon(Icons.add),
-                  label: const Text('Add payment'),
+                  label: Text(context.l10n.posPaymentAddPayment),
                 ),
               ] else ...<Widget>[
-                Text('Fully paid', style: theme.textTheme.titleMedium?.copyWith(color: Colors.green.shade700)),
+                Text(context.l10n.posPaymentFullyPaid, style: theme.textTheme.titleMedium?.copyWith(color: Colors.green.shade700)),
                 if (_plan.change > 0.005)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
-                    child: Text('Give change: ${MoneyFormat.prefix}${_fmt(_plan.change)}', style: theme.textTheme.headlineSmall),
+                    child: Text(context.l10n.posPaymentGiveChange(MoneyFormat.prefix, _fmt(_plan.change)), style: theme.textTheme.headlineSmall),
                   ),
               ],
             ],
@@ -172,15 +174,15 @@ class _PaymentDialogState extends State<_PaymentDialog> {
         ),
       ),
       actions: <Widget>[
-        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Back')),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.l10n.posPaymentBack)),
         if (!paid && widget.allowCredit)
           OutlinedButton(
             onPressed: _finish,
-            child: Text(_plan.lines.isEmpty ? 'Sell on credit' : 'Sell with ${MoneyFormat.prefix}${_fmt(_plan.remaining)} due'),
+            child: Text(_plan.lines.isEmpty ? context.l10n.posPaymentSellOnCredit : context.l10n.posPaymentSellWithDue(MoneyFormat.prefix, _fmt(_plan.remaining))),
           ),
         FilledButton(
           onPressed: paid ? _finish : null,
-          child: const Text('Complete sale'),
+          child: Text(context.l10n.posPaymentCompleteSale),
         ),
       ],
     );

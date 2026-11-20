@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
 import 'package:a2_stocks/core/utils/price_warnings.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/party_enums.dart';
@@ -58,14 +60,14 @@ class _DiscountField extends StatelessWidget {
     required this.maxAmount,
     required this.onChanged,
     required this.onModeChanged,
-    this.label = 'Discount',
+    this.label,
   });
 
   final TextEditingController controller;
   final bool isPercent;
   final bool enabled;
   final double maxAmount;
-  final String label;
+  final String? label;
   final VoidCallback onChanged;
   final ValueChanged<bool> onModeChanged;
 
@@ -80,7 +82,7 @@ class _DiscountField extends StatelessWidget {
             enabled: enabled,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
-              labelText: label,
+              labelText: label ?? context.l10n.posDiscount,
               isDense: true,
               border: const OutlineInputBorder(),
             ),
@@ -88,13 +90,13 @@ class _DiscountField extends StatelessWidget {
             validator: (String? value) {
               final double? parsed = double.tryParse((value ?? '').trim());
               if (parsed == null || parsed < 0) {
-                return 'Invalid discount';
+                return context.l10n.orderFormInvalidDiscount;
               }
               if (isPercent && parsed > 100) {
-                return 'Max 100%';
+                return context.l10n.orderFormMax100;
               }
               if (!isPercent && parsed > maxAmount + 0.005) {
-                return 'More than the amount';
+                return context.l10n.orderFormMoreThanTheAmount;
               }
               return null;
             },
@@ -103,9 +105,9 @@ class _DiscountField extends StatelessWidget {
         const SizedBox(width: 8),
         SegmentedButton<bool>(
           showSelectedIcon: false,
-          segments: const <ButtonSegment<bool>>[
-            ButtonSegment<bool>(value: false, label: Text('Amt')),
-            ButtonSegment<bool>(value: true, label: Text('%')),
+          segments: <ButtonSegment<bool>>[
+            ButtonSegment<bool>(value: false, label: Text(context.l10n.orderFormAmt)),
+            const ButtonSegment<bool>(value: true, label: Text('%')),
           ],
           selected: <bool>{isPercent},
           onSelectionChanged:
@@ -246,23 +248,18 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Confirm order'),
+          title: Text(context.l10n.orderFormConfirmOrder),
           content: Text(
-            'Customer: ${customer.name}\n'
-            'Sale type: ${_saleType.label}\n'
-            '${_lines.length} item(s), $units unit(s) will be taken out of stock.\n\n'
-            'Total: ${formatAmount(_total)}\n'
-            'Paid now: ${formatAmount(_paid)}\n'
-            'Due: ${formatAmount(due)}',
+            context.l10n.orderFormCustomerSaleTypeItem(customer.name, _saleType.label, _lines.length, units, formatAmount(_total), formatAmount(_paid), formatAmount(due)),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Back'),
+              child: Text(context.l10n.posPaymentBack),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Confirm'),
+              child: Text(context.l10n.purchaseFormConfirm),
             ),
           ],
         );
@@ -355,7 +352,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                   ),
                 ),
                 IconButton(
-                  tooltip: 'Remove item',
+                  tooltip: context.l10n.purchaseFormRemoveItem,
                   icon: const Icon(Icons.delete_outline),
                   onPressed: locked
                       ? null
@@ -367,8 +364,8 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
             ),
             Text(
               short
-                  ? 'SKU ${line.variant.sku} · Only $onHand in stock, $requested requested'
-                  : 'SKU ${line.variant.sku} · In stock: $onHand',
+                  ? context.l10n.orderFormSkuOnlyInStock(line.variant.sku, onHand, requested)
+                  : context.l10n.orderFormSkuInStock(line.variant.sku, onHand),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: short ? theme.colorScheme.error : null,
                 fontWeight: short ? FontWeight.w600 : null,
@@ -383,15 +380,15 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                     controller: line.quantityController,
                     enabled: !locked,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Quantity',
+                    decoration: InputDecoration(
+                      labelText: context.l10n.purchaseFormQuantity,
                       isDense: true,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                     ),
                     onChanged: (String _) => setState(() {}),
                     validator: (String? value) {
                       final int? parsed = int.tryParse((value ?? '').trim());
-                      return (parsed == null || parsed < 1) ? 'At least 1' : null;
+                      return (parsed == null || parsed < 1) ? context.l10n.purchaseFormAtLeast1 : null;
                     },
                   ),
                 ),
@@ -403,15 +400,15 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
-                      labelText: 'Selling price',
-                      helperText: 'Catalog ${formatAmount(line.variant.salePrice)}',
+                      labelText: context.l10n.orderFormSellingPrice,
+                      helperText: context.l10n.purchaseFormCatalog(formatAmount(line.variant.salePrice)),
                       isDense: true,
                       border: const OutlineInputBorder(),
                     ),
                     onChanged: (String _) => setState(() {}),
                     validator: (String? value) {
                       final double? parsed = double.tryParse((value ?? '').trim());
-                      return (parsed == null || parsed < 0) ? 'Invalid price' : null;
+                      return (parsed == null || parsed < 0) ? context.l10n.purchaseFormInvalidPrice : null;
                     },
                   ),
                 ),
@@ -423,7 +420,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
               isPercent: line.discountIsPercent,
               enabled: !locked,
               maxAmount: line.gross,
-              label: 'Line discount',
+              label: context.l10n.orderFormLineDiscount,
               onChanged: () => setState(() {}),
               onModeChanged: (bool percent) => setState(() {
                 line.discountIsPercent = percent;
@@ -434,7 +431,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                 padding: const EdgeInsets.only(top: 6),
                 child: Text(
                   belowCost
-                      ? 'Selling below the cost price (${formatAmount(line.variant.costPrice)}).'
+                      ? context.l10n.orderFormSellingBelowTheCost(formatAmount(line.variant.costPrice))
                       : warnings.first,
                   style: theme.textTheme.bodySmall
                       ?.copyWith(color: Colors.orange.shade800),
@@ -445,7 +442,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(
-                  'Line total ${formatAmount(line.total)}',
+                  context.l10n.purchaseFormLineTotal(formatAmount(line.total)),
                   style: theme.textTheme.titleSmall,
                 ),
               ),
@@ -465,7 +462,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
     final double due = (total - _paid) > 0 ? total - _paid : 0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('New order')),
+      appBar: AppBar(title: Text(context.l10n.ordersNewOrder)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
@@ -477,13 +474,13 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    _stepTitle(context, '1', 'Customer'),
+                    _stepTitle(context, '1', context.l10n.posCustomer),
                     CustomerPickerField(
                       customerId: _customer?.id,
                       allowWalkIn: false,
                       enabled: !locked,
                       errorText: (_showErrors && _customer == null)
-                          ? 'Choose a customer.'
+                          ? context.l10n.orderFormChooseACustomer
                           : null,
                       onChanged: (CustomerModel? customer) => setState(() {
                         _customer = customer;
@@ -499,7 +496,7 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                     const SizedBox(height: 12),
                     Row(
                       children: <Widget>[
-                        Text('Sale type', style: theme.textTheme.bodyMedium),
+                        Text(context.l10n.orderFormSaleType, style: theme.textTheme.bodyMedium),
                         const SizedBox(width: 12),
                         Expanded(
                           child: SegmentedButton<OrderSaleType>(
@@ -529,12 +526,12 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                         label: Text(formatDate(_date)),
                       ),
                     ),
-                    _stepTitle(context, '2', 'Items, quantities and prices'),
+                    _stepTitle(context, '2', context.l10n.orderFormItemsQuantitiesAndPrices),
                     if (_showErrors && _lines.isEmpty)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Add at least one item.',
+                          context.l10n.purchaseFormAddAtLeastOne,
                           style: TextStyle(color: theme.colorScheme.error),
                         ),
                       ),
@@ -545,28 +542,28 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                       child: OutlinedButton.icon(
                         onPressed: locked ? null : _addItem,
                         icon: const Icon(Icons.add),
-                        label: const Text('Add item'),
+                        label: Text(context.l10n.purchaseFormAddItem),
                       ),
                     ),
-                    _stepTitle(context, '3', 'Order discount'),
+                    _stepTitle(context, '3', context.l10n.orderFormOrderDiscount),
                     _DiscountField(
                       controller: _discountController,
                       isPercent: _discountIsPercent,
                       enabled: !locked,
                       maxAmount: _subtotal,
-                      label: 'Discount on the whole order',
+                      label: context.l10n.orderFormDiscountOnTheWhole,
                       onChanged: () => setState(() {}),
                       onModeChanged: (bool percent) =>
                           setState(() => _discountIsPercent = percent),
                     ),
                     const SizedBox(height: 12),
-                    _summaryRow('Subtotal', formatAmount(_subtotal)),
-                    _summaryRow('Order discount', '- ${formatAmount(_orderDiscount)}'),
-                    _stepTitle(context, '4', 'Payment'),
+                    _summaryRow(context.l10n.orderDetailSubtotal, formatAmount(_subtotal)),
+                    _summaryRow(context.l10n.orderFormOrderDiscount, '- ${formatAmount(_orderDiscount)}'),
+                    _stepTitle(context, '4', context.l10n.posPayment),
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text('Total ${formatAmount(total)}',
+                          child: Text(context.l10n.purchaseFormTotal(formatAmount(total)),
                               style: theme.textTheme.titleLarge),
                         ),
                         PurchaseStatusChip(status: purchaseStatusFor(total, _paid)),
@@ -579,18 +576,18 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                       keyboardType:
                           const TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
-                        labelText: 'Paid now',
-                        helperText: 'Due: ${formatAmount(due)}',
+                        labelText: context.l10n.purchaseFormPaidNow,
+                        helperText: context.l10n.purchaseDetailDue(formatAmount(due)),
                         border: const OutlineInputBorder(),
                       ),
                       onChanged: (String _) => setState(() {}),
                       validator: (String? value) {
                         final double? parsed = double.tryParse((value ?? '').trim());
                         if (parsed == null || parsed < 0) {
-                          return 'Enter a valid amount.';
+                          return context.l10n.partyFormEnterAValidAmount;
                         }
                         if (parsed > total + 0.005) {
-                          return 'More than the order total.';
+                          return context.l10n.orderFormMoreThanTheOrder;
                         }
                         return null;
                       },
@@ -602,13 +599,13 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                               ? null
                               : () => setState(
                                   () => _paidController.text = formatAmount(total)),
-                          child: const Text('Paid in full'),
+                          child: Text(context.l10n.purchaseFormPaidInFull),
                         ),
                         TextButton(
                           onPressed: locked
                               ? null
                               : () => setState(() => _paidController.text = '0.00'),
-                          child: const Text('Pay later'),
+                          child: Text(context.l10n.purchaseFormPayLater),
                         ),
                       ],
                     ),
@@ -617,12 +614,12 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                       controller: _notesController,
                       enabled: !locked,
                       maxLines: 2,
-                      decoration: const InputDecoration(
-                        labelText: 'Notes (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.partyFormNotesOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
-                    _stepTitle(context, '5', 'Save'),
+                    _stepTitle(context, '5', context.l10n.settingsSave),
                     FilledButton.icon(
                       onPressed: locked ? null : _submit,
                       icon: locked
@@ -632,13 +629,11 @@ class _OrderFormScreenState extends ConsumerState<OrderFormScreen> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : const Icon(Icons.check),
-                      label: const Text('Confirm order'),
+                      label: Text(context.l10n.orderFormConfirmOrder),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Confirming takes the quantities out of stock and posts the '
-                      'order to the customer ledger. It is uploaded to the cloud '
-                      'as one atomic change when you sync.',
+                      context.l10n.orderFormConfirmingTakesTheQuantities,
                       style: theme.textTheme.bodySmall,
                     ),
                   ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/order_model.dart';
 
 /// An order drawn like a paper receipt: header with number, date and status,
@@ -30,9 +32,9 @@ class OrderReceiptCard extends StatelessWidget {
         OrderStatus.cancelled => AppColors.danger,
       };
 
-  String get _channel => switch (order.channel) {
+  String _channel(BuildContext context) => switch (order.channel) {
         'pos' => 'POS',
-        'web' => 'Online store',
+        'web' => context.l10n.settingsOnlineStore,
         _ => order.saleType.label,
       };
 
@@ -45,10 +47,10 @@ class OrderReceiptCard extends StatelessWidget {
     final int more = order.items.length - shown.length;
 
     final (String, Color) payment = cancelled
-        ? ('Cancelled', AppColors.danger)
+        ? (context.l10n.orderReceiptCardCancelled, AppColors.danger)
         : due <= 0.005
-            ? ('Paid', AppColors.teal)
-            : (paid > 0.005 ? ('Partly paid', AppColors.amber) : ('Unpaid', AppColors.danger));
+            ? (context.l10n.purchaseDetailPaid, AppColors.teal)
+            : (paid > 0.005 ? (context.l10n.orderReceiptCardPartlyPaid, AppColors.amber) : (context.l10n.orderReceiptCardUnpaid, AppColors.danger));
 
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -79,7 +81,7 @@ class OrderReceiptCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${formatDate(order.orderDate)} · $_channel',
+                    '${formatDate(order.orderDate)} · ${_channel(context)}',
                     style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
                   ),
                   const SizedBox(height: 10),
@@ -89,7 +91,7 @@ class OrderReceiptCard extends StatelessWidget {
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          order.customerName.isEmpty ? 'Walk-in customer' : order.customerName,
+                          order.customerName.isEmpty ? context.l10n.dashboardWalkInCustomer : order.customerName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontWeight: FontWeight.w600),
@@ -133,12 +135,12 @@ class OrderReceiptCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(top: 2),
                         child: Text(
-                          '+ $more more item${more == 1 ? '' : 's'}',
+                          context.l10n.orderReceiptMoreItems(more),
                           style: const TextStyle(fontSize: 12, color: AppColors.sky, fontWeight: FontWeight.w600),
                         ),
                       ),
                     if (order.items.isEmpty)
-                      const Text('No items', style: TextStyle(fontSize: 12.5, color: AppColors.textMuted)),
+                      Text(context.l10n.orderReceiptCardNoItems, style: const TextStyle(fontSize: 12.5, color: AppColors.textMuted)),
                   ],
                 ),
               ),
@@ -152,7 +154,7 @@ class OrderReceiptCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        const Text('Total', style: TextStyle(fontSize: 11, color: AppColors.textMuted)),
+                        Text(context.l10n.orderReceiptCardTotal, style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
                         Text(
                           formatMoney(order.totalAmount),
                           style: TextStyle(
@@ -173,7 +175,7 @@ class OrderReceiptCard extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 3),
                           child: Text(
-                            'Due ${formatMoney(due)}',
+                            context.l10n.orderReceiptCardDue(formatMoney(due)),
                             style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.danger),
                           ),
                         ),

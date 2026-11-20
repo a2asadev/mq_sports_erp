@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
 import 'package:a2_stocks/repositories/repository.dart';
 import 'package:a2_stocks/providers/data_mode.dart';
@@ -31,8 +32,7 @@ final Provider<bool> canManagePurchasesProvider = Provider<bool>((Ref ref) {
       (user.role == UserRole.admin || user.role == UserRole.manager);
 });
 
-const String _noPermissionMessage =
-    'Only admins and managers can record purchases.';
+String get _noPermissionMessage => L10n.current.purchasingOnlyAdminsAndManagers;
 
 final Provider<PurchaseOperations> purchaseRepositoryProvider =
     Provider<PurchaseOperations>((Ref ref) {
@@ -85,22 +85,22 @@ class PurchasesNotifier extends BaseListNotifier<PurchaseModel> {
     required double paidNow,
   }) async {
     if (!ref.read(canManagePurchasesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     if (!vendor.isActive) {
-      return reportFailure(const ValidationException('This vendor is inactive.'));
+      return reportFailure(ValidationException(L10n.current.purchasingThisVendorIsInactive));
     }
     if (items.isEmpty) {
-      return reportFailure(const ValidationException('Add at least one item.'));
+      return reportFailure(ValidationException(L10n.current.purchaseFormAddAtLeastOne));
     }
     for (final PurchaseItem item in items) {
       if (item.quantity <= 0) {
-        return reportFailure(const ValidationException(
-            'Every item needs a quantity of at least 1.'));
+        return reportFailure(ValidationException(
+            L10n.current.purchasingEveryItemNeedsA));
       }
       if (item.unitCost < 0) {
         return reportFailure(
-            const ValidationException('A buying price cannot be negative.'));
+            ValidationException(L10n.current.purchasingABuyingPriceCannot));
       }
     }
     try {
@@ -112,7 +112,7 @@ class PurchasesNotifier extends BaseListNotifier<PurchaseModel> {
         if (product == null ||
             !product.variants.any((v) => v.id == item.variantId)) {
           return reportFailure(ValidationException(
-              '"${item.productName}" no longer exists in the catalog.'));
+              L10n.current.purchasingNoLongerExistsIn(item.productName)));
         }
       }
     } on AppException catch (e) {
@@ -129,8 +129,8 @@ class PurchasesNotifier extends BaseListNotifier<PurchaseModel> {
       notes: notes,
     );
     if (paidNow < 0 || paidNow > purchase.totalAmount + 0.005) {
-      return reportFailure(const ValidationException(
-          'The amount paid must be between 0 and the purchase total.'));
+      return reportFailure(ValidationException(
+          L10n.current.purchasingTheAmountPaidMust));
     }
 
     final List<PurchaseModel> previous = state.valueOrNull ?? <PurchaseModel>[];
@@ -140,12 +140,7 @@ class PurchasesNotifier extends BaseListNotifier<PurchaseModel> {
       await _logAction(
         action: 'purchase_confirmed',
         purchase: purchase,
-        summary: 'Purchase ${purchase.purchaseNo} confirmed from '
-            '${purchase.vendorName}: ${purchase.items.length} item(s), '
-            '${purchase.totalUnits} unit(s), total '
-            '${purchase.totalAmount.toStringAsFixed(2)}, paid now '
-            '${paidNow.toStringAsFixed(2)}. Stock added and the vendor ledger '
-            'charged.',
+        summary: L10n.current.purchasingPurchaseConfirmedFromItem(purchase.purchaseNo, purchase.vendorName, purchase.items.length, purchase.totalUnits, purchase.totalAmount.toStringAsFixed(2), paidNow.toStringAsFixed(2)),
       );
       // Stock, ledger and purchase lists reload from Hive.
       ref.read(syncTickProvider.notifier).increment();
@@ -166,17 +161,17 @@ class PurchasesNotifier extends BaseListNotifier<PurchaseModel> {
     required String note,
   }) async {
     if (!ref.read(canManagePurchasesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     if (amount <= 0) {
       return reportFailure(
-          const ValidationException('The amount must be greater than zero.'));
+          ValidationException(L10n.current.partiesTheAmountMustBe));
     }
     final double paid = ref.read(purchasePaidProvider)[purchase.id] ?? 0;
     final double due = purchase.totalAmount - paid;
     if (amount > due + 0.005) {
       return reportFailure(ValidationException(
-          'The payment is more than the amount due (${due.toStringAsFixed(2)}).'));
+          L10n.current.purchasingThePaymentIsMore(due.toStringAsFixed(2))));
     }
     final LedgerModel entry = LedgerModel(
       partyType: PartyType.vendor,
@@ -193,8 +188,7 @@ class PurchasesNotifier extends BaseListNotifier<PurchaseModel> {
       await _logAction(
         action: 'purchase_payment',
         purchase: purchase,
-        summary: 'Payment of ${amount.toStringAsFixed(2)} recorded for purchase '
-            '${purchase.purchaseNo} (${purchase.vendorName}).',
+        summary: L10n.current.purchasingPaymentOfRecordedFor(amount.toStringAsFixed(2), purchase.purchaseNo, purchase.vendorName),
       );
       ref.read(syncTickProvider.notifier).increment();
       return true;

@@ -1,4 +1,7 @@
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
+import 'package:a2_stocks/core/constants/server_text.dart';
 import 'package:a2_stocks/core/utils/currency.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/party_enums.dart';
@@ -108,9 +111,9 @@ class ReceiptData {
         if (e.orderId == order.id &&
             e.partyType == PartyType.customer &&
             e.entryType == LedgerEntryType.payment &&
-            !e.description.startsWith('Cancelled order'))
+            !e.description.startsWith(ServerText.cancelledOrderLedgerPrefix))
           ReceiptPayment(
-            label: e.paymentMethod.isEmpty ? 'Payment' : PaymentMethod.labelOf(e.paymentMethod),
+            label: e.paymentMethod.isEmpty ? L10n.current.paymentMethodUnknown : paymentMethodLabelOf(e.paymentMethod),
             amount: e.amount,
             reference: e.paymentRef,
           ),
@@ -179,11 +182,11 @@ class ReceiptData {
   String toText() {
     final StringBuffer out = StringBuffer()
       ..writeln('*$shopName*')
-      ..writeln(shopPhone.isEmpty ? '' : 'Tel: $shopPhone')
-      ..writeln('Receipt $orderNo')
+      ..writeln(shopPhone.isEmpty ? '' : L10n.current.receiptTel(shopPhone))
+      ..writeln(L10n.current.receiptReceipt(orderNo))
       ..writeln(_dateText(date));
     if (customerName.isNotEmpty) {
-      out.writeln('Customer: $customerName');
+      out.writeln(L10n.current.receiptCustomer(customerName));
     }
     out.writeln('--------------------------');
     for (final ReceiptLine l in lines) {
@@ -192,24 +195,24 @@ class ReceiptData {
     }
     out.writeln('--------------------------');
     if (discount > 0.005) {
-      out.writeln('Items: ${money(subtotal)}');
-      out.writeln('Discount: -${money(discount)}');
+      out.writeln(L10n.current.receiptItems(money(subtotal)));
+      out.writeln(L10n.current.receiptDiscount3(money(discount)));
     }
     if (shippingFee > 0.005) {
-      out.writeln('Delivery: ${money(shippingFee)}');
+      out.writeln(L10n.current.receiptDelivery2(money(shippingFee)));
     }
-    out.writeln('*Total: ${money(total)}*');
+    out.writeln(L10n.current.receiptTotal(money(total)));
     for (final ReceiptPayment p in payments) {
       out.writeln('${p.label}: ${money(p.amount)}${p.reference.isEmpty ? '' : ' (${p.reference})'}');
     }
     if (change > 0.005) {
-      out.writeln('Change: ${money(change)}');
+      out.writeln(L10n.current.receiptChange2(money(change)));
     }
     if (due > 0.005) {
-      out.writeln('Balance due: ${money(due)}');
+      out.writeln(L10n.current.receiptBalanceDue(money(due)));
     }
     out.writeln('');
-    out.write('Thank you for shopping with us!');
+    out.write(L10n.current.receiptThankYouForShopping2);
     return out.toString().replaceAll(RegExp(r'\n{3,}'), '\n\n');
   }
 

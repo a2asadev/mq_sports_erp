@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/receipt.dart';
 import 'package:a2_stocks/core/utils/receipt_pdf.dart';
@@ -130,7 +131,7 @@ void main() {
     Future<void> pumpWith(WidgetTester tester, BusinessInfo business, Widget child) async {
       await tester.pumpWidget(ProviderScope(
         overrides: <Override>[businessProvider.overrideWithValue(business)],
-        child: MaterialApp(theme: AppTheme.light(), home: Scaffold(body: Center(child: child))),
+        child: MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, theme: AppTheme.light(), home: Scaffold(body: Center(child: child))),
       ));
       await tester.pump();
     }

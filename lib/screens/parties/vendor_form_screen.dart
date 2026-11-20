@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/vendor_model.dart';
 import 'package:a2_stocks/providers/parties_providers.dart';

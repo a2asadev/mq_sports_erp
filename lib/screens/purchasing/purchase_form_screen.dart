@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/purchase_model.dart';
 import 'package:a2_stocks/models/variant_model.dart';
@@ -107,22 +108,18 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Confirm purchase'),
+          title: Text(context.l10n.purchaseFormConfirmPurchase),
           content: Text(
-            'Vendor: ${vendor.name}\n'
-            '${_lines.length} item(s), $units unit(s) will be added to stock.\n\n'
-            'Total: ${formatAmount(_total)}\n'
-            'Paid now: ${formatAmount(_paid)}\n'
-            'Due: ${formatAmount(due)}',
+            context.l10n.purchaseFormVendorItemSUnit(vendor.name, _lines.length, units, formatAmount(_total), formatAmount(_paid), formatAmount(due)),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Back'),
+              child: Text(context.l10n.posPaymentBack),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Confirm'),
+              child: Text(context.l10n.purchaseFormConfirm),
             ),
           ],
         );
@@ -192,7 +189,7 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
     final double due = (total - _paid) > 0 ? total - _paid : 0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('New purchase')),
+      appBar: AppBar(title: Text(context.l10n.purchasesNewPurchase)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
@@ -204,12 +201,12 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    _stepTitle(context, '1', 'Vendor'),
+                    _stepTitle(context, '1', context.l10n.purchaseFormVendor),
                     VendorPickerField(
                       vendorId: _vendor?.id,
                       enabled: !locked,
                       errorText: (_showErrors && _vendor == null)
-                          ? 'Choose a vendor.'
+                          ? context.l10n.purchaseFormChooseAVendor
                           : null,
                       onChanged: (VendorModel? vendor) =>
                           setState(() => _vendor = vendor),
@@ -221,9 +218,9 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                           child: TextFormField(
                             controller: _invoiceController,
                             enabled: !locked,
-                            decoration: const InputDecoration(
-                              labelText: 'Supplier invoice no. (optional)',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: context.l10n.purchaseFormSupplierInvoiceNoOptional,
+                              border: const OutlineInputBorder(),
                             ),
                           ),
                         ),
@@ -235,12 +232,12 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                         ),
                       ],
                     ),
-                    _stepTitle(context, '2', 'Items and quantities'),
+                    _stepTitle(context, '2', context.l10n.purchaseFormItemsAndQuantities),
                     if (_showErrors && _lines.isEmpty)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8),
                         child: Text(
-                          'Add at least one item.',
+                          context.l10n.purchaseFormAddAtLeastOne,
                           style: TextStyle(color: theme.colorScheme.error),
                         ),
                       ),
@@ -260,7 +257,7 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                                     ),
                                   ),
                                   IconButton(
-                                    tooltip: 'Remove item',
+                                    tooltip: context.l10n.purchaseFormRemoveItem,
                                     icon: const Icon(Icons.delete_outline),
                                     onPressed: locked
                                         ? null
@@ -271,8 +268,7 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                                 ],
                               ),
                               Text(
-                                'SKU ${_lines[i].variant.sku} · In stock now: '
-                                '${stock[_lines[i].variant.id] ?? 0}',
+                                context.l10n.purchaseFormSkuInStock(_lines[i].variant.sku, stock[_lines[i].variant.id] ?? 0),
                                 style: theme.textTheme.bodySmall,
                               ),
                               const SizedBox(height: 8),
@@ -284,17 +280,17 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                                       controller: _lines[i].quantityController,
                                       enabled: !locked,
                                       keyboardType: TextInputType.number,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Quantity',
+                                      decoration: InputDecoration(
+                                        labelText: context.l10n.purchaseFormQuantity,
                                         isDense: true,
-                                        border: OutlineInputBorder(),
+                                        border: const OutlineInputBorder(),
                                       ),
                                       onChanged: (String _) => setState(() {}),
                                       validator: (String? value) {
                                         final int? parsed =
                                             int.tryParse((value ?? '').trim());
                                         return (parsed == null || parsed < 1)
-                                            ? 'At least 1'
+                                            ? context.l10n.purchaseFormAtLeast1
                                             : null;
                                       },
                                     ),
@@ -308,9 +304,9 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                                           const TextInputType.numberWithOptions(
                                               decimal: true),
                                       decoration: InputDecoration(
-                                        labelText: 'Buying price',
+                                        labelText: context.l10n.purchaseFormBuyingPrice,
                                         helperText:
-                                            'Catalog ${formatAmount(_lines[i].variant.costPrice)}',
+                                            context.l10n.purchaseFormCatalog(formatAmount(_lines[i].variant.costPrice)),
                                         isDense: true,
                                         border: const OutlineInputBorder(),
                                       ),
@@ -319,7 +315,7 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                                         final double? parsed =
                                             double.tryParse((value ?? '').trim());
                                         return (parsed == null || parsed < 0)
-                                            ? 'Invalid price'
+                                            ? context.l10n.purchaseFormInvalidPrice
                                             : null;
                                       },
                                     ),
@@ -331,7 +327,7 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 8),
                                   child: Text(
-                                    'Line total ${formatAmount(_lines[i].total)}',
+                                    context.l10n.purchaseFormLineTotal(formatAmount(_lines[i].total)),
                                     style: theme.textTheme.titleSmall,
                                   ),
                                 ),
@@ -345,14 +341,14 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                       child: OutlinedButton.icon(
                         onPressed: locked ? null : _addItem,
                         icon: const Icon(Icons.add),
-                        label: const Text('Add item'),
+                        label: Text(context.l10n.purchaseFormAddItem),
                       ),
                     ),
-                    _stepTitle(context, '3', 'Payment'),
+                    _stepTitle(context, '3', context.l10n.posPayment),
                     Row(
                       children: <Widget>[
                         Expanded(
-                          child: Text('Total ${formatAmount(total)}',
+                          child: Text(context.l10n.purchaseFormTotal(formatAmount(total)),
                               style: theme.textTheme.titleLarge),
                         ),
                         PurchaseStatusChip(
@@ -367,18 +363,18 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                       keyboardType:
                           const TextInputType.numberWithOptions(decimal: true),
                       decoration: InputDecoration(
-                        labelText: 'Paid now',
-                        helperText: 'Due: ${formatAmount(due)}',
+                        labelText: context.l10n.purchaseFormPaidNow,
+                        helperText: context.l10n.purchaseDetailDue(formatAmount(due)),
                         border: const OutlineInputBorder(),
                       ),
                       onChanged: (String _) => setState(() {}),
                       validator: (String? value) {
                         final double? parsed = double.tryParse((value ?? '').trim());
                         if (parsed == null || parsed < 0) {
-                          return 'Enter a valid amount.';
+                          return context.l10n.partyFormEnterAValidAmount;
                         }
                         if (parsed > total + 0.005) {
-                          return 'More than the purchase total.';
+                          return context.l10n.purchaseFormMoreThanThePurchase;
                         }
                         return null;
                       },
@@ -390,13 +386,13 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                               ? null
                               : () => setState(
                                   () => _paidController.text = formatAmount(total)),
-                          child: const Text('Paid in full'),
+                          child: Text(context.l10n.purchaseFormPaidInFull),
                         ),
                         TextButton(
                           onPressed: locked
                               ? null
                               : () => setState(() => _paidController.text = '0.00'),
-                          child: const Text('Pay later'),
+                          child: Text(context.l10n.purchaseFormPayLater),
                         ),
                       ],
                     ),
@@ -405,12 +401,12 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                       controller: _notesController,
                       enabled: !locked,
                       maxLines: 2,
-                      decoration: const InputDecoration(
-                        labelText: 'Notes (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.partyFormNotesOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
-                    _stepTitle(context, '4', 'Confirm'),
+                    _stepTitle(context, '4', context.l10n.purchaseFormConfirm),
                     FilledButton.icon(
                       onPressed: locked ? null : _submit,
                       icon: locked
@@ -420,13 +416,11 @@ class _PurchaseFormScreenState extends ConsumerState<PurchaseFormScreen> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : const Icon(Icons.check),
-                      label: const Text('Confirm purchase'),
+                      label: Text(context.l10n.purchaseFormConfirmPurchase),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Confirming adds the quantities to stock and posts the '
-                      'purchase to the vendor ledger. It is uploaded to the '
-                      'cloud as one atomic change when you sync.',
+                      context.l10n.purchaseFormConfirmingAddsTheQuantities,
                       style: theme.textTheme.bodySmall,
                     ),
                   ],

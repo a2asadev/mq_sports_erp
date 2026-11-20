@@ -1,14 +1,12 @@
 /// How a customer paid. Bank transfer covers any bank account; Easypaisa and
 /// JazzCash are listed separately because shops handle them every day.
 enum PaymentMethod {
-  cash('Cash', false),
-  easypaisa('Easypaisa', true),
-  jazzcash('JazzCash', true),
-  bank('Bank transfer', true);
+  cash(false),
+  easypaisa(true),
+  jazzcash(true),
+  bank(true);
 
-  const PaymentMethod(this.label, this.hasReference);
-
-  final String label;
+  const PaymentMethod(this.hasReference);
 
   /// Non-cash payments carry a transaction number (and for banks, the bank name).
   final bool hasReference;
@@ -23,9 +21,6 @@ enum PaymentMethod {
     }
     return null;
   }
-
-  /// What to show for a stored method name ('' = not recorded).
-  static String labelOf(String? name) => fromName(name)?.label ?? 'Payment';
 }
 
 /// One part of what a customer paid at the counter.

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
 import 'package:a2_stocks/core/utils/starter_pack_plan.dart';
 import 'package:a2_stocks/models/category_model.dart';
@@ -37,6 +38,8 @@ const Map<String, dynamic> _grocery = <String, dynamic>{
     <String, dynamic>{'name': 'Rice', 'children': <String>['Basmati', 'Sella']},
   ],
 };
+
+final AppLocalizations _en = lookupAppLocalizations(const Locale('en'));
 
 http.Response _json(int status, Object body) =>
     http.Response(jsonEncode(body), status, headers: <String, String>{'content-type': 'application/json'});
@@ -91,6 +94,58 @@ void main() {
       // Only the ticked groups count.
       expect(StarterPackPlan.compute(<StarterGroup>[pack.groups.last], mine).toAdd, 3);
       expect(StarterPackPlan.compute(<StarterGroup>[], mine).toAdd, 0);
+    });
+  });
+
+  group('suggesting packs', () {
+    final StarterPack sports = StarterPack.tryFromMap(_sports)!;
+    final StarterPack grocery = StarterPack.tryFromMap(_grocery)!;
+
+    test('a pack is suggested only when at least two of its groups are already there', () {
+      final List<CategoryModel> both = <CategoryModel>[
+        CategoryModel(id: 'c', name: 'cricket'),
+        CategoryModel(id: 'f', name: 'Football'),
+      ];
+      final StarterPackMatch match = StarterPackMatch.compute(sports, both);
+      expect(match.isSuggested, isTrue);
+      expect(match.matchedGroups, <String>['Cricket', 'Football']);
+      expect(match.matchedText(_en), 'Cricket and Football');
+      expect(match.alreadyThere, 2);
+      expect(match.total, 7);
+
+      // One matching group is too little to say the shop looks like this kind.
+      expect(StarterPackMatch.compute(sports, <CategoryModel>[CategoryModel(id: 'c', name: 'Cricket')]).isSuggested, isFalse);
+      expect(StarterPackMatch.compute(sports, <CategoryModel>[]).isSuggested, isFalse);
+    });
+
+    test('split puts the best match first and keeps every other pack', () {
+      final List<CategoryModel> mine = <CategoryModel>[
+        CategoryModel(id: 'c', name: 'Cricket'),
+        CategoryModel(id: 'f', name: 'Football'),
+      ];
+      final split = StarterPackMatch.split(<StarterPack>[grocery, sports], mine);
+      expect(split.suggested.map((StarterPackMatch m) => m.pack.id), <String>['sports']);
+      expect(split.others.map((StarterPackMatch m) => m.pack.id), <String>['grocery']);
+      // Nothing matches: nothing suggested, every pack still listed.
+      final empty = StarterPackMatch.split(<StarterPack>[grocery, sports], <CategoryModel>[]);
+      expect(empty.suggested, isEmpty);
+      expect(empty.others, hasLength(2));
+    });
+
+    test('the sentence names up to three groups, then counts the rest', () {
+      final StarterPack big = StarterPack(
+        id: 'b',
+        name: 'Big',
+        description: '',
+        groups: <StarterGroup>[
+          for (final String n in <String>['A', 'B', 'C', 'D', 'E']) StarterGroup(name: n, children: const <String>[]),
+        ],
+      );
+      final List<CategoryModel> mine = <CategoryModel>[
+        for (final String n in <String>['A', 'B', 'C', 'D', 'E']) CategoryModel(id: n, name: n),
+      ];
+      expect(StarterPackMatch.compute(big, mine).matchedText(_en), 'A, B, C and 2 more');
+      expect(StarterPackMatch.compute(big, mine.sublist(0, 3)).matchedText(_en), 'A, B and C');
     });
   });
 
@@ -162,7 +217,7 @@ void main() {
           starterPackServiceProvider.overrideWithValue(StarterPackService(api: api, refresh: () async {})),
           categoriesProvider.overrideWith(() => _Categories(mine)),
         ],
-        child: MaterialApp(
+        child: MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, 
           home: Builder(
             builder: (BuildContext context) => Scaffold(
               body: Center(
@@ -263,6 +318,23 @@ void main() {
       expect(find.text('Tick at least one group.'), findsOneWidget);
     });
 
+    testWidgets('a shop that looks like a pack is told so, and still sees the other packs', (WidgetTester tester) async {
+      await pumpDialog(tester, mine: <CategoryModel>[
+        CategoryModel(id: 'c', name: 'Cricket'),
+        CategoryModel(id: 'f', name: 'Football'),
+      ]);
+      expect(find.text('Stores like yours'), findsOneWidget);
+      expect(find.text('Other kinds of store'), findsOneWidget);
+      expect(find.textContaining('Your store looks similar: you already have Cricket and Football.'), findsOneWidget);
+      expect(find.text('Grocery store'), findsOneWidget);
+    });
+
+    testWidgets('a shop with no match sees the plain list', (WidgetTester tester) async {
+      await pumpDialog(tester);
+      expect(find.text('Stores like yours'), findsNothing);
+      expect(find.text('Other kinds of store'), findsNothing);
+    });
+
     testWidgets('a failure stays in the dialog with the server\'s words, ready to try again', (WidgetTester tester) async {
       await pumpDialog(tester);
       await tester.tap(find.text('Grocery store'));
@@ -287,7 +359,7 @@ void main() {
           productsProvider.overrideWith(() => _NoProducts()),
           canManageCatalogProvider.overrideWithValue(canManage),
         ],
-        child: const MaterialApp(home: CategoriesScreen()),
+        child: const MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, home: CategoriesScreen()),
       ));
       await tester.pumpAndSettle();
     }

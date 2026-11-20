@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
@@ -37,17 +38,17 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Delete product'),
+          title: Text(context.l10n.productsDeleteProduct),
           content: Text(
-              'Delete "${product.name}" and its ${product.variants.length} variant(s)?'),
+              context.l10n.productsDeleteAndItsVariant(product.name, product.variants.length)),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.categoriesCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Delete'),
+              child: Text(context.l10n.categoriesDelete),
             ),
           ],
         );
@@ -117,26 +118,26 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
               StatItem(
                 icon: Icons.inventory_2_outlined,
                 color: AppColors.primary,
-                label: 'Products',
+                label: context.l10n.categoriesProducts,
                 value: '${stats.products}',
               ),
               StatItem(
                 icon: Icons.check_circle_outline,
                 color: AppColors.teal,
-                label: 'Active',
+                label: context.l10n.categoryFormActive,
                 value: '${stats.active}',
-                caption: stats.products > stats.active ? '${stats.products - stats.active} inactive' : '',
+                caption: stats.products > stats.active ? context.l10n.productsInactive2(stats.products - stats.active) : '',
               ),
               StatItem(
                 icon: Icons.style_outlined,
                 color: AppColors.sky,
-                label: 'Variants',
+                label: context.l10n.productsVariants,
                 value: '${stats.variants}',
               ),
               StatItem(
                 icon: Icons.sell_outlined,
                 color: AppColors.violet,
-                label: 'Brands',
+                label: context.l10n.productsBrands,
                 value: '${stats.brands}',
               ),
             ],
@@ -144,10 +145,10 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
           Padding(
             padding: const EdgeInsets.all(12),
             child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search name, brand, SKU or barcode',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: context.l10n.productsSearchNameBrandSku,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
                 isDense: true,
               ),
               onChanged: (String value) => setState(() => _query = value),
@@ -157,8 +158,8 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
             child: products.isEmpty
                 ? Center(
                     child: Text(loaded.isEmpty
-                        ? 'No products yet.'
-                        : 'No products match your search.'),
+                        ? context.l10n.productsNoProductsYet
+                        : context.l10n.productsNoProductsMatchYour),
                   )
                 : ListView.separated(
                     itemCount: products.length,
@@ -179,17 +180,19 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                         ),
                         title: Text(product.name),
                         subtitle: Text(
-                          '${path.isEmpty ? 'Uncategorized' : path}'
-                          ' · ${product.variants.length} variant(s)'
-                          ' · ${_priceText(product)}',
+                          context.l10n.productsSubtitle(
+                            path.isEmpty ? context.l10n.productsUncategorized : path,
+                            context.l10n.countVariants(product.variants.length),
+                            _priceText(product),
+                          ),
                         ),
                         onTap: () => _openForm(product: product),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             if (!product.isActive)
-                              const Chip(
-                                label: Text('Inactive'),
+                              Chip(
+                                label: Text(context.l10n.productsInactive),
                                 visualDensity: VisualDensity.compact,
                               ),
                             if (canManage)
@@ -203,14 +206,14 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
                                   }
                                 },
                                 itemBuilder: (BuildContext context) =>
-                                    const <PopupMenuEntry<_ProductAction>>[
+                                    <PopupMenuEntry<_ProductAction>>[
                                   PopupMenuItem<_ProductAction>(
                                     value: _ProductAction.open,
-                                    child: Text('Edit'),
+                                    child: Text(context.l10n.categoriesEdit),
                                   ),
                                   PopupMenuItem<_ProductAction>(
                                     value: _ProductAction.delete,
-                                    child: Text('Delete'),
+                                    child: Text(context.l10n.categoriesDelete),
                                   ),
                                 ],
                               ),
@@ -225,13 +228,13 @@ class _ProductsScreenState extends ConsumerState<ProductsScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Products')),
+      appBar: AppBar(title: Text(context.l10n.categoriesProducts)),
       body: body,
       floatingActionButton: canManage
           ? FloatingActionButton.extended(
               onPressed: () => _openForm(),
               icon: const Icon(Icons.add),
-              label: const Text('Add product'),
+              label: Text(context.l10n.productsAddProduct),
             )
           : null,
     );

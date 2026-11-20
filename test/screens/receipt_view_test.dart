@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/core/utils/receipt.dart';
 import 'package:a2_stocks/widgets/receipt_view.dart';
 
@@ -29,7 +30,7 @@ void main() {
     tester.view.physicalSize = const Size(500, 1400);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, 
       home: Scaffold(body: SingleChildScrollView(child: Center(child: ReceiptView(receipt: receipt)))),
     ));
     expect(find.text('MQ Sports'), findsOneWidget);

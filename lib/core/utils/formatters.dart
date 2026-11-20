@@ -1,4 +1,7 @@
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:a2_stocks/core/utils/currency.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 
 /// dd/MM/yyyy
 String formatDate(DateTime date) {
@@ -6,6 +9,15 @@ String formatDate(DateTime date) {
   String two(int n) => n.toString().padLeft(2, '0');
   return '${two(local.day)}/${two(local.month)}/${local.year}';
 }
+
+/// "Monday, 18 November 2026": weekday and month names in the app's language, in
+/// the order the language's `dateLong` pattern gives.
+String formatLongDate(BuildContext context, DateTime date) =>
+    DateFormat(context.l10n.dateLong, Localizations.localeOf(context).toString()).format(date);
+
+/// Like [formatLongDate] with the short weekday ("Mon, 18 November 2026").
+String formatShortDate(BuildContext context, DateTime date) =>
+    DateFormat(context.l10n.dateShort, Localizations.localeOf(context).toString()).format(date);
 
 /// Amount with two decimals, no currency symbol.
 String formatAmount(double amount) => amount.toStringAsFixed(2);

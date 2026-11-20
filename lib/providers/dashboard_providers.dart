@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/stock_alerts.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/user_model.dart';
@@ -12,12 +13,10 @@ import 'package:a2_stocks/providers/users_providers.dart';
 
 /// Period of the top-sellers list.
 enum TopSellerPeriod {
-  today('Today'),
-  month('This month');
+  today,
+  month;
 
-  const TopSellerPeriod(this.label);
-
-  final String label;
+  String get label => this == TopSellerPeriod.today ? L10n.current.dashboardToday : L10n.current.dashboardThisMonth;
 }
 
 /// One product in the top-sellers list.

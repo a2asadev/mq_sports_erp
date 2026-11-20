@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/core_providers.dart';
 
 /// The web app's counterpart of the sync chip: there is nothing to upload or
@@ -17,7 +18,7 @@ class OnlineStatusChip extends ConsumerWidget {
         isOnline ? Icons.cloud_done_outlined : Icons.cloud_off_outlined,
         size: 18,
       ),
-      label: Text(isOnline ? 'Online' : 'No connection'),
+      label: Text(isOnline ? context.l10n.onlineStatusChipOnline : context.l10n.onlineStatusChipNoConnection),
       backgroundColor: isOnline ? null : colors.errorContainer,
       visualDensity: VisualDensity.compact,
     );

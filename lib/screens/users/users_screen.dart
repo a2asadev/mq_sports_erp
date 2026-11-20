@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
@@ -15,7 +17,7 @@ class UsersScreen extends ConsumerWidget {
   const UsersScreen({super.key});
 
   String _errorText(Object error) {
-    return error is AppException ? error.message : 'Something went wrong.';
+    return error is AppException ? error.message : L10n.current.commonSomethingWentWrong;
   }
 
   Future<void> _confirmDelete(
@@ -27,21 +29,18 @@ class UsersScreen extends ConsumerWidget {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Delete user'),
+          title: Text(context.l10n.usersDeleteUser),
           content: Text(
-            'Delete ${user.displayName.isNotEmpty ? user.displayName : user.email}? '
-            'They will lose access to the app immediately. Their login '
-            'remains in Firebase Authentication but cannot open the app. '
-            'To block access but keep the record, deactivate the user instead.',
+            context.l10n.usersDeleteUserMessage(user.displayName.isNotEmpty ? user.displayName : user.email),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.l10n.categoriesCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text('Delete'),
+              child: Text(context.l10n.categoriesDelete),
             ),
           ],
         );
@@ -76,7 +75,7 @@ class UsersScreen extends ConsumerWidget {
             : const CircularProgressIndicator(),
       );
     } else if (loaded.isEmpty) {
-      body = const Center(child: Text('No users yet.'));
+      body = Center(child: Text(context.l10n.usersNoUsersYet));
     } else {
       final List<UserModel> users = <UserModel>[...loaded]..sort(
           (UserModel a, UserModel b) => (a.displayName.isNotEmpty
@@ -98,15 +97,15 @@ class UsersScreen extends ConsumerWidget {
               user.displayName.isNotEmpty ? user.displayName : user.email;
           return ListTile(
             leading: PhotoAvatar(url: user.photoUrl, label: name),
-            title: Text(isSelf ? '$name (you)' : name),
+            title: Text(isSelf ? context.l10n.usersYou(name) : name),
             subtitle: Text('${user.email}\n${user.role.label}'),
             isThreeLine: true,
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 if (!user.isActive)
-                  const Chip(
-                    label: Text('Inactive'),
+                  Chip(
+                    label: Text(context.l10n.productsInactive),
                     visualDensity: VisualDensity.compact,
                   ),
                 PopupMenuButton<_UserAction>(
@@ -130,19 +129,19 @@ class UsersScreen extends ConsumerWidget {
                   },
                   itemBuilder: (BuildContext context) =>
                       <PopupMenuEntry<_UserAction>>[
-                    const PopupMenuItem<_UserAction>(
+                    PopupMenuItem<_UserAction>(
                       value: _UserAction.edit,
-                      child: Text('Edit'),
+                      child: Text(context.l10n.categoriesEdit),
                     ),
                     if (!isSelf)
                       PopupMenuItem<_UserAction>(
                         value: _UserAction.toggleActive,
-                        child: Text(user.isActive ? 'Deactivate' : 'Activate'),
+                        child: Text(user.isActive ? context.l10n.usersDeactivate : context.l10n.usersActivate),
                       ),
                     if (!isSelf)
-                      const PopupMenuItem<_UserAction>(
+                      PopupMenuItem<_UserAction>(
                         value: _UserAction.delete,
-                        child: Text('Delete'),
+                        child: Text(context.l10n.categoriesDelete),
                       ),
                   ],
                 ),
@@ -158,28 +157,28 @@ class UsersScreen extends ConsumerWidget {
               StatItem(
                 icon: Icons.people_alt_outlined,
                 color: AppColors.primary,
-                label: 'Users',
+                label: context.l10n.usersUsers,
                 value: '${stats.total}',
               ),
               StatItem(
                 icon: Icons.check_circle_outline,
                 color: AppColors.teal,
-                label: 'Active',
+                label: context.l10n.categoryFormActive,
                 value: '${stats.active}',
-                caption: stats.total > stats.active ? '${stats.total - stats.active} turned off' : '',
+                caption: stats.total > stats.active ? context.l10n.usersTurnedOff(stats.total - stats.active) : '',
               ),
               StatItem(
                 icon: Icons.admin_panel_settings_outlined,
                 color: AppColors.navy,
-                label: 'Admins',
+                label: context.l10n.usersAdmins,
                 value: '${stats.admins}',
               ),
               StatItem(
                 icon: Icons.badge_outlined,
                 color: AppColors.sky,
-                label: 'Managers & staff',
+                label: context.l10n.usersManagersStaff,
                 value: '${stats.managers + stats.staff}',
-                caption: '${stats.managers} manager(s), ${stats.staff} staff',
+                caption: context.l10n.usersManagerSStaff(stats.managers, stats.staff),
               ),
             ],
           ),
@@ -189,7 +188,7 @@ class UsersScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Users')),
+      appBar: AppBar(title: Text(context.l10n.usersUsers)),
       body: body,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.of(context).push(
@@ -198,7 +197,7 @@ class UsersScreen extends ConsumerWidget {
           ),
         ),
         icon: const Icon(Icons.person_add_alt_1),
-        label: const Text('Add user'),
+        label: Text(context.l10n.usersAddUser),
       ),
     );
   }

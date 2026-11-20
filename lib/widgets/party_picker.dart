@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/party_list_item.dart';
@@ -56,7 +58,7 @@ Future<PartyPickResult?> showPartyPickerSheet(
                           style: Theme.of(context).textTheme.titleLarge),
                     ),
                     IconButton(
-                      tooltip: 'Close',
+                      tooltip: context.l10n.starterPackClose,
                       icon: const Icon(Icons.close),
                       onPressed: () => Navigator.of(sheetContext).pop(),
                     ),
@@ -101,7 +103,7 @@ Future<PartyPick<VendorModel>?> showVendorPicker(
 }) async {
   final PartyPickResult? result = await showPartyPickerSheet(
     context,
-    title: 'Select vendor',
+    title: context.l10n.partyPickerSelectVendor,
     partyType: PartyType.vendor,
     items: ref.read(vendorItemsProvider),
     typeOptions: <MapEntry<String, String>>[
@@ -131,7 +133,7 @@ Future<PartyPick<CustomerModel>?> showCustomerPicker(
 }) async {
   final PartyPickResult? result = await showPartyPickerSheet(
     context,
-    title: 'Select customer',
+    title: context.l10n.partyPickerSelectCustomer,
     partyType: PartyType.customer,
     items: ref.read(customerItemsProvider),
     typeOptions: <MapEntry<String, String>>[
@@ -140,7 +142,7 @@ Future<PartyPick<CustomerModel>?> showCustomerPicker(
     ],
     selectedId: selectedId,
     showCreditFilter: true,
-    clearLabel: allowWalkIn ? 'Walk-in customer (no account)' : null,
+    clearLabel: allowWalkIn ? context.l10n.partyPickerWalkInCustomerNo : null,
   );
   if (result == null) {
     return null;
@@ -199,14 +201,14 @@ class VendorPickerField extends ConsumerWidget {
     super.key,
     required this.vendorId,
     required this.onChanged,
-    this.label = 'Vendor',
+    this.label,
     this.errorText,
     this.enabled = true,
   });
 
   final String? vendorId;
   final ValueChanged<VendorModel?> onChanged;
-  final String label;
+  final String? label;
   final String? errorText;
   final bool enabled;
 
@@ -217,8 +219,8 @@ class VendorPickerField extends ConsumerWidget {
     final VendorModel? selected =
         vendors.where((VendorModel v) => v.id == vendorId).firstOrNull;
     return _PartyPickerField(
-      label: label,
-      displayText: selected?.name ?? 'Select vendor',
+      label: label ?? context.l10n.purchaseFormVendor,
+      displayText: selected?.name ?? context.l10n.partyPickerSelectVendor,
       hasValue: selected != null,
       errorText: errorText,
       onTap: enabled
@@ -241,7 +243,7 @@ class CustomerPickerField extends ConsumerWidget {
     super.key,
     required this.customerId,
     required this.onChanged,
-    this.label = 'Customer',
+    this.label,
     this.allowWalkIn = true,
     this.errorText,
     this.enabled = true,
@@ -249,7 +251,7 @@ class CustomerPickerField extends ConsumerWidget {
 
   final String? customerId;
   final ValueChanged<CustomerModel?> onChanged;
-  final String label;
+  final String? label;
   final bool allowWalkIn;
   final String? errorText;
   final bool enabled;
@@ -261,9 +263,9 @@ class CustomerPickerField extends ConsumerWidget {
     final CustomerModel? selected =
         customers.where((CustomerModel c) => c.id == customerId).firstOrNull;
     return _PartyPickerField(
-      label: label,
+      label: label ?? context.l10n.posCustomer,
       displayText: selected?.name ??
-          (allowWalkIn ? 'Walk-in customer' : 'Select customer'),
+          (allowWalkIn ? context.l10n.dashboardWalkInCustomer : context.l10n.partyPickerSelectCustomer),
       hasValue: selected != null || allowWalkIn,
       errorText: errorText,
       onTap: enabled

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/outbox_entry.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/core_providers.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
 import 'package:a2_stocks/providers/sync_controller.dart';
@@ -38,14 +39,14 @@ class SyncScreen extends ConsumerWidget {
     }
   }
 
-  String _stateText(OutboxEntry entry) {
+  String _stateText(BuildContext context, OutboxEntry entry) {
     switch (entry.state) {
       case OutboxState.pending:
-        return 'Waiting to upload · ${_formatTime(entry.createdAt)}';
+        return context.l10n.syncWaitingToUpload(_formatTime(entry.createdAt));
       case OutboxState.sent:
-        return 'Uploaded, waiting for the server\'s copy';
+        return context.l10n.syncUploadedWaitingForThe;
       case OutboxState.failed:
-        return 'Refused: ${entry.error}';
+        return context.l10n.syncRefused(entry.error);
     }
   }
 
@@ -53,19 +54,18 @@ class SyncScreen extends ConsumerWidget {
     final bool? ok = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
-        title: const Text('Download everything again?'),
-        content: const Text(
-          'This replaces this device\'s copy of the data with the server\'s. '
-          'Changes that are waiting to be uploaded are kept.',
+        title: Text(context.l10n.syncDownloadEverythingAgain2),
+        content: Text(
+          context.l10n.syncThisReplacesThisDevice,
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.categoriesCancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: const Text('Download again'),
+            child: Text(context.l10n.syncDownloadAgain),
           ),
         ],
       ),
@@ -89,47 +89,46 @@ class SyncScreen extends ConsumerWidget {
     final IconData statusIcon;
     switch (summary.status) {
       case SyncStatus.syncing:
-        statusTitle = 'Syncing…';
-        statusDetail = 'Please keep the app open.';
+        statusTitle = context.l10n.syncSyncing;
+        statusDetail = context.l10n.syncPleaseKeepTheApp;
         statusIcon = Icons.sync;
       case SyncStatus.needsAttention:
-        statusTitle = '${summary.failed} change(s) need attention';
-        statusDetail = 'The server refused them. Retry them, or discard them below.';
+        statusTitle = context.l10n.syncChangeSNeedAttention(summary.failed);
+        statusDetail = context.l10n.syncTheServerRefusedThem;
         statusIcon = Icons.error_outline;
       case SyncStatus.offline:
-        statusTitle = isOnline ? 'The server cannot be reached' : 'You are offline';
+        statusTitle = isOnline ? context.l10n.syncTheServerCannotBe : context.l10n.syncYouAreOffline;
         statusDetail = summary.waiting > 0
-            ? '${summary.waiting} change(s) are saved on this device and are '
-                'uploaded automatically when the connection is back.'
-            : 'Everything you do is saved on this device and uploaded later.';
+            ? context.l10n.syncChangeSAreSaved(summary.waiting)
+            : context.l10n.syncEverythingYouDoIs;
         statusIcon = Icons.cloud_off_outlined;
       case SyncStatus.pending:
-        statusTitle = '${summary.waiting} change(s) to upload';
-        statusDetail = 'They are uploaded automatically in a few seconds.';
+        statusTitle = context.l10n.syncChangeSToUpload(summary.waiting);
+        statusDetail = context.l10n.syncTheyAreUploadedAutomatically;
         statusIcon = Icons.cloud_upload_outlined;
       case SyncStatus.upToDate:
-        statusTitle = 'In step with the server';
+        statusTitle = context.l10n.syncInStepWithThe;
         statusDetail = sync.lastSyncedAt == null
-            ? 'Nothing is waiting.'
-            : 'Last checked ${_formatTime(sync.lastSyncedAt!)}.';
+            ? context.l10n.syncNothingIsWaiting
+            : context.l10n.syncLastChecked(_formatTime(sync.lastSyncedAt!));
         statusIcon = Icons.cloud_done_outlined;
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sync'),
+        title: Text(context.l10n.syncSync),
         actions: <Widget>[
           PopupMenuButton<String>(
-            tooltip: 'More',
+            tooltip: context.l10n.syncMore,
             onSelected: (String value) {
               if (value == 'again') {
                 _confirmDownloadAgain(context, ref);
               }
             },
-            itemBuilder: (BuildContext context) => const <PopupMenuEntry<String>>[
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               PopupMenuItem<String>(
                 value: 'again',
-                child: Text('Download everything again'),
+                child: Text(context.l10n.syncDownloadEverythingAgain),
               ),
             ],
           ),
@@ -163,18 +162,18 @@ class SyncScreen extends ConsumerWidget {
                 ? null
                 : () => ref.read(syncControllerProvider.notifier).syncNow(manual: true),
             icon: const Icon(Icons.sync),
-            label: Text(sync.isSyncing ? 'Syncing…' : 'Sync now'),
+            label: Text(sync.isSyncing ? context.l10n.syncSyncing : context.l10n.syncSyncNow),
           ),
           const SizedBox(height: 20),
           if (entries.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
               child: Center(
-                child: Text('Nothing is waiting to be uploaded.', style: theme.textTheme.bodyMedium),
+                child: Text(context.l10n.syncNothingIsWaitingTo, style: theme.textTheme.bodyMedium),
               ),
             )
           else ...<Widget>[
-            Text('Waiting for the server (${entries.length})', style: theme.textTheme.titleSmall),
+            Text(context.l10n.syncWaitingForTheServer(entries.length), style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
             for (final OutboxEntry entry in entries)
               Card(
@@ -184,7 +183,7 @@ class SyncScreen extends ConsumerWidget {
                     color: entry.state == OutboxState.failed ? theme.colorScheme.error : null,
                   ),
                   title: Text(entry.label),
-                  subtitle: Text(_stateText(entry)),
+                  subtitle: Text(_stateText(context, entry)),
                   isThreeLine: entry.state == OutboxState.failed,
                   trailing: entry.state == OutboxState.failed
                       ? Wrap(
@@ -192,11 +191,11 @@ class SyncScreen extends ConsumerWidget {
                           children: <Widget>[
                             TextButton(
                               onPressed: () => ref.read(syncControllerProvider.notifier).retry(entry.opId),
-                              child: const Text('Retry'),
+                              child: Text(context.l10n.syncRetry),
                             ),
                             TextButton(
                               onPressed: () => ref.read(syncControllerProvider.notifier).discard(entry.opId),
-                              child: const Text('Discard'),
+                              child: Text(context.l10n.syncDiscard),
                             ),
                           ],
                         )

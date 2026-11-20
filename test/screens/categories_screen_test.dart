@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/core/utils/category_stats.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/product_model.dart';
@@ -69,7 +70,7 @@ void main() {
         productsProvider.overrideWith(() => _Products(products)),
         canManageCatalogProvider.overrideWithValue(true),
       ],
-      child: const MaterialApp(home: CategoriesScreen()),
+      child: const MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, home: CategoriesScreen()),
     ));
     await tester.pumpAndSettle();
   }

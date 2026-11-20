@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 
 /// Values entered in the "Add entry" dialog.
@@ -92,7 +94,7 @@ class _LedgerEntryDialogState extends State<_LedgerEntryDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add ledger entry'),
+      title: Text(context.l10n.ledgerEntryAddLedgerEntry),
       content: SizedBox(
         width: 420,
         child: SingleChildScrollView(
@@ -120,18 +122,18 @@ class _LedgerEntryDialogState extends State<_LedgerEntryDialog> {
                   autofocus: true,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Amount'),
+                  decoration: InputDecoration(labelText: context.l10n.ledgerEntryAmount),
                   validator: (String? value) {
                     final double? parsed = double.tryParse((value ?? '').trim());
                     return (parsed == null || parsed <= 0)
-                        ? 'Enter an amount greater than zero.'
+                        ? context.l10n.ledgerEntryEnterAnAmountGreater
                         : null;
                   },
                 ),
                 const SizedBox(height: 8),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Date'),
+                  title: Text(context.l10n.ledgerEntryDate),
                   subtitle: Text(formatDate(_date)),
                   trailing: const Icon(Icons.calendar_today_outlined),
                   onTap: _pickDate,
@@ -139,12 +141,12 @@ class _LedgerEntryDialogState extends State<_LedgerEntryDialog> {
                 TextFormField(
                   controller: _descriptionController,
                   decoration:
-                      const InputDecoration(labelText: 'Description (optional)'),
+                      InputDecoration(labelText: context.l10n.categoryFormDescriptionOptional),
                 ),
                 TextFormField(
                   controller: _referenceController,
-                  decoration: const InputDecoration(
-                      labelText: 'Reference / receipt no. (optional)'),
+                  decoration: InputDecoration(
+                      labelText: context.l10n.ledgerEntryReferenceReceiptNoOptional),
                 ),
               ],
             ),
@@ -154,9 +156,9 @@ class _LedgerEntryDialogState extends State<_LedgerEntryDialog> {
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.categoriesCancel),
         ),
-        FilledButton(onPressed: _save, child: const Text('Save entry')),
+        FilledButton(onPressed: _save, child: Text(context.l10n.ledgerEntrySaveEntry)),
       ],
     );
   }

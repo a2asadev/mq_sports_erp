@@ -1,26 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:a2_stocks/core/erp_module.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
+import 'package:a2_stocks/l10n/notification_text.dart';
+import 'package:a2_stocks/models/app_notification.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/providers/dashboard_providers.dart';
 import 'package:a2_stocks/providers/data_mode.dart';
 import 'package:a2_stocks/providers/module_registry_provider.dart';
+import 'package:a2_stocks/providers/notification_alert_providers.dart';
+import 'package:a2_stocks/providers/notification_providers.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/dashboard/dashboard_page.dart';
 import 'package:a2_stocks/screens/onboarding/onboarding_screen.dart';
 import 'package:a2_stocks/widgets/business_brand.dart';
 import 'package:a2_stocks/widgets/logout_button.dart';
+import 'package:a2_stocks/widgets/notification_bell.dart';
 import 'package:a2_stocks/widgets/online_status_chip.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:a2_stocks/widgets/sync_status_chip.dart';
 
 /// Id of the dashboard entry in the navigation (it is not an [ErpModule]).
 const String _dashboardId = 'dashboard';
-
-/// Navigation groups, in the order they appear.
-const List<String> _groupOrder = <String>['Main', 'Inventory', 'Sales', 'Purchasing', 'System'];
 
 /// The app shell: a side bar on wide screens (desktop, web, tablets) and a
 /// drawer on phones, with the chosen page beside or below the top bar. The POS
@@ -112,10 +118,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   String _title(List<ErpModule> modules) =>
-      modules.where((ErpModule m) => m.id == _selected).firstOrNull?.title ?? 'Dashboard';
+      modules.where((ErpModule m) => m.id == _selected).firstOrNull?.title(context.l10n) ?? context.l10n.posDashboard;
 
   @override
   Widget build(BuildContext context) {
+    // A notification that arrives while the app is open is announced once, with a way to open it.
+    ref.listen<List<AppNotification>>(
+      notificationsProvider.select((NotificationsState s) => s.announce),
+      (List<AppNotification>? before, List<AppNotification> now) {
+        final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+        final NavigatorState navigator = Navigator.of(context);
+        if (now.isNotEmpty) {
+          // A sound, and a notification of the system while this window is in the background.
+          unawaited(ref.read(notificationAlertsProvider).announce(now));
+        }
+        for (final AppNotification n in now.take(2)) {
+          final NotificationText text = notificationText(context.l10n, n);
+          messenger.showSnackBar(SnackBar(
+            content: Text(text.detail.isEmpty ? text.title : '${text.title}\n${text.detail}'),
+            action: SnackBarAction(label: context.l10n.notificationsView, onPressed: () => openNotification(navigator, n)),
+          ));
+        }
+      },
+    );
     final List<ErpModule> modules = ref.watch(visibleModulesProvider);
     final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
     final bool online = ref.watch(dataModeProvider).isOnline;
@@ -215,12 +240,14 @@ class _TopBar extends StatelessWidget {
           child: Row(
             children: <Widget>[
               if (showMenu) ...<Widget>[
-                IconButton(onPressed: onMenu, icon: const Icon(Icons.menu), tooltip: 'Menu'),
+                IconButton(onPressed: onMenu, icon: const Icon(Icons.menu), tooltip: context.l10n.homeMenu),
                 const SizedBox(width: 4),
                 const Flexible(child: BusinessLockup(markHeight: 30)),
               ] else
                 Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
               const Spacer(),
+              const NotificationBell(),
+              const SizedBox(width: 4),
               if (online) const OnlineStatusChip() else const SyncStatusChip(),
               const SizedBox(width: 8),
               if (onPos != null)
@@ -231,7 +258,7 @@ class _TopBar extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   ),
                   icon: const Icon(Icons.point_of_sale, size: 18),
-                  label: const Text('POS'),
+                  label: Text(context.l10n.homePos),
                 ),
               const SizedBox(width: 8),
               if (user != null)
@@ -289,14 +316,11 @@ class _NavPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, List<ErpModule>> groups = <String, List<ErpModule>>{};
+    final Map<ModuleGroup, List<ErpModule>> groups = <ModuleGroup, List<ErpModule>>{};
     for (final ErpModule m in modules) {
       groups.putIfAbsent(m.group, () => <ErpModule>[]).add(m);
     }
-    final List<String> order = <String>[
-      ..._groupOrder.where(groups.containsKey),
-      ...groups.keys.where((String g) => !_groupOrder.contains(g)),
-    ];
+    final List<ModuleGroup> order = ModuleGroup.values.where(groups.containsKey).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -305,12 +329,12 @@ class _NavPanel extends StatelessWidget {
           child: ListView(
             padding: EdgeInsets.fromLTRB(collapsed ? 10 : 12, 4, collapsed ? 10 : 12, 16),
             children: <Widget>[
-              for (final String group in order) ...<Widget>[
-                _GroupLabel(group, collapsed: collapsed),
-                if (group == 'Main')
+              for (final ModuleGroup group in order) ...<Widget>[
+                _GroupLabel(group.label(context.l10n), collapsed: collapsed),
+                if (group == ModuleGroup.main)
                   _NavItem(
                     icon: showDashboard ? Icons.space_dashboard_outlined : Icons.home_outlined,
-                    label: showDashboard ? 'Dashboard' : 'Home',
+                    label: showDashboard ? context.l10n.posDashboard : context.l10n.homeHome,
                     selected: selected == _dashboardId,
                     collapsed: collapsed,
                     onTap: onDashboard,
@@ -318,7 +342,7 @@ class _NavPanel extends StatelessWidget {
                 for (final ErpModule m in groups[group]!)
                   _NavItem(
                     icon: m.icon,
-                    label: m.title,
+                    label: m.title(context.l10n),
                     selected: selected == m.id,
                     collapsed: collapsed,
                     onTap: () => onModule(m),
@@ -343,7 +367,7 @@ class _NavHeader extends StatelessWidget {
     final Widget toggle = onToggle == null
         ? const SizedBox.shrink()
         : IconButton(
-            tooltip: collapsed ? 'Expand menu' : 'Collapse menu',
+            tooltip: collapsed ? context.l10n.homeExpandMenu : context.l10n.homeCollapseMenu,
             visualDensity: VisualDensity.compact,
             onPressed: onToggle,
             icon: Icon(

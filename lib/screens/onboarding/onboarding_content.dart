@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/user_role.dart';
 
 /// One page of the welcome guide.
@@ -18,162 +19,160 @@ class OnboardingStep {
   final List<String> points;
 }
 
-const OnboardingStep _offline = OnboardingStep(
+OnboardingStep _offline(AppLocalizations l10n) => OnboardingStep(
   icon: Icons.cloud_sync_outlined,
-  title: 'Works with or without internet',
-  body: 'On phones and computers the app keeps working when the internet is down '
-      'and sends your work to the shop\'s server when the connection returns. '
-      'On the web version a connection is needed all the time.',
+  title: l10n.onboardingContentWorksWithOrWithout,
+  body: l10n.onboardingContentOnPhonesAndComputers,
   points: <String>[
-    'The chip at the top shows what is waiting to be sent.',
-    'If the server refuses something, it appears on the Sync screen with the reason; you can retry or discard it.',
-    'Sales made offline are always recorded, even if the shelf turns out to be empty.',
+    l10n.onboardingContentTheChipAtThe,
+    l10n.onboardingContentIfTheServerRefuses,
+    l10n.onboardingContentSalesMadeOfflineAre,
   ],
 );
 
-const OnboardingStep _profile = OnboardingStep(
+OnboardingStep _profile(AppLocalizations l10n) => OnboardingStep(
   icon: Icons.account_circle_outlined,
-  title: 'Your profile',
-  body: 'Open Settings to add your own photo and to see this guide again whenever you like.',
+  title: l10n.onboardingContentYourProfile,
+  body: l10n.onboardingContentOpenSettingsToAdd,
 );
 
-List<OnboardingStep> _staff() => const <OnboardingStep>[
+List<OnboardingStep> _staff(AppLocalizations l10n) => <OnboardingStep>[
       OnboardingStep(
         icon: Icons.waving_hand_outlined,
-        title: 'Welcome to A2 Stocks',
-        body: 'You are signed in as Staff. This quick tour shows what you can do. It takes a minute.',
+        title: l10n.onboardingContentWelcomeToA2Stocks,
+        body: l10n.onboardingContentYouAreSignedIn3,
       ),
       OnboardingStep(
         icon: Icons.point_of_sale_outlined,
-        title: 'Selling',
-        body: 'Open Sales & Orders to make a sale.',
+        title: l10n.onboardingContentSelling,
+        body: l10n.onboardingContentOpenSalesOrdersTo,
         points: <String>[
-          'Choose the customer, add the products and quantities, and give a discount if allowed.',
-          'Record the payment now or later from the order.',
-          'Move an order along: Pending, Processing, Shipped, Delivered.',
+          l10n.onboardingContentChooseTheCustomerAdd,
+          l10n.onboardingContentRecordThePaymentNow,
+          l10n.onboardingContentMoveAnOrderAlong,
         ],
       ),
       OnboardingStep(
         icon: Icons.inventory_2_outlined,
-        title: 'Products and stock',
-        body: 'Look up products, prices and photos under Products, and what is on the shelf under Stock.',
+        title: l10n.onboardingContentProductsAndStock,
+        body: l10n.onboardingContentLookUpProductsPrices,
         points: <String>[
-          'Red numbers in Stock mean the system thinks there is less than zero: tell your manager.',
-          'You can add photos to products you can open.',
+          l10n.onboardingContentRedNumbersInStock,
+          l10n.onboardingContentYouCanAddPhotos,
         ],
       ),
       OnboardingStep(
         icon: Icons.groups_outlined,
-        title: 'Customers',
-        body: 'Add a customer when someone new buys. Their balance shows what they owe and the payments they made.',
+        title: l10n.moduleCustomers,
+        body: l10n.onboardingContentAddACustomerWhen,
       ),
-      _offline,
-      _profile,
+      _offline(l10n),
+      _profile(l10n),
     ];
 
-List<OnboardingStep> _manager() => const <OnboardingStep>[
+List<OnboardingStep> _manager(AppLocalizations l10n) => <OnboardingStep>[
       OnboardingStep(
         icon: Icons.waving_hand_outlined,
-        title: 'Welcome to A2 Stocks',
-        body: 'You are signed in as Manager: you run the shop day to day. This tour shows where things are.',
+        title: l10n.onboardingContentWelcomeToA2Stocks,
+        body: l10n.onboardingContentYouAreSignedIn2,
       ),
       OnboardingStep(
         icon: Icons.dashboard_outlined,
-        title: 'Your dashboard',
-        body: 'The home screen shows today\'s and this month\'s sales, what customers owe, low stock and the best sellers.',
+        title: l10n.onboardingContentYourDashboard,
+        body: l10n.onboardingContentTheHomeScreenShows,
       ),
       OnboardingStep(
         icon: Icons.point_of_sale_outlined,
-        title: 'Sales and online orders',
-        body: 'Sales & Orders holds every order: from the counter and from the online store.',
+        title: l10n.onboardingContentSalesAndOnlineOrders,
+        body: l10n.onboardingContentSalesOrdersHoldsEvery,
         points: <String>[
-          'Online orders are marked "Online store" and already took their stock out.',
-          'Only you and admins can cancel an order; do it for fake or refused online orders so the stock comes back.',
+          l10n.onboardingContentOnlineOrdersAreMarked,
+          l10n.onboardingContentOnlyYouAndAdmins,
         ],
       ),
       OnboardingStep(
         icon: Icons.shopping_cart_checkout_outlined,
-        title: 'Buying stock',
-        body: 'Vendors and Purchases record what you buy and what you owe. Confirming a purchase adds the stock.',
+        title: l10n.onboardingContentBuyingStock,
+        body: l10n.onboardingContentVendorsAndPurchasesRecord,
       ),
       OnboardingStep(
         icon: Icons.fact_check_outlined,
-        title: 'Stock and audits',
-        body: 'Count the shelf in Stock Audit; confirming it corrects the system to what you counted.',
-        points: <String>['Set an alert level on a variant to be warned before it runs out.'],
+        title: l10n.onboardingContentStockAndAudits,
+        body: l10n.onboardingContentCountTheShelfIn,
+        points: <String>[l10n.onboardingContentSetAnAlertLevel],
       ),
       OnboardingStep(
         icon: Icons.add_a_photo_outlined,
-        title: 'Photos',
-        body: 'Add photos to products, categories, customers and vendors. Product photos appear in the online store.',
+        title: l10n.onboardingContentPhotos,
+        body: l10n.onboardingContentAddPhotosToProducts2,
       ),
-      _offline,
-      _profile,
+      _offline(l10n),
+      _profile(l10n),
     ];
 
-List<OnboardingStep> _admin() => const <OnboardingStep>[
+List<OnboardingStep> _admin(AppLocalizations l10n) => <OnboardingStep>[
       OnboardingStep(
         icon: Icons.waving_hand_outlined,
-        title: 'Welcome to A2 Stocks',
-        body: 'You are signed in as Admin: you can see and change everything. Here is how to get the shop ready.',
+        title: l10n.onboardingContentWelcomeToA2Stocks,
+        body: l10n.onboardingContentYouAreSignedIn,
       ),
       OnboardingStep(
         icon: Icons.checklist_outlined,
-        title: 'First setup checklist',
-        body: 'Do these once, in this order:',
+        title: l10n.onboardingContentFirstSetupChecklist,
+        body: l10n.onboardingContentDoTheseOnceIn,
         points: <String>[
-          '1. Settings > Online store: store name, phone, delivery fee, free-delivery amount.',
-          '2. Settings > Online store > "Send test e-mail" to check that e-mail works.',
-          '3. Categories (start from a ready-made Starter pack for your kind of business), then Products with their variants, prices and photos.',
-          '4. Vendors and Customers; record opening balances if people already owe or are owed.',
-          '5. Purchases to put the first stock on the shelf (or a Stock Audit to count what you have).',
-          '6. Users: a login for each person, with the right role.',
+          l10n.onboardingContent1SettingsOnlineStore,
+          l10n.onboardingContent2SettingsOnlineStore,
+          l10n.onboardingContent3CategoriesStartFrom,
+          l10n.onboardingContent4VendorsAndCustomers,
+          l10n.onboardingContent5PurchasesToPut,
+          l10n.onboardingContent6UsersALogin,
         ],
       ),
       OnboardingStep(
         icon: Icons.people_outline,
-        title: 'Your team',
-        body: 'Create a login for everyone under Users. Nobody should share one.',
+        title: l10n.onboardingContentYourTeam,
+        body: l10n.onboardingContentCreateALoginFor,
         points: <String>[
-          'Staff: sell, record payments, look up stock and products.',
-          'Manager: everything staff do, plus vendors, purchases, stock audits, the dashboard, and cancelling orders.',
-          'Admin: everything, plus users, activity logs and the store settings.',
-          'A person who leaves is switched off, never deleted, so history stays correct.',
+          l10n.onboardingContentStaffSellRecordPayments,
+          l10n.onboardingContentManagerEverythingStaffDo,
+          l10n.onboardingContentAdminEverythingPlusUsers,
+          l10n.onboardingContentAPersonWhoLeaves,
         ],
       ),
       OnboardingStep(
         icon: Icons.storefront_outlined,
-        title: 'The online store',
-        body: 'Customers order on your website and pay cash on delivery.',
+        title: l10n.onboardingContentTheOnlineStore,
+        body: l10n.onboardingContentCustomersOrderOnYour,
         points: <String>[
-          'Only active products with a price and a category that is active are shown.',
-          'Orders arrive here as "Online store" with the delivery address; the stock is taken out at once.',
-          'Switch the store off in Settings to stop taking orders.',
-          'With e-mail set up, shoppers get a confirmation and you get an alert for each new order.',
+          l10n.onboardingContentOnlyActiveProductsWith,
+          l10n.onboardingContentOrdersArriveHereAs,
+          l10n.onboardingContentSwitchTheStoreOff,
+          l10n.onboardingContentWithEMailSet,
         ],
       ),
       OnboardingStep(
         icon: Icons.history_outlined,
-        title: 'Activity logs',
-        body: 'Every change is recorded with who did it and when. Open Activity Logs to see sales, price changes, logins and more.',
+        title: l10n.onboardingContentActivityLogs,
+        body: l10n.onboardingContentEveryChangeIsRecorded,
       ),
       OnboardingStep(
         icon: Icons.add_a_photo_outlined,
-        title: 'Photos',
-        body: 'Add photos to products (several each), categories, customers, vendors and users. Your own photo is in Settings.',
+        title: l10n.onboardingContentPhotos,
+        body: l10n.onboardingContentAddPhotosToProducts,
       ),
-      _offline,
-      _profile,
+      _offline(l10n),
+      _profile(l10n),
     ];
 
 /// The welcome guide for a role. Everyone sees the pages that matter to them.
-List<OnboardingStep> onboardingStepsFor(UserRole role) {
+List<OnboardingStep> onboardingStepsFor(UserRole role, AppLocalizations l10n) {
   switch (role) {
     case UserRole.admin:
-      return _admin();
+      return _admin(l10n);
     case UserRole.manager:
-      return _manager();
+      return _manager(l10n);
     case UserRole.staff:
-      return _staff();
+      return _staff(l10n);
   }
 }

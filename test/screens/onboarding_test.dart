@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
 import 'package:a2_stocks/providers/onboarding_providers.dart';
@@ -8,7 +9,9 @@ import 'package:a2_stocks/screens/onboarding/onboarding_content.dart';
 import 'package:a2_stocks/screens/onboarding/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String _allText(UserRole role) => onboardingStepsFor(role)
+final AppLocalizations _en = lookupAppLocalizations(const Locale('en'));
+
+String _allText(UserRole role) => onboardingStepsFor(role, _en)
     .expand((OnboardingStep s) => <String>[s.title, s.body, ...s.points])
     .join('\n');
 
@@ -18,7 +21,7 @@ void main() {
   group('guide content', () {
     test('every role has a short guide that opens with a welcome and ends with the profile page', () {
       for (final UserRole role in UserRole.values) {
-        final List<OnboardingStep> steps = onboardingStepsFor(role);
+        final List<OnboardingStep> steps = onboardingStepsFor(role, _en);
         expect(steps.length, inInclusiveRange(5, 9), reason: role.name);
         expect(steps.first.title, startsWith('Welcome'));
         expect(steps.last.title, 'Your profile');
@@ -58,7 +61,7 @@ void main() {
 
   group('screen', () {
     Future<void> openGuide(WidgetTester tester, UserRole role) async {
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, 
         home: Builder(
           builder: (BuildContext context) => Scaffold(
             body: Center(
@@ -78,7 +81,7 @@ void main() {
 
     testWidgets('Next walks through every page and Get started closes it', (WidgetTester tester) async {
       await openGuide(tester, UserRole.staff);
-      final List<OnboardingStep> steps = onboardingStepsFor(UserRole.staff);
+      final List<OnboardingStep> steps = onboardingStepsFor(UserRole.staff, _en);
       expect(find.text(steps.first.title), findsOneWidget);
       for (int i = 1; i < steps.length; i++) {
         await tester.tap(find.text('Next'));
@@ -104,7 +107,7 @@ void main() {
   group('first sign-in gate', () {
     Future<void> pumpGate(WidgetTester tester, UserModel? user) async {
       await tester.pumpWidget(ProviderScope(
-        child: MaterialApp(
+        child: MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, 
           home: OnboardingGate(user: user, child: const Scaffold(body: Text('home'))),
         ),
       ));

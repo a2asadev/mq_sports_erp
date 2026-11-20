@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/core/constants/walk_in.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/customer_model.dart';
@@ -79,7 +80,7 @@ void main() {
     addTearDown(container.dispose);
     await tester.pumpWidget(UncontrolledProviderScope(
       container: container,
-      child: const MaterialApp(home: PosScreen()),
+      child: const MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, home: PosScreen()),
     ));
     await tester.pumpAndSettle();
     return container;

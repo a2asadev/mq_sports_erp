@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/online/photo_service.dart';
 import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,7 +93,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
     final bool isSelf = existing != null && existing.id == myId;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEdit ? 'Edit user' : 'Add user')),
+      appBar: AppBar(title: Text(isEdit ? context.l10n.userFormEditUser : context.l10n.usersAddUser)),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -108,7 +110,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                         kind: PhotoKind.user,
                         entityId: existing.id,
                         photoUrl: _photoUrl,
-                        title: 'Profile photo',
+                        title: context.l10n.userFormProfilePhoto,
                         enabled: !_isSubmitting,
                         onChanged: (String url) => _photoUrl = url,
                       )
@@ -120,13 +122,13 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                       enabled: !_isSubmitting,
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Full name',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.userFormFullName,
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (String? value) =>
                           (value == null || value.trim().isEmpty)
-                              ? 'Name is required.'
+                              ? context.l10n.categoryFormNameIsRequired
                               : null,
                     ),
                     const SizedBox(height: 16),
@@ -136,19 +138,19 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: 'Email (login)',
+                        labelText: context.l10n.userFormEmailLogin,
                         helperText:
-                            isEdit ? 'The login email cannot be changed.' : null,
+                            isEdit ? context.l10n.userFormTheLoginEmailCannot : null,
                         border: const OutlineInputBorder(),
                       ),
                       validator: (String? value) {
                         final String email = value?.trim() ?? '';
                         if (email.isEmpty) {
-                          return 'Email is required.';
+                          return context.l10n.authEmailRequired;
                         }
                         if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
                             .hasMatch(email)) {
-                          return 'Enter a valid email address.';
+                          return context.l10n.authEmailInvalid;
                         }
                         return null;
                       },
@@ -161,14 +163,14 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                         obscureText: _obscurePassword,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
-                          labelText: 'Initial password',
+                          labelText: context.l10n.userFormInitialPassword,
                           helperText:
-                              'Share it with the user so they can sign in.',
+                              context.l10n.userFormShareItWithThe,
                           border: const OutlineInputBorder(),
                           suffixIcon: IconButton(
                             tooltip: _obscurePassword
-                                ? 'Show password'
-                                : 'Hide password',
+                                ? context.l10n.authShowPassword
+                                : context.l10n.authHidePassword,
                             icon: Icon(_obscurePassword
                                 ? Icons.visibility_outlined
                                 : Icons.visibility_off_outlined),
@@ -178,7 +180,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                         ),
                         validator: (String? value) =>
                             (value == null || value.length < 6)
-                                ? 'Use at least 6 characters.'
+                                ? context.l10n.userFormUseAtLeast6
                                 : null,
                       ),
                     ],
@@ -188,18 +190,18 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                       enabled: !_isSubmitting,
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.done,
-                      decoration: const InputDecoration(
-                        labelText: 'Phone (optional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.l10n.userFormPhoneOptional,
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<UserRole>(
                       value: _role,
                       decoration: InputDecoration(
-                        labelText: 'Role',
+                        labelText: context.l10n.userFormRole,
                         helperText: isSelf
-                            ? 'You cannot change your own role.'
+                            ? context.l10n.userFormYouCannotChangeYour
                             : null,
                         border: const OutlineInputBorder(),
                       ),
@@ -220,10 +222,10 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                     if (isEdit) ...<Widget>[
                       const SizedBox(height: 8),
                       SwitchListTile(
-                        title: const Text('Active'),
+                        title: Text(context.l10n.categoryFormActive),
                         subtitle: Text(isSelf
-                            ? 'You cannot deactivate yourself.'
-                            : 'Inactive users cannot use the app.'),
+                            ? context.l10n.userFormYouCannotDeactivateYourself
+                            : context.l10n.userFormInactiveUsersCannotUse),
                         value: _isActive,
                         onChanged: (_isSubmitting || isSelf)
                             ? null
@@ -239,7 +241,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : Text(isEdit ? 'Save changes' : 'Create user'),
+                          : Text(isEdit ? context.l10n.categoryFormSaveChanges : context.l10n.userFormCreateUser),
                     ),
                   ],
                 ),

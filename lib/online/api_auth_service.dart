@@ -1,4 +1,5 @@
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/online/api_client.dart';
@@ -100,7 +101,7 @@ class ApiAuthAdminService implements AuthAdminService {
     );
     final Object? id = response.asMap['id'];
     if (id is! String) {
-      throw const AuthFailureException('The server did not return the new user.');
+      throw AuthFailureException(L10n.current.apiAuthServiceTheServerDidNot);
     }
     // The new user must be in the local copy so the next save updates it
     // instead of trying to create it again.

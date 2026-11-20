@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:http/http.dart' as http;
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/online/api_error_text.dart';
 import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/online/token_store.dart';
@@ -43,7 +45,9 @@ class ApiClient {
     required String baseUrl,
     required TokenStore tokens,
     Duration timeout = const Duration(seconds: 30),
+    http.Client? streamClient,
   })  : _http = httpClient,
+        _streamHttp = streamClient ?? httpClient,
         _baseUrl = baseUrl.endsWith('/')
             ? baseUrl.substring(0, baseUrl.length - 1)
             : baseUrl,
@@ -51,6 +55,7 @@ class ApiClient {
         _timeout = timeout;
 
   final http.Client _http;
+  final http.Client _streamHttp;
   final String _baseUrl;
   final TokenStore _tokens;
   final Duration _timeout;
@@ -190,7 +195,7 @@ class ApiClient {
     final Object? refresh = tokens['refreshToken'];
     final Object? user = tokens['user'];
     if (access is! String || refresh is! String || user is! Map<String, dynamic>) {
-      throw const AuthFailureException('The server sent an unexpected sign-in answer.');
+      throw AuthFailureException(L10n.current.apiClientTheServerSentAn);
     }
     _accessToken = access;
     final BusinessInfo? business = BusinessInfo.tryFromMap(tokens['tenant']);
@@ -245,6 +250,60 @@ class ApiClient {
     }
   }
 
+  // ---- live updates --------------------------------------------------------
+
+  /// A stream of "the server has news". It emits the kind of signal: `ready` once when
+  /// the connection opens (catch up now, something may have been missed), `changed`
+  /// whenever something in this business changed, and `notification` when a new
+  /// notification was made (the bell). It carries no data: the listener pulls what
+  /// changed with the normal sync. It ends when the
+  /// connection is closed (the server ends it after half an hour) and fails
+  /// when the connection is lost or silent for too long, so the caller
+  /// reconnects.
+  Stream<String> openChangeStream() async* {
+    if (_accessToken == null && !await _refresh()) {
+      return;
+    }
+    http.StreamedResponse response = await _requestStream();
+    if (response.statusCode == 401) {
+      await response.stream.drain<void>();
+      if (!await _refresh()) {
+        return;
+      }
+      response = await _requestStream();
+    }
+    if (response.statusCode != 200) {
+      await response.stream.drain<void>();
+      throw exceptionFor(response.statusCode, null);
+    }
+    final Stream<String> lines = response.stream
+        .transform(utf8.decoder)
+        .transform(const LineSplitter())
+        // The server sends a keep-alive line every 25 seconds: silence means the connection is dead.
+        .timeout(const Duration(seconds: 75));
+    String type = '';
+    await for (final String line in lines) {
+      if (line.isEmpty) {
+        if (type == 'ready' || type == 'changed' || type == 'notification') {
+          yield type;
+        }
+        type = '';
+      } else if (line.startsWith('event:')) {
+        type = line.substring(6).trim();
+      }
+    }
+  }
+
+  Future<http.StreamedResponse> _requestStream() {
+    final http.Request request = http.Request('GET', Uri.parse('$_baseUrl/v1/sync/stream'));
+    request.headers['Accept'] = 'text/event-stream';
+    final String? token = _accessToken;
+    if (token != null) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
+    return _streamHttp.send(request).timeout(_timeout);
+  }
+
   // ---- requests ------------------------------------------------------------
 
   Future<ApiResponse> get(String path, {Map<String, String>? query}) =>
@@ -281,7 +340,7 @@ class ApiClient {
     // The access token expired: refresh once and try again.
     if (!await _refresh()) {
       await _endSession();
-      throw const AuthFailureException('Your session ended. Please sign in again.');
+      throw AuthFailureException(L10n.current.apiClientYourSessionEndedPlease);
     }
     return _checked(
         await _once(method, path, query, body, idempotencyKey, authenticated));
@@ -317,15 +376,14 @@ class ApiClient {
       final http.Response response = await http.Response.fromStream(streamed);
       return ApiResponse(response.statusCode, _decode(response.body));
     } on TimeoutException {
-      throw const RemoteSyncException(
-          'The server took too long to answer. Please try again.');
+      throw RemoteSyncException(
+          L10n.current.apiClientTheServerTookToo);
     } on http.ClientException catch (e) {
       // The address and the reason help to tell a wrong address from a
       // blocked or stopped server.
       debugPrint('ApiClient: ${request.method} $uri failed: ${e.message}');
       throw RemoteSyncException(
-          'Cannot reach the server at $_baseUrl. Check your connection and '
-          'try again. (${e.message})');
+          L10n.current.apiClientCannotReachTheServer(_baseUrl, e.message));
     }
   }
 
@@ -353,6 +411,8 @@ class ApiClient {
 /// list of texts when several fields are wrong.
 AppException exceptionFor(int status, Object? body) {
   String message = '';
+  String code = '';
+  Map<String, Object?> params = const <String, Object?>{};
   if (body is Map<String, dynamic>) {
     final Object? raw = body['message'];
     if (raw is String) {
@@ -360,6 +420,20 @@ AppException exceptionFor(int status, Object? body) {
     } else if (raw is List<Object?>) {
       message = raw.whereType<String>().join('\n');
     }
+    final Object? rawCode = body['code'];
+    if (rawCode is String) {
+      code = rawCode;
+    }
+    final Object? rawParams = body['params'];
+    if (rawParams is Map<String, dynamic>) {
+      params = rawParams;
+    }
+  }
+  // A code this app knows is written in the app's language; any other keeps the
+  // server's English text (an older app, or an error added later).
+  final String? known = code.isEmpty ? null : apiErrorText(L10n.current, code, params);
+  if (known != null) {
+    message = known;
   }
   switch (status) {
     case 400:
@@ -367,18 +441,16 @@ AppException exceptionFor(int status, Object? body) {
     case 409:
     case 422:
       return ValidationException(
-          message.isEmpty ? 'The server refused this request.' : message);
+          message.isEmpty ? L10n.current.apiClientTheServerRefusedThis : message, code: code);
     case 401:
       return AuthFailureException(
-          message.isEmpty ? 'Incorrect email or password.' : message);
+          message.isEmpty ? L10n.current.apiClientIncorrectEmailOrPassword : message, code: code);
     case 403:
       return PermissionDeniedException(
-          message.isEmpty ? 'You are not allowed to do this.' : message);
+          message.isEmpty ? L10n.current.apiClientYouAreNotAllowed : message, code: code);
     case 429:
-      return const RemoteSyncException(
-          'Too many attempts. Please wait a moment and try again.');
+      return RemoteSyncException(L10n.current.apiClientTooManyAttemptsPlease, code: code);
     default:
-      return RemoteSyncException(
-          'The server had a problem (error $status). Please try again.');
+      return RemoteSyncException(L10n.current.apiClientTheServerHadA(status), code: code);
   }
 }

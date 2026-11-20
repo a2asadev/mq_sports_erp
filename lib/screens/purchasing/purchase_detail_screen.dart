@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/purchase_model.dart';
@@ -83,8 +84,8 @@ class PurchaseDetailScreen extends ConsumerWidget {
 
     if (purchase == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Purchase')),
-        body: const Center(child: Text('This purchase no longer exists.')),
+        appBar: AppBar(title: Text(context.l10n.purchaseDetailPurchase)),
+        body: Center(child: Text(context.l10n.purchaseDetailThisPurchaseNoLonger)),
       );
     }
 
@@ -122,17 +123,17 @@ class PurchaseDetailScreen extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(<String>[
                     formatDate(purchase.purchaseDate),
-                    if (purchase.invoiceNo.isNotEmpty) 'Invoice ${purchase.invoiceNo}',
+                    if (purchase.invoiceNo.isNotEmpty) context.l10n.purchaseDetailInvoice(purchase.invoiceNo),
                   ].join(' · ')),
                   if (purchase.notes.isNotEmpty) ...<Widget>[
                     const SizedBox(height: 4),
                     Text(purchase.notes),
                   ],
                   const Divider(height: 24),
-                  _amountRow('Total', formatAmount(total), bold: true),
-                  _amountRow('Paid', formatAmount(paid)),
+                  _amountRow(context.l10n.orderReceiptCardTotal, formatAmount(total), bold: true),
+                  _amountRow(context.l10n.purchaseDetailPaid, formatAmount(paid)),
                   _amountRow(
-                    'Due',
+                    context.l10n.purchaseDetailDue2,
                     formatAmount(due),
                     bold: due > 0.005,
                     color: due > 0.005 ? theme.colorScheme.error : null,
@@ -142,14 +143,14 @@ class PurchaseDetailScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text('Items (${purchase.items.length} · ${purchase.totalUnits} units)',
+          Text(context.l10n.purchaseDetailItemsUnits(purchase.items.length, purchase.totalUnits),
               style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           for (final PurchaseItem item in purchase.items)
             Card(
               child: ListTile(
                 title: Text('${item.productName} · ${item.variantLabel}'),
-                subtitle: Text('SKU ${item.sku}'),
+                subtitle: Text(context.l10n.purchaseDetailSku(item.sku)),
                 trailing: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -162,12 +163,12 @@ class PurchaseDetailScreen extends ConsumerWidget {
               ),
             ),
           const SizedBox(height: 16),
-          Text('Payments', style: theme.textTheme.titleMedium),
+          Text(context.l10n.purchaseDetailPayments, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
           if (payments.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Text('No payments recorded yet.'),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text(context.l10n.purchaseDetailNoPaymentsRecordedYet),
             )
           else
             for (final LedgerModel payment in payments)
@@ -187,7 +188,7 @@ class PurchaseDetailScreen extends ConsumerWidget {
           ? FloatingActionButton.extended(
               onPressed: () => _recordPayment(context, ref, purchase, due),
               icon: const Icon(Icons.payments_outlined),
-              label: const Text('Record payment'),
+              label: Text(context.l10n.purchaseDetailRecordPayment),
             )
           : null,
     );
@@ -249,7 +250,7 @@ class _PaymentDialogState extends State<_PaymentDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Record payment'),
+      title: Text(context.l10n.purchaseDetailRecordPayment),
       content: Form(
         key: _formKey,
         child: Column(
@@ -261,16 +262,16 @@ class _PaymentDialogState extends State<_PaymentDialog> {
               autofocus: true,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
-                labelText: 'Amount',
-                helperText: 'Due: ${formatAmount(widget.due)}',
+                labelText: context.l10n.ledgerEntryAmount,
+                helperText: context.l10n.purchaseDetailDue(formatAmount(widget.due)),
               ),
               validator: (String? value) {
                 final double? parsed = double.tryParse((value ?? '').trim());
                 if (parsed == null || parsed <= 0) {
-                  return 'Enter an amount greater than zero.';
+                  return context.l10n.ledgerEntryEnterAnAmountGreater;
                 }
                 if (parsed > widget.due + 0.005) {
-                  return 'More than the amount due.';
+                  return context.l10n.purchaseDetailMoreThanTheAmount;
                 }
                 return null;
               },
@@ -278,14 +279,14 @@ class _PaymentDialogState extends State<_PaymentDialog> {
             const SizedBox(height: 8),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: const Text('Date'),
+              title: Text(context.l10n.ledgerEntryDate),
               subtitle: Text(formatDate(_date)),
               trailing: const Icon(Icons.calendar_today_outlined),
               onTap: _pickDate,
             ),
             TextFormField(
               controller: _noteController,
-              decoration: const InputDecoration(labelText: 'Note (optional)'),
+              decoration: InputDecoration(labelText: context.l10n.purchaseDetailNoteOptional),
             ),
           ],
         ),
@@ -293,9 +294,9 @@ class _PaymentDialogState extends State<_PaymentDialog> {
       actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(context.l10n.categoriesCancel),
         ),
-        FilledButton(onPressed: _save, child: const Text('Save payment')),
+        FilledButton(onPressed: _save, child: Text(context.l10n.purchaseDetailSavePayment)),
       ],
     );
   }

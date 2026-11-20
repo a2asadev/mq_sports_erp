@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/party_list_item.dart';
 import 'package:a2_stocks/models/vendor_model.dart';
@@ -44,7 +46,7 @@ class VendorsScreen extends ConsumerWidget {
           for (final VendorType t in VendorType.values)
             MapEntry<String, String>(t.name, t.label),
         ],
-        emptyText: 'No vendors yet.',
+        emptyText: context.l10n.vendorsNoVendorsYet,
         asCards: true,
         onSelected: (PartyListItem item) => Navigator.of(context).push(
           MaterialPageRoute<void>(
@@ -58,7 +60,7 @@ class VendorsScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Vendors')),
+      appBar: AppBar(title: Text(context.l10n.vendorsVendors)),
       body: body,
       floatingActionButton: canManage
           ? FloatingActionButton.extended(
@@ -68,7 +70,7 @@ class VendorsScreen extends ConsumerWidget {
                 ),
               ),
               icon: const Icon(Icons.add_business_outlined),
-              label: const Text('Add vendor'),
+              label: Text(context.l10n.vendorsAddVendor),
             )
           : null,
     );

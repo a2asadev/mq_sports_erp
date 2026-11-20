@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
 import 'package:a2_stocks/core/utils/page_stats.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/widgets/stat_strip.dart';
 import 'package:a2_stocks/core/utils/stock_alerts.dart';
 import 'package:a2_stocks/models/product_model.dart';
@@ -98,7 +99,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Stock'),
+        title: Text(context.l10n.stockStock),
         actions: <Widget>[
           if (canAudit)
             TextButton.icon(
@@ -108,7 +109,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
                 ),
               ),
               icon: const Icon(Icons.fact_check_outlined),
-              label: const Text('Audit'),
+              label: Text(context.l10n.stockAudit),
             ),
         ],
       ),
@@ -119,26 +120,26 @@ class _StockScreenState extends ConsumerState<StockScreen> {
               StatItem(
                 icon: Icons.warehouse_outlined,
                 color: AppColors.navy,
-                label: 'Units in stock',
+                label: context.l10n.dashboardUnitsInStock,
                 value: '${stats.units}',
-                caption: '${stats.items} item(s)',
+                caption: context.l10n.stockItemS(stats.items),
               ),
               StatItem(
                 icon: Icons.payments_outlined,
                 color: AppColors.teal,
-                label: 'Stock value (cost)',
+                label: context.l10n.stockStockValueCost,
                 value: formatMoney(stats.value),
               ),
               StatItem(
                 icon: Icons.notification_important_outlined,
                 color: stats.lowCount > 0 ? AppColors.amber : AppColors.textMuted,
-                label: 'Low stock',
+                label: context.l10n.dashboardLowStock,
                 value: '${stats.lowCount}',
               ),
               StatItem(
                 icon: Icons.remove_shopping_cart_outlined,
                 color: stats.outCount > 0 ? AppColors.danger : AppColors.textMuted,
-                label: 'Out of stock',
+                label: context.l10n.stockOutOfStock,
                 value: '${stats.outCount}',
               ),
             ],
@@ -146,10 +147,10 @@ class _StockScreenState extends ConsumerState<StockScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
             child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search product, SKU, barcode…',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: context.l10n.stockAuditSearchProductSkuBarcode,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
                 isDense: true,
               ),
               onChanged: (String value) => setState(() => _query = value),
@@ -161,12 +162,12 @@ class _StockScreenState extends ConsumerState<StockScreen> {
               children: <Widget>[
                 for (final MapEntry<_StockFilter, String> option
                     in <MapEntry<_StockFilter, String>>[
-                  const MapEntry<_StockFilter, String>(_StockFilter.all, 'All'),
-                  const MapEntry<_StockFilter, String>(_StockFilter.inStock, 'In stock'),
-                  const MapEntry<_StockFilter, String>(
-                      _StockFilter.outOfStock, 'Out of stock'),
+                  MapEntry<_StockFilter, String>(_StockFilter.all, context.l10n.posAll),
+                  MapEntry<_StockFilter, String>(_StockFilter.inStock, context.l10n.stockInStock),
                   MapEntry<_StockFilter, String>(
-                      _StockFilter.lowStock, 'Low stock ($lowCount)'),
+                      _StockFilter.outOfStock, context.l10n.stockOutOfStock),
+                  MapEntry<_StockFilter, String>(
+                      _StockFilter.lowStock, context.l10n.stockLowStock(lowCount)),
                 ])
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
@@ -184,7 +185,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '${rows.length} item(s) · $totalUnits unit(s) in stock',
+                context.l10n.stockItemSUnitS(rows.length, totalUnits),
                 style: theme.textTheme.bodySmall,
               ),
             ),
@@ -205,9 +206,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      '$negativeCount item(s) have negative stock. More was sold '
-                      'than was in stock, for example on two devices before they '
-                      'synced. Check the stock ledger and add a correction.',
+                      context.l10n.stockItemSHaveNegative(negativeCount),
                       style: TextStyle(color: theme.colorScheme.onErrorContainer),
                     ),
                   ),
@@ -216,7 +215,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
             ),
           Expanded(
             child: rows.isEmpty
-                ? const Center(child: Text('No items to show.'))
+                ? Center(child: Text(context.l10n.stockAuditNoItemsToShow))
                 : ListView.separated(
                     itemCount: rows.length,
                     separatorBuilder: (BuildContext context, int index) =>
@@ -229,8 +228,9 @@ class _StockScreenState extends ConsumerState<StockScreen> {
                             ? Colors.orange.withValues(alpha: 0.12)
                             : null,
                         subtitle: Text(
-                          'SKU ${row.variant.sku} · Cost ${formatAmount(row.variant.costPrice)}'
-                          '${row.variant.alertThreshold > 0 ? ' · Alert at ${row.variant.alertThreshold}' : ''}',
+                          row.variant.alertThreshold > 0
+                              ? context.l10n.stockCostAlertLine(row.variant.sku, formatAmount(row.variant.costPrice), row.variant.alertThreshold)
+                              : context.l10n.stockCostLine(row.variant.sku, formatAmount(row.variant.costPrice)),
                         ),
                         leading: row.onHand < 0
                             ? Icon(Icons.warning_amber_rounded,

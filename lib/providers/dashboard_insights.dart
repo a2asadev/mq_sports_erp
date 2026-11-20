@@ -1,4 +1,6 @@
+import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/core/utils/stock_alerts.dart';
 import 'package:a2_stocks/models/business_info.dart';
@@ -66,10 +68,11 @@ class CategoryShare {
   final double revenue;
 }
 
-const List<String> _months = <String>[
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
-const List<String> _weekdays = <String>['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+/// "Jan" ... "Dec" (month 0..11) in the language of the app.
+String _monthName(int index) => DateFormat.MMM(L10n.current.localeName).format(DateTime(2000, index + 1));
+
+/// "Mon" ... "Sun" in the language of the app.
+String _weekdayName(DateTime day) => DateFormat.E(L10n.current.localeName).format(day);
 
 double _round2(double v) => (v * 100).round() / 100;
 
@@ -97,7 +100,7 @@ List<SalesBucket> computeSalesSeries({
       }
     }
     for (int i = 0; i < 12; i++) {
-      out.add(SalesBucket(label: _months[i], amount: _round2(sums[i])));
+      out.add(SalesBucket(label: _monthName(i), amount: _round2(sums[i])));
     }
     return out;
   }
@@ -113,7 +116,7 @@ List<SalesBucket> computeSalesSeries({
   for (int i = days - 1; i >= 0; i--) {
     final DateTime day = DateTime(today.year, today.month, today.day - i);
     final String label =
-        range == SalesRange.week ? _weekdays[day.weekday - 1] : '${day.day}';
+        range == SalesRange.week ? _weekdayName(day) : '${day.day}';
     out.add(SalesBucket(label: label, amount: _round2(sums[day] ?? 0)));
   }
   return out;
@@ -225,10 +228,10 @@ CustomerMix computeCustomerMix({
 
   String label(int i) {
     if (yearly) {
-      return _months[i];
+      return _monthName(i);
     }
     final DateTime day = DateTime(start.year, start.month, start.day + i);
-    return range == SalesRange.week ? _weekdays[day.weekday - 1] : '${day.day}';
+    return range == SalesRange.week ? _weekdayName(day) : '${day.day}';
   }
 
   return CustomerMix(
@@ -315,7 +318,7 @@ List<CategoryShare> computeCategoryShares({
       continue;
     }
     for (final OrderItem i in o.items) {
-      final String name = categoryName[categoryOf[i.productId]] ?? 'Uncategorised';
+      final String name = categoryName[categoryOf[i.productId]] ?? L10n.current.dashboardInsightsUncategorised;
       revenue[name] = (revenue[name] ?? 0) + i.lineTotal;
     }
   }
@@ -328,7 +331,7 @@ List<CategoryShare> computeCategoryShares({
   }
   final double rest =
       all.skip(limit).fold<double>(0, (double s, CategoryShare c) => s + c.revenue);
-  return <CategoryShare>[...all.take(limit), CategoryShare(name: 'Other', revenue: _round2(rest))];
+  return <CategoryShare>[...all.take(limit), CategoryShare(name: L10n.current.vendorTypeOther, revenue: _round2(rest))];
 }
 
 /// The newest sales first.

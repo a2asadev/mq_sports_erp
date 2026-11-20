@@ -4,6 +4,7 @@ import 'package:a2_stocks/data/local/collections.dart';
 import 'package:a2_stocks/data/outbox_entry.dart';
 import 'package:a2_stocks/data/outbox_store.dart';
 import 'package:a2_stocks/data/sync_engine.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/online/online_providers.dart';
 import 'package:a2_stocks/providers/core_providers.dart';
 
@@ -18,7 +19,7 @@ final Provider<AppDatabase> databaseProvider = Provider<AppDatabase>((Ref ref) {
   final String? userId =
       ref.watch(authUidProvider.select((AsyncValue<String?> value) => value.valueOrNull));
   if (userId == null) {
-    throw StateError('No user is signed in, so there is no database to open.');
+    throw StateError(L10n.current.localDataNoUserIsSigned);
   }
   final AppDatabase db = AppDatabase.open(userId);
   ref.onDispose(db.close);

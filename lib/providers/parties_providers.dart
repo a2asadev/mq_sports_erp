@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
 import 'package:a2_stocks/data/outbox_entry.dart';
 import 'package:a2_stocks/data/pending_effects.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
 import 'package:a2_stocks/repositories/repository.dart';
 import 'package:a2_stocks/providers/data_mode.dart';
@@ -28,8 +30,7 @@ final Provider<bool> canManagePartiesProvider = Provider<bool>((Ref ref) {
       (user.role == UserRole.admin || user.role == UserRole.manager);
 });
 
-const String _noPermissionMessage =
-    'Only admins and managers can change vendors, customers and ledgers.';
+String get _noPermissionMessage => L10n.current.partiesOnlyAdminsAndManagers;
 
 final Provider<Repository<LedgerModel>> ledgerRepositoryProvider =
     Provider<Repository<LedgerModel>>((Ref ref) {
@@ -55,10 +56,10 @@ Future<String?> _partyDeleteReason(
   final List<LedgerModel> entries =
       await ref.read(ledgerRepositoryProvider).getLocal();
   if (entries.any((LedgerModel e) => e.partyId == partyId)) {
-    return 'it has ledger entries';
+    return L10n.current.partiesItHasLedgerEntries;
   }
   if (openingBalance != null && openingBalance.abs() >= 0.005) {
-    return 'it has an opening balance';
+    return L10n.current.partiesItHasAnOpening;
   }
   return null;
 }
@@ -74,7 +75,7 @@ final Provider<Repository<VendorModel>> vendorRepositoryProvider =
   return LocalRepository<VendorModel>(
     collection: ref.watch(localCollectionsProvider).vendors,
     outbox: ref.watch(outboxStoreProvider),
-    entityLabel: 'Vendor',
+    entityLabel: L10n.current.partyTypeVendor,
     labelOf: (VendorModel vendor) => vendor.name,
     overlay: (List<VendorModel> base, List<OutboxEntry> entries) =>
         overlayRecords<VendorModel>(
@@ -102,7 +103,7 @@ final Provider<Repository<CustomerModel>> customerRepositoryProvider =
   return LocalRepository<CustomerModel>(
     collection: ref.watch(localCollectionsProvider).customers,
     outbox: ref.watch(outboxStoreProvider),
-    entityLabel: 'Customer',
+    entityLabel: L10n.current.partyTypeCustomer,
     labelOf: (CustomerModel customer) => customer.name,
     overlay: (List<CustomerModel> base, List<OutboxEntry> entries) =>
         overlayRecords<CustomerModel>(
@@ -127,7 +128,7 @@ final Provider<Repository<CustomerModel>> customerRepositoryProvider =
         await ref.read(outboxStoreProvider).all(),
       );
       return orders.any((OrderModel o) => o.customerId == id)
-          ? 'it has orders'
+          ? L10n.current.partiesItHasOrders
           : null;
     },
   );
@@ -142,25 +143,25 @@ class VendorsNotifier extends BaseListNotifier<VendorModel> {
 
   String? _validate(VendorModel vendor) {
     if (vendor.name.trim().isEmpty) {
-      return 'Vendor name is required.';
+      return L10n.current.partiesVendorNameIsRequired;
     }
     final List<VendorModel> others =
         _items.where((VendorModel v) => v.id != vendor.id).toList();
     final String name = vendor.name.trim().toLowerCase();
     if (others.any((VendorModel v) => v.name.trim().toLowerCase() == name)) {
-      return 'A vendor named "${vendor.name.trim()}" already exists.';
+      return L10n.current.partiesAVendorNamedAlready(vendor.name.trim());
     }
     final String phone = vendor.phone.trim();
     if (phone.isNotEmpty &&
         others.any((VendorModel v) => v.phone.trim() == phone)) {
-      return 'A vendor with this phone number already exists.';
+      return L10n.current.partiesAVendorWithThis;
     }
     return null;
   }
 
   Future<bool> createVendor(VendorModel vendor) async {
     if (!ref.read(canManagePartiesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final String? problem = _validate(vendor);
     if (problem != null) {
@@ -172,7 +173,7 @@ class VendorsNotifier extends BaseListNotifier<VendorModel> {
 
   Future<bool> updateVendor(VendorModel vendor) async {
     if (!ref.read(canManagePartiesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final String? problem = _validate(vendor);
     if (problem != null) {
@@ -184,13 +185,13 @@ class VendorsNotifier extends BaseListNotifier<VendorModel> {
 
   Future<bool> deleteVendor(String id) async {
     if (!ref.read(canManagePartiesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     try {
       final String? reason = await repository.deleteBlockReason(id);
       if (reason != null) {
         return reportFailure(ValidationException(
-            'This vendor cannot be deleted because $reason. Deactivate it instead.'));
+            L10n.current.partiesThisVendorCannotBe(reason)));
       }
     } on AppException catch (e) {
       return reportFailure(e);
@@ -215,23 +216,23 @@ class CustomersNotifier extends BaseListNotifier<CustomerModel> {
 
   String? _validate(CustomerModel customer) {
     if (customer.name.trim().isEmpty) {
-      return 'Customer name is required.';
+      return L10n.current.partiesCustomerNameIsRequired;
     }
     final String phone = customer.phone.trim();
     if (phone.isNotEmpty &&
         _items.any((CustomerModel c) =>
             c.id != customer.id && c.phone.trim() == phone)) {
-      return 'A customer with this phone number already exists.';
+      return L10n.current.partiesACustomerWithThis;
     }
     if (customer.creditLimit < 0) {
-      return 'The credit limit cannot be negative.';
+      return L10n.current.partiesTheCreditLimitCannot;
     }
     return null;
   }
 
   Future<bool> createCustomer(CustomerModel customer) async {
     if (!ref.read(canManagePartiesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final String? problem = _validate(customer);
     if (problem != null) {
@@ -243,7 +244,7 @@ class CustomersNotifier extends BaseListNotifier<CustomerModel> {
 
   Future<bool> updateCustomer(CustomerModel customer) async {
     if (!ref.read(canManagePartiesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final String? problem = _validate(customer);
     if (problem != null) {
@@ -255,13 +256,13 @@ class CustomersNotifier extends BaseListNotifier<CustomerModel> {
 
   Future<bool> deleteCustomer(String id) async {
     if (!ref.read(canManagePartiesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     try {
       final String? reason = await repository.deleteBlockReason(id);
       if (reason != null) {
         return reportFailure(ValidationException(
-            'This customer cannot be deleted because $reason. Deactivate it instead.'));
+            L10n.current.partiesThisCustomerCannotBe(reason)));
       }
     } on AppException catch (e) {
       return reportFailure(e);
@@ -284,11 +285,11 @@ class LedgerNotifier extends BaseListNotifier<LedgerModel> {
 
   Future<bool> addEntry(LedgerModel entry) async {
     if (!ref.read(canManagePartiesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     if (entry.amount <= 0) {
       return reportFailure(
-          const ValidationException('The amount must be greater than zero.'));
+          ValidationException(L10n.current.partiesTheAmountMustBe));
     }
     try {
       final bool partyExists = entry.partyType == PartyType.vendor
@@ -296,7 +297,7 @@ class LedgerNotifier extends BaseListNotifier<LedgerModel> {
           : await ref.read(customerRepositoryProvider).getLocalById(entry.partyId) != null;
       if (!partyExists) {
         return reportFailure(
-            const ValidationException('This party no longer exists.'));
+            ValidationException(L10n.current.partiesThisPartyNoLonger));
       }
     } on AppException catch (e) {
       return reportFailure(e);
@@ -307,14 +308,14 @@ class LedgerNotifier extends BaseListNotifier<LedgerModel> {
 
   Future<bool> deleteEntry(String id) async {
     if (!ref.read(canManagePartiesProvider)) {
-      return reportFailure(const PermissionDeniedException(_noPermissionMessage));
+      return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final LedgerModel? entry = (state.valueOrNull ?? <LedgerModel>[])
         .where((LedgerModel e) => e.id == id)
         .firstOrNull;
     if (entry != null && entry.purchaseId.isNotEmpty) {
-      return reportFailure(const ValidationException(
-          'This entry belongs to a purchase and cannot be deleted.'));
+      return reportFailure(ValidationException(
+          L10n.current.partiesThisEntryBelongsTo));
     }
     await remove(id);
     return !state.hasError;

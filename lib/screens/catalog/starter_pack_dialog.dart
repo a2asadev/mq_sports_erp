@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/starter_pack_plan.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/starter_pack.dart';
 import 'package:a2_stocks/providers/catalog_providers.dart';
@@ -11,9 +12,6 @@ import 'package:a2_stocks/providers/core_providers.dart';
 /// The server's starter packs (needs a connection).
 final AutoDisposeFutureProvider<List<StarterPack>> starterPacksProvider =
     FutureProvider.autoDispose<List<StarterPack>>((Ref ref) => ref.watch(starterPackServiceProvider).list());
-
-/// "1 group", "2 groups".
-String _count(int n, String one, [String? many]) => '$n ${n == 1 ? one : (many ?? '${one}s')}';
 
 /// Opens the starter-pack picker. Returns what was added, or null when nothing was.
 Future<StarterPackResult?> showStarterPackDialog(BuildContext context) {
@@ -91,7 +89,7 @@ class _StarterPackDialogState extends ConsumerState<StarterPackDialog> {
                 children: <Widget>[
                   if (pack != null)
                     IconButton(
-                      tooltip: 'Back to the list',
+                      tooltip: context.l10n.starterPackBackToTheList,
                       onPressed: _busy ? null : () => setState(() => _pack = null),
                       icon: const Icon(Icons.arrow_back),
                     )
@@ -99,12 +97,12 @@ class _StarterPackDialogState extends ConsumerState<StarterPackDialog> {
                     const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      pack?.name ?? 'Starter categories',
+                      pack?.name ?? context.l10n.starterPackStarterCategories,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
                     ),
                   ),
                   IconButton(
-                    tooltip: 'Close',
+                    tooltip: context.l10n.starterPackClose,
                     onPressed: _busy ? null : () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close),
                   ),
@@ -129,7 +127,7 @@ class _StarterPackDialogState extends ConsumerState<StarterPackDialog> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(
-              '${errorMessageOf(error)}\nStarter packs need a connection to the server.',
+              context.l10n.starterPackStarterPacksNeedA(errorMessageOf(error)),
               textAlign: TextAlign.center,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
@@ -137,38 +135,63 @@ class _StarterPackDialogState extends ConsumerState<StarterPackDialog> {
             OutlinedButton.icon(
               onPressed: () => ref.invalidate(starterPacksProvider),
               icon: const Icon(Icons.refresh),
-              label: const Text('Try again'),
+              label: Text(context.l10n.commonTryAgain),
             ),
           ],
         ),
       ),
-      data: (List<StarterPack> list) => ListView(
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(12),
-        children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.fromLTRB(8, 4, 8, 12),
-            child: Text(
-              'Pick the kind of business you run and we will add a ready-made set of categories. '
-              'You can rename, move or delete any of them afterwards.',
-              style: TextStyle(color: AppColors.textMuted),
-            ),
-          ),
-          for (final StarterPack p in list)
-            Card(
-              margin: const EdgeInsets.only(bottom: 8),
-              child: ListTile(
-                leading: Icon(Icons.category_outlined, color: AppColors.primary),
-                title: Text(p.name, style: const TextStyle(fontWeight: FontWeight.w700)),
-                subtitle: Text(
-                  '${p.description}\n${_count(p.groups.length, 'group')} · ${_count(p.categoryCount, 'category', 'categories')}',
-                ),
-                isThreeLine: true,
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => _choose(p),
+      data: (List<StarterPack> list) {
+        final List<CategoryModel> existing = ref.watch(categoriesProvider).valueOrNull ?? <CategoryModel>[];
+        final ({List<StarterPackMatch> suggested, List<StarterPackMatch> others}) split =
+            StarterPackMatch.split(list, existing);
+        return ListView(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(12),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 12),
+              child: Text(
+                context.l10n.starterPackPickTheKindOf,
+                style: const TextStyle(color: AppColors.textMuted),
               ),
             ),
-        ],
+            if (split.suggested.isNotEmpty) ...<Widget>[
+              _sectionTitle(context.l10n.starterPackStoresLikeYours),
+              for (final StarterPackMatch m in split.suggested) _packCard(m, suggested: true),
+              if (split.others.isNotEmpty) _sectionTitle(context.l10n.starterPackOtherKindsOfStore),
+            ],
+            for (final StarterPackMatch m in split.others) _packCard(m, suggested: false),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _sectionTitle(String text) => Padding(
+        padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+        child: Text(text, style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.textMuted)),
+      );
+
+  Widget _packCard(StarterPackMatch m, {required bool suggested}) {
+    final StarterPack p = m.pack;
+    final bool complete = m.alreadyThere >= m.total;
+    final String size =
+        context.l10n.starterPackSizeLine(context.l10n.countGroups(p.groups.length), context.l10n.countCategories(p.categoryCount));
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        leading: Icon(suggested ? Icons.auto_awesome : Icons.category_outlined, color: AppColors.primary),
+        title: Text(p.name, style: const TextStyle(fontWeight: FontWeight.w700)),
+        subtitle: Text(
+          suggested
+              ? (complete
+                  ? context.l10n.starterPackSimilarAll(m.matchedText(context.l10n))
+                  : context.l10n.starterPackSimilarSome(m.matchedText(context.l10n), m.alreadyThere, m.total))
+              : '${p.description}\n$size',
+        ),
+        isThreeLine: true,
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => _choose(p),
       ),
     );
   }
@@ -190,7 +213,7 @@ class _StarterPackDialogState extends ConsumerState<StarterPackDialog> {
                 onPressed: _busy
                     ? null
                     : () => setState(() => _selected = all ? <String>{} : <String>{for (final StarterGroup g in pack.groups) g.name}),
-                child: Text(all ? 'Select none' : 'Select all'),
+                child: Text(all ? context.l10n.starterPackSelectNone : context.l10n.starterPackSelectAll),
               ),
             ],
           ),
@@ -212,9 +235,10 @@ class _StarterPackDialogState extends ConsumerState<StarterPackDialog> {
             children: <Widget>[
               Text(
                 plan.toAdd == 0
-                    ? (_selected.isEmpty ? 'Tick at least one group.' : 'You already have everything you ticked.')
-                    : '${plan.toAdd} new categories will be added'
-                        '${plan.alreadyThere > 0 ? ' (${plan.alreadyThere} you already have are left as they are)' : ''}.',
+                    ? (_selected.isEmpty ? context.l10n.starterPackTickAtLeastOne : context.l10n.starterPackYouAlreadyHaveEverything)
+                    : (plan.alreadyThere > 0
+                        ? context.l10n.starterPackWillAddLeft(plan.toAdd, plan.alreadyThere)
+                        : context.l10n.starterPackWillAdd(plan.toAdd)),
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               if (_error.isNotEmpty)
@@ -228,7 +252,7 @@ class _StarterPackDialogState extends ConsumerState<StarterPackDialog> {
                 icon: _busy
                     ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                     : const Icon(Icons.add),
-                label: Text(plan.toAdd == 0 ? 'Nothing new to add' : 'Add ${plan.toAdd} categories'),
+                label: Text(plan.toAdd == 0 ? context.l10n.starterPackNothingNewToAdd : context.l10n.starterPackAddCategories(plan.toAdd)),
               ),
             ],
           ),
@@ -256,7 +280,9 @@ class _StarterPackDialogState extends ConsumerState<StarterPackDialog> {
       ),
       title: Text(group.name, style: const TextStyle(fontWeight: FontWeight.w600)),
       subtitle: Text(
-        '${_count(group.children.length, 'subcategory', 'subcategories')}${has ? ' · you already have this one' : ''}',
+        has
+            ? context.l10n.starterPackGroupHave(context.l10n.countSubcategories(group.children.length))
+            : context.l10n.countSubcategories(group.children.length),
         style: const TextStyle(fontSize: 12),
       ),
       childrenPadding: const EdgeInsets.fromLTRB(56, 0, 16, 12),

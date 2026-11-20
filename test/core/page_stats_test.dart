@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/core/utils/page_stats.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/party_list_item.dart';
@@ -158,7 +159,7 @@ void main() {
   testWidgets('the stat strip wraps to two per row on a phone without overflowing', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(390, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    await tester.pumpWidget(const MaterialApp(
+    await tester.pumpWidget(const MaterialApp(localizationsDelegates: AppLocalizations.localizationsDelegates, supportedLocales: AppLocalizations.supportedLocales, 
       home: Scaffold(
         body: StatStrip(
           items: <StatItem>[

@@ -15,6 +15,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
+import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/models/activity_log_model.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/customer_model.dart';

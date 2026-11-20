@@ -6,15 +6,11 @@ double _round2(double value) => (value * 100).round() / 100;
 /// Fulfilment pipeline of an order: Pending -> Processing -> Shipped ->
 /// Delivered. A not yet delivered order can be Cancelled.
 enum OrderStatus {
-  pending('Pending'),
-  processing('Processing'),
-  shipped('Shipped'),
-  delivered('Delivered'),
-  cancelled('Cancelled');
-
-  const OrderStatus(this.label);
-
-  final String label;
+  pending,
+  processing,
+  shipped,
+  delivered,
+  cancelled;
 
   static OrderStatus fromName(String? name) {
     for (final OrderStatus status in OrderStatus.values) {
@@ -49,12 +45,8 @@ enum OrderStatus {
 /// the order is made (it starts from the customer's type); orders saved before
 /// this existed count as retail.
 enum OrderSaleType {
-  retail('Retail'),
-  wholesale('Wholesale');
-
-  const OrderSaleType(this.label);
-
-  final String label;
+  retail,
+  wholesale;
 
   static OrderSaleType fromName(String? name) {
     for (final OrderSaleType type in OrderSaleType.values) {
