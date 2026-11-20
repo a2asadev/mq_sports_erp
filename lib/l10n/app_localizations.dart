@@ -8906,6 +8906,402 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No bar code'**
   String get labelsNoCode;
+
+  /// No description provided for @posPromotions.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions'**
+  String get posPromotions;
+
+  /// No description provided for @posCoupon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon'**
+  String get posCoupon;
+
+  /// No description provided for @posCouponAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get posCouponAdd;
+
+  /// No description provided for @posCouponCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon code'**
+  String get posCouponCode;
+
+  /// No description provided for @posCouponApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get posCouponApply;
+
+  /// A coupon code that is unknown, expired, or not for the counter.
+  ///
+  /// In en, this message translates to:
+  /// **'{code} (not valid)'**
+  String posCouponNotValid(String code);
+
+  /// Written in the order's note when promotions took something off.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions: {names}'**
+  String posPromotionsNote(String names);
+
+  /// Navigation: discounts, coupons and bulk prices.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions'**
+  String get modulePromotions;
+
+  /// No description provided for @promoNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New promotion'**
+  String get promoNew;
+
+  /// No description provided for @promoEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change promotion'**
+  String get promoEdit;
+
+  /// No description provided for @promoNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No promotions yet. Make one to give a percent off the order, a category or a product, with bulk prices and coupon codes.'**
+  String get promoNone;
+
+  /// No description provided for @promoDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the promotion \"{name}\"?'**
+  String promoDeleteConfirm(String name);
+
+  /// No description provided for @promoStatusOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get promoStatusOn;
+
+  /// No description provided for @promoStatusOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get promoStatusOff;
+
+  /// No description provided for @promoStatusScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts {date}'**
+  String promoStatusScheduled(String date);
+
+  /// No description provided for @promoStatusEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get promoStatusEnded;
+
+  /// No description provided for @promoCodeTag.
+  ///
+  /// In en, this message translates to:
+  /// **'Code {code}'**
+  String promoCodeTag(String code);
+
+  /// No description provided for @promoChannelPos.
+  ///
+  /// In en, this message translates to:
+  /// **'Counter'**
+  String get promoChannelPos;
+
+  /// No description provided for @promoChannelWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Online store'**
+  String get promoChannelWeb;
+
+  /// No description provided for @promoChannelWebFuture.
+  ///
+  /// In en, this message translates to:
+  /// **'Online store (coming soon)'**
+  String get promoChannelWebFuture;
+
+  /// No description provided for @promoDescOrderPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% off the order'**
+  String promoDescOrderPercent(String percent);
+
+  /// No description provided for @promoDescOrderAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} off the order'**
+  String promoDescOrderAmount(String amount);
+
+  /// No description provided for @promoDescLinePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% off {target}'**
+  String promoDescLinePercent(String percent, String target);
+
+  /// No description provided for @promoDescLineAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} off each {target}'**
+  String promoDescLineAmount(String amount, String target);
+
+  /// No description provided for @promoDescMinQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'from {count} units'**
+  String promoDescMinQuantity(int count);
+
+  /// No description provided for @promoDescMinAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'orders of {amount} or more'**
+  String promoDescMinAmount(String amount);
+
+  /// No description provided for @promoName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (for example \"Cricket week\")'**
+  String get promoName;
+
+  /// No description provided for @promoAppliesTo.
+  ///
+  /// In en, this message translates to:
+  /// **'It takes a discount off'**
+  String get promoAppliesTo;
+
+  /// No description provided for @promoScopeOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'The order'**
+  String get promoScopeOrder;
+
+  /// No description provided for @promoScopeCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'A category'**
+  String get promoScopeCategory;
+
+  /// No description provided for @promoScopeProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'A product'**
+  String get promoScopeProduct;
+
+  /// No description provided for @promoPickCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get promoPickCategory;
+
+  /// No description provided for @promoPickProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get promoPickProduct;
+
+  /// No description provided for @promoCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Its sub-categories are included.'**
+  String get promoCategoryHint;
+
+  /// No description provided for @promoDiscount.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount'**
+  String get promoDiscount;
+
+  /// No description provided for @promoKindPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Percent'**
+  String get promoKindPercent;
+
+  /// No description provided for @promoKindAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get promoKindAmount;
+
+  /// No description provided for @promoValuePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Percent off'**
+  String get promoValuePercent;
+
+  /// No description provided for @promoValueAmountEach.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount off each unit'**
+  String get promoValueAmountEach;
+
+  /// No description provided for @promoValueAmountOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount off the order'**
+  String get promoValueAmountOrder;
+
+  /// No description provided for @promoMinQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk price: from this many units (optional)'**
+  String get promoMinQuantity;
+
+  /// No description provided for @promoMinQuantityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty for any number. Make several promotions for several tiers: the best one applies.'**
+  String get promoMinQuantityHint;
+
+  /// No description provided for @promoMinAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Only for orders of at least (optional)'**
+  String get promoMinAmount;
+
+  /// No description provided for @promoMinAmountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted after the discounts on categories and products.'**
+  String get promoMinAmountHint;
+
+  /// No description provided for @promoCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Coupon code (optional)'**
+  String get promoCode;
+
+  /// No description provided for @promoCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'With a code, the customer has to name it. Without one the promotion applies by itself.'**
+  String get promoCodeHint;
+
+  /// No description provided for @promoWhere.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it applies'**
+  String get promoWhere;
+
+  /// No description provided for @promoStarts.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts: any day'**
+  String get promoStarts;
+
+  /// No description provided for @promoEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends: never'**
+  String get promoEnds;
+
+  /// No description provided for @promoStartsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts {date}'**
+  String promoStartsOn(String date);
+
+  /// No description provided for @promoEndsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends {date}'**
+  String promoEndsOn(String date);
+
+  /// No description provided for @promoSwitchedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched on'**
+  String get promoSwitchedOn;
+
+  /// No description provided for @promoSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save promotion'**
+  String get promoSave;
+
+  /// No description provided for @promoNeedName.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the promotion a name.'**
+  String get promoNeedName;
+
+  /// No description provided for @promoNeedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the discount, above zero.'**
+  String get promoNeedValue;
+
+  /// No description provided for @promoPercentMax.
+  ///
+  /// In en, this message translates to:
+  /// **'A percent cannot be more than 100.'**
+  String get promoPercentMax;
+
+  /// No description provided for @promoNeedTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the category or the product.'**
+  String get promoNeedTarget;
+
+  /// No description provided for @promoNeedChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where it applies.'**
+  String get promoNeedChannel;
+
+  /// No description provided for @promoEndBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'The end date is before the start date.'**
+  String get promoEndBeforeStart;
+
+  /// No description provided for @apiErrorPromotionsAPercentIsBetween1And100.
+  ///
+  /// In en, this message translates to:
+  /// **'A percent must be between 1 and 100.'**
+  String get apiErrorPromotionsAPercentIsBetween1And100;
+
+  /// No description provided for @apiErrorPromotionsChooseACategoryOrAProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the category or the product the promotion is for.'**
+  String get apiErrorPromotionsChooseACategoryOrAProduct;
+
+  /// No description provided for @apiErrorPromotionsGiveThePromotionAName.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the promotion a name.'**
+  String get apiErrorPromotionsGiveThePromotionAName;
+
+  /// No description provided for @apiErrorPromotionsPromotionNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotion not found'**
+  String get apiErrorPromotionsPromotionNotFound;
+
+  /// No description provided for @apiErrorPromotionsThatCodeIsAlreadyUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'The code {code} is already used by another promotion.'**
+  String apiErrorPromotionsThatCodeIsAlreadyUsed(String code);
+
+  /// No description provided for @apiErrorPromotionsThatCouponCodeIsNotValid.
+  ///
+  /// In en, this message translates to:
+  /// **'That coupon code is not valid.'**
+  String get apiErrorPromotionsThatCouponCodeIsNotValid;
+
+  /// No description provided for @apiErrorPromotionsTheEndIsBeforeTheStart.
+  ///
+  /// In en, this message translates to:
+  /// **'The end date is before the start date.'**
+  String get apiErrorPromotionsTheEndIsBeforeTheStart;
 }
 
 class _AppLocalizationsDelegate

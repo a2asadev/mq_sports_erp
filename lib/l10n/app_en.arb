@@ -4071,5 +4071,180 @@
   "labelsPrint": "Print",
   "labelsShare": "Share PDF",
   "labelsSkuCode": "SKU as the bar code",
-  "labelsNoCode": "No bar code"
+  "labelsNoCode": "No bar code",
+  "posPromotions": "Promotions",
+  "posCoupon": "Coupon",
+  "posCouponAdd": "Add",
+  "posCouponCode": "Coupon code",
+  "posCouponApply": "Apply",
+  "posCouponNotValid": "{code} (not valid)",
+  "@posCouponNotValid": {
+    "description": "A coupon code that is unknown, expired, or not for the counter.",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "posPromotionsNote": "Promotions: {names}",
+  "@posPromotionsNote": {
+    "description": "Written in the order's note when promotions took something off.",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "modulePromotions": "Promotions",
+  "@modulePromotions": {
+    "description": "Navigation: discounts, coupons and bulk prices."
+  },
+  "promoNew": "New promotion",
+  "promoEdit": "Change promotion",
+  "promoNone": "No promotions yet. Make one to give a percent off the order, a category or a product, with bulk prices and coupon codes.",
+  "promoDeleteConfirm": "Delete the promotion \"{name}\"?",
+  "@promoDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "promoStatusOn": "On",
+  "promoStatusOff": "Off",
+  "promoStatusScheduled": "Starts {date}",
+  "@promoStatusScheduled": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "promoStatusEnded": "Ended",
+  "promoCodeTag": "Code {code}",
+  "@promoCodeTag": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "promoChannelPos": "Counter",
+  "promoChannelWeb": "Online store",
+  "promoChannelWebFuture": "Online store (coming soon)",
+  "promoDescOrderPercent": "{percent}% off the order",
+  "@promoDescOrderPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "promoDescOrderAmount": "{amount} off the order",
+  "@promoDescOrderAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "promoDescLinePercent": "{percent}% off {target}",
+  "@promoDescLinePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "promoDescLineAmount": "{amount} off each {target}",
+  "@promoDescLineAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "promoDescMinQuantity": "from {count} units",
+  "@promoDescMinQuantity": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "promoDescMinAmount": "orders of {amount} or more",
+  "@promoDescMinAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "promoName": "Name (for example \"Cricket week\")",
+  "promoAppliesTo": "It takes a discount off",
+  "promoScopeOrder": "The order",
+  "promoScopeCategory": "A category",
+  "promoScopeProduct": "A product",
+  "promoPickCategory": "Category",
+  "promoPickProduct": "Product",
+  "promoCategoryHint": "Its sub-categories are included.",
+  "promoDiscount": "Discount",
+  "promoKindPercent": "Percent",
+  "promoKindAmount": "Amount",
+  "promoValuePercent": "Percent off",
+  "promoValueAmountEach": "Amount off each unit",
+  "promoValueAmountOrder": "Amount off the order",
+  "promoMinQuantity": "Bulk price: from this many units (optional)",
+  "promoMinQuantityHint": "Leave empty for any number. Make several promotions for several tiers: the best one applies.",
+  "promoMinAmount": "Only for orders of at least (optional)",
+  "promoMinAmountHint": "Counted after the discounts on categories and products.",
+  "promoCode": "Coupon code (optional)",
+  "promoCodeHint": "With a code, the customer has to name it. Without one the promotion applies by itself.",
+  "promoWhere": "Where it applies",
+  "promoStarts": "Starts: any day",
+  "promoEnds": "Ends: never",
+  "promoStartsOn": "Starts {date}",
+  "@promoStartsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "promoEndsOn": "Ends {date}",
+  "@promoEndsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "promoSwitchedOn": "Switched on",
+  "promoSave": "Save promotion",
+  "promoNeedName": "Give the promotion a name.",
+  "promoNeedValue": "Enter the discount, above zero.",
+  "promoPercentMax": "A percent cannot be more than 100.",
+  "promoNeedTarget": "Choose the category or the product.",
+  "promoNeedChannel": "Choose where it applies.",
+  "promoEndBeforeStart": "The end date is before the start date.",
+  "apiErrorPromotionsAPercentIsBetween1And100": "A percent must be between 1 and 100.",
+  "apiErrorPromotionsChooseACategoryOrAProduct": "Choose the category or the product the promotion is for.",
+  "apiErrorPromotionsGiveThePromotionAName": "Give the promotion a name.",
+  "apiErrorPromotionsPromotionNotFound": "Promotion not found",
+  "apiErrorPromotionsThatCodeIsAlreadyUsed": "The code {code} is already used by another promotion.",
+  "@apiErrorPromotionsThatCodeIsAlreadyUsed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorPromotionsThatCouponCodeIsNotValid": "That coupon code is not valid.",
+  "apiErrorPromotionsTheEndIsBeforeTheStart": "The end date is before the start date."
 }

@@ -158,6 +158,20 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorOrdersThisOrderWouldTakeOverThe(_text(params, 'name'), _text(params, 'limit'), _text(params, 'balance'));
     case 'orders.use_the_cancel_action_to_cancel':
       return l10n.apiErrorOrdersUseTheCancelActionToCancel;
+    case 'promotions.a_percent_is_between_1_and_100':
+      return l10n.apiErrorPromotionsAPercentIsBetween1And100;
+    case 'promotions.choose_a_category_or_a_product':
+      return l10n.apiErrorPromotionsChooseACategoryOrAProduct;
+    case 'promotions.give_the_promotion_a_name':
+      return l10n.apiErrorPromotionsGiveThePromotionAName;
+    case 'promotions.promotion_not_found':
+      return l10n.apiErrorPromotionsPromotionNotFound;
+    case 'promotions.that_code_is_already_used':
+      return l10n.apiErrorPromotionsThatCodeIsAlreadyUsed(_text(params, 'code'));
+    case 'promotions.that_coupon_code_is_not_valid':
+      return l10n.apiErrorPromotionsThatCouponCodeIsNotValid;
+    case 'promotions.the_end_is_before_the_start':
+      return l10n.apiErrorPromotionsTheEndIsBeforeTheStart;
     case 'purchase_orders.could_not_generate_an_order_number':
       return l10n.apiErrorPurchaseOrdersCouldNotGenerateAnOrderNumber;
     case 'purchase_orders.only_a_partly_received_order_can_be_closed':

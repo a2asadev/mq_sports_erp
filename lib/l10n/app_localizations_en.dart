@@ -5604,4 +5604,239 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get labelsNoCode => 'No bar code';
+
+  @override
+  String get posPromotions => 'Promotions';
+
+  @override
+  String get posCoupon => 'Coupon';
+
+  @override
+  String get posCouponAdd => 'Add';
+
+  @override
+  String get posCouponCode => 'Coupon code';
+
+  @override
+  String get posCouponApply => 'Apply';
+
+  @override
+  String posCouponNotValid(String code) {
+    return '$code (not valid)';
+  }
+
+  @override
+  String posPromotionsNote(String names) {
+    return 'Promotions: $names';
+  }
+
+  @override
+  String get modulePromotions => 'Promotions';
+
+  @override
+  String get promoNew => 'New promotion';
+
+  @override
+  String get promoEdit => 'Change promotion';
+
+  @override
+  String get promoNone =>
+      'No promotions yet. Make one to give a percent off the order, a category or a product, with bulk prices and coupon codes.';
+
+  @override
+  String promoDeleteConfirm(String name) {
+    return 'Delete the promotion \"$name\"?';
+  }
+
+  @override
+  String get promoStatusOn => 'On';
+
+  @override
+  String get promoStatusOff => 'Off';
+
+  @override
+  String promoStatusScheduled(String date) {
+    return 'Starts $date';
+  }
+
+  @override
+  String get promoStatusEnded => 'Ended';
+
+  @override
+  String promoCodeTag(String code) {
+    return 'Code $code';
+  }
+
+  @override
+  String get promoChannelPos => 'Counter';
+
+  @override
+  String get promoChannelWeb => 'Online store';
+
+  @override
+  String get promoChannelWebFuture => 'Online store (coming soon)';
+
+  @override
+  String promoDescOrderPercent(String percent) {
+    return '$percent% off the order';
+  }
+
+  @override
+  String promoDescOrderAmount(String amount) {
+    return '$amount off the order';
+  }
+
+  @override
+  String promoDescLinePercent(String percent, String target) {
+    return '$percent% off $target';
+  }
+
+  @override
+  String promoDescLineAmount(String amount, String target) {
+    return '$amount off each $target';
+  }
+
+  @override
+  String promoDescMinQuantity(int count) {
+    return 'from $count units';
+  }
+
+  @override
+  String promoDescMinAmount(String amount) {
+    return 'orders of $amount or more';
+  }
+
+  @override
+  String get promoName => 'Name (for example \"Cricket week\")';
+
+  @override
+  String get promoAppliesTo => 'It takes a discount off';
+
+  @override
+  String get promoScopeOrder => 'The order';
+
+  @override
+  String get promoScopeCategory => 'A category';
+
+  @override
+  String get promoScopeProduct => 'A product';
+
+  @override
+  String get promoPickCategory => 'Category';
+
+  @override
+  String get promoPickProduct => 'Product';
+
+  @override
+  String get promoCategoryHint => 'Its sub-categories are included.';
+
+  @override
+  String get promoDiscount => 'Discount';
+
+  @override
+  String get promoKindPercent => 'Percent';
+
+  @override
+  String get promoKindAmount => 'Amount';
+
+  @override
+  String get promoValuePercent => 'Percent off';
+
+  @override
+  String get promoValueAmountEach => 'Amount off each unit';
+
+  @override
+  String get promoValueAmountOrder => 'Amount off the order';
+
+  @override
+  String get promoMinQuantity => 'Bulk price: from this many units (optional)';
+
+  @override
+  String get promoMinQuantityHint =>
+      'Leave empty for any number. Make several promotions for several tiers: the best one applies.';
+
+  @override
+  String get promoMinAmount => 'Only for orders of at least (optional)';
+
+  @override
+  String get promoMinAmountHint =>
+      'Counted after the discounts on categories and products.';
+
+  @override
+  String get promoCode => 'Coupon code (optional)';
+
+  @override
+  String get promoCodeHint =>
+      'With a code, the customer has to name it. Without one the promotion applies by itself.';
+
+  @override
+  String get promoWhere => 'Where it applies';
+
+  @override
+  String get promoStarts => 'Starts: any day';
+
+  @override
+  String get promoEnds => 'Ends: never';
+
+  @override
+  String promoStartsOn(String date) {
+    return 'Starts $date';
+  }
+
+  @override
+  String promoEndsOn(String date) {
+    return 'Ends $date';
+  }
+
+  @override
+  String get promoSwitchedOn => 'Switched on';
+
+  @override
+  String get promoSave => 'Save promotion';
+
+  @override
+  String get promoNeedName => 'Give the promotion a name.';
+
+  @override
+  String get promoNeedValue => 'Enter the discount, above zero.';
+
+  @override
+  String get promoPercentMax => 'A percent cannot be more than 100.';
+
+  @override
+  String get promoNeedTarget => 'Choose the category or the product.';
+
+  @override
+  String get promoNeedChannel => 'Choose where it applies.';
+
+  @override
+  String get promoEndBeforeStart => 'The end date is before the start date.';
+
+  @override
+  String get apiErrorPromotionsAPercentIsBetween1And100 =>
+      'A percent must be between 1 and 100.';
+
+  @override
+  String get apiErrorPromotionsChooseACategoryOrAProduct =>
+      'Choose the category or the product the promotion is for.';
+
+  @override
+  String get apiErrorPromotionsGiveThePromotionAName =>
+      'Give the promotion a name.';
+
+  @override
+  String get apiErrorPromotionsPromotionNotFound => 'Promotion not found';
+
+  @override
+  String apiErrorPromotionsThatCodeIsAlreadyUsed(String code) {
+    return 'The code $code is already used by another promotion.';
+  }
+
+  @override
+  String get apiErrorPromotionsThatCouponCodeIsNotValid =>
+      'That coupon code is not valid.';
+
+  @override
+  String get apiErrorPromotionsTheEndIsBeforeTheStart =>
+      'The end date is before the start date.';
 }

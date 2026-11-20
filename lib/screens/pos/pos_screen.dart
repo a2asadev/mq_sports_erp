@@ -8,7 +8,7 @@ import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
-import 'package:a2_stocks/core/utils/tax.dart';
+import 'package:a2_stocks/providers/promotion_providers.dart';
 import 'package:a2_stocks/core/utils/tax_text.dart';
 import 'package:a2_stocks/core/utils/category_tree.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
@@ -221,10 +221,10 @@ class _PosScreenState extends ConsumerState<PosScreen> {
       _message(context.l10n.posTheWalkInCustomer);
       return;
     }
-    final TaxSettings tax = TaxSettings.of(ref.read(businessProvider));
+    final PosPricing pricing = ref.read(posPricingProvider);
     final PosPaymentResult? payment = await showPosPaymentDialog(
       context,
-      total: cart.payable(tax),
+      total: pricing.payable,
       allowCredit: cart.customer != null,
       initialMethod: _method,
     );
@@ -237,9 +237,10 @@ class _PosScreenState extends ConsumerState<PosScreen> {
       customer: customer,
       saleType: customer.type == CustomerType.wholesale ? OrderSaleType.wholesale : OrderSaleType.retail,
       orderDate: DateTime.now(),
-      notes: '',
-      items: cart.toItems(),
-      orderDiscount: cart.effectiveOrderDiscount,
+      // The promotions that took something off are noted on the order, so the sale can be traced.
+      notes: pricing.appliedNames.isEmpty ? '' : L10n.current.posPromotionsNote(pricing.appliedNames.join(', ')),
+      items: pricing.items(),
+      orderDiscount: pricing.orderDiscount,
       paidNow: 0,
       channel: 'pos',
       payments: payment.lines,
@@ -255,6 +256,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     }
     final OrderModel? order = orders.lastConfirmed;
     ref.read(posCartProvider.notifier).clear();
+    ref.read(posCouponProvider.notifier).state = '';
     setState(() => _showCart = false);
     if (order != null) {
       await _showDone(order, payment, cart.customer);
@@ -361,7 +363,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
     final AsyncValue<List<ProductModel>> productsAsync = ref.watch(productsProvider);
     final List<ProductModel> products = productsAsync.valueOrNull ?? <ProductModel>[];
     final PosCart cart = ref.watch(posCartProvider);
-    final TaxSettings tax = ref.watch(businessProvider.select(TaxSettings.of));
+    final PosPricing pricing = ref.watch(posPricingProvider);
     final bool canSell = ref.watch(canCreateOrdersProvider);
 
     return Scaffold(
@@ -444,7 +446,7 @@ class _PosScreenState extends ConsumerState<PosScreen> {
                         label: Text('${cart.units}'),
                         child: const Icon(Icons.shopping_bag_outlined),
                       ),
-                      label: cart.isEmpty ? context.l10n.posSale2 : context.l10n.posSale(MoneyFormat.prefix, _fmt(cart.payable(tax))),
+                      label: cart.isEmpty ? context.l10n.posSale2 : context.l10n.posSale(MoneyFormat.prefix, _fmt(pricing.payable)),
                     ),
                   ],
                 ),
@@ -1015,6 +1017,16 @@ class _SalePanel extends ConsumerWidget {
   final VoidCallback onHeld;
   final int heldCount;
 
+  Future<void> _editCoupon(BuildContext context, WidgetRef ref) async {
+    final String? code = await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => _CouponDialog(initial: ref.read(posCouponProvider)),
+    );
+    if (code != null) {
+      ref.read(posCouponProvider.notifier).state = code.trim();
+    }
+  }
+
   Future<void> _editDiscount(BuildContext context, WidgetRef ref, {PosLine? line}) async {
     final PosCart cart = ref.read(posCartProvider);
     final TextEditingController controller = TextEditingController(
@@ -1075,7 +1087,8 @@ class _SalePanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final PosCart cart = ref.watch(posCartProvider);
-    final TaxSettings tax = ref.watch(businessProvider.select(TaxSettings.of));
+    final PosPricing pricing = ref.watch(posPricingProvider);
+    final String coupon = ref.watch(posCouponProvider);
     final PosCartNotifier notifier = ref.read(posCartProvider.notifier);
     final Map<String, int> stock = ref.watch(stockOnHandProvider);
 
@@ -1213,7 +1226,22 @@ class _SalePanel extends ConsumerWidget {
             child: const Icon(Icons.edit_outlined, size: 15, color: AppColors.textMuted),
           ),
         ),
-        for (final MapEntry<String, double> line in taxLabels(context.l10n, cart.taxFor(tax)))
+        if (pricing.promoTotal > 0.004)
+          _summaryRow(
+            context.l10n.posPromotions,
+            '-${MoneyFormat.prefix}${_fmt(pricing.promoTotal)}',
+            color: AppColors.teal,
+          ),
+        _summaryRow(
+          context.l10n.posCoupon,
+          coupon.isEmpty ? context.l10n.posCouponAdd : (pricing.couponAccepted ? coupon : context.l10n.posCouponNotValid(coupon)),
+          color: coupon.isEmpty ? AppColors.textMuted : (pricing.couponAccepted ? AppColors.teal : AppColors.danger),
+          edit: InkWell(
+            onTap: cart.isEmpty ? null : () => _editCoupon(context, ref),
+            child: const Icon(Icons.local_offer_outlined, size: 15, color: AppColors.textMuted),
+          ),
+        ),
+        for (final MapEntry<String, double> line in taxLabels(context.l10n, pricing.tax))
           _summaryRow(line.key, '${MoneyFormat.prefix}${_fmt(line.value)}'),
         const Divider(height: 20),
         Row(
@@ -1221,7 +1249,7 @@ class _SalePanel extends ConsumerWidget {
             Text(context.l10n.posTotalPayable, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
             const Spacer(),
             Text(
-              '${MoneyFormat.prefix}${_fmt(cart.payable(tax))}',
+              '${MoneyFormat.prefix}${_fmt(pricing.payable)}',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.navy),
             ),
           ],
@@ -1301,7 +1329,7 @@ class _SalePanel extends ConsumerWidget {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       )
                     : const Icon(Icons.shopping_bag_outlined, size: 18),
-                label: Text(cart.isEmpty ? context.l10n.posPlaceOrder2 : context.l10n.posPlaceOrder(MoneyFormat.prefix, _fmt(cart.payable(tax)))),
+                label: Text(cart.isEmpty ? context.l10n.posPlaceOrder2 : context.l10n.posPlaceOrder(MoneyFormat.prefix, _fmt(pricing.payable))),
               ),
             ),
           ],
@@ -1443,6 +1471,45 @@ class _CartLine extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Asks for a coupon code. It owns its text field, so the field is not used after the dialog is gone. An empty
+/// answer removes the coupon.
+class _CouponDialog extends StatefulWidget {
+  const _CouponDialog({required this.initial});
+
+  final String initial;
+
+  @override
+  State<_CouponDialog> createState() => _CouponDialogState();
+}
+
+class _CouponDialogState extends State<_CouponDialog> {
+  late final TextEditingController _code = TextEditingController(text: widget.initial);
+
+  @override
+  void dispose() {
+    _code.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(context.l10n.posCoupon),
+      content: TextField(
+        controller: _code,
+        autofocus: true,
+        textCapitalization: TextCapitalization.characters,
+        onSubmitted: (String v) => Navigator.of(context).pop(v),
+        decoration: InputDecoration(labelText: context.l10n.posCouponCode, border: const OutlineInputBorder()),
+      ),
+      actions: <Widget>[
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.l10n.categoriesCancel)),
+        FilledButton(onPressed: () => Navigator.of(context).pop(_code.text), child: Text(context.l10n.posCouponApply)),
+      ],
     );
   }
 }
