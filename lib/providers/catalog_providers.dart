@@ -18,6 +18,7 @@ import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
 import 'package:a2_stocks/models/variant_model.dart';
 import 'package:a2_stocks/providers/base_list_notifier.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/providers/stock_providers.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 
@@ -201,6 +202,43 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
 
   List<ProductModel> get _items => state.valueOrNull ?? <ProductModel>[];
 
+  /// Barcodes are optional. When the business requires them, a new item needs one and an item that has one cannot
+  /// lose it (older items without one stay editable). A barcode names ONE item: it cannot be used twice, in this
+  /// product or by another (checked for a new or changed barcode). The server applies the same rules.
+  String? _barcodeProblem(ProductModel product) {
+    final bool required = ref.read(businessProvider).requireBarcode;
+    final ProductModel? before = _items.where((ProductModel p) => p.id == product.id).firstOrNull;
+    final Set<String> seen = <String>{};
+    final Set<String> toCheck = <String>{};
+    for (final VariantModel variant in product.variants) {
+      final String code = variant.barcode.trim().toLowerCase();
+      final VariantModel? old = before?.variants.where((VariantModel v) => v.id == variant.id).firstOrNull;
+      if (code.isEmpty) {
+        if (required && (old == null || old.barcode.trim().isNotEmpty)) {
+          return L10n.current.catalogBarcodeRequired(variant.sku.trim());
+        }
+        continue;
+      }
+      if (!seen.add(code)) {
+        return L10n.current.catalogBarcodeTwice(variant.barcode.trim());
+      }
+      if (old == null || old.barcode.trim().toLowerCase() != code) {
+        toCheck.add(code);
+      }
+    }
+    for (final ProductModel other in _items) {
+      if (other.id == product.id) {
+        continue;
+      }
+      for (final VariantModel variant in other.variants) {
+        if (toCheck.contains(variant.barcode.trim().toLowerCase())) {
+          return L10n.current.catalogBarcodeBelongsTo(variant.barcode.trim(), other.name);
+        }
+      }
+    }
+    return null;
+  }
+
   Future<String?> _validate(ProductModel product) async {
     if (product.name.trim().isEmpty) {
       return L10n.current.catalogProductNameIsRequired;
@@ -230,6 +268,10 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
           return L10n.current.catalogSkuAlreadyBelongsTo(variant.sku.trim(), other.name);
         }
       }
+    }
+    final String? barcodeProblem = _barcodeProblem(product);
+    if (barcodeProblem != null) {
+      return barcodeProblem;
     }
     final CategoryModel? category = await ref
         .read(categoryRepositoryProvider)

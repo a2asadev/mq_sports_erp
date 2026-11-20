@@ -47,6 +47,7 @@ class _FakeBusinessService implements BusinessService {
     String? currency,
     String? brandColor,
     bool? usesRegister,
+    bool? requireBarcode,
     bool? taxEnabled,
     double? gstRate,
     double? vatRate,

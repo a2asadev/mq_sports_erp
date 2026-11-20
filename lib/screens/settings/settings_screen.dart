@@ -17,6 +17,7 @@ import 'package:a2_stocks/online/photo_service.dart';
 import 'package:a2_stocks/online/store_settings_service.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/onboarding/onboarding_screen.dart';
+import 'package:a2_stocks/screens/catalog/barcode_choice.dart';
 import 'package:a2_stocks/screens/register/register_choice.dart';
 import 'package:a2_stocks/screens/settings/notification_settings_card.dart';
 import 'package:a2_stocks/screens/settings/tax_settings_form.dart';
@@ -430,6 +431,7 @@ class _ShopDetailsFormState extends ConsumerState<ShopDetailsForm> {
           ),
           const SizedBox(height: 8),
           RegisterChoiceTile(enabled: widget.canEdit && !_busy),
+          RequireBarcodeTile(enabled: widget.canEdit && !_busy),
           const Divider(height: 24),
           TaxSettingsForm(canEdit: widget.canEdit),
           const Divider(height: 24),

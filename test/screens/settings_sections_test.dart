@@ -98,6 +98,8 @@ void main() {
     await tester.tap(find.text('Shop details'));
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(DropdownButtonFormField<String>));
     await tester.pumpAndSettle();
     await tester.tap(find.text('AED · UAE dirham (AED)').last);
@@ -229,6 +231,8 @@ void main() {
     await tester.tap(find.text('Shop details'));
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Green'));
+    await tester.ensureVisible(find.byType(DropdownButtonFormField<String>));
+    await tester.pumpAndSettle();
     await tester.tap(find.byType(DropdownButtonFormField<String>));
     await tester.pumpAndSettle();
     await tester.tap(find.text('AED · UAE dirham (AED)').last);

@@ -5476,4 +5476,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get poPdfNote => 'Note';
+
+  @override
+  String get barcodeRequiredTitle => 'Barcodes are required';
+
+  @override
+  String get barcodeRequiredHint =>
+      'Off: a barcode is optional. On: every new item needs one (items you already have are not affected). You can switch it any time.';
+
+  @override
+  String get variantBarcodeRequired => 'Barcode';
+
+  @override
+  String get variantBarcodeCreate => 'Create a barcode';
+
+  @override
+  String get variantBarcodeNeeded =>
+      'A barcode is required. Scan one, type it, or press the wand to create one.';
+
+  @override
+  String get variantBarcodeUsed => 'Another item already has this barcode.';
+
+  @override
+  String catalogBarcodeRequired(String sku) {
+    return 'A barcode is required for $sku.';
+  }
+
+  @override
+  String catalogBarcodeTwice(String barcode) {
+    return 'The barcode $barcode is used twice in this product.';
+  }
+
+  @override
+  String catalogBarcodeBelongsTo(String barcode, String name) {
+    return 'The barcode $barcode already belongs to $name.';
+  }
+
+  @override
+  String get onboardingContentBarcodes => 'Do you use barcodes?';
+
+  @override
+  String get onboardingContentBarcodesBody =>
+      'A barcode lets you ring up an item by scanning it, and lets you print price labels. It is optional by default: you can add one to any item when you like. Switch this on only if every item must have one.';
+
+  @override
+  String get onboardingContentBarcodesLabels =>
+      'You can print labels for any item, with its barcode or its SKU, from the Labels page.';
+
+  @override
+  String apiErrorProductsABarcodeIsRequired(String sku) {
+    return 'A barcode is required for $sku.';
+  }
+
+  @override
+  String apiErrorProductsBarcodeAlreadyBelongsTo(
+      String barcode, String name, String sku) {
+    return 'The barcode $barcode already belongs to $name ($sku).';
+  }
+
+  @override
+  String apiErrorProductsBarcodeIsUsedTwiceInThis(String barcode) {
+    return 'The barcode $barcode is used twice in this product.';
+  }
+
+  @override
+  String get moduleLabels => 'Labels';
+
+  @override
+  String get labelsSearch => 'Search by name, SKU or barcode';
+
+  @override
+  String get labelsSize => 'Label size';
+
+  @override
+  String labelsSizeRoll(String size) {
+    return 'Label roll $size mm';
+  }
+
+  @override
+  String labelsSizeSheet(int count, String grid) {
+    return 'A4 sheet of $count labels ($grid)';
+  }
+
+  @override
+  String get labelsSkip => 'Places already used';
+
+  @override
+  String get labelsShowName => 'Name';
+
+  @override
+  String get labelsShowPrice => 'Price';
+
+  @override
+  String get labelsShowSku => 'SKU';
+
+  @override
+  String get labelsUseSku => 'SKU as the bar code when there is no barcode';
+
+  @override
+  String get labelsCopies => 'Labels';
+
+  @override
+  String get labelsOneEach => '1 each';
+
+  @override
+  String get labelsClear => 'Clear';
+
+  @override
+  String get labelsNoItems => 'No items to show.';
+
+  @override
+  String get labelsNothing => 'Choose how many labels each item needs.';
+
+  @override
+  String labelsSummary(int labels, int pages) {
+    return '$labels labels, $pages pages';
+  }
+
+  @override
+  String get labelsPrint => 'Print';
+
+  @override
+  String get labelsShare => 'Share PDF';
+
+  @override
+  String get labelsSkuCode => 'SKU as the bar code';
+
+  @override
+  String get labelsNoCode => 'No bar code';
 }

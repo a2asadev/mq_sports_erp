@@ -10,6 +10,7 @@ class OnboardingStep {
     required this.body,
     this.points = const <String>[],
     this.asksRegister = false,
+    this.asksBarcode = false,
   });
 
   final IconData icon;
@@ -21,6 +22,9 @@ class OnboardingStep {
 
   /// Shows the "I use a cash register" switch under the text (the admin's guide).
   final bool asksRegister;
+
+  /// Shows the "barcodes are required" switch under the text (the admin's guide).
+  final bool asksBarcode;
 }
 
 OnboardingStep _offline(AppLocalizations l10n) => OnboardingStep(
@@ -139,6 +143,13 @@ List<OnboardingStep> _admin(AppLocalizations l10n) => <OnboardingStep>[
         body: l10n.onboardingContentCashRegisterBody,
         points: <String>[l10n.onboardingContentCashRegisterNoRegister],
         asksRegister: true,
+      ),
+      OnboardingStep(
+        icon: Icons.qr_code_2,
+        title: l10n.onboardingContentBarcodes,
+        body: l10n.onboardingContentBarcodesBody,
+        points: <String>[l10n.onboardingContentBarcodesLabels],
+        asksBarcode: true,
       ),
       OnboardingStep(
         icon: Icons.people_outline,

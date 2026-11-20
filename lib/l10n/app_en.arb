@@ -3952,5 +3952,124 @@
   "poPdfVendor": "Vendor",
   "poPdfDate": "Date",
   "poPdfExpected": "Expected by",
-  "poPdfNote": "Note"
+  "poPdfNote": "Note",
+  "barcodeRequiredTitle": "Barcodes are required",
+  "@barcodeRequiredTitle": {
+    "description": "Switch in Settings and in the welcome guide: off means a barcode is optional on every item."
+  },
+  "barcodeRequiredHint": "Off: a barcode is optional. On: every new item needs one (items you already have are not affected). You can switch it any time.",
+  "variantBarcodeRequired": "Barcode",
+  "variantBarcodeCreate": "Create a barcode",
+  "variantBarcodeNeeded": "A barcode is required. Scan one, type it, or press the wand to create one.",
+  "variantBarcodeUsed": "Another item already has this barcode.",
+  "catalogBarcodeRequired": "A barcode is required for {sku}.",
+  "@catalogBarcodeRequired": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBarcodeTwice": "The barcode {barcode} is used twice in this product.",
+  "@catalogBarcodeTwice": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "catalogBarcodeBelongsTo": "The barcode {barcode} already belongs to {name}.",
+  "@catalogBarcodeBelongsTo": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "onboardingContentBarcodes": "Do you use barcodes?",
+  "onboardingContentBarcodesBody": "A barcode lets you ring up an item by scanning it, and lets you print price labels. It is optional by default: you can add one to any item when you like. Switch this on only if every item must have one.",
+  "onboardingContentBarcodesLabels": "You can print labels for any item, with its barcode or its SKU, from the Labels page.",
+  "apiErrorProductsABarcodeIsRequired": "A barcode is required for {sku}.",
+  "@apiErrorProductsABarcodeIsRequired": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorProductsBarcodeAlreadyBelongsTo": "The barcode {barcode} already belongs to {name} ({sku}).",
+  "@apiErrorProductsBarcodeAlreadyBelongsTo": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      },
+      "sku": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorProductsBarcodeIsUsedTwiceInThis": "The barcode {barcode} is used twice in this product.",
+  "@apiErrorProductsBarcodeIsUsedTwiceInThis": {
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleLabels": "Labels",
+  "@moduleLabels": {
+    "description": "Navigation: print price and barcode labels."
+  },
+  "labelsSearch": "Search by name, SKU or barcode",
+  "labelsSize": "Label size",
+  "labelsSizeRoll": "Label roll {size} mm",
+  "@labelsSizeRoll": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "labelsSizeSheet": "A4 sheet of {count} labels ({grid})",
+  "@labelsSizeSheet": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "grid": {
+        "type": "String"
+      }
+    }
+  },
+  "labelsSkip": "Places already used",
+  "labelsShowName": "Name",
+  "labelsShowPrice": "Price",
+  "labelsShowSku": "SKU",
+  "labelsUseSku": "SKU as the bar code when there is no barcode",
+  "labelsCopies": "Labels",
+  "labelsOneEach": "1 each",
+  "labelsClear": "Clear",
+  "labelsNoItems": "No items to show.",
+  "labelsNothing": "Choose how many labels each item needs.",
+  "labelsSummary": "{labels} labels, {pages} pages",
+  "@labelsSummary": {
+    "placeholders": {
+      "labels": {
+        "type": "int"
+      },
+      "pages": {
+        "type": "int"
+      }
+    }
+  },
+  "labelsPrint": "Print",
+  "labelsShare": "Share PDF",
+  "labelsSkuCode": "SKU as the bar code",
+  "labelsNoCode": "No bar code"
 }

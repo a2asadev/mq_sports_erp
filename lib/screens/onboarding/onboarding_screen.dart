@@ -6,6 +6,7 @@ import 'package:a2_stocks/models/user_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
 import 'package:a2_stocks/providers/onboarding_providers.dart';
 import 'package:a2_stocks/screens/onboarding/onboarding_content.dart';
+import 'package:a2_stocks/screens/catalog/barcode_choice.dart';
 import 'package:a2_stocks/screens/register/register_choice.dart';
 
 /// The welcome guide: a few pages for the person's role, shown the first time
@@ -101,6 +102,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             if (step.asksRegister) ...<Widget>[
                               const SizedBox(height: 8),
                               const RegisterChoiceTile(),
+                            ],
+                            if (step.asksBarcode) ...<Widget>[
+                              const SizedBox(height: 8),
+                              const RequireBarcodeTile(),
                             ],
                           ],
                         ),

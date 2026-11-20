@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:a2_stocks/core/utils/barcode_generator.dart';
 import 'package:a2_stocks/core/utils/price_warnings.dart';
 import 'package:a2_stocks/core/utils/sku_generator.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
@@ -15,6 +16,8 @@ Future<VariantModel?> showVariantDialog(
   required bool readOnly,
   required String productName,
   required Set<String> otherSkus,
+  Set<String> otherBarcodes = const <String>{},
+  bool requireBarcode = false,
 }) {
   return showDialog<VariantModel>(
     context: context,
@@ -23,6 +26,8 @@ Future<VariantModel?> showVariantDialog(
       readOnly: readOnly,
       productName: productName,
       otherSkus: otherSkus,
+      otherBarcodes: otherBarcodes,
+      requireBarcode: requireBarcode,
     ),
   );
 }
@@ -47,12 +52,20 @@ class _VariantDialog extends StatefulWidget {
     required this.readOnly,
     required this.productName,
     required this.otherSkus,
+    required this.otherBarcodes,
+    required this.requireBarcode,
   });
 
   final VariantModel? variant;
   final bool readOnly;
   final String productName;
   final Set<String> otherSkus;
+
+  /// Barcodes (lower case) that other items already have.
+  final Set<String> otherBarcodes;
+
+  /// The business requires a barcode on every new item.
+  final bool requireBarcode;
 
   @override
   State<_VariantDialog> createState() => _VariantDialogState();
@@ -241,8 +254,26 @@ class _VariantDialogState extends State<_VariantDialog> {
                 TextFormField(
                   controller: _barcodeController,
                   enabled: !readOnly,
-                  decoration:
-                      InputDecoration(labelText: context.l10n.variantBarcodeOptional),
+                  decoration: InputDecoration(
+                    labelText: widget.requireBarcode ? context.l10n.variantBarcodeRequired : context.l10n.variantBarcodeOptional,
+                    suffixIcon: readOnly
+                        ? null
+                        : IconButton(
+                            tooltip: context.l10n.variantBarcodeCreate,
+                            icon: const Icon(Icons.auto_fix_high),
+                            onPressed: () => setState(() => _barcodeController.text = generateBarcode(widget.otherBarcodes)),
+                          ),
+                  ),
+                  validator: (String? value) {
+                    final String code = (value ?? '').trim().toLowerCase();
+                    final VariantModel? old = widget.variant;
+                    if (code.isEmpty) {
+                      // Required for a new item, and an item that has one cannot lose it.
+                      return widget.requireBarcode && (old == null || old.barcode.trim().isNotEmpty) ? context.l10n.variantBarcodeNeeded : null;
+                    }
+                    final bool changed = old == null || old.barcode.trim().toLowerCase() != code;
+                    return changed && widget.otherBarcodes.contains(code) ? context.l10n.variantBarcodeUsed : null;
+                  },
                 ),
                 const SizedBox(height: 8),
                 SwitchListTile(

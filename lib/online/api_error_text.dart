@@ -182,6 +182,12 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorPhotosOnlyJpegPngOrWebpPhotos;
     case 'photos.photos_belong_to_one_of':
       return l10n.apiErrorPhotosPhotosBelongToOneOf(_text(params, 'kinds'));
+    case 'products.a_barcode_is_required':
+      return l10n.apiErrorProductsABarcodeIsRequired(_text(params, 'sku'));
+    case 'products.barcode_already_belongs_to':
+      return l10n.apiErrorProductsBarcodeAlreadyBelongsTo(_text(params, 'barcode'), _text(params, 'name'), _text(params, 'sku'));
+    case 'products.barcode_is_used_twice_in_this':
+      return l10n.apiErrorProductsBarcodeIsUsedTwiceInThis(_text(params, 'barcode'));
     case 'products.a_variant_id_already_belongs_to':
       return l10n.apiErrorProductsAVariantIdAlreadyBelongsTo;
     case 'products.a_variant_id_is_used_twice':

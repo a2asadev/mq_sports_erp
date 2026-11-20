@@ -10,6 +10,7 @@ import 'package:a2_stocks/providers/users_providers.dart';
 import 'package:a2_stocks/screens/catalog/categories_screen.dart';
 import 'package:a2_stocks/screens/catalog/products_screen.dart';
 import 'package:a2_stocks/screens/expenses/expenses_screen.dart';
+import 'package:a2_stocks/screens/labels/labels_screen.dart';
 import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
 import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
@@ -135,6 +136,14 @@ final Provider<List<ErpModule>> erpModulesProvider =
         UserRole.staff,
       },
       builder: (BuildContext context) => const OrdersScreen(),
+    ),
+    ErpModule(
+      id: 'labels',
+      group: ModuleGroup.inventory,
+      title: (AppLocalizations l10n) => l10n.moduleLabels,
+      icon: Icons.label_outline,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager, UserRole.staff},
+      builder: (BuildContext context) => const LabelsScreen(),
     ),
     ErpModule(
       id: 'stock',

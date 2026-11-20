@@ -8,6 +8,7 @@ import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/product_image.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/variant_model.dart';
+import 'package:a2_stocks/providers/business_provider.dart';
 import 'package:a2_stocks/providers/catalog_providers.dart';
 import 'package:a2_stocks/screens/catalog/variant_dialog.dart';
 
@@ -62,12 +63,23 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
       for (int i = 0; i < _variants.length; i++)
         if (i != index) _variants[i].sku.trim().toLowerCase(),
     };
+    // Barcodes already on other items (and on this product's other variants), to stop a duplicate early.
+    final Set<String> otherBarcodes = <String>{
+      for (final ProductModel p in ref.read(productsProvider).valueOrNull ?? <ProductModel>[])
+        if (p.id != widget.product?.id)
+          for (final VariantModel v in p.variants)
+            if (v.barcode.trim().isNotEmpty) v.barcode.trim().toLowerCase(),
+      for (int i = 0; i < _variants.length; i++)
+        if (i != index && _variants[i].barcode.trim().isNotEmpty) _variants[i].barcode.trim().toLowerCase(),
+    };
     final VariantModel? result = await showVariantDialog(
       context,
       variant: variant,
       readOnly: readOnly,
       productName: _nameController.text,
       otherSkus: otherSkus,
+      otherBarcodes: otherBarcodes,
+      requireBarcode: ref.read(businessProvider).requireBarcode,
     );
     if (result == null || !mounted) {
       return;

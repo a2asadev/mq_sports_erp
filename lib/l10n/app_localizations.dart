@@ -8695,6 +8695,217 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Note'**
   String get poPdfNote;
+
+  /// Switch in Settings and in the welcome guide: off means a barcode is optional on every item.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcodes are required'**
+  String get barcodeRequiredTitle;
+
+  /// No description provided for @barcodeRequiredHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: a barcode is optional. On: every new item needs one (items you already have are not affected). You can switch it any time.'**
+  String get barcodeRequiredHint;
+
+  /// No description provided for @variantBarcodeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode'**
+  String get variantBarcodeRequired;
+
+  /// No description provided for @variantBarcodeCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a barcode'**
+  String get variantBarcodeCreate;
+
+  /// No description provided for @variantBarcodeNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'A barcode is required. Scan one, type it, or press the wand to create one.'**
+  String get variantBarcodeNeeded;
+
+  /// No description provided for @variantBarcodeUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Another item already has this barcode.'**
+  String get variantBarcodeUsed;
+
+  /// No description provided for @catalogBarcodeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A barcode is required for {sku}.'**
+  String catalogBarcodeRequired(String sku);
+
+  /// No description provided for @catalogBarcodeTwice.
+  ///
+  /// In en, this message translates to:
+  /// **'The barcode {barcode} is used twice in this product.'**
+  String catalogBarcodeTwice(String barcode);
+
+  /// No description provided for @catalogBarcodeBelongsTo.
+  ///
+  /// In en, this message translates to:
+  /// **'The barcode {barcode} already belongs to {name}.'**
+  String catalogBarcodeBelongsTo(String barcode, String name);
+
+  /// No description provided for @onboardingContentBarcodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you use barcodes?'**
+  String get onboardingContentBarcodes;
+
+  /// No description provided for @onboardingContentBarcodesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A barcode lets you ring up an item by scanning it, and lets you print price labels. It is optional by default: you can add one to any item when you like. Switch this on only if every item must have one.'**
+  String get onboardingContentBarcodesBody;
+
+  /// No description provided for @onboardingContentBarcodesLabels.
+  ///
+  /// In en, this message translates to:
+  /// **'You can print labels for any item, with its barcode or its SKU, from the Labels page.'**
+  String get onboardingContentBarcodesLabels;
+
+  /// No description provided for @apiErrorProductsABarcodeIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A barcode is required for {sku}.'**
+  String apiErrorProductsABarcodeIsRequired(String sku);
+
+  /// No description provided for @apiErrorProductsBarcodeAlreadyBelongsTo.
+  ///
+  /// In en, this message translates to:
+  /// **'The barcode {barcode} already belongs to {name} ({sku}).'**
+  String apiErrorProductsBarcodeAlreadyBelongsTo(
+      String barcode, String name, String sku);
+
+  /// No description provided for @apiErrorProductsBarcodeIsUsedTwiceInThis.
+  ///
+  /// In en, this message translates to:
+  /// **'The barcode {barcode} is used twice in this product.'**
+  String apiErrorProductsBarcodeIsUsedTwiceInThis(String barcode);
+
+  /// Navigation: print price and barcode labels.
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get moduleLabels;
+
+  /// No description provided for @labelsSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, SKU or barcode'**
+  String get labelsSearch;
+
+  /// No description provided for @labelsSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Label size'**
+  String get labelsSize;
+
+  /// No description provided for @labelsSizeRoll.
+  ///
+  /// In en, this message translates to:
+  /// **'Label roll {size} mm'**
+  String labelsSizeRoll(String size);
+
+  /// No description provided for @labelsSizeSheet.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 sheet of {count} labels ({grid})'**
+  String labelsSizeSheet(int count, String grid);
+
+  /// No description provided for @labelsSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Places already used'**
+  String get labelsSkip;
+
+  /// No description provided for @labelsShowName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get labelsShowName;
+
+  /// No description provided for @labelsShowPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get labelsShowPrice;
+
+  /// No description provided for @labelsShowSku.
+  ///
+  /// In en, this message translates to:
+  /// **'SKU'**
+  String get labelsShowSku;
+
+  /// No description provided for @labelsUseSku.
+  ///
+  /// In en, this message translates to:
+  /// **'SKU as the bar code when there is no barcode'**
+  String get labelsUseSku;
+
+  /// No description provided for @labelsCopies.
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get labelsCopies;
+
+  /// No description provided for @labelsOneEach.
+  ///
+  /// In en, this message translates to:
+  /// **'1 each'**
+  String get labelsOneEach;
+
+  /// No description provided for @labelsClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get labelsClear;
+
+  /// No description provided for @labelsNoItems.
+  ///
+  /// In en, this message translates to:
+  /// **'No items to show.'**
+  String get labelsNoItems;
+
+  /// No description provided for @labelsNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how many labels each item needs.'**
+  String get labelsNothing;
+
+  /// No description provided for @labelsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{labels} labels, {pages} pages'**
+  String labelsSummary(int labels, int pages);
+
+  /// No description provided for @labelsPrint.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get labelsPrint;
+
+  /// No description provided for @labelsShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share PDF'**
+  String get labelsShare;
+
+  /// No description provided for @labelsSkuCode.
+  ///
+  /// In en, this message translates to:
+  /// **'SKU as the bar code'**
+  String get labelsSkuCode;
+
+  /// No description provided for @labelsNoCode.
+  ///
+  /// In en, this message translates to:
+  /// **'No bar code'**
+  String get labelsNoCode;
 }
 
 class _AppLocalizationsDelegate

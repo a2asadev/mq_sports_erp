@@ -22,7 +22,7 @@ void main() {
     test('every role has a short guide that opens with a welcome and ends with the profile page', () {
       for (final UserRole role in UserRole.values) {
         final List<OnboardingStep> steps = onboardingStepsFor(role, _en);
-        expect(steps.length, inInclusiveRange(5, 9), reason: role.name);
+        expect(steps.length, inInclusiveRange(5, 10), reason: role.name);
         expect(steps.first.title, startsWith('Welcome'));
         expect(steps.last.title, 'Your profile');
         for (final OnboardingStep s in steps) {
