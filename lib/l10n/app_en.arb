@@ -3872,5 +3872,85 @@
     }
   },
   "reorderOpen": "Open",
-  "reorderNote": "From reorder suggestions"
+  "reorderNote": "From reorder suggestions",
+  "poSendToVendor": "Send to vendor",
+  "poSendWhatsApp": "WhatsApp",
+  "poSendWhatsAppHint": "Opens a chat with the order written out; you press send.",
+  "poSendSharePdf": "Share PDF",
+  "poSendPrintPdf": "Print or save PDF",
+  "poSendVendorPhone": "Vendor phone",
+  "poMsgTitle": "Purchase order {number}",
+  "@poMsgTitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "poMsgTo": "To: {vendor}",
+  "@poMsgTo": {
+    "placeholders": {
+      "vendor": {
+        "type": "String"
+      }
+    }
+  },
+  "poMsgDate": "Date: {date}",
+  "@poMsgDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "poMsgExpected": "Expected by: {date}",
+  "@poMsgExpected": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "poMsgStillToCome": "Still to be delivered:",
+  "@poMsgStillToCome": {
+    "description": "On a partly received order only what has not arrived is listed."
+  },
+  "poMsgLine": "{quantity} x {name} @ {price} = {total}",
+  "@poMsgLine": {
+    "placeholders": {
+      "quantity": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "poMsgTotal": "Total: {amount}",
+  "@poMsgTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "poMsgNote": "Note: {note}",
+  "@poMsgNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "poMsgClosing": "Please confirm availability and the delivery date. Thank you.",
+  "poPdfVendor": "Vendor",
+  "poPdfDate": "Date",
+  "poPdfExpected": "Expected by",
+  "poPdfNote": "Note"
 }

@@ -9,6 +9,7 @@ import 'package:a2_stocks/providers/purchase_order_providers.dart';
 import 'package:a2_stocks/screens/purchasing/purchase_detail_screen.dart';
 import 'package:a2_stocks/screens/purchasing/purchase_orders_screen.dart';
 import 'package:a2_stocks/screens/purchasing/receive_goods_screen.dart';
+import 'package:a2_stocks/widgets/purchase_order_actions.dart';
 
 /// One purchase order: what was ordered, what has arrived and what is still to come, the receipts (each is an
 /// ordinary purchase), and the actions: receive goods, cancel (nothing arrived yet) or close (give up the rest).
@@ -109,6 +110,7 @@ class PurchaseOrderDetailScreen extends ConsumerWidget {
         const SizedBox(height: 8),
         if (po.status.canReceive)
           FilledButton.icon(onPressed: () => _receive(context, ref, po), icon: const Icon(Icons.inventory_outlined), label: Text(context.l10n.poReceiveGoods)),
+        if (po.status != PurchaseOrderStatus.cancelled) ...<Widget>[const SizedBox(height: 8), SendPurchaseOrderButton(order: po)],
         if (po.status == PurchaseOrderStatus.open) ...<Widget>[
           const SizedBox(height: 8),
           OutlinedButton.icon(

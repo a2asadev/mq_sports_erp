@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:a2_stocks/core/utils/purchase_order_text.dart';
+import 'package:a2_stocks/core/utils/report_pdf.dart';
+import 'package:a2_stocks/core/utils/report_table.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/models/purchase_order.dart';
 import 'package:a2_stocks/online/purchase_orders_service.dart';
@@ -201,6 +204,66 @@ void main() {
       expect(find.text('Receive goods'), findsNothing);
       expect(find.text('Cancel order'), findsNothing);
       expect(find.text('Close order'), findsNothing);
+    });
+  });
+
+  group('sending an order to the vendor', () {
+    AppLocalizations l10n() => lookupAppLocalizations(const Locale('en'));
+
+    test('the message lists what is ordered, the total, the note and what is asked of the vendor', () {
+      final PurchaseOrder po = PurchaseOrder.fromMap(_po(expected: '2026-12-15'));
+      final String text = purchaseOrderMessage(l10n(), po, shopName: 'Ali Sports', shopPhone: '0300-1');
+      expect(text, contains('*Ali Sports*'));
+      expect(text, contains('Purchase order PO-20261128-AB12'));
+      expect(text, contains('To: Sports Supplier'));
+      expect(text, contains('Expected by: 2026-12-15'));
+      expect(text, contains('10 x Bat (Small) @ Rs 60 = Rs 600'));
+      expect(text, contains('20 x Ball (Small) @ Rs 10 = Rs 200'));
+      expect(text, contains('Total: Rs 800'));
+      expect(text, contains('Note: For the season'));
+      expect(text, contains('Please confirm availability and the delivery date.'));
+      expect(text, isNot(contains('Still to be delivered')));
+    });
+
+    test('a partly received order asks only for what has not arrived', () {
+      final PurchaseOrder po = PurchaseOrder.fromMap(_po(status: 'partial', lines: <List<int>>[<int>[10, 4], <int>[20, 20]]));
+      final String text = purchaseOrderMessage(l10n(), po, shopName: 'Ali Sports');
+      expect(text, contains('Still to be delivered:'));
+      expect(text, contains('6 x Bat (Small) @ Rs 60 = Rs 360'));
+      expect(text, isNot(contains('Ball'))); // all of it arrived
+      expect(text, contains('Total: Rs 360'));
+    });
+
+    test('the PDF is the same order as a table with a total, and builds', () async {
+      final PurchaseOrder po = PurchaseOrder.fromMap(_po(expected: '2026-12-15'));
+      final ReportTable table = purchaseOrderTable(l10n(), po, shopName: 'Ali Sports', vendorPhone: '0300-2');
+      expect(table.title, 'Purchase order PO-20261128-AB12');
+      expect(table.rows.map((List<Object?> r) => r[2]), <Object?>[10, 20]);
+      expect(table.totals!.last, 800);
+      expect(table.summary.first.value, 'Sports Supplier · 0300-2');
+      final bytes = await buildReportPdf(table, author: 'Ali Sports');
+      expect(String.fromCharCodes(bytes.sublist(0, 5)), '%PDF-');
+    });
+
+    Future<void> open(WidgetTester tester, Map<String, dynamic> order) async {
+      await tester.binding.setSurfaceSize(const Size(900, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(_app(_FakePos(order), const PurchaseOrderDetailScreen(orderId: 'po1')));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('the order page offers WhatsApp, share PDF and print, unless the order was cancelled', (WidgetTester tester) async {
+      await open(tester, _po());
+      await tester.tap(find.text('Send to vendor'));
+      await tester.pumpAndSettle();
+      expect(find.text('WhatsApp'), findsOneWidget);
+      expect(find.text('Share PDF'), findsOneWidget);
+      expect(find.text('Print or save PDF'), findsOneWidget);
+    });
+
+    testWidgets('a cancelled order is not sent', (WidgetTester tester) async {
+      await open(tester, _po(status: 'cancelled'));
+      expect(find.text('Send to vendor'), findsNothing);
     });
   });
 

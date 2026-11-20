@@ -8581,6 +8581,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'From reorder suggestions'**
   String get reorderNote;
+
+  /// No description provided for @poSendToVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Send to vendor'**
+  String get poSendToVendor;
+
+  /// No description provided for @poSendWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get poSendWhatsApp;
+
+  /// No description provided for @poSendWhatsAppHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens a chat with the order written out; you press send.'**
+  String get poSendWhatsAppHint;
+
+  /// No description provided for @poSendSharePdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Share PDF'**
+  String get poSendSharePdf;
+
+  /// No description provided for @poSendPrintPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Print or save PDF'**
+  String get poSendPrintPdf;
+
+  /// No description provided for @poSendVendorPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor phone'**
+  String get poSendVendorPhone;
+
+  /// No description provided for @poMsgTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase order {number}'**
+  String poMsgTitle(String number);
+
+  /// No description provided for @poMsgTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To: {vendor}'**
+  String poMsgTo(String vendor);
+
+  /// No description provided for @poMsgDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date: {date}'**
+  String poMsgDate(String date);
+
+  /// No description provided for @poMsgExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected by: {date}'**
+  String poMsgExpected(String date);
+
+  /// On a partly received order only what has not arrived is listed.
+  ///
+  /// In en, this message translates to:
+  /// **'Still to be delivered:'**
+  String get poMsgStillToCome;
+
+  /// No description provided for @poMsgLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{quantity} x {name} @ {price} = {total}'**
+  String poMsgLine(int quantity, String name, String price, String total);
+
+  /// No description provided for @poMsgTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total: {amount}'**
+  String poMsgTotal(String amount);
+
+  /// No description provided for @poMsgNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: {note}'**
+  String poMsgNote(String note);
+
+  /// No description provided for @poMsgClosing.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm availability and the delivery date. Thank you.'**
+  String get poMsgClosing;
+
+  /// No description provided for @poPdfVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor'**
+  String get poPdfVendor;
+
+  /// No description provided for @poPdfDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get poPdfDate;
+
+  /// No description provided for @poPdfExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected by'**
+  String get poPdfExpected;
+
+  /// No description provided for @poPdfNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get poPdfNote;
 }
 
 class _AppLocalizationsDelegate

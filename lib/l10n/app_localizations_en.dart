@@ -5403,4 +5403,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reorderNote => 'From reorder suggestions';
+
+  @override
+  String get poSendToVendor => 'Send to vendor';
+
+  @override
+  String get poSendWhatsApp => 'WhatsApp';
+
+  @override
+  String get poSendWhatsAppHint =>
+      'Opens a chat with the order written out; you press send.';
+
+  @override
+  String get poSendSharePdf => 'Share PDF';
+
+  @override
+  String get poSendPrintPdf => 'Print or save PDF';
+
+  @override
+  String get poSendVendorPhone => 'Vendor phone';
+
+  @override
+  String poMsgTitle(String number) {
+    return 'Purchase order $number';
+  }
+
+  @override
+  String poMsgTo(String vendor) {
+    return 'To: $vendor';
+  }
+
+  @override
+  String poMsgDate(String date) {
+    return 'Date: $date';
+  }
+
+  @override
+  String poMsgExpected(String date) {
+    return 'Expected by: $date';
+  }
+
+  @override
+  String get poMsgStillToCome => 'Still to be delivered:';
+
+  @override
+  String poMsgLine(int quantity, String name, String price, String total) {
+    return '$quantity x $name @ $price = $total';
+  }
+
+  @override
+  String poMsgTotal(String amount) {
+    return 'Total: $amount';
+  }
+
+  @override
+  String poMsgNote(String note) {
+    return 'Note: $note';
+  }
+
+  @override
+  String get poMsgClosing =>
+      'Please confirm availability and the delivery date. Thank you.';
+
+  @override
+  String get poPdfVendor => 'Vendor';
+
+  @override
+  String get poPdfDate => 'Date';
+
+  @override
+  String get poPdfExpected => 'Expected by';
+
+  @override
+  String get poPdfNote => 'Note';
 }
