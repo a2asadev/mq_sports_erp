@@ -4131,7 +4131,6 @@
   },
   "promoChannelPos": "Counter",
   "promoChannelWeb": "Online store",
-  "promoChannelWebFuture": "Online store (coming soon)",
   "promoDescOrderPercent": "{percent}% off the order",
   "@promoDescOrderPercent": {
     "placeholders": {

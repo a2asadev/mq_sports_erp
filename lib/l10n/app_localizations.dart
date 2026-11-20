@@ -9021,12 +9021,6 @@ abstract class AppLocalizations {
   /// **'Online store'**
   String get promoChannelWeb;
 
-  /// No description provided for @promoChannelWebFuture.
-  ///
-  /// In en, this message translates to:
-  /// **'Online store (coming soon)'**
-  String get promoChannelWebFuture;
-
   /// No description provided for @promoDescOrderPercent.
   ///
   /// In en, this message translates to:

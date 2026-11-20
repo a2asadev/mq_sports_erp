@@ -255,7 +255,7 @@ class _PromotionFormScreenState extends ConsumerState<PromotionFormScreen> {
           ),
           Text(l10n.promoWhere, style: theme.textTheme.titleSmall),
           CheckboxListTile(contentPadding: EdgeInsets.zero, value: _pos, onChanged: _busy ? null : (bool? v) => setState(() => _pos = v ?? false), title: Text(l10n.promoChannelPos)),
-          CheckboxListTile(contentPadding: EdgeInsets.zero, value: _web, onChanged: _busy ? null : (bool? v) => setState(() => _web = v ?? false), title: Text(l10n.promoChannelWebFuture)),
+          CheckboxListTile(contentPadding: EdgeInsets.zero, value: _web, onChanged: _busy ? null : (bool? v) => setState(() => _web = v ?? false), title: Text(l10n.promoChannelWeb)),
           const SizedBox(height: 8),
           Row(
             children: <Widget>[

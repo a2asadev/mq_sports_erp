@@ -5674,9 +5674,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get promoChannelWeb => 'Online store';
 
   @override
-  String get promoChannelWebFuture => 'Online store (coming soon)';
-
-  @override
   String promoDescOrderPercent(String percent) {
     return '$percent% off the order';
   }
