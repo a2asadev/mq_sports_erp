@@ -3649,5 +3649,170 @@
   "reportTaxOrders": "Orders with tax",
   "reportTaxReturns": "Returns with tax",
   "returnTaxGivenBack": "Tax on these goods (given back too)",
-  "returnTaxIncluded": "Tax inside these prices"
+  "returnTaxIncluded": "Tax inside these prices",
+  "modulePurchaseOrders": "Purchase orders",
+  "@modulePurchaseOrders": {
+    "description": "Navigation: what was ordered from vendors and what has arrived."
+  },
+  "poStatusOpen": "Open",
+  "poStatusPartial": "Partly received",
+  "poStatusReceived": "Received",
+  "poStatusClosed": "Closed",
+  "poStatusCancelled": "Cancelled",
+  "poFilterAll": "All",
+  "poNewOrder": "New order",
+  "poSearchHint": "Search by order number or vendor",
+  "poNone": "No purchase orders yet.",
+  "poReceivedOfUnits": "{received} of {ordered} units received",
+  "@poReceivedOfUnits": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "ordered": {
+        "type": "int"
+      }
+    }
+  },
+  "poExpected": "Expected {date}",
+  "@poExpected": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "poExpectedLate": "Expected {date}: late",
+  "@poExpectedLate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "poCreated": "Purchase order {number} created.",
+  "@poCreated": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "poFormHint": "An order only records what you asked the vendor for. Stock and what you owe change when the goods arrive.",
+  "poChooseVendor": "Choose a vendor",
+  "poExpectedOptional": "When do you expect it? (optional)",
+  "poItems": "Items",
+  "poAddItem": "Add item",
+  "poNoItemsYet": "Add what you want to order.",
+  "poRemoveItem": "Remove",
+  "poQuantity": "Quantity",
+  "poUnitCost": "Price per unit",
+  "poNote": "Note (optional)",
+  "poOrderTotal": "Order total: {amount}",
+  "@poOrderTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "poPlaceOrder": "Place order",
+  "poOrderedValue": "Ordered",
+  "poReceivedValue": "Received so far",
+  "poReceiveGoods": "Receive goods",
+  "poConfirm": "Yes",
+  "poCancelOrder": "Cancel order",
+  "poCancelConfirm": "Cancel this order? Nothing has arrived for it.",
+  "poCancelled": "Order cancelled.",
+  "poCloseOrder": "Close order",
+  "poCloseConfirm": "Close this order? What has not arrived will not be received on it.",
+  "poClosed": "Order closed.",
+  "poLineProgress": "{received} of {ordered} received at {price}",
+  "@poLineProgress": {
+    "placeholders": {
+      "received": {
+        "type": "int"
+      },
+      "ordered": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "poStillToCome": "{count} still to come",
+  "@poStillToCome": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "poReceipts": "Goods received",
+  "poReceiveTitle": "Receive goods · {number}",
+  "@poReceiveTitle": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "poReceiveHint": "Say how many of each item arrived from {vendor}. Stock goes up and what you owe the vendor goes up by the same step.",
+  "@poReceiveHint": {
+    "placeholders": {
+      "vendor": {
+        "type": "String"
+      }
+    }
+  },
+  "poArrived": "Arrived",
+  "poMostIs": "At most {count}",
+  "@poMostIs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "poInvoicePrice": "Price on the invoice",
+  "poInvoiceNo": "Invoice number (optional)",
+  "poPaidNow": "Paid to the vendor now (optional)",
+  "poPaidNowHint": "Leave empty to pay later.",
+  "poPaidTooMuch": "More than the {total} that arrived",
+  "@poPaidTooMuch": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "poReceivingValue": "Receiving: {amount}",
+  "@poReceivingValue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "poReceivedDone": "Goods received.",
+  "apiErrorBusinessTaxNeedsARate": "To charge tax, set a GST rate or a VAT rate above 0.",
+  "apiErrorPurchaseOrdersCouldNotGenerateAnOrderNumber": "Could not generate an order number, try again.",
+  "apiErrorPurchaseOrdersOnlyAPartlyReceivedOrderCanBeClosed": "Only a partly received order can be closed.",
+  "apiErrorPurchaseOrdersOnlyAnOpenOrderCanBeReceived": "Goods can only be received against an order that is open or partly received.",
+  "apiErrorPurchaseOrdersOnlyAnOrderNothingArrivedForCanBeCancelled": "Only an order that nothing has arrived for can be cancelled. Close it instead.",
+  "apiErrorPurchaseOrdersOnlyCanStillBeReceived": "Only {max} of {name} can still be received on this order.",
+  "@apiErrorPurchaseOrdersOnlyCanStillBeReceived": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorPurchaseOrdersPurchaseOrderNotFound": "Purchase order not found",
+  "apiErrorPurchaseOrdersThatLineIsNotOnThisOrder": "That line is not on this order.",
+  "apiErrorPurchaseOrdersThisOrderAlreadyExists": "This purchase order already exists."
 }

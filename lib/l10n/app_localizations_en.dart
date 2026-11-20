@@ -5126,4 +5126,218 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get returnTaxIncluded => 'Tax inside these prices';
+
+  @override
+  String get modulePurchaseOrders => 'Purchase orders';
+
+  @override
+  String get poStatusOpen => 'Open';
+
+  @override
+  String get poStatusPartial => 'Partly received';
+
+  @override
+  String get poStatusReceived => 'Received';
+
+  @override
+  String get poStatusClosed => 'Closed';
+
+  @override
+  String get poStatusCancelled => 'Cancelled';
+
+  @override
+  String get poFilterAll => 'All';
+
+  @override
+  String get poNewOrder => 'New order';
+
+  @override
+  String get poSearchHint => 'Search by order number or vendor';
+
+  @override
+  String get poNone => 'No purchase orders yet.';
+
+  @override
+  String poReceivedOfUnits(int received, int ordered) {
+    return '$received of $ordered units received';
+  }
+
+  @override
+  String poExpected(String date) {
+    return 'Expected $date';
+  }
+
+  @override
+  String poExpectedLate(String date) {
+    return 'Expected $date: late';
+  }
+
+  @override
+  String poCreated(String number) {
+    return 'Purchase order $number created.';
+  }
+
+  @override
+  String get poFormHint =>
+      'An order only records what you asked the vendor for. Stock and what you owe change when the goods arrive.';
+
+  @override
+  String get poChooseVendor => 'Choose a vendor';
+
+  @override
+  String get poExpectedOptional => 'When do you expect it? (optional)';
+
+  @override
+  String get poItems => 'Items';
+
+  @override
+  String get poAddItem => 'Add item';
+
+  @override
+  String get poNoItemsYet => 'Add what you want to order.';
+
+  @override
+  String get poRemoveItem => 'Remove';
+
+  @override
+  String get poQuantity => 'Quantity';
+
+  @override
+  String get poUnitCost => 'Price per unit';
+
+  @override
+  String get poNote => 'Note (optional)';
+
+  @override
+  String poOrderTotal(String amount) {
+    return 'Order total: $amount';
+  }
+
+  @override
+  String get poPlaceOrder => 'Place order';
+
+  @override
+  String get poOrderedValue => 'Ordered';
+
+  @override
+  String get poReceivedValue => 'Received so far';
+
+  @override
+  String get poReceiveGoods => 'Receive goods';
+
+  @override
+  String get poConfirm => 'Yes';
+
+  @override
+  String get poCancelOrder => 'Cancel order';
+
+  @override
+  String get poCancelConfirm =>
+      'Cancel this order? Nothing has arrived for it.';
+
+  @override
+  String get poCancelled => 'Order cancelled.';
+
+  @override
+  String get poCloseOrder => 'Close order';
+
+  @override
+  String get poCloseConfirm =>
+      'Close this order? What has not arrived will not be received on it.';
+
+  @override
+  String get poClosed => 'Order closed.';
+
+  @override
+  String poLineProgress(int received, int ordered, String price) {
+    return '$received of $ordered received at $price';
+  }
+
+  @override
+  String poStillToCome(int count) {
+    return '$count still to come';
+  }
+
+  @override
+  String get poReceipts => 'Goods received';
+
+  @override
+  String poReceiveTitle(String number) {
+    return 'Receive goods · $number';
+  }
+
+  @override
+  String poReceiveHint(String vendor) {
+    return 'Say how many of each item arrived from $vendor. Stock goes up and what you owe the vendor goes up by the same step.';
+  }
+
+  @override
+  String get poArrived => 'Arrived';
+
+  @override
+  String poMostIs(int count) {
+    return 'At most $count';
+  }
+
+  @override
+  String get poInvoicePrice => 'Price on the invoice';
+
+  @override
+  String get poInvoiceNo => 'Invoice number (optional)';
+
+  @override
+  String get poPaidNow => 'Paid to the vendor now (optional)';
+
+  @override
+  String get poPaidNowHint => 'Leave empty to pay later.';
+
+  @override
+  String poPaidTooMuch(String total) {
+    return 'More than the $total that arrived';
+  }
+
+  @override
+  String poReceivingValue(String amount) {
+    return 'Receiving: $amount';
+  }
+
+  @override
+  String get poReceivedDone => 'Goods received.';
+
+  @override
+  String get apiErrorBusinessTaxNeedsARate =>
+      'To charge tax, set a GST rate or a VAT rate above 0.';
+
+  @override
+  String get apiErrorPurchaseOrdersCouldNotGenerateAnOrderNumber =>
+      'Could not generate an order number, try again.';
+
+  @override
+  String get apiErrorPurchaseOrdersOnlyAPartlyReceivedOrderCanBeClosed =>
+      'Only a partly received order can be closed.';
+
+  @override
+  String get apiErrorPurchaseOrdersOnlyAnOpenOrderCanBeReceived =>
+      'Goods can only be received against an order that is open or partly received.';
+
+  @override
+  String get apiErrorPurchaseOrdersOnlyAnOrderNothingArrivedForCanBeCancelled =>
+      'Only an order that nothing has arrived for can be cancelled. Close it instead.';
+
+  @override
+  String apiErrorPurchaseOrdersOnlyCanStillBeReceived(String max, String name) {
+    return 'Only $max of $name can still be received on this order.';
+  }
+
+  @override
+  String get apiErrorPurchaseOrdersPurchaseOrderNotFound =>
+      'Purchase order not found';
+
+  @override
+  String get apiErrorPurchaseOrdersThatLineIsNotOnThisOrder =>
+      'That line is not on this order.';
+
+  @override
+  String get apiErrorPurchaseOrdersThisOrderAlreadyExists =>
+      'This purchase order already exists.';
 }

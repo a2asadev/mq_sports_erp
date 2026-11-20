@@ -8119,6 +8119,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tax inside these prices'**
   String get returnTaxIncluded;
+
+  /// Navigation: what was ordered from vendors and what has arrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase orders'**
+  String get modulePurchaseOrders;
+
+  /// No description provided for @poStatusOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get poStatusOpen;
+
+  /// No description provided for @poStatusPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Partly received'**
+  String get poStatusPartial;
+
+  /// No description provided for @poStatusReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get poStatusReceived;
+
+  /// No description provided for @poStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get poStatusClosed;
+
+  /// No description provided for @poStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get poStatusCancelled;
+
+  /// No description provided for @poFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get poFilterAll;
+
+  /// No description provided for @poNewOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'New order'**
+  String get poNewOrder;
+
+  /// No description provided for @poSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by order number or vendor'**
+  String get poSearchHint;
+
+  /// No description provided for @poNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No purchase orders yet.'**
+  String get poNone;
+
+  /// No description provided for @poReceivedOfUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'{received} of {ordered} units received'**
+  String poReceivedOfUnits(int received, int ordered);
+
+  /// No description provided for @poExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected {date}'**
+  String poExpected(String date);
+
+  /// No description provided for @poExpectedLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected {date}: late'**
+  String poExpectedLate(String date);
+
+  /// No description provided for @poCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase order {number} created.'**
+  String poCreated(String number);
+
+  /// No description provided for @poFormHint.
+  ///
+  /// In en, this message translates to:
+  /// **'An order only records what you asked the vendor for. Stock and what you owe change when the goods arrive.'**
+  String get poFormHint;
+
+  /// No description provided for @poChooseVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a vendor'**
+  String get poChooseVendor;
+
+  /// No description provided for @poExpectedOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'When do you expect it? (optional)'**
+  String get poExpectedOptional;
+
+  /// No description provided for @poItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get poItems;
+
+  /// No description provided for @poAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add item'**
+  String get poAddItem;
+
+  /// No description provided for @poNoItemsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add what you want to order.'**
+  String get poNoItemsYet;
+
+  /// No description provided for @poRemoveItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get poRemoveItem;
+
+  /// No description provided for @poQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get poQuantity;
+
+  /// No description provided for @poUnitCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per unit'**
+  String get poUnitCost;
+
+  /// No description provided for @poNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get poNote;
+
+  /// No description provided for @poOrderTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Order total: {amount}'**
+  String poOrderTotal(String amount);
+
+  /// No description provided for @poPlaceOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Place order'**
+  String get poPlaceOrder;
+
+  /// No description provided for @poOrderedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Ordered'**
+  String get poOrderedValue;
+
+  /// No description provided for @poReceivedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Received so far'**
+  String get poReceivedValue;
+
+  /// No description provided for @poReceiveGoods.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive goods'**
+  String get poReceiveGoods;
+
+  /// No description provided for @poConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get poConfirm;
+
+  /// No description provided for @poCancelOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel order'**
+  String get poCancelOrder;
+
+  /// No description provided for @poCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this order? Nothing has arrived for it.'**
+  String get poCancelConfirm;
+
+  /// No description provided for @poCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Order cancelled.'**
+  String get poCancelled;
+
+  /// No description provided for @poCloseOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Close order'**
+  String get poCloseOrder;
+
+  /// No description provided for @poCloseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Close this order? What has not arrived will not be received on it.'**
+  String get poCloseConfirm;
+
+  /// No description provided for @poClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Order closed.'**
+  String get poClosed;
+
+  /// No description provided for @poLineProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{received} of {ordered} received at {price}'**
+  String poLineProgress(int received, int ordered, String price);
+
+  /// No description provided for @poStillToCome.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} still to come'**
+  String poStillToCome(int count);
+
+  /// No description provided for @poReceipts.
+  ///
+  /// In en, this message translates to:
+  /// **'Goods received'**
+  String get poReceipts;
+
+  /// No description provided for @poReceiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive goods · {number}'**
+  String poReceiveTitle(String number);
+
+  /// No description provided for @poReceiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Say how many of each item arrived from {vendor}. Stock goes up and what you owe the vendor goes up by the same step.'**
+  String poReceiveHint(String vendor);
+
+  /// No description provided for @poArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get poArrived;
+
+  /// No description provided for @poMostIs.
+  ///
+  /// In en, this message translates to:
+  /// **'At most {count}'**
+  String poMostIs(int count);
+
+  /// No description provided for @poInvoicePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price on the invoice'**
+  String get poInvoicePrice;
+
+  /// No description provided for @poInvoiceNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoice number (optional)'**
+  String get poInvoiceNo;
+
+  /// No description provided for @poPaidNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid to the vendor now (optional)'**
+  String get poPaidNow;
+
+  /// No description provided for @poPaidNowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty to pay later.'**
+  String get poPaidNowHint;
+
+  /// No description provided for @poPaidTooMuch.
+  ///
+  /// In en, this message translates to:
+  /// **'More than the {total} that arrived'**
+  String poPaidTooMuch(String total);
+
+  /// No description provided for @poReceivingValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Receiving: {amount}'**
+  String poReceivingValue(String amount);
+
+  /// No description provided for @poReceivedDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Goods received.'**
+  String get poReceivedDone;
+
+  /// No description provided for @apiErrorBusinessTaxNeedsARate.
+  ///
+  /// In en, this message translates to:
+  /// **'To charge tax, set a GST rate or a VAT rate above 0.'**
+  String get apiErrorBusinessTaxNeedsARate;
+
+  /// No description provided for @apiErrorPurchaseOrdersCouldNotGenerateAnOrderNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not generate an order number, try again.'**
+  String get apiErrorPurchaseOrdersCouldNotGenerateAnOrderNumber;
+
+  /// No description provided for @apiErrorPurchaseOrdersOnlyAPartlyReceivedOrderCanBeClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Only a partly received order can be closed.'**
+  String get apiErrorPurchaseOrdersOnlyAPartlyReceivedOrderCanBeClosed;
+
+  /// No description provided for @apiErrorPurchaseOrdersOnlyAnOpenOrderCanBeReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Goods can only be received against an order that is open or partly received.'**
+  String get apiErrorPurchaseOrdersOnlyAnOpenOrderCanBeReceived;
+
+  /// No description provided for @apiErrorPurchaseOrdersOnlyAnOrderNothingArrivedForCanBeCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Only an order that nothing has arrived for can be cancelled. Close it instead.'**
+  String get apiErrorPurchaseOrdersOnlyAnOrderNothingArrivedForCanBeCancelled;
+
+  /// No description provided for @apiErrorPurchaseOrdersOnlyCanStillBeReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {max} of {name} can still be received on this order.'**
+  String apiErrorPurchaseOrdersOnlyCanStillBeReceived(String max, String name);
+
+  /// No description provided for @apiErrorPurchaseOrdersPurchaseOrderNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase order not found'**
+  String get apiErrorPurchaseOrdersPurchaseOrderNotFound;
+
+  /// No description provided for @apiErrorPurchaseOrdersThatLineIsNotOnThisOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'That line is not on this order.'**
+  String get apiErrorPurchaseOrdersThatLineIsNotOnThisOrder;
+
+  /// No description provided for @apiErrorPurchaseOrdersThisOrderAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'This purchase order already exists.'**
+  String get apiErrorPurchaseOrdersThisOrderAlreadyExists;
 }
 
 class _AppLocalizationsDelegate

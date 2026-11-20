@@ -40,6 +40,8 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorAuthRefreshTokenWasAlreadyUsed;
     case 'auth.you_do_not_have_permission_for':
       return l10n.apiErrorAuthYouDoNotHavePermissionFor;
+    case 'business.tax_needs_a_rate':
+      return l10n.apiErrorBusinessTaxNeedsARate;
     case 'categories.a_category_cannot_be_placed_inside':
       return l10n.apiErrorCategoriesACategoryCannotBePlacedInside;
     case 'categories.a_category_named_already_exists_here':
@@ -156,6 +158,22 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorOrdersThisOrderWouldTakeOverThe(_text(params, 'name'), _text(params, 'limit'), _text(params, 'balance'));
     case 'orders.use_the_cancel_action_to_cancel':
       return l10n.apiErrorOrdersUseTheCancelActionToCancel;
+    case 'purchase_orders.could_not_generate_an_order_number':
+      return l10n.apiErrorPurchaseOrdersCouldNotGenerateAnOrderNumber;
+    case 'purchase_orders.only_a_partly_received_order_can_be_closed':
+      return l10n.apiErrorPurchaseOrdersOnlyAPartlyReceivedOrderCanBeClosed;
+    case 'purchase_orders.only_an_open_order_can_be_received':
+      return l10n.apiErrorPurchaseOrdersOnlyAnOpenOrderCanBeReceived;
+    case 'purchase_orders.only_an_order_nothing_arrived_for_can_be_cancelled':
+      return l10n.apiErrorPurchaseOrdersOnlyAnOrderNothingArrivedForCanBeCancelled;
+    case 'purchase_orders.only_can_still_be_received':
+      return l10n.apiErrorPurchaseOrdersOnlyCanStillBeReceived(_text(params, 'max'), _text(params, 'name'));
+    case 'purchase_orders.purchase_order_not_found':
+      return l10n.apiErrorPurchaseOrdersPurchaseOrderNotFound;
+    case 'purchase_orders.that_line_is_not_on_this_order':
+      return l10n.apiErrorPurchaseOrdersThatLineIsNotOnThisOrder;
+    case 'purchase_orders.this_order_already_exists':
+      return l10n.apiErrorPurchaseOrdersThisOrderAlreadyExists;
     case 'photos.a_photo_can_be_10_mb':
       return l10n.apiErrorPhotosAPhotoCanBe10Mb;
     case 'photos.not_found':
