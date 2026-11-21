@@ -13,7 +13,8 @@ enum PhotoKind {
   category,
   customer,
   vendor,
-  business;
+  business,
+  banner;
 
   String get path => name;
 }

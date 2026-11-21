@@ -13,6 +13,7 @@ class ProductModel implements SyncableModel {
     this.brand = '',
     this.description = '',
     this.isActive = true,
+    this.isFeatured = false,
     List<VariantModel>? variants,
     List<ProductImage>? images,
     DateTime? createdAt,
@@ -36,6 +37,9 @@ class ProductModel implements SyncableModel {
   final String brand;
   final String description;
   final bool isActive;
+
+  /// Shown in the "Featured" shelf of the online store's home page.
+  final bool isFeatured;
   final List<VariantModel> variants;
 
   /// Published photos, main one first. Changed only by the photo upload.
@@ -66,6 +70,7 @@ class ProductModel implements SyncableModel {
       'brand': brand,
       'description': description,
       'isActive': isActive,
+      'isFeatured': isFeatured,
       'variants': variants.map((VariantModel v) => v.toMap()).toList(),
       'images': images.map((ProductImage i) => i.toMap()).toList(),
       'createdAt': createdAt.toIso8601String(),
@@ -83,6 +88,7 @@ class ProductModel implements SyncableModel {
       brand: map['brand'] as String? ?? '',
       description: map['description'] as String? ?? '',
       isActive: map['isActive'] as bool? ?? true,
+      isFeatured: map['isFeatured'] as bool? ?? false,
       variants: rawVariants
           .whereType<Map<String, dynamic>>()
           .map(VariantModel.fromMap)
@@ -103,6 +109,7 @@ class ProductModel implements SyncableModel {
     String? brand,
     String? description,
     bool? isActive,
+    bool? isFeatured,
     List<VariantModel>? variants,
     List<ProductImage>? images,
     DateTime? updatedAt,
@@ -114,6 +121,7 @@ class ProductModel implements SyncableModel {
       brand: brand ?? this.brand,
       description: description ?? this.description,
       isActive: isActive ?? this.isActive,
+      isFeatured: isFeatured ?? this.isFeatured,
       variants: variants ?? this.variants,
       images: images ?? this.images,
       createdAt: createdAt,

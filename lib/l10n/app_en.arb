@@ -4421,5 +4421,42 @@
         "type": "String"
       }
     }
-  }
+  },
+  "moduleBanners": "Store banners",
+  "bannerNew": "New banner",
+  "bannerEdit": "Change banner",
+  "bannerNone": "No banners yet. A banner is a picture with a few words at the top of your online store's home page.",
+  "bannerHint": "They show in this order. A banner needs a picture before the store shows it.",
+  "bannerDeleteConfirm": "Delete the banner \"{title}\"?",
+  "@bannerDeleteConfirm": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "bannerShownInStore": "Shown in the store",
+  "bannerNeedsPicture": "Add a picture to show it",
+  "bannerSwitchedOff": "Switched off",
+  "bannerMoveUp": "Move up",
+  "bannerMoveDown": "Move down",
+  "bannerSaveFirst": "Save the banner first, then you can add its picture.",
+  "bannerPicture": "Picture",
+  "bannerPictureHint": "A wide picture works best (for example 1600 x 533 pixels). The words show over its lower part.",
+  "bannerTitle": "Title",
+  "bannerSubtitle": "A line under the title (optional)",
+  "bannerButtonText": "Button text (optional)",
+  "bannerLink": "Where it leads (optional)",
+  "bannerLinkHint": "A page of your store like /products, or a web address starting with https://",
+  "bannerSave": "Save banner",
+  "bannerSaved": "Banner saved.",
+  "bannerCreatedAddPicture": "Banner saved. Now add its picture.",
+  "bannerNeedTitle": "Give the banner a title.",
+  "bannerBadLink": "A link must start with / (a page of your store) or https://",
+  "productFormFeatured": "Feature on the online store",
+  "productFormFeaturedHint": "Shows this product in the Featured shelf of the store's home page.",
+  "apiErrorBannersABannerNeedsATitle": "Give the banner a title.",
+  "apiErrorBannersBannerNotFound": "Banner not found",
+  "apiErrorBannersTheLinkMustStartWithOrHttps": "A link must be a page of the store (starting with /) or a web address starting with https://.",
+  "apiErrorBannersTheOrderIsNotTheListOf": "The order must list every banner once."
 }

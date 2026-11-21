@@ -39,6 +39,7 @@ class ErpModule {
     required this.builder,
     this.group = ModuleGroup.main,
     this.needsRegister = false,
+    this.needsOnlineStore = false,
   });
 
   final String id;
@@ -50,4 +51,7 @@ class ErpModule {
 
   /// Listed only for a business that keeps a cash register (see `BusinessInfo.usesRegister`).
   final bool needsRegister;
+
+  /// Listed only for the business that runs the public online store (see `BusinessInfo.hasOnlineStore`).
+  final bool needsOnlineStore;
 }

@@ -9500,6 +9500,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Move to {status}'**
   String webOrdersMoveTo(String status);
+
+  /// No description provided for @moduleBanners.
+  ///
+  /// In en, this message translates to:
+  /// **'Store banners'**
+  String get moduleBanners;
+
+  /// No description provided for @bannerNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New banner'**
+  String get bannerNew;
+
+  /// No description provided for @bannerEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change banner'**
+  String get bannerEdit;
+
+  /// No description provided for @bannerNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No banners yet. A banner is a picture with a few words at the top of your online store\'s home page.'**
+  String get bannerNone;
+
+  /// No description provided for @bannerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They show in this order. A banner needs a picture before the store shows it.'**
+  String get bannerHint;
+
+  /// No description provided for @bannerDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the banner \"{title}\"?'**
+  String bannerDeleteConfirm(String title);
+
+  /// No description provided for @bannerShownInStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in the store'**
+  String get bannerShownInStore;
+
+  /// No description provided for @bannerNeedsPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a picture to show it'**
+  String get bannerNeedsPicture;
+
+  /// No description provided for @bannerSwitchedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched off'**
+  String get bannerSwitchedOff;
+
+  /// No description provided for @bannerMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get bannerMoveUp;
+
+  /// No description provided for @bannerMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get bannerMoveDown;
+
+  /// No description provided for @bannerSaveFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the banner first, then you can add its picture.'**
+  String get bannerSaveFirst;
+
+  /// No description provided for @bannerPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Picture'**
+  String get bannerPicture;
+
+  /// No description provided for @bannerPictureHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A wide picture works best (for example 1600 x 533 pixels). The words show over its lower part.'**
+  String get bannerPictureHint;
+
+  /// No description provided for @bannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get bannerTitle;
+
+  /// No description provided for @bannerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A line under the title (optional)'**
+  String get bannerSubtitle;
+
+  /// No description provided for @bannerButtonText.
+  ///
+  /// In en, this message translates to:
+  /// **'Button text (optional)'**
+  String get bannerButtonText;
+
+  /// No description provided for @bannerLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Where it leads (optional)'**
+  String get bannerLink;
+
+  /// No description provided for @bannerLinkHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A page of your store like /products, or a web address starting with https://'**
+  String get bannerLinkHint;
+
+  /// No description provided for @bannerSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save banner'**
+  String get bannerSave;
+
+  /// No description provided for @bannerSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner saved.'**
+  String get bannerSaved;
+
+  /// No description provided for @bannerCreatedAddPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner saved. Now add its picture.'**
+  String get bannerCreatedAddPicture;
+
+  /// No description provided for @bannerNeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the banner a title.'**
+  String get bannerNeedTitle;
+
+  /// No description provided for @bannerBadLink.
+  ///
+  /// In en, this message translates to:
+  /// **'A link must start with / (a page of your store) or https://'**
+  String get bannerBadLink;
+
+  /// No description provided for @productFormFeatured.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature on the online store'**
+  String get productFormFeatured;
+
+  /// No description provided for @productFormFeaturedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows this product in the Featured shelf of the store\'s home page.'**
+  String get productFormFeaturedHint;
+
+  /// No description provided for @apiErrorBannersABannerNeedsATitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the banner a title.'**
+  String get apiErrorBannersABannerNeedsATitle;
+
+  /// No description provided for @apiErrorBannersBannerNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner not found'**
+  String get apiErrorBannersBannerNotFound;
+
+  /// No description provided for @apiErrorBannersTheLinkMustStartWithOrHttps.
+  ///
+  /// In en, this message translates to:
+  /// **'A link must be a page of the store (starting with /) or a web address starting with https://.'**
+  String get apiErrorBannersTheLinkMustStartWithOrHttps;
+
+  /// No description provided for @apiErrorBannersTheOrderIsNotTheListOf.
+  ///
+  /// In en, this message translates to:
+  /// **'The order must list every banner once.'**
+  String get apiErrorBannersTheOrderIsNotTheListOf;
 }
 
 class _AppLocalizationsDelegate

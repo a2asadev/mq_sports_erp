@@ -51,6 +51,7 @@ class Products extends Table {
   TextColumn get brand => text().withDefault(const Constant(''))();
   TextColumn get description => text().withDefault(const Constant(''))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  BoolColumn get isFeatured => boolean().withDefault(const Constant(false))();
   /// The photos as a JSON list (see ProductImage).
   TextColumn get imagesJson => text().withDefault(const Constant('[]'))();
   DateTimeColumn get createdAt => dateTime()();

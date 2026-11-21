@@ -267,6 +267,7 @@ class ProductsCollection extends LocalCollection<ProductModel> {
         brand: r.brand,
         description: r.description,
         isActive: r.isActive,
+        isFeatured: r.isFeatured,
         images: _images(r.imagesJson),
         variants: (List<VariantRow>.of(variants)
               ..sort((VariantRow a, VariantRow b) => a.position.compareTo(b.position)))
@@ -310,6 +311,7 @@ class ProductsCollection extends LocalCollection<ProductModel> {
                 brand: Value<String>(p.brand),
                 description: Value<String>(p.description),
                 isActive: Value<bool>(p.isActive),
+                isFeatured: Value<bool>(p.isFeatured),
                 imagesJson: Value<String>(jsonEncode(p.images.map((ProductImage i) => i.toMap()).toList())),
                 createdAt: Value<DateTime>(p.createdAt),
                 updatedAt: Value<DateTime>(p.updatedAt),

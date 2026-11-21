@@ -4,6 +4,7 @@ import 'package:a2_stocks/widgets/photo_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/utils/category_tree.dart';
 import 'package:a2_stocks/core/utils/price_warnings.dart';
+import 'package:a2_stocks/models/business_info.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/product_image.dart';
 import 'package:a2_stocks/models/product_model.dart';
@@ -29,6 +30,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   late final TextEditingController _descriptionController;
   late String? _categoryId;
   late bool _isActive;
+  late bool _isFeatured;
   late List<VariantModel> _variants;
   bool _isSubmitting = false;
   bool _showVariantError = false;
@@ -45,6 +47,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
     final String? categoryId = existing?.categoryId;
     _categoryId = (categoryId == null || categoryId.isEmpty) ? null : categoryId;
     _isActive = existing?.isActive ?? true;
+    _isFeatured = existing?.isFeatured ?? false;
     _variants = <VariantModel>[...?existing?.variants];
     _images = existing?.images ?? const <ProductImage>[];
   }
@@ -116,6 +119,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             brand: _brandController.text,
             description: _descriptionController.text,
             isActive: _isActive,
+            isFeatured: _isFeatured,
             variants: _variants,
           )
         : await notifier.updateProduct(existing.copyWith(
@@ -124,6 +128,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             brand: _brandController.text,
             description: _descriptionController.text,
             isActive: _isActive,
+            isFeatured: _isFeatured,
             variants: _variants,
             images: _images,
           ));
@@ -300,6 +305,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                           ? null
                           : (bool value) => setState(() => _isActive = value),
                     ),
+                    if (ref.watch(businessProvider.select((BusinessInfo b) => b.hasOnlineStore)))
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(context.l10n.productFormFeatured),
+                        subtitle: Text(context.l10n.productFormFeaturedHint),
+                        value: _isFeatured,
+                        onChanged: locked ? null : (bool value) => setState(() => _isFeatured = value),
+                      ),
                     const SizedBox(height: 8),
                     Row(
                       children: <Widget>[

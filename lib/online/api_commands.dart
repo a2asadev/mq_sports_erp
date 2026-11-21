@@ -113,6 +113,7 @@ class ApiCommands {
       'brand': item.brand,
       'description': item.description,
       'isActive': item.isActive,
+      'isFeatured': item.isFeatured,
       'variants': item.variants.map(variantBody).toList(),
     };
     if (isNew) {

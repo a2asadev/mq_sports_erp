@@ -14,6 +14,7 @@ import 'package:a2_stocks/screens/labels/labels_screen.dart';
 import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
 import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
+import 'package:a2_stocks/screens/banners/banners_screen.dart';
 import 'package:a2_stocks/screens/customers/customer_insights_screen.dart';
 import 'package:a2_stocks/screens/sales/web_orders_screen.dart';
 import 'package:a2_stocks/screens/promotions/promotions_screen.dart';
@@ -99,6 +100,15 @@ final Provider<List<ErpModule>> erpModulesProvider =
       icon: Icons.shopping_cart_checkout_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
       builder: (BuildContext context) => const PurchasesScreen(),
+    ),
+    ErpModule(
+      id: 'banners',
+      group: ModuleGroup.sales,
+      title: (AppLocalizations l10n) => l10n.moduleBanners,
+      icon: Icons.view_carousel_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      needsOnlineStore: true,
+      builder: (BuildContext context) => const BannersScreen(),
     ),
     ErpModule(
       id: 'web_orders',
@@ -236,8 +246,9 @@ final Provider<List<ErpModule>> visibleModulesProvider =
     return const <ErpModule>[];
   }
   final bool usesRegister = ref.watch(businessProvider.select((BusinessInfo b) => b.usesRegister));
+  final bool hasOnlineStore = ref.watch(businessProvider.select((BusinessInfo b) => b.hasOnlineStore));
   return ref
       .watch(erpModulesProvider)
-      .where((ErpModule module) => module.allowedRoles.contains(user.role) && (!module.needsRegister || usesRegister))
+      .where((ErpModule module) => module.allowedRoles.contains(user.role) && (!module.needsRegister || usesRegister) && (!module.needsOnlineStore || hasOnlineStore))
       .toList();
 });

@@ -104,7 +104,7 @@ void main() {
 
   test('products keep their variants in order, with attributes in their original order', () async {
     final ProductModel product = ProductModel(
-      id: 'p1', name: 'Bat', categoryId: 'c1', brand: 'MQ', description: 'd', createdAt: t1, updatedAt: t2,
+      id: 'p1', name: 'Bat', categoryId: 'c1', brand: 'MQ', description: 'd', isFeatured: true, createdAt: t1, updatedAt: t2,
       variants: <VariantModel>[
         VariantModel(id: 'v2', sku: 'B-L', attributes: <String, String>{'Size': 'L', 'Grip': 'Rubber'}, costPrice: 60, salePrice: 150.5, isWholesale: true, wholesalePrice: 140, alertThreshold: 3),
         VariantModel(id: 'v1', sku: 'B-S', name: 'Small', isActive: false),

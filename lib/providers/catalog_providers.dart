@@ -289,6 +289,7 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
     required String description,
     required bool isActive,
     required List<VariantModel> variants,
+    bool isFeatured = false,
   }) async {
     if (!ref.read(canManageCatalogProvider)) {
       return reportFailure(PermissionDeniedException(_noPermissionMessage));
@@ -299,6 +300,7 @@ class ProductsNotifier extends BaseListNotifier<ProductModel> {
       brand: brand.trim(),
       description: description.trim(),
       isActive: isActive,
+      isFeatured: isFeatured,
       variants: variants,
     );
     try {

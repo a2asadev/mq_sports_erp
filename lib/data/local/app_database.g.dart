@@ -946,6 +946,16 @@ class $ProductsTable extends Products
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _isFeaturedMeta =
+      const VerificationMeta('isFeatured');
+  @override
+  late final GeneratedColumn<bool> isFeatured = GeneratedColumn<bool>(
+      'is_featured', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_featured" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _imagesJsonMeta =
       const VerificationMeta('imagesJson');
   @override
@@ -974,6 +984,7 @@ class $ProductsTable extends Products
         brand,
         description,
         isActive,
+        isFeatured,
         imagesJson,
         createdAt,
         updatedAt
@@ -1021,6 +1032,12 @@ class $ProductsTable extends Products
       context.handle(_isActiveMeta,
           isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
     }
+    if (data.containsKey('is_featured')) {
+      context.handle(
+          _isFeaturedMeta,
+          isFeatured.isAcceptableOrUnknown(
+              data['is_featured']!, _isFeaturedMeta));
+    }
     if (data.containsKey('images_json')) {
       context.handle(
           _imagesJsonMeta,
@@ -1060,6 +1077,8 @@ class $ProductsTable extends Products
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       isActive: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      isFeatured: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_featured'])!,
       imagesJson: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}images_json'])!,
       createdAt: attachedDatabase.typeMapping
@@ -1082,6 +1101,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
   final String brand;
   final String description;
   final bool isActive;
+  final bool isFeatured;
 
   /// The photos as a JSON list (see ProductImage).
   final String imagesJson;
@@ -1094,6 +1114,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       required this.brand,
       required this.description,
       required this.isActive,
+      required this.isFeatured,
       required this.imagesJson,
       required this.createdAt,
       required this.updatedAt});
@@ -1106,6 +1127,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
     map['brand'] = Variable<String>(brand);
     map['description'] = Variable<String>(description);
     map['is_active'] = Variable<bool>(isActive);
+    map['is_featured'] = Variable<bool>(isFeatured);
     map['images_json'] = Variable<String>(imagesJson);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1120,6 +1142,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       brand: Value(brand),
       description: Value(description),
       isActive: Value(isActive),
+      isFeatured: Value(isFeatured),
       imagesJson: Value(imagesJson),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -1136,6 +1159,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       brand: serializer.fromJson<String>(json['brand']),
       description: serializer.fromJson<String>(json['description']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      isFeatured: serializer.fromJson<bool>(json['isFeatured']),
       imagesJson: serializer.fromJson<String>(json['imagesJson']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -1151,6 +1175,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       'brand': serializer.toJson<String>(brand),
       'description': serializer.toJson<String>(description),
       'isActive': serializer.toJson<bool>(isActive),
+      'isFeatured': serializer.toJson<bool>(isFeatured),
       'imagesJson': serializer.toJson<String>(imagesJson),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -1164,6 +1189,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
           String? brand,
           String? description,
           bool? isActive,
+          bool? isFeatured,
           String? imagesJson,
           DateTime? createdAt,
           DateTime? updatedAt}) =>
@@ -1174,6 +1200,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
         brand: brand ?? this.brand,
         description: description ?? this.description,
         isActive: isActive ?? this.isActive,
+        isFeatured: isFeatured ?? this.isFeatured,
         imagesJson: imagesJson ?? this.imagesJson,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -1188,6 +1215,8 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
       description:
           data.description.present ? data.description.value : this.description,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      isFeatured:
+          data.isFeatured.present ? data.isFeatured.value : this.isFeatured,
       imagesJson:
           data.imagesJson.present ? data.imagesJson.value : this.imagesJson,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -1204,6 +1233,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
           ..write('brand: $brand, ')
           ..write('description: $description, ')
           ..write('isActive: $isActive, ')
+          ..write('isFeatured: $isFeatured, ')
           ..write('imagesJson: $imagesJson, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1213,7 +1243,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
 
   @override
   int get hashCode => Object.hash(id, name, categoryId, brand, description,
-      isActive, imagesJson, createdAt, updatedAt);
+      isActive, isFeatured, imagesJson, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1224,6 +1254,7 @@ class ProductRow extends DataClass implements Insertable<ProductRow> {
           other.brand == this.brand &&
           other.description == this.description &&
           other.isActive == this.isActive &&
+          other.isFeatured == this.isFeatured &&
           other.imagesJson == this.imagesJson &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -1236,6 +1267,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
   final Value<String> brand;
   final Value<String> description;
   final Value<bool> isActive;
+  final Value<bool> isFeatured;
   final Value<String> imagesJson;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -1247,6 +1279,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
     this.brand = const Value.absent(),
     this.description = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.isFeatured = const Value.absent(),
     this.imagesJson = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -1259,6 +1292,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
     this.brand = const Value.absent(),
     this.description = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.isFeatured = const Value.absent(),
     this.imagesJson = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -1275,6 +1309,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
     Expression<String>? brand,
     Expression<String>? description,
     Expression<bool>? isActive,
+    Expression<bool>? isFeatured,
     Expression<String>? imagesJson,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -1287,6 +1322,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
       if (brand != null) 'brand': brand,
       if (description != null) 'description': description,
       if (isActive != null) 'is_active': isActive,
+      if (isFeatured != null) 'is_featured': isFeatured,
       if (imagesJson != null) 'images_json': imagesJson,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -1301,6 +1337,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
       Value<String>? brand,
       Value<String>? description,
       Value<bool>? isActive,
+      Value<bool>? isFeatured,
       Value<String>? imagesJson,
       Value<DateTime>? createdAt,
       Value<DateTime>? updatedAt,
@@ -1312,6 +1349,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
       brand: brand ?? this.brand,
       description: description ?? this.description,
       isActive: isActive ?? this.isActive,
+      isFeatured: isFeatured ?? this.isFeatured,
       imagesJson: imagesJson ?? this.imagesJson,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -1340,6 +1378,9 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (isFeatured.present) {
+      map['is_featured'] = Variable<bool>(isFeatured.value);
+    }
     if (imagesJson.present) {
       map['images_json'] = Variable<String>(imagesJson.value);
     }
@@ -1364,6 +1405,7 @@ class ProductsCompanion extends UpdateCompanion<ProductRow> {
           ..write('brand: $brand, ')
           ..write('description: $description, ')
           ..write('isActive: $isActive, ')
+          ..write('isFeatured: $isFeatured, ')
           ..write('imagesJson: $imagesJson, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
@@ -9779,6 +9821,7 @@ typedef $$ProductsTableCreateCompanionBuilder = ProductsCompanion Function({
   Value<String> brand,
   Value<String> description,
   Value<bool> isActive,
+  Value<bool> isFeatured,
   Value<String> imagesJson,
   required DateTime createdAt,
   required DateTime updatedAt,
@@ -9791,6 +9834,7 @@ typedef $$ProductsTableUpdateCompanionBuilder = ProductsCompanion Function({
   Value<String> brand,
   Value<String> description,
   Value<bool> isActive,
+  Value<bool> isFeatured,
   Value<String> imagesJson,
   Value<DateTime> createdAt,
   Value<DateTime> updatedAt,
@@ -9823,6 +9867,9 @@ class $$ProductsTableFilterComposer
 
   ColumnFilters<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isFeatured => $composableBuilder(
+      column: $table.isFeatured, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get imagesJson => $composableBuilder(
       column: $table.imagesJson, builder: (column) => ColumnFilters(column));
@@ -9861,6 +9908,9 @@ class $$ProductsTableOrderingComposer
   ColumnOrderings<bool> get isActive => $composableBuilder(
       column: $table.isActive, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get isFeatured => $composableBuilder(
+      column: $table.isFeatured, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get imagesJson => $composableBuilder(
       column: $table.imagesJson, builder: (column) => ColumnOrderings(column));
 
@@ -9897,6 +9947,9 @@ class $$ProductsTableAnnotationComposer
 
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<bool> get isFeatured => $composableBuilder(
+      column: $table.isFeatured, builder: (column) => column);
 
   GeneratedColumn<String> get imagesJson => $composableBuilder(
       column: $table.imagesJson, builder: (column) => column);
@@ -9937,6 +9990,7 @@ class $$ProductsTableTableManager extends RootTableManager<
             Value<String> brand = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<bool> isFeatured = const Value.absent(),
             Value<String> imagesJson = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime> updatedAt = const Value.absent(),
@@ -9949,6 +10003,7 @@ class $$ProductsTableTableManager extends RootTableManager<
             brand: brand,
             description: description,
             isActive: isActive,
+            isFeatured: isFeatured,
             imagesJson: imagesJson,
             createdAt: createdAt,
             updatedAt: updatedAt,
@@ -9961,6 +10016,7 @@ class $$ProductsTableTableManager extends RootTableManager<
             Value<String> brand = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
+            Value<bool> isFeatured = const Value.absent(),
             Value<String> imagesJson = const Value.absent(),
             required DateTime createdAt,
             required DateTime updatedAt,
@@ -9973,6 +10029,7 @@ class $$ProductsTableTableManager extends RootTableManager<
             brand: brand,
             description: description,
             isActive: isActive,
+            isFeatured: isFeatured,
             imagesJson: imagesJson,
             createdAt: createdAt,
             updatedAt: updatedAt,

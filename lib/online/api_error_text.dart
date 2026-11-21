@@ -154,6 +154,14 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorOrdersThisCustomerNoLongerExists;
     case 'orders.this_order_already_exists':
       return l10n.apiErrorOrdersThisOrderAlreadyExists;
+    case 'banners.a_banner_needs_a_title':
+      return l10n.apiErrorBannersABannerNeedsATitle;
+    case 'banners.banner_not_found':
+      return l10n.apiErrorBannersBannerNotFound;
+    case 'banners.the_link_must_start_with_or_https':
+      return l10n.apiErrorBannersTheLinkMustStartWithOrHttps;
+    case 'banners.the_order_is_not_the_list_of':
+      return l10n.apiErrorBannersTheOrderIsNotTheListOf;
     case 'orders.this_order_would_take_over_the':
       return l10n.apiErrorOrdersThisOrderWouldTakeOverThe(_text(params, 'name'), _text(params, 'limit'), _text(params, 'balance'));
     case 'orders.use_the_cancel_action_to_cancel':

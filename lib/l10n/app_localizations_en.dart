@@ -6019,4 +6019,105 @@ class AppLocalizationsEn extends AppLocalizations {
   String webOrdersMoveTo(String status) {
     return 'Move to $status';
   }
+
+  @override
+  String get moduleBanners => 'Store banners';
+
+  @override
+  String get bannerNew => 'New banner';
+
+  @override
+  String get bannerEdit => 'Change banner';
+
+  @override
+  String get bannerNone =>
+      'No banners yet. A banner is a picture with a few words at the top of your online store\'s home page.';
+
+  @override
+  String get bannerHint =>
+      'They show in this order. A banner needs a picture before the store shows it.';
+
+  @override
+  String bannerDeleteConfirm(String title) {
+    return 'Delete the banner \"$title\"?';
+  }
+
+  @override
+  String get bannerShownInStore => 'Shown in the store';
+
+  @override
+  String get bannerNeedsPicture => 'Add a picture to show it';
+
+  @override
+  String get bannerSwitchedOff => 'Switched off';
+
+  @override
+  String get bannerMoveUp => 'Move up';
+
+  @override
+  String get bannerMoveDown => 'Move down';
+
+  @override
+  String get bannerSaveFirst =>
+      'Save the banner first, then you can add its picture.';
+
+  @override
+  String get bannerPicture => 'Picture';
+
+  @override
+  String get bannerPictureHint =>
+      'A wide picture works best (for example 1600 x 533 pixels). The words show over its lower part.';
+
+  @override
+  String get bannerTitle => 'Title';
+
+  @override
+  String get bannerSubtitle => 'A line under the title (optional)';
+
+  @override
+  String get bannerButtonText => 'Button text (optional)';
+
+  @override
+  String get bannerLink => 'Where it leads (optional)';
+
+  @override
+  String get bannerLinkHint =>
+      'A page of your store like /products, or a web address starting with https://';
+
+  @override
+  String get bannerSave => 'Save banner';
+
+  @override
+  String get bannerSaved => 'Banner saved.';
+
+  @override
+  String get bannerCreatedAddPicture => 'Banner saved. Now add its picture.';
+
+  @override
+  String get bannerNeedTitle => 'Give the banner a title.';
+
+  @override
+  String get bannerBadLink =>
+      'A link must start with / (a page of your store) or https://';
+
+  @override
+  String get productFormFeatured => 'Feature on the online store';
+
+  @override
+  String get productFormFeaturedHint =>
+      'Shows this product in the Featured shelf of the store\'s home page.';
+
+  @override
+  String get apiErrorBannersABannerNeedsATitle => 'Give the banner a title.';
+
+  @override
+  String get apiErrorBannersBannerNotFound => 'Banner not found';
+
+  @override
+  String get apiErrorBannersTheLinkMustStartWithOrHttps =>
+      'A link must be a page of the store (starting with /) or a web address starting with https://.';
+
+  @override
+  String get apiErrorBannersTheOrderIsNotTheListOf =>
+      'The order must list every banner once.';
 }
