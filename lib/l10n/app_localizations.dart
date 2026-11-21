@@ -9446,6 +9446,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Happy birthday {name}! Wishing you a wonderful year ahead. - {shop}'**
   String insightsMessageBirthday(String name, String shop);
+
+  /// No description provided for @moduleWebOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Online orders'**
+  String get moduleWebOrders;
+
+  /// No description provided for @webOrdersNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders here.'**
+  String get webOrdersNone;
+
+  /// No description provided for @webOrdersJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get webOrdersJustNow;
+
+  /// No description provided for @webOrdersMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 minute ago} other{{count} minutes ago}}'**
+  String webOrdersMinutesAgo(int count);
+
+  /// No description provided for @webOrdersHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 hour ago} other{{count} hours ago}}'**
+  String webOrdersHoursAgo(int count);
+
+  /// No description provided for @webOrdersDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String webOrdersDaysAgo(int count);
+
+  /// No description provided for @webOrdersItems.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}}'**
+  String webOrdersItems(int count);
+
+  /// No description provided for @webOrdersCollect.
+  ///
+  /// In en, this message translates to:
+  /// **'Collect {amount} on delivery'**
+  String webOrdersCollect(String amount);
+
+  /// No description provided for @webOrdersMoveTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Move to {status}'**
+  String webOrdersMoveTo(String status);
 }
 
 class _AppLocalizationsDelegate

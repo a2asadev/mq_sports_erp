@@ -13,6 +13,7 @@ import 'package:a2_stocks/widgets/receipt_actions.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/providers/shop_name_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:a2_stocks/core/utils/web_orders.dart';
 import 'package:a2_stocks/core/utils/error_text.dart';
 import 'package:a2_stocks/core/utils/formatters.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
@@ -43,17 +44,7 @@ class OrderDetailScreen extends ConsumerWidget {
   final String orderId;
 
   /// The customer's phone: from their record, else from the delivery details of a web order.
-  String _phoneFor(WidgetRef ref, OrderModel order) {
-    final List<CustomerModel> customers =
-        ref.read(customersProvider).valueOrNull ?? <CustomerModel>[];
-    for (final CustomerModel c in customers) {
-      if (c.id == order.customerId && c.phone.trim().isNotEmpty) {
-        return c.phone;
-      }
-    }
-    final Match? found = RegExp(r'[+d][ds-]{8,}d').firstMatch(order.shippingAddress);
-    return found?.group(0) ?? '';
-  }
+  String _phoneFor(WidgetRef ref, OrderModel order) => orderPhone(order, ref.read(customersProvider).valueOrNull ?? <CustomerModel>[]);
 
   /// Opens WhatsApp with a ready message; the person presses send.
   Future<void> _whatsApp(BuildContext context, WidgetRef ref, OrderModel order) async {

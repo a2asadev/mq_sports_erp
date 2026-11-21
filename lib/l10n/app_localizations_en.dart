@@ -5956,4 +5956,67 @@ class AppLocalizationsEn extends AppLocalizations {
   String insightsMessageBirthday(String name, String shop) {
     return 'Happy birthday $name! Wishing you a wonderful year ahead. - $shop';
   }
+
+  @override
+  String get moduleWebOrders => 'Online orders';
+
+  @override
+  String get webOrdersNone => 'No orders here.';
+
+  @override
+  String get webOrdersJustNow => 'Just now';
+
+  @override
+  String webOrdersMinutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes ago',
+      one: '1 minute ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String webOrdersHoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String webOrdersDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String webOrdersItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: '1 item',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String webOrdersCollect(String amount) {
+    return 'Collect $amount on delivery';
+  }
+
+  @override
+  String webOrdersMoveTo(String status) {
+    return 'Move to $status';
+  }
 }

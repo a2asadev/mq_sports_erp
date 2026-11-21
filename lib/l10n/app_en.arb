@@ -4370,5 +4370,56 @@
         "type": "String"
       }
     }
+  },
+  "moduleWebOrders": "Online orders",
+  "webOrdersNone": "No orders here.",
+  "webOrdersJustNow": "Just now",
+  "webOrdersMinutesAgo": "{count, plural, =1{1 minute ago} other{{count} minutes ago}}",
+  "@webOrdersMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webOrdersHoursAgo": "{count, plural, =1{1 hour ago} other{{count} hours ago}}",
+  "@webOrdersHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webOrdersDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@webOrdersDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webOrdersItems": "{count, plural, =1{1 item} other{{count} items}}",
+  "@webOrdersItems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webOrdersCollect": "Collect {amount} on delivery",
+  "@webOrdersCollect": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "webOrdersMoveTo": "Move to {status}",
+  "@webOrdersMoveTo": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
   }
 }
