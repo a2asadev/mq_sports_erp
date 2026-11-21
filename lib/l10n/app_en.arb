@@ -4497,5 +4497,105 @@
   "reportColDaysWorked": "Days",
   "reportColHours": "Hours of selling",
   "reportColFirstSale": "First sale",
-  "reportColLastSale": "Last sale"
+  "reportColLastSale": "Last sale",
+  "moduleBackup": "Backup & export",
+  "backupDeviceTitle": "This device",
+  "backupWebSaved": "Everything you do here is saved on the server straight away.",
+  "backupDeviceAllSaved": "All your work is saved on the server.",
+  "backupDeviceWaiting": "{count, plural, =1{1 action is} other{{count} actions are}} waiting to be sent to the server. Keep the app open with a connection.",
+  "@backupDeviceWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDeviceRefused": "{count, plural, =1{1 action was} other{{count} actions were}} refused by the server. Open the sync page to retry or discard.",
+  "@backupDeviceRefused": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupNeverSynced": "This device has not synced yet.",
+  "backupLastSynced": "Last synced {when}",
+  "@backupLastSynced": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "backupServerTitle": "Server backup",
+  "backupNotSetUp": "The server does not report its backups here. The daily backup is set up by whoever runs the server.",
+  "backupNoneYet": "No backup has been made yet. The first one runs at the hour the server is set to.",
+  "backupLastOk": "The last backup was {ago}.",
+  "@backupLastOk": {
+    "placeholders": {
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "backupTooOld": "The last backup was {ago}. A backup is made every day, so one has been missed: ask whoever runs the server to check.",
+  "@backupTooOld": {
+    "placeholders": {
+      "ago": {
+        "type": "String"
+      }
+    }
+  },
+  "backupFailed": "The last backup failed ({when}). Ask whoever runs the server to check it.",
+  "@backupFailed": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLastGood": "The last good backup was {when}.",
+  "@backupLastGood": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLastExportTitle": "Last export",
+  "backupLastExport": "Taken {when} by {by}.",
+  "@backupLastExport": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      },
+      "by": {
+        "type": "String"
+      }
+    }
+  },
+  "exportTitle": "Take your data out",
+  "exportHint": "Each file opens in Excel or any spreadsheet. Keep a copy somewhere safe now and then.",
+  "exportAllZip": "Save everything (one ZIP file)",
+  "exportSaveCsv": "Save as CSV",
+  "exportRows": "{count, plural, =1{1 row} other{{count} rows}}",
+  "@exportRows": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exportNote": "Users, passwords, photos and the activity log are not included. Every export is written in the activity log.",
+  "exportDatasetCustomers": "Customers",
+  "exportDatasetVendors": "Vendors",
+  "exportDatasetProducts": "Products and variants",
+  "exportDatasetOrders": "Orders",
+  "exportDatasetOrderItems": "Order lines",
+  "exportDatasetLedger": "Payments and ledger entries",
+  "exportDatasetStock": "Stock movements",
+  "exportDatasetPurchases": "Purchases",
+  "exportDatasetExpenses": "Expenses",
+  "exportDatasetPromotions": "Promotions",
+  "apiErrorExportUnknownDataSet": "That is not a data set that can be exported."
 }

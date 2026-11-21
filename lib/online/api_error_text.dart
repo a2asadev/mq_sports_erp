@@ -162,6 +162,8 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorBannersTheLinkMustStartWithOrHttps;
     case 'banners.the_order_is_not_the_list_of':
       return l10n.apiErrorBannersTheOrderIsNotTheListOf;
+    case 'export.unknown_data_set':
+      return l10n.apiErrorExportUnknownDataSet;
     case 'orders.this_order_would_take_over_the':
       return l10n.apiErrorOrdersThisOrderWouldTakeOverThe(_text(params, 'name'), _text(params, 'limit'), _text(params, 'balance'));
     case 'orders.use_the_cancel_action_to_cancel':

@@ -9914,6 +9914,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last sale'**
   String get reportColLastSale;
+
+  /// No description provided for @moduleBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & export'**
+  String get moduleBackup;
+
+  /// No description provided for @backupDeviceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get backupDeviceTitle;
+
+  /// No description provided for @backupWebSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you do here is saved on the server straight away.'**
+  String get backupWebSaved;
+
+  /// No description provided for @backupDeviceAllSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'All your work is saved on the server.'**
+  String get backupDeviceAllSaved;
+
+  /// No description provided for @backupDeviceWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 action is} other{{count} actions are}} waiting to be sent to the server. Keep the app open with a connection.'**
+  String backupDeviceWaiting(int count);
+
+  /// No description provided for @backupDeviceRefused.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 action was} other{{count} actions were}} refused by the server. Open the sync page to retry or discard.'**
+  String backupDeviceRefused(int count);
+
+  /// No description provided for @backupNeverSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has not synced yet.'**
+  String get backupNeverSynced;
+
+  /// No description provided for @backupLastSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {when}'**
+  String backupLastSynced(String when);
+
+  /// No description provided for @backupServerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server backup'**
+  String get backupServerTitle;
+
+  /// No description provided for @backupNotSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'The server does not report its backups here. The daily backup is set up by whoever runs the server.'**
+  String get backupNotSetUp;
+
+  /// No description provided for @backupNoneYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup has been made yet. The first one runs at the hour the server is set to.'**
+  String get backupNoneYet;
+
+  /// No description provided for @backupLastOk.
+  ///
+  /// In en, this message translates to:
+  /// **'The last backup was {ago}.'**
+  String backupLastOk(String ago);
+
+  /// No description provided for @backupTooOld.
+  ///
+  /// In en, this message translates to:
+  /// **'The last backup was {ago}. A backup is made every day, so one has been missed: ask whoever runs the server to check.'**
+  String backupTooOld(String ago);
+
+  /// No description provided for @backupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The last backup failed ({when}). Ask whoever runs the server to check it.'**
+  String backupFailed(String when);
+
+  /// No description provided for @backupLastGood.
+  ///
+  /// In en, this message translates to:
+  /// **'The last good backup was {when}.'**
+  String backupLastGood(String when);
+
+  /// No description provided for @backupLastExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Last export'**
+  String get backupLastExportTitle;
+
+  /// No description provided for @backupLastExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken {when} by {by}.'**
+  String backupLastExport(String when, String by);
+
+  /// No description provided for @exportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Take your data out'**
+  String get exportTitle;
+
+  /// No description provided for @exportHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each file opens in Excel or any spreadsheet. Keep a copy somewhere safe now and then.'**
+  String get exportHint;
+
+  /// No description provided for @exportAllZip.
+  ///
+  /// In en, this message translates to:
+  /// **'Save everything (one ZIP file)'**
+  String get exportAllZip;
+
+  /// No description provided for @exportSaveCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as CSV'**
+  String get exportSaveCsv;
+
+  /// No description provided for @exportRows.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 row} other{{count} rows}}'**
+  String exportRows(int count);
+
+  /// No description provided for @exportNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Users, passwords, photos and the activity log are not included. Every export is written in the activity log.'**
+  String get exportNote;
+
+  /// No description provided for @exportDatasetCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get exportDatasetCustomers;
+
+  /// No description provided for @exportDatasetVendors.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendors'**
+  String get exportDatasetVendors;
+
+  /// No description provided for @exportDatasetProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Products and variants'**
+  String get exportDatasetProducts;
+
+  /// No description provided for @exportDatasetOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get exportDatasetOrders;
+
+  /// No description provided for @exportDatasetOrderItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Order lines'**
+  String get exportDatasetOrderItems;
+
+  /// No description provided for @exportDatasetLedger.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments and ledger entries'**
+  String get exportDatasetLedger;
+
+  /// No description provided for @exportDatasetStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock movements'**
+  String get exportDatasetStock;
+
+  /// No description provided for @exportDatasetPurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases'**
+  String get exportDatasetPurchases;
+
+  /// No description provided for @exportDatasetExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get exportDatasetExpenses;
+
+  /// No description provided for @exportDatasetPromotions.
+  ///
+  /// In en, this message translates to:
+  /// **'Promotions'**
+  String get exportDatasetPromotions;
+
+  /// No description provided for @apiErrorExportUnknownDataSet.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not a data set that can be exported.'**
+  String get apiErrorExportUnknownDataSet;
 }
 
 class _AppLocalizationsDelegate

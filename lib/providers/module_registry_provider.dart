@@ -15,6 +15,7 @@ import 'package:a2_stocks/screens/labels/labels_screen.dart';
 import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
 import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
+import 'package:a2_stocks/screens/backup/backup_screen.dart';
 import 'package:a2_stocks/screens/banners/banners_screen.dart';
 import 'package:a2_stocks/screens/customers/customer_insights_screen.dart';
 import 'package:a2_stocks/screens/permissions/permissions_screen.dart';
@@ -236,6 +237,14 @@ final Provider<List<ErpModule>> erpModulesProvider =
         UserRole.staff,
       },
       builder: (BuildContext context) => const SettingsScreen(),
+    ),
+    ErpModule(
+      id: 'backup',
+      group: ModuleGroup.system,
+      title: (AppLocalizations l10n) => l10n.moduleBackup,
+      icon: Icons.backup_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin},
+      builder: (BuildContext context) => const BackupScreen(),
     ),
     ErpModule(
       id: 'permissions',

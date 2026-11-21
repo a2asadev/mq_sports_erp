@@ -6251,4 +6251,148 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportColLastSale => 'Last sale';
+
+  @override
+  String get moduleBackup => 'Backup & export';
+
+  @override
+  String get backupDeviceTitle => 'This device';
+
+  @override
+  String get backupWebSaved =>
+      'Everything you do here is saved on the server straight away.';
+
+  @override
+  String get backupDeviceAllSaved => 'All your work is saved on the server.';
+
+  @override
+  String backupDeviceWaiting(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count actions are',
+      one: '1 action is',
+    );
+    return '$_temp0 waiting to be sent to the server. Keep the app open with a connection.';
+  }
+
+  @override
+  String backupDeviceRefused(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count actions were',
+      one: '1 action was',
+    );
+    return '$_temp0 refused by the server. Open the sync page to retry or discard.';
+  }
+
+  @override
+  String get backupNeverSynced => 'This device has not synced yet.';
+
+  @override
+  String backupLastSynced(String when) {
+    return 'Last synced $when';
+  }
+
+  @override
+  String get backupServerTitle => 'Server backup';
+
+  @override
+  String get backupNotSetUp =>
+      'The server does not report its backups here. The daily backup is set up by whoever runs the server.';
+
+  @override
+  String get backupNoneYet =>
+      'No backup has been made yet. The first one runs at the hour the server is set to.';
+
+  @override
+  String backupLastOk(String ago) {
+    return 'The last backup was $ago.';
+  }
+
+  @override
+  String backupTooOld(String ago) {
+    return 'The last backup was $ago. A backup is made every day, so one has been missed: ask whoever runs the server to check.';
+  }
+
+  @override
+  String backupFailed(String when) {
+    return 'The last backup failed ($when). Ask whoever runs the server to check it.';
+  }
+
+  @override
+  String backupLastGood(String when) {
+    return 'The last good backup was $when.';
+  }
+
+  @override
+  String get backupLastExportTitle => 'Last export';
+
+  @override
+  String backupLastExport(String when, String by) {
+    return 'Taken $when by $by.';
+  }
+
+  @override
+  String get exportTitle => 'Take your data out';
+
+  @override
+  String get exportHint =>
+      'Each file opens in Excel or any spreadsheet. Keep a copy somewhere safe now and then.';
+
+  @override
+  String get exportAllZip => 'Save everything (one ZIP file)';
+
+  @override
+  String get exportSaveCsv => 'Save as CSV';
+
+  @override
+  String exportRows(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rows',
+      one: '1 row',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exportNote =>
+      'Users, passwords, photos and the activity log are not included. Every export is written in the activity log.';
+
+  @override
+  String get exportDatasetCustomers => 'Customers';
+
+  @override
+  String get exportDatasetVendors => 'Vendors';
+
+  @override
+  String get exportDatasetProducts => 'Products and variants';
+
+  @override
+  String get exportDatasetOrders => 'Orders';
+
+  @override
+  String get exportDatasetOrderItems => 'Order lines';
+
+  @override
+  String get exportDatasetLedger => 'Payments and ledger entries';
+
+  @override
+  String get exportDatasetStock => 'Stock movements';
+
+  @override
+  String get exportDatasetPurchases => 'Purchases';
+
+  @override
+  String get exportDatasetExpenses => 'Expenses';
+
+  @override
+  String get exportDatasetPromotions => 'Promotions';
+
+  @override
+  String get apiErrorExportUnknownDataSet =>
+      'That is not a data set that can be exported.';
 }
