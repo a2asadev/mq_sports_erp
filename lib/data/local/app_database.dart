@@ -31,11 +31,15 @@ class AppDatabase extends _$AppDatabase {
   factory AppDatabase.open(String userId) => AppDatabase(driftDatabase(name: 'mq_erp_$userId'));
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 7) {
+            // A customer's birthday (day and month) for greetings.
+            await m.addColumn(customers, customers.birthday);
+          }
           if (from < 6) {
             // Tax charged on an order, and the rates it was charged at.
             await m.addColumn(orders, orders.taxAmount);

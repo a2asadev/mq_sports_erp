@@ -14,6 +14,7 @@ import 'package:a2_stocks/screens/labels/labels_screen.dart';
 import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
 import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
+import 'package:a2_stocks/screens/customers/customer_insights_screen.dart';
 import 'package:a2_stocks/screens/promotions/promotions_screen.dart';
 import 'package:a2_stocks/screens/purchasing/purchase_orders_screen.dart';
 import 'package:a2_stocks/screens/purchasing/reorder_screen.dart';
@@ -97,6 +98,14 @@ final Provider<List<ErpModule>> erpModulesProvider =
       icon: Icons.shopping_cart_checkout_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
       builder: (BuildContext context) => const PurchasesScreen(),
+    ),
+    ErpModule(
+      id: 'customer_insights',
+      group: ModuleGroup.sales,
+      title: (AppLocalizations l10n) => l10n.moduleCustomerInsights,
+      icon: Icons.insights_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      builder: (BuildContext context) => const CustomerInsightsScreen(),
     ),
     ErpModule(
       id: 'promotions',

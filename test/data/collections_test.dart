@@ -146,7 +146,7 @@ void main() {
     );
     final CustomerModel customer = CustomerModel(
       id: 'c', name: 'Ali', type: CustomerType.wholesale, creditLimit: 1000, openingBalance: 12.25,
-      city: 'Lahore', createdAt: t1, updatedAt: t2,
+      city: 'Lahore', birthday: '02-29', createdAt: t1, updatedAt: t2,
     );
     await local.vendors.upsertAll(<VendorModel>[vendor]);
     await local.customers.upsertAll(<CustomerModel>[customer]);

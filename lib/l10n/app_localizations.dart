@@ -9296,6 +9296,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The end date is before the start date.'**
   String get apiErrorPromotionsTheEndIsBeforeTheStart;
+
+  /// No description provided for @moduleCustomerInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer insights'**
+  String get moduleCustomerInsights;
+
+  /// No description provided for @partyFormBirthday.
+  ///
+  /// In en, this message translates to:
+  /// **'Birthday'**
+  String get partyFormBirthday;
+
+  /// No description provided for @partyFormBirthdayNone.
+  ///
+  /// In en, this message translates to:
+  /// **'not set'**
+  String get partyFormBirthdayNone;
+
+  /// No description provided for @partyFormBirthdayClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the birthday'**
+  String get partyFormBirthdayClear;
+
+  /// No description provided for @insightsTabTop.
+  ///
+  /// In en, this message translates to:
+  /// **'Top customers'**
+  String get insightsTabTop;
+
+  /// No description provided for @insightsTabLapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not back for a while'**
+  String get insightsTabLapsed;
+
+  /// No description provided for @insightsTabBirthdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Birthdays'**
+  String get insightsTabBirthdays;
+
+  /// No description provided for @insightsAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get insightsAllTime;
+
+  /// No description provided for @insightsLastDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Last {days} days'**
+  String insightsLastDays(int days);
+
+  /// No description provided for @insightsNotInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}+ days away'**
+  String insightsNotInDays(int days);
+
+  /// No description provided for @insightsNextDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Next {days} days'**
+  String insightsNextDays(int days);
+
+  /// No description provided for @insightsNoTop.
+  ///
+  /// In en, this message translates to:
+  /// **'No customer has bought in this time yet.'**
+  String get insightsNoTop;
+
+  /// No description provided for @insightsNoLapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone who has bought here came back within {days} days.'**
+  String insightsNoLapsed(int days);
+
+  /// No description provided for @insightsNoBirthdays.
+  ///
+  /// In en, this message translates to:
+  /// **'No birthdays coming up. Add a customer\'s birthday on their page and it shows here.'**
+  String get insightsNoBirthdays;
+
+  /// No description provided for @insightsOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 order} other{{count} orders}}'**
+  String insightsOrders(int count);
+
+  /// No description provided for @insightsLastPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Last bought {date}'**
+  String insightsLastPurchase(String date);
+
+  /// No description provided for @insightsSpentTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent {amount} in all'**
+  String insightsSpentTotal(String amount);
+
+  /// No description provided for @insightsDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day ago} other{{days} days ago}}'**
+  String insightsDaysAgo(int days);
+
+  /// No description provided for @insightsInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'in {days, plural, =1{1 day} other{{days} days}}'**
+  String insightsInDays(int days);
+
+  /// No description provided for @insightsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get insightsToday;
+
+  /// No description provided for @insightsWhatsApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Message on WhatsApp'**
+  String get insightsWhatsApp;
+
+  /// No description provided for @insightsNoPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has no phone number saved.'**
+  String insightsNoPhone(String name);
+
+  /// No description provided for @insightsMessageThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {name}, thank you for shopping with us! We hope to see you again soon. - {shop}'**
+  String insightsMessageThanks(String name, String shop);
+
+  /// No description provided for @insightsMessageMissYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {name}, it has been a while since your last visit. We would love to see you again! - {shop}'**
+  String insightsMessageMissYou(String name, String shop);
+
+  /// No description provided for @insightsMessageBirthday.
+  ///
+  /// In en, this message translates to:
+  /// **'Happy birthday {name}! Wishing you a wonderful year ahead. - {shop}'**
+  String insightsMessageBirthday(String name, String shop);
 }
 
 class _AppLocalizationsDelegate

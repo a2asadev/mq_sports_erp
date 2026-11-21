@@ -153,6 +153,7 @@ class ApiCommands {
       'address': item.address,
       'city': item.city,
       'notes': item.notes,
+      'birthday': item.birthday,
       'creditLimit': _money(item.creditLimit),
       'openingBalance': _money(item.openingBalance),
       'isActive': item.isActive,

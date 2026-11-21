@@ -16,6 +16,7 @@ class CustomerModel implements SyncableModel {
     this.address = '',
     this.city = '',
     this.notes = '',
+    this.birthday = '',
     this.creditLimit = 0,
     this.openingBalance = 0,
     this.isActive = true,
@@ -36,6 +37,9 @@ class CustomerModel implements SyncableModel {
   final String address;
   final String city;
   final String notes;
+
+  /// Day and month only, "MM-DD" ('' = not known), for birthday greetings.
+  final String birthday;
   final double creditLimit;
   final double openingBalance;
   final bool isActive;
@@ -59,6 +63,7 @@ class CustomerModel implements SyncableModel {
       'address': address,
       'city': city,
       'notes': notes,
+      'birthday': birthday,
       'creditLimit': creditLimit,
       'openingBalance': openingBalance,
       'isActive': isActive,
@@ -79,6 +84,7 @@ class CustomerModel implements SyncableModel {
       address: map['address'] as String? ?? '',
       city: map['city'] as String? ?? '',
       notes: map['notes'] as String? ?? '',
+      birthday: map['birthday'] as String? ?? '',
       creditLimit: (map['creditLimit'] as num?)?.toDouble() ?? 0,
       openingBalance: (map['openingBalance'] as num?)?.toDouble() ?? 0,
       isActive: map['isActive'] as bool? ?? true,
@@ -98,6 +104,7 @@ class CustomerModel implements SyncableModel {
     String? address,
     String? city,
     String? notes,
+    String? birthday,
     double? creditLimit,
     double? openingBalance,
     bool? isActive,
@@ -114,6 +121,7 @@ class CustomerModel implements SyncableModel {
       address: address ?? this.address,
       city: city ?? this.city,
       notes: notes ?? this.notes,
+      birthday: birthday ?? this.birthday,
       creditLimit: creditLimit ?? this.creditLimit,
       openingBalance: openingBalance ?? this.openingBalance,
       isActive: isActive ?? this.isActive,

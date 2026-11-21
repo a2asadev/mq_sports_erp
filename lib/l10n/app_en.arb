@@ -4245,5 +4245,130 @@
     }
   },
   "apiErrorPromotionsThatCouponCodeIsNotValid": "That coupon code is not valid.",
-  "apiErrorPromotionsTheEndIsBeforeTheStart": "The end date is before the start date."
+  "apiErrorPromotionsTheEndIsBeforeTheStart": "The end date is before the start date.",
+  "moduleCustomerInsights": "Customer insights",
+  "partyFormBirthday": "Birthday",
+  "partyFormBirthdayNone": "not set",
+  "partyFormBirthdayClear": "Remove the birthday",
+  "insightsTabTop": "Top customers",
+  "insightsTabLapsed": "Not back for a while",
+  "insightsTabBirthdays": "Birthdays",
+  "insightsAllTime": "All time",
+  "insightsLastDays": "Last {days} days",
+  "@insightsLastDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsNotInDays": "{days}+ days away",
+  "@insightsNotInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsNextDays": "Next {days} days",
+  "@insightsNextDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsNoTop": "No customer has bought in this time yet.",
+  "insightsNoLapsed": "Everyone who has bought here came back within {days} days.",
+  "@insightsNoLapsed": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsNoBirthdays": "No birthdays coming up. Add a customer's birthday on their page and it shows here.",
+  "insightsOrders": "{count, plural, =1{1 order} other{{count} orders}}",
+  "@insightsOrders": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsLastPurchase": "Last bought {date}",
+  "@insightsLastPurchase": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsSpentTotal": "Spent {amount} in all",
+  "@insightsSpentTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsDaysAgo": "{days, plural, =1{1 day ago} other{{days} days ago}}",
+  "@insightsDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsInDays": "in {days, plural, =1{1 day} other{{days} days}}",
+  "@insightsInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "insightsToday": "Today",
+  "insightsWhatsApp": "Message on WhatsApp",
+  "insightsNoPhone": "{name} has no phone number saved.",
+  "@insightsNoPhone": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsMessageThanks": "Hello {name}, thank you for shopping with us! We hope to see you again soon. - {shop}",
+  "@insightsMessageThanks": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsMessageMissYou": "Hello {name}, it has been a while since your last visit. We would love to see you again! - {shop}",
+  "@insightsMessageMissYou": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  },
+  "insightsMessageBirthday": "Happy birthday {name}! Wishing you a wonderful year ahead. - {shop}",
+  "@insightsMessageBirthday": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "shop": {
+        "type": "String"
+      }
+    }
+  }
 }

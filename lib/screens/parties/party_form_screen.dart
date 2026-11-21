@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:a2_stocks/core/utils/customer_insights.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
 import 'package:a2_stocks/online/photo_service.dart';
@@ -20,6 +22,7 @@ class PartyFormData {
     this.notes = '',
     this.isActive = true,
     this.photoUrl = '',
+    this.birthday = '',
   });
 
   final String name;
@@ -34,6 +37,9 @@ class PartyFormData {
   final String notes;
   final bool isActive;
   final String photoUrl;
+
+  /// A customer's birthday, "MM-DD" or ''.
+  final String birthday;
 }
 
 /// One form for both vendors and customers. The vendor/customer wrappers turn
@@ -76,6 +82,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
   late String _typeKey;
   late bool _isActive;
   late String _photoUrl;
+  String _birthday = '';
   bool _isSubmitting = false;
 
   bool get _isCustomer => widget.partyType == PartyType.customer;
@@ -98,6 +105,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
     _typeKey = initial?.typeKey ?? widget.typeOptions.first.key;
     _isActive = initial?.isActive ?? true;
     _photoUrl = initial?.photoUrl ?? '';
+    _birthday = initial?.birthday ?? '';
   }
 
   @override
@@ -133,6 +141,7 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
       notes: _notesController.text.trim(),
       isActive: _isActive,
       photoUrl: _photoUrl,
+      birthday: _isCustomer ? _birthday : '',
     ));
     if (!mounted) {
       return;
@@ -144,6 +153,41 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
   }
 
   Widget _gap() => const SizedBox(height: 16);
+
+  /// The birthday is only a day and a month: the picker is held to the leap year 2000, so 29 February can be chosen
+  /// and no year is ever asked for.
+  Widget _birthdayField(BuildContext context, {required bool enabled}) {
+    final ({int month, int day})? b = parseBirthday(_birthday);
+    final String text = b == null
+        ? context.l10n.partyFormBirthdayNone
+        : DateFormat.MMMd(Localizations.localeOf(context).toString()).format(DateTime(2000, b.month, b.day));
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: enabled
+                ? () async {
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime(2000, b?.month ?? 1, b?.day ?? 1),
+                      firstDate: DateTime(2000, 1, 1),
+                      lastDate: DateTime(2000, 12, 31),
+                      helpText: context.l10n.partyFormBirthday,
+                    );
+                    if (picked != null) {
+                      setState(() => _birthday = birthdayKey(picked.month, picked.day));
+                    }
+                  }
+                : null,
+            icon: const Icon(Icons.cake_outlined, size: 18),
+            label: Align(alignment: AlignmentDirectional.centerStart, child: Text('${context.l10n.partyFormBirthday}: $text')),
+          ),
+        ),
+        if (b != null && enabled)
+          IconButton(tooltip: context.l10n.partyFormBirthdayClear, icon: const Icon(Icons.close), onPressed: () => setState(() => _birthday = '')),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -279,6 +323,8 @@ class _PartyFormScreenState extends State<PartyFormScreen> {
                       ),
                     ),
                     if (_isCustomer) ...<Widget>[
+                      _gap(),
+                      _birthdayField(context, enabled: !locked),
                       _gap(),
                       TextFormField(
                         controller: _creditController,

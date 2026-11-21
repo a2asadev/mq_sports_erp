@@ -115,6 +115,7 @@ class Customers extends Table {
   TextColumn get address => text().withDefault(const Constant(''))();
   TextColumn get city => text().withDefault(const Constant(''))();
   TextColumn get notes => text().withDefault(const Constant(''))();
+  TextColumn get birthday => text().withDefault(const Constant(''))();
   RealColumn get creditLimit => real().withDefault(const Constant(0))();
   RealColumn get openingBalance => real().withDefault(const Constant(0))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();

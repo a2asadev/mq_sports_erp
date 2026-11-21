@@ -2741,6 +2741,14 @@ class $CustomersTable extends Customers
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant(''));
+  static const VerificationMeta _birthdayMeta =
+      const VerificationMeta('birthday');
+  @override
+  late final GeneratedColumn<String> birthday = GeneratedColumn<String>(
+      'birthday', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
   static const VerificationMeta _creditLimitMeta =
       const VerificationMeta('creditLimit');
   @override
@@ -2798,6 +2806,7 @@ class $CustomersTable extends Customers
         address,
         city,
         notes,
+        birthday,
         creditLimit,
         openingBalance,
         isActive,
@@ -2855,6 +2864,10 @@ class $CustomersTable extends Customers
     if (data.containsKey('notes')) {
       context.handle(
           _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
+    }
+    if (data.containsKey('birthday')) {
+      context.handle(_birthdayMeta,
+          birthday.isAcceptableOrUnknown(data['birthday']!, _birthdayMeta));
     }
     if (data.containsKey('credit_limit')) {
       context.handle(
@@ -2915,6 +2928,8 @@ class $CustomersTable extends Customers
           .read(DriftSqlType.string, data['${effectivePrefix}city'])!,
       notes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}notes'])!,
+      birthday: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}birthday'])!,
       creditLimit: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}credit_limit'])!,
       openingBalance: attachedDatabase.typeMapping.read(
@@ -2946,6 +2961,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
   final String address;
   final String city;
   final String notes;
+  final String birthday;
   final double creditLimit;
   final double openingBalance;
   final bool isActive;
@@ -2962,6 +2978,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       required this.address,
       required this.city,
       required this.notes,
+      required this.birthday,
       required this.creditLimit,
       required this.openingBalance,
       required this.isActive,
@@ -2980,6 +2997,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
     map['address'] = Variable<String>(address);
     map['city'] = Variable<String>(city);
     map['notes'] = Variable<String>(notes);
+    map['birthday'] = Variable<String>(birthday);
     map['credit_limit'] = Variable<double>(creditLimit);
     map['opening_balance'] = Variable<double>(openingBalance);
     map['is_active'] = Variable<bool>(isActive);
@@ -3000,6 +3018,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       address: Value(address),
       city: Value(city),
       notes: Value(notes),
+      birthday: Value(birthday),
       creditLimit: Value(creditLimit),
       openingBalance: Value(openingBalance),
       isActive: Value(isActive),
@@ -3022,6 +3041,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       address: serializer.fromJson<String>(json['address']),
       city: serializer.fromJson<String>(json['city']),
       notes: serializer.fromJson<String>(json['notes']),
+      birthday: serializer.fromJson<String>(json['birthday']),
       creditLimit: serializer.fromJson<double>(json['creditLimit']),
       openingBalance: serializer.fromJson<double>(json['openingBalance']),
       isActive: serializer.fromJson<bool>(json['isActive']),
@@ -3043,6 +3063,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       'address': serializer.toJson<String>(address),
       'city': serializer.toJson<String>(city),
       'notes': serializer.toJson<String>(notes),
+      'birthday': serializer.toJson<String>(birthday),
       'creditLimit': serializer.toJson<double>(creditLimit),
       'openingBalance': serializer.toJson<double>(openingBalance),
       'isActive': serializer.toJson<bool>(isActive),
@@ -3062,6 +3083,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
           String? address,
           String? city,
           String? notes,
+          String? birthday,
           double? creditLimit,
           double? openingBalance,
           bool? isActive,
@@ -3078,6 +3100,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
         address: address ?? this.address,
         city: city ?? this.city,
         notes: notes ?? this.notes,
+        birthday: birthday ?? this.birthday,
         creditLimit: creditLimit ?? this.creditLimit,
         openingBalance: openingBalance ?? this.openingBalance,
         isActive: isActive ?? this.isActive,
@@ -3098,6 +3121,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       address: data.address.present ? data.address.value : this.address,
       city: data.city.present ? data.city.value : this.city,
       notes: data.notes.present ? data.notes.value : this.notes,
+      birthday: data.birthday.present ? data.birthday.value : this.birthday,
       creditLimit:
           data.creditLimit.present ? data.creditLimit.value : this.creditLimit,
       openingBalance: data.openingBalance.present
@@ -3122,6 +3146,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
           ..write('address: $address, ')
           ..write('city: $city, ')
           ..write('notes: $notes, ')
+          ..write('birthday: $birthday, ')
           ..write('creditLimit: $creditLimit, ')
           ..write('openingBalance: $openingBalance, ')
           ..write('isActive: $isActive, ')
@@ -3143,6 +3168,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
       address,
       city,
       notes,
+      birthday,
       creditLimit,
       openingBalance,
       isActive,
@@ -3162,6 +3188,7 @@ class CustomerRow extends DataClass implements Insertable<CustomerRow> {
           other.address == this.address &&
           other.city == this.city &&
           other.notes == this.notes &&
+          other.birthday == this.birthday &&
           other.creditLimit == this.creditLimit &&
           other.openingBalance == this.openingBalance &&
           other.isActive == this.isActive &&
@@ -3180,6 +3207,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
   final Value<String> address;
   final Value<String> city;
   final Value<String> notes;
+  final Value<String> birthday;
   final Value<double> creditLimit;
   final Value<double> openingBalance;
   final Value<bool> isActive;
@@ -3197,6 +3225,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
     this.address = const Value.absent(),
     this.city = const Value.absent(),
     this.notes = const Value.absent(),
+    this.birthday = const Value.absent(),
     this.creditLimit = const Value.absent(),
     this.openingBalance = const Value.absent(),
     this.isActive = const Value.absent(),
@@ -3215,6 +3244,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
     this.address = const Value.absent(),
     this.city = const Value.absent(),
     this.notes = const Value.absent(),
+    this.birthday = const Value.absent(),
     this.creditLimit = const Value.absent(),
     this.openingBalance = const Value.absent(),
     this.isActive = const Value.absent(),
@@ -3236,6 +3266,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
     Expression<String>? address,
     Expression<String>? city,
     Expression<String>? notes,
+    Expression<String>? birthday,
     Expression<double>? creditLimit,
     Expression<double>? openingBalance,
     Expression<bool>? isActive,
@@ -3254,6 +3285,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
       if (address != null) 'address': address,
       if (city != null) 'city': city,
       if (notes != null) 'notes': notes,
+      if (birthday != null) 'birthday': birthday,
       if (creditLimit != null) 'credit_limit': creditLimit,
       if (openingBalance != null) 'opening_balance': openingBalance,
       if (isActive != null) 'is_active': isActive,
@@ -3274,6 +3306,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
       Value<String>? address,
       Value<String>? city,
       Value<String>? notes,
+      Value<String>? birthday,
       Value<double>? creditLimit,
       Value<double>? openingBalance,
       Value<bool>? isActive,
@@ -3291,6 +3324,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
       address: address ?? this.address,
       city: city ?? this.city,
       notes: notes ?? this.notes,
+      birthday: birthday ?? this.birthday,
       creditLimit: creditLimit ?? this.creditLimit,
       openingBalance: openingBalance ?? this.openingBalance,
       isActive: isActive ?? this.isActive,
@@ -3331,6 +3365,9 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (birthday.present) {
+      map['birthday'] = Variable<String>(birthday.value);
+    }
     if (creditLimit.present) {
       map['credit_limit'] = Variable<double>(creditLimit.value);
     }
@@ -3367,6 +3404,7 @@ class CustomersCompanion extends UpdateCompanion<CustomerRow> {
           ..write('address: $address, ')
           ..write('city: $city, ')
           ..write('notes: $notes, ')
+          ..write('birthday: $birthday, ')
           ..write('creditLimit: $creditLimit, ')
           ..write('openingBalance: $openingBalance, ')
           ..write('isActive: $isActive, ')
@@ -10584,6 +10622,7 @@ typedef $$CustomersTableCreateCompanionBuilder = CustomersCompanion Function({
   Value<String> address,
   Value<String> city,
   Value<String> notes,
+  Value<String> birthday,
   Value<double> creditLimit,
   Value<double> openingBalance,
   Value<bool> isActive,
@@ -10602,6 +10641,7 @@ typedef $$CustomersTableUpdateCompanionBuilder = CustomersCompanion Function({
   Value<String> address,
   Value<String> city,
   Value<String> notes,
+  Value<String> birthday,
   Value<double> creditLimit,
   Value<double> openingBalance,
   Value<bool> isActive,
@@ -10646,6 +10686,9 @@ class $$CustomersTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get birthday => $composableBuilder(
+      column: $table.birthday, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<double> get creditLimit => $composableBuilder(
       column: $table.creditLimit, builder: (column) => ColumnFilters(column));
@@ -10704,6 +10747,9 @@ class $$CustomersTableOrderingComposer
   ColumnOrderings<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get birthday => $composableBuilder(
+      column: $table.birthday, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<double> get creditLimit => $composableBuilder(
       column: $table.creditLimit, builder: (column) => ColumnOrderings(column));
 
@@ -10760,6 +10806,9 @@ class $$CustomersTableAnnotationComposer
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 
+  GeneratedColumn<String> get birthday =>
+      $composableBuilder(column: $table.birthday, builder: (column) => column);
+
   GeneratedColumn<double> get creditLimit => $composableBuilder(
       column: $table.creditLimit, builder: (column) => column);
 
@@ -10811,6 +10860,7 @@ class $$CustomersTableTableManager extends RootTableManager<
             Value<String> address = const Value.absent(),
             Value<String> city = const Value.absent(),
             Value<String> notes = const Value.absent(),
+            Value<String> birthday = const Value.absent(),
             Value<double> creditLimit = const Value.absent(),
             Value<double> openingBalance = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
@@ -10829,6 +10879,7 @@ class $$CustomersTableTableManager extends RootTableManager<
             address: address,
             city: city,
             notes: notes,
+            birthday: birthday,
             creditLimit: creditLimit,
             openingBalance: openingBalance,
             isActive: isActive,
@@ -10847,6 +10898,7 @@ class $$CustomersTableTableManager extends RootTableManager<
             Value<String> address = const Value.absent(),
             Value<String> city = const Value.absent(),
             Value<String> notes = const Value.absent(),
+            Value<String> birthday = const Value.absent(),
             Value<double> creditLimit = const Value.absent(),
             Value<double> openingBalance = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
@@ -10865,6 +10917,7 @@ class $$CustomersTableTableManager extends RootTableManager<
             address: address,
             city: city,
             notes: notes,
+            birthday: birthday,
             creditLimit: creditLimit,
             openingBalance: openingBalance,
             isActive: isActive,

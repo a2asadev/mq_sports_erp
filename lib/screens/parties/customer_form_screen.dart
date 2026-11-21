@@ -36,6 +36,7 @@ class CustomerFormScreen extends ConsumerWidget {
               notes: existing.notes,
               isActive: existing.isActive,
               photoUrl: existing.photoUrl,
+              birthday: existing.birthday,
             ),
       onSubmit: (PartyFormData data) {
         final CustomersNotifier notifier = ref.read(customersProvider.notifier);
@@ -49,6 +50,7 @@ class CustomerFormScreen extends ConsumerWidget {
             address: data.address,
             city: data.city,
             notes: data.notes,
+            birthday: data.birthday,
             creditLimit: data.creditLimit,
             openingBalance: data.openingBalance,
             isActive: data.isActive,
@@ -63,6 +65,7 @@ class CustomerFormScreen extends ConsumerWidget {
           address: data.address,
           city: data.city,
           notes: data.notes,
+          birthday: data.birthday,
           creditLimit: data.creditLimit,
           openingBalance: data.openingBalance,
           isActive: data.isActive,

@@ -5836,4 +5836,124 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get apiErrorPromotionsTheEndIsBeforeTheStart =>
       'The end date is before the start date.';
+
+  @override
+  String get moduleCustomerInsights => 'Customer insights';
+
+  @override
+  String get partyFormBirthday => 'Birthday';
+
+  @override
+  String get partyFormBirthdayNone => 'not set';
+
+  @override
+  String get partyFormBirthdayClear => 'Remove the birthday';
+
+  @override
+  String get insightsTabTop => 'Top customers';
+
+  @override
+  String get insightsTabLapsed => 'Not back for a while';
+
+  @override
+  String get insightsTabBirthdays => 'Birthdays';
+
+  @override
+  String get insightsAllTime => 'All time';
+
+  @override
+  String insightsLastDays(int days) {
+    return 'Last $days days';
+  }
+
+  @override
+  String insightsNotInDays(int days) {
+    return '$days+ days away';
+  }
+
+  @override
+  String insightsNextDays(int days) {
+    return 'Next $days days';
+  }
+
+  @override
+  String get insightsNoTop => 'No customer has bought in this time yet.';
+
+  @override
+  String insightsNoLapsed(int days) {
+    return 'Everyone who has bought here came back within $days days.';
+  }
+
+  @override
+  String get insightsNoBirthdays =>
+      'No birthdays coming up. Add a customer\'s birthday on their page and it shows here.';
+
+  @override
+  String insightsOrders(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count orders',
+      one: '1 order',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insightsLastPurchase(String date) {
+    return 'Last bought $date';
+  }
+
+  @override
+  String insightsSpentTotal(String amount) {
+    return 'Spent $amount in all';
+  }
+
+  @override
+  String insightsDaysAgo(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insightsInDays(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'in $_temp0';
+  }
+
+  @override
+  String get insightsToday => 'Today';
+
+  @override
+  String get insightsWhatsApp => 'Message on WhatsApp';
+
+  @override
+  String insightsNoPhone(String name) {
+    return '$name has no phone number saved.';
+  }
+
+  @override
+  String insightsMessageThanks(String name, String shop) {
+    return 'Hello $name, thank you for shopping with us! We hope to see you again soon. - $shop';
+  }
+
+  @override
+  String insightsMessageMissYou(String name, String shop) {
+    return 'Hello $name, it has been a while since your last visit. We would love to see you again! - $shop';
+  }
+
+  @override
+  String insightsMessageBirthday(String name, String shop) {
+    return 'Happy birthday $name! Wishing you a wonderful year ahead. - $shop';
+  }
 }
