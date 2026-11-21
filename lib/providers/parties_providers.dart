@@ -1,3 +1,4 @@
+import 'package:a2_stocks/core/permissions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
 import 'package:a2_stocks/data/outbox_entry.dart';
@@ -22,12 +23,24 @@ import 'package:a2_stocks/models/vendor_model.dart';
 import 'package:a2_stocks/providers/base_list_notifier.dart';
 import 'package:a2_stocks/providers/users_providers.dart';
 
-/// Admins and managers may change vendors, customers and ledgers.
+/// Whoever the admin allows may change vendors (managers by default).
+final Provider<bool> canManageVendorsProvider = Provider<bool>((Ref ref) {
+  final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
+  return user != null && user.isActive && user.can(Permissions.purchasingManage);
+});
+
+/// Manual ledger entries (cash received, adjustments) stay with admins and managers.
+final Provider<bool> canRecordLedgerProvider = Provider<bool>((Ref ref) {
+  final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
+  return user != null && user.isActive && (user.role == UserRole.admin || user.role == UserRole.manager);
+});
+
+/// Whoever the admin allows may change customers (managers by default).
 final Provider<bool> canManagePartiesProvider = Provider<bool>((Ref ref) {
   final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
   return user != null &&
       user.isActive &&
-      (user.role == UserRole.admin || user.role == UserRole.manager);
+      user.can(Permissions.customersManage);
 });
 
 String get _noPermissionMessage => L10n.current.partiesOnlyAdminsAndManagers;
@@ -160,7 +173,7 @@ class VendorsNotifier extends BaseListNotifier<VendorModel> {
   }
 
   Future<bool> createVendor(VendorModel vendor) async {
-    if (!ref.read(canManagePartiesProvider)) {
+    if (!ref.read(canManageVendorsProvider)) {
       return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final String? problem = _validate(vendor);
@@ -172,7 +185,7 @@ class VendorsNotifier extends BaseListNotifier<VendorModel> {
   }
 
   Future<bool> updateVendor(VendorModel vendor) async {
-    if (!ref.read(canManagePartiesProvider)) {
+    if (!ref.read(canManageVendorsProvider)) {
       return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final String? problem = _validate(vendor);
@@ -184,7 +197,7 @@ class VendorsNotifier extends BaseListNotifier<VendorModel> {
   }
 
   Future<bool> deleteVendor(String id) async {
-    if (!ref.read(canManagePartiesProvider)) {
+    if (!ref.read(canManageVendorsProvider)) {
       return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     try {
@@ -284,7 +297,7 @@ class LedgerNotifier extends BaseListNotifier<LedgerModel> {
       ref.read(ledgerRepositoryProvider);
 
   Future<bool> addEntry(LedgerModel entry) async {
-    if (!ref.read(canManagePartiesProvider)) {
+    if (!ref.read(canRecordLedgerProvider)) {
       return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     if (entry.amount <= 0) {
@@ -307,7 +320,7 @@ class LedgerNotifier extends BaseListNotifier<LedgerModel> {
   }
 
   Future<bool> deleteEntry(String id) async {
-    if (!ref.read(canManagePartiesProvider)) {
+    if (!ref.read(canRecordLedgerProvider)) {
       return reportFailure(PermissionDeniedException(_noPermissionMessage));
     }
     final LedgerModel? entry = (state.valueOrNull ?? <LedgerModel>[])

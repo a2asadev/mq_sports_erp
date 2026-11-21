@@ -1,3 +1,4 @@
+import 'package:a2_stocks/core/permissions.dart';
 import 'package:a2_stocks/models/syncable_model.dart';
 import 'package:a2_stocks/models/user_role.dart';
 
@@ -15,6 +16,7 @@ class UserModel implements SyncableModel {
     this.role = UserRole.staff,
     this.isActive = true,
     this.photoUrl = '',
+    this.permissions,
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -30,10 +32,23 @@ class UserModel implements SyncableModel {
 
   /// Address of the photo ('' = none). Changed with the photo upload, never by saving the form.
   final String photoUrl;
+
+  /// What this person may do now, as the server last said (null until it has: then the role's defaults apply).
+  /// Only the signed-in user's own record carries it.
+  final List<String>? permissions;
   final DateTime createdAt;
 
   @override
   final DateTime updatedAt;
+
+  /// Whether this person may do this (see [Permissions]). An admin always may.
+  bool can(String permission) {
+    if (role == UserRole.admin) {
+      return true;
+    }
+    final List<String>? known = permissions;
+    return known == null ? Permissions.defaultAllows(role, permission) : known.contains(permission);
+  }
 
   @override
   Map<String, dynamic> toMap() {
@@ -45,6 +60,7 @@ class UserModel implements SyncableModel {
       'role': role.name,
       'isActive': isActive,
       'photoUrl': photoUrl,
+      if (permissions != null) 'permissions': permissions,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -59,6 +75,7 @@ class UserModel implements SyncableModel {
       role: UserRole.fromName(map['role'] as String?),
       isActive: map['isActive'] as bool? ?? false,
       photoUrl: map['photoUrl'] as String? ?? '',
+      permissions: map['permissions'] is List<Object?> ? <String>[for (final Object? p in map['permissions'] as List<Object?>) '$p'] : null,
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -71,6 +88,7 @@ class UserModel implements SyncableModel {
     UserRole? role,
     bool? isActive,
     String? photoUrl,
+    List<String>? permissions,
     DateTime? updatedAt,
   }) {
     return UserModel(
@@ -81,6 +99,7 @@ class UserModel implements SyncableModel {
       role: role ?? this.role,
       isActive: isActive ?? this.isActive,
       photoUrl: photoUrl ?? this.photoUrl,
+      permissions: permissions ?? this.permissions,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

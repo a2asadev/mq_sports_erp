@@ -62,7 +62,12 @@ class ApiAuthService implements AuthService {
       if (business != null) {
         await _api.rememberBusiness(business);
       }
-      return UserModel.fromMap(normalizeDates(response.asMap));
+      final UserModel me = UserModel.fromMap(normalizeDates(response.asMap));
+      final List<String>? permissions = me.permissions;
+      if (permissions != null) {
+        await _api.rememberPermissions(permissions);
+      }
+      return me;
     } on AuthFailureException {
       return null;
     } on RemoteSyncException {

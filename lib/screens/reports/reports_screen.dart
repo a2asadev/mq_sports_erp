@@ -19,6 +19,10 @@ String _kindLabel(AppLocalizations l10n, ReportKind kind) {
   switch (kind) {
     case ReportKind.sales:
       return l10n.reportKindSales;
+    case ReportKind.staff:
+      return l10n.reportKindStaff;
+    case ReportKind.shifts:
+      return l10n.reportKindShifts;
     case ReportKind.profit:
       return l10n.reportKindProfit;
     case ReportKind.tax:
@@ -62,6 +66,12 @@ class ReportsScreen extends ConsumerWidget {
       case ReportKind.sales:
         final SalesReport? r = ref.watch(salesReportProvider).valueOrNull;
         return r == null ? null : salesTable(l10n, r);
+      case ReportKind.staff:
+        final StaffReport? r = ref.watch(staffReportProvider).valueOrNull;
+        return r == null ? null : staffTable(l10n, r);
+      case ReportKind.shifts:
+        final ShiftsReport? r = ref.watch(shiftsReportProvider).valueOrNull;
+        return r == null ? null : shiftsTable(l10n, r);
       case ReportKind.profit:
         final ProfitReport? r = ref.watch(profitReportProvider).valueOrNull;
         return r == null ? null : profitTable(l10n, r);
@@ -84,6 +94,10 @@ class ReportsScreen extends ConsumerWidget {
     switch (kind) {
       case ReportKind.sales:
         return ref.watch(salesReportProvider);
+      case ReportKind.staff:
+        return ref.watch(staffReportProvider);
+      case ReportKind.shifts:
+        return ref.watch(shiftsReportProvider);
       case ReportKind.profit:
         return ref.watch(profitReportProvider);
       case ReportKind.tax:
@@ -99,6 +113,8 @@ class ReportsScreen extends ConsumerWidget {
 
   void _refresh(WidgetRef ref) {
     ref.invalidate(salesReportProvider);
+    ref.invalidate(staffReportProvider);
+    ref.invalidate(shiftsReportProvider);
     ref.invalidate(profitReportProvider);
     ref.invalidate(taxReportProvider);
     ref.invalidate(stockReportProvider);
@@ -148,7 +164,7 @@ class ReportsScreen extends ConsumerWidget {
     final ReportPeriod period = ref.watch(reportPeriodProvider);
     final ReportTable? table = _table(ref, l10n, kind);
     final AsyncValue<Object?> state = _state(ref, kind);
-    final bool hasPeriod = kind == ReportKind.sales || kind == ReportKind.profit || kind == ReportKind.tax;
+    final bool hasPeriod = kind == ReportKind.sales || kind == ReportKind.staff || kind == ReportKind.shifts || kind == ReportKind.profit || kind == ReportKind.tax;
 
     return Scaffold(
       appBar: AppBar(

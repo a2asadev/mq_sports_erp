@@ -166,6 +166,10 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorOrdersThisOrderWouldTakeOverThe(_text(params, 'name'), _text(params, 'limit'), _text(params, 'balance'));
     case 'orders.use_the_cancel_action_to_cancel':
       return l10n.apiErrorOrdersUseTheCancelActionToCancel;
+    case 'permissions.only_managers_and_staff_can_be_set':
+      return l10n.apiErrorPermissionsOnlyManagersAndStaffCanBeSet;
+    case 'permissions.unknown_permission':
+      return l10n.apiErrorPermissionsUnknownPermission;
     case 'promotions.a_percent_is_between_1_and_100':
       return l10n.apiErrorPromotionsAPercentIsBetween1And100;
     case 'promotions.choose_a_category_or_a_product':

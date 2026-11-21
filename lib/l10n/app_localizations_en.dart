@@ -6120,4 +6120,135 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get apiErrorBannersTheOrderIsNotTheListOf =>
       'The order must list every banner once.';
+
+  @override
+  String get modulePermissions => 'Permissions';
+
+  @override
+  String get permissionsIntro =>
+      'Choose what managers and staff may do. You, the admin, can always do everything. A change counts at once on the server and reaches each person\'s device within a few minutes.';
+
+  @override
+  String get permissionsManagers => 'Managers';
+
+  @override
+  String get permissionsStaff => 'Staff';
+
+  @override
+  String get permissionsChanged => 'changed';
+
+  @override
+  String get permissionsNote =>
+      'Users, activity logs, shop and store settings, banners and the cash register\'s day closing stay with admins and managers whatever is chosen here.';
+
+  @override
+  String get permissionDashboardView => 'See the dashboard';
+
+  @override
+  String get permissionDashboardViewHint =>
+      'Sales totals, profit and the value of stock.';
+
+  @override
+  String get permissionReportsView => 'See reports';
+
+  @override
+  String get permissionReportsViewHint =>
+      'Sales, profit, tax, staff performance, customer insights.';
+
+  @override
+  String get permissionOrdersCancel => 'Cancel orders';
+
+  @override
+  String get permissionOrdersCancelHint =>
+      'Puts the stock back and reverses what the customer was charged.';
+
+  @override
+  String get permissionReturnsManage => 'Take returns and refund';
+
+  @override
+  String get permissionReturnsManageHint =>
+      'Return goods from a delivered order and hand money back.';
+
+  @override
+  String get permissionPromotionsManage => 'Manage promotions';
+
+  @override
+  String get permissionPromotionsManageHint =>
+      'Create and change discounts and coupon codes.';
+
+  @override
+  String get permissionCustomersManage => 'Add and change customers';
+
+  @override
+  String get permissionCustomersManageHint =>
+      'Customers, their credit limit and their details.';
+
+  @override
+  String get permissionCatalogManage => 'Manage the catalog';
+
+  @override
+  String get permissionCatalogManageHint =>
+      'Products, prices, categories and their photos.';
+
+  @override
+  String get permissionStockAudit => 'Count and adjust stock';
+
+  @override
+  String get permissionStockAuditHint =>
+      'Stock audits that change what is on the shelf.';
+
+  @override
+  String get permissionPurchasingManage => 'Purchasing and vendors';
+
+  @override
+  String get permissionPurchasingManageHint =>
+      'Vendors, purchases, purchase orders and reorder suggestions, with what the vendors are owed.';
+
+  @override
+  String get permissionExpensesManage => 'Record expenses';
+
+  @override
+  String get permissionExpensesManageHint =>
+      'Rent, salaries, bills and other spending.';
+
+  @override
+  String get apiErrorPermissionsOnlyManagersAndStaffCanBeSet =>
+      'Only what managers and staff may do can be changed; an admin can always do everything.';
+
+  @override
+  String get apiErrorPermissionsUnknownPermission =>
+      'That is not something that can be allowed or refused.';
+
+  @override
+  String get reportKindStaff => 'Staff performance';
+
+  @override
+  String get reportKindShifts => 'Shift log';
+
+  @override
+  String get reportStaffTitle => 'Staff performance';
+
+  @override
+  String get reportShiftsTitle => 'Shift log';
+
+  @override
+  String get reportColAverageOrder => 'Average order';
+
+  @override
+  String get reportColDiscounts => 'Discounts given';
+
+  @override
+  String get reportColCancelled => 'Cancelled';
+
+  @override
+  String get reportColDaysWorked => 'Days';
+
+  @override
+  String get reportColHours => 'Hours of selling';
+
+  @override
+  String get reportColFirstSale => 'First sale';
+
+  @override
+  String get reportColLastSale => 'Last sale';
 }

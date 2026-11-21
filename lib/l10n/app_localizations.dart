@@ -9680,6 +9680,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The order must list every banner once.'**
   String get apiErrorBannersTheOrderIsNotTheListOf;
+
+  /// No description provided for @modulePermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get modulePermissions;
+
+  /// No description provided for @permissionsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what managers and staff may do. You, the admin, can always do everything. A change counts at once on the server and reaches each person\'s device within a few minutes.'**
+  String get permissionsIntro;
+
+  /// No description provided for @permissionsManagers.
+  ///
+  /// In en, this message translates to:
+  /// **'Managers'**
+  String get permissionsManagers;
+
+  /// No description provided for @permissionsStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get permissionsStaff;
+
+  /// No description provided for @permissionsChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'changed'**
+  String get permissionsChanged;
+
+  /// No description provided for @permissionsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Users, activity logs, shop and store settings, banners and the cash register\'s day closing stay with admins and managers whatever is chosen here.'**
+  String get permissionsNote;
+
+  /// No description provided for @permissionDashboardView.
+  ///
+  /// In en, this message translates to:
+  /// **'See the dashboard'**
+  String get permissionDashboardView;
+
+  /// No description provided for @permissionDashboardViewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales totals, profit and the value of stock.'**
+  String get permissionDashboardViewHint;
+
+  /// No description provided for @permissionReportsView.
+  ///
+  /// In en, this message translates to:
+  /// **'See reports'**
+  String get permissionReportsView;
+
+  /// No description provided for @permissionReportsViewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales, profit, tax, staff performance, customer insights.'**
+  String get permissionReportsViewHint;
+
+  /// No description provided for @permissionOrdersCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel orders'**
+  String get permissionOrdersCancel;
+
+  /// No description provided for @permissionOrdersCancelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Puts the stock back and reverses what the customer was charged.'**
+  String get permissionOrdersCancelHint;
+
+  /// No description provided for @permissionReturnsManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Take returns and refund'**
+  String get permissionReturnsManage;
+
+  /// No description provided for @permissionReturnsManageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Return goods from a delivered order and hand money back.'**
+  String get permissionReturnsManageHint;
+
+  /// No description provided for @permissionPromotionsManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage promotions'**
+  String get permissionPromotionsManage;
+
+  /// No description provided for @permissionPromotionsManageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and change discounts and coupon codes.'**
+  String get permissionPromotionsManageHint;
+
+  /// No description provided for @permissionCustomersManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add and change customers'**
+  String get permissionCustomersManage;
+
+  /// No description provided for @permissionCustomersManageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers, their credit limit and their details.'**
+  String get permissionCustomersManageHint;
+
+  /// No description provided for @permissionCatalogManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage the catalog'**
+  String get permissionCatalogManage;
+
+  /// No description provided for @permissionCatalogManageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Products, prices, categories and their photos.'**
+  String get permissionCatalogManageHint;
+
+  /// No description provided for @permissionStockAudit.
+  ///
+  /// In en, this message translates to:
+  /// **'Count and adjust stock'**
+  String get permissionStockAudit;
+
+  /// No description provided for @permissionStockAuditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock audits that change what is on the shelf.'**
+  String get permissionStockAuditHint;
+
+  /// No description provided for @permissionPurchasingManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchasing and vendors'**
+  String get permissionPurchasingManage;
+
+  /// No description provided for @permissionPurchasingManageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendors, purchases, purchase orders and reorder suggestions, with what the vendors are owed.'**
+  String get permissionPurchasingManageHint;
+
+  /// No description provided for @permissionExpensesManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Record expenses'**
+  String get permissionExpensesManage;
+
+  /// No description provided for @permissionExpensesManageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent, salaries, bills and other spending.'**
+  String get permissionExpensesManageHint;
+
+  /// No description provided for @apiErrorPermissionsOnlyManagersAndStaffCanBeSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Only what managers and staff may do can be changed; an admin can always do everything.'**
+  String get apiErrorPermissionsOnlyManagersAndStaffCanBeSet;
+
+  /// No description provided for @apiErrorPermissionsUnknownPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'That is not something that can be allowed or refused.'**
+  String get apiErrorPermissionsUnknownPermission;
+
+  /// No description provided for @reportKindStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff performance'**
+  String get reportKindStaff;
+
+  /// No description provided for @reportKindShifts.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift log'**
+  String get reportKindShifts;
+
+  /// No description provided for @reportStaffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff performance'**
+  String get reportStaffTitle;
+
+  /// No description provided for @reportShiftsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift log'**
+  String get reportShiftsTitle;
+
+  /// No description provided for @reportColAverageOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Average order'**
+  String get reportColAverageOrder;
+
+  /// No description provided for @reportColDiscounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Discounts given'**
+  String get reportColDiscounts;
+
+  /// No description provided for @reportColCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get reportColCancelled;
+
+  /// No description provided for @reportColDaysWorked.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get reportColDaysWorked;
+
+  /// No description provided for @reportColHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours of selling'**
+  String get reportColHours;
+
+  /// No description provided for @reportColFirstSale.
+  ///
+  /// In en, this message translates to:
+  /// **'First sale'**
+  String get reportColFirstSale;
+
+  /// No description provided for @reportColLastSale.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sale'**
+  String get reportColLastSale;
 }
 
 class _AppLocalizationsDelegate

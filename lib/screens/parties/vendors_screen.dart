@@ -18,7 +18,7 @@ class VendorsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AsyncValue<List<VendorModel>> async = ref.watch(vendorsProvider);
     final List<PartyListItem> items = ref.watch(vendorItemsProvider);
-    final bool canManage = ref.watch(canManagePartiesProvider);
+    final bool canManage = ref.watch(canManageVendorsProvider);
 
     ref.listen<AsyncValue<List<VendorModel>>>(vendorsProvider,
         (AsyncValue<List<VendorModel>>? previous,

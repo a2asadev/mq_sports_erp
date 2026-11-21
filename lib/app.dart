@@ -1,3 +1,4 @@
+import 'package:a2_stocks/providers/permission_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
@@ -81,6 +82,8 @@ class _AccessGate extends ConsumerWidget {
         if (!ref.watch(dataModeProvider).isOnline) {
           ref.watch(syncControllerProvider);
         }
+        // Notice when an admin changes what this person may do.
+        ref.watch(permissionRefreshProvider);
         return const HomeScreen();
       },
       loading: () => const Scaffold(

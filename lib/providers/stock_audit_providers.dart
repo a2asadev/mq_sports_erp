@@ -1,3 +1,4 @@
+import 'package:a2_stocks/core/permissions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
@@ -13,7 +14,6 @@ import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/stock_audit_model.dart';
 import 'package:a2_stocks/models/stock_ledger_model.dart';
 import 'package:a2_stocks/models/user_model.dart';
-import 'package:a2_stocks/models/user_role.dart';
 import 'package:a2_stocks/models/variant_model.dart';
 import 'package:a2_stocks/providers/base_list_notifier.dart';
 import 'package:a2_stocks/providers/catalog_providers.dart';
@@ -29,7 +29,7 @@ final Provider<bool> canAuditStockProvider = Provider<bool>((Ref ref) {
   final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
   return user != null &&
       user.isActive &&
-      (user.role == UserRole.admin || user.role == UserRole.manager);
+      user.can(Permissions.stockAudit);
 });
 
 String get _noPermissionMessage => L10n.current.stockAuditOnlyAdminsAndManagers;

@@ -198,7 +198,8 @@ class PartyDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeData theme = Theme.of(context);
-    final bool canManage = ref.watch(canManagePartiesProvider);
+    final bool canManage = partyType == PartyType.vendor ? ref.watch(canManageVendorsProvider) : ref.watch(canManagePartiesProvider);
+    final bool canLedger = ref.watch(canRecordLedgerProvider);
     final _PartyData? party = _resolve(ref);
     final List<LedgerModel> allEntries =
         ref.watch(ledgerEntriesProvider).valueOrNull ?? <LedgerModel>[];
@@ -383,7 +384,7 @@ class PartyDetailScreen extends ConsumerWidget {
                               style: theme.textTheme.bodySmall),
                         ],
                       ),
-                      if (canManage && row.key.purchaseId.isEmpty)
+                      if (canLedger && row.key.purchaseId.isEmpty)
                         IconButton(
                           tooltip: context.l10n.partyDetailDeleteEntry,
                           icon: const Icon(Icons.delete_outline),
@@ -396,7 +397,7 @@ class PartyDetailScreen extends ConsumerWidget {
           const SizedBox(height: 80),
         ],
       ),
-      floatingActionButton: canManage
+      floatingActionButton: canLedger
           ? FloatingActionButton.extended(
               onPressed: () => _addEntry(context, ref),
               icon: const Icon(Icons.post_add),

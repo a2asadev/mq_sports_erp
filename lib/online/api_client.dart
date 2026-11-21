@@ -94,6 +94,19 @@ class ApiClient {
     }
   }
 
+  /// Takes what the person may do now (from `/v1/auth/me`) and saves it with the session, so it is known offline too.
+  Future<void> rememberPermissions(List<String> permissions) async {
+    final UserModel? user = _user;
+    if (user == null) {
+      return;
+    }
+    _user = user.copyWith(permissions: permissions, updatedAt: user.updatedAt);
+    final Map<String, dynamic>? saved = await _savedSessionMap();
+    if (saved != null) {
+      await _tokens.saveUserJson(jsonEncode(<String, dynamic>{...saved, 'permissions': permissions}));
+    }
+  }
+
   /// Signed in, possibly without a connection (the saved session of a previous visit).
   bool get isSignedIn => _user != null;
 
@@ -200,11 +213,14 @@ class ApiClient {
     _accessToken = access;
     final BusinessInfo? business = BusinessInfo.tryFromMap(tokens['tenant']);
     await _tokens.saveRefreshToken(refresh);
+    // What the person may do travels beside the user in the server's answer; keep it with the user.
+    final Object? permissions = tokens['permissions'];
+    final Map<String, dynamic> withPermissions = <String, dynamic>{...user, if (permissions is List<Object?>) 'permissions': permissions};
     await _tokens.saveUserJson(
-      jsonEncode(<String, dynamic>{...user, if (business != null) 'tenant': business.toMap()}),
+      jsonEncode(<String, dynamic>{...withPermissions, if (business != null) 'tenant': business.toMap()}),
     );
     _business = business;
-    final UserModel model = UserModel.fromMap(user);
+    final UserModel model = UserModel.fromMap(withPermissions);
     // Announce a different person only: a token refresh is not a new sign-in.
     final bool newPerson = _user?.id != model.id;
     _user = model;

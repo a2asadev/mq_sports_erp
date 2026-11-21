@@ -23,6 +23,23 @@ const Map<String, dynamic> _sales = <String, dynamic>{
   'totals': <String, dynamic>{'key': '', 'name': '', 'units': 6, 'orders': 3, 'revenue': 487, 'returned': 0, 'cost': 310, 'profit': 177, 'margin': 36.3},
 };
 
+const Map<String, dynamic> _staff = <String, dynamic>{
+  'period': <String, dynamic>{'from': '2026-11-01', 'to': '2026-11-22'},
+  'rows': <Object?>[
+    <String, dynamic>{'key': 'u1', 'name': 'Bilal', 'orders': 3, 'units': 7, 'revenue': 900, 'returned': 100, 'average': 300, 'discounts': 40, 'cancelled': 1, 'activeDays': 2, 'firstSale': '09:15', 'lastSale': '18:40'},
+    <String, dynamic>{'key': '', 'name': '', 'orders': 1, 'units': 2, 'revenue': 200, 'returned': 0, 'average': 200, 'discounts': 0, 'cancelled': 0, 'activeDays': 1, 'firstSale': '', 'lastSale': ''},
+  ],
+  'totals': <String, dynamic>{'orders': 4, 'units': 9, 'revenue': 1100, 'returned': 100, 'discounts': 40, 'cancelled': 1},
+};
+
+const Map<String, dynamic> _shifts = <String, dynamic>{
+  'period': <String, dynamic>{'from': '2026-11-01', 'to': '2026-11-22'},
+  'rows': <Object?>[
+    <String, dynamic>{'day': '2026-11-20', 'key': 'u1', 'name': 'Bilal', 'firstSale': '09:15', 'lastSale': '18:40', 'orders': 3, 'revenue': 900},
+    <String, dynamic>{'day': '2026-11-20', 'key': '', 'name': '', 'firstSale': '11:00', 'lastSale': '11:00', 'orders': 1, 'revenue': 200},
+  ],
+};
+
 class _FakeReports implements ReportsService {
   final List<String> asked = <String>[];
 
@@ -30,6 +47,18 @@ class _FakeReports implements ReportsService {
   Future<SalesReport> sales({required String groupBy, String? from, String? to}) async {
     asked.add('sales:$groupBy:$from:$to');
     return SalesReport.fromMap(<String, dynamic>{..._sales, 'groupBy': groupBy});
+  }
+
+  @override
+  Future<StaffReport> staff({String? from, String? to}) async {
+    asked.add('staff');
+    return StaffReport.fromMap(_staff);
+  }
+
+  @override
+  Future<ShiftsReport> shifts({String? from, String? to}) async {
+    asked.add('shifts');
+    return ShiftsReport.fromMap(_shifts);
   }
 
   @override
@@ -102,6 +131,30 @@ class _FakeReports implements ReportsService {
 }
 
 void main() {
+  group('the staff reports', () {
+    test('staff performance lists each person with the average order, discounts, cancelled orders and hours', () {
+      final ReportTable t = staffTable(_l10n, StaffReport.fromMap(_staff));
+      expect(t.title, 'Staff performance');
+      expect(t.rows.first, <Object?>['Bilal', 3, 7, 900.0, 100.0, 300.0, 40.0, 1, 2, '09:15 - 18:40']);
+      expect(t.rows.last.first, 'Online store'); // no cashier
+      expect(t.rows.last.last, ''); // no hours to show
+      expect(t.totals?.sublist(0, 4), <Object?>['Total', 4, 9, 1100.0]);
+      expect(t.totals?[5], 275.0); // 1100 / 4
+      expect(t.toCsv(), contains('Bilal'));
+    });
+
+    test('the shift log lists each person and day with the first and last sale', () {
+      final ReportTable t = shiftsTable(_l10n, ShiftsReport.fromMap(_shifts));
+      expect(t.title, 'Shift log');
+      expect(t.rows.first, <Object?>['2026-11-20', 'Bilal', '09:15', '18:40', 3, 900.0]);
+      expect(t.rows.last[1], 'Online store');
+    });
+
+    test('the Reports page reads both from the server', () {
+      expect(ReportKind.values, containsAll(<ReportKind>[ReportKind.staff, ReportKind.shifts]));
+    });
+  });
+
   group('a report table', () {
     final ReportTable table = salesTable(_l10n, SalesReport.fromMap(_sales));
 

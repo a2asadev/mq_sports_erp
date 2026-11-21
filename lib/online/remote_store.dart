@@ -38,6 +38,12 @@ class RemoteStore {
     return _loading ??= refresh().whenComplete(() => _loading = null);
   }
 
+  /// Downloads everything again (from the start). Used when what the person may see has widened.
+  Future<void> reloadAll() {
+    _cursor = '0';
+    return refresh();
+  }
+
   /// Fetches what changed on the server since the last call. A call made while
   /// one is running is not lost: another round runs right after it, so a write
   /// that finished a moment ago is always included.

@@ -56,6 +56,129 @@ class SalesRow {
       );
 }
 
+/// One person in the staff performance report (the cashier is who created the order; '' = the online store).
+class StaffRow {
+  const StaffRow({
+    required this.key,
+    required this.name,
+    required this.orders,
+    required this.units,
+    required this.revenue,
+    required this.returned,
+    required this.average,
+    required this.discounts,
+    required this.cancelled,
+    required this.activeDays,
+    required this.firstSale,
+    required this.lastSale,
+  });
+
+  final String key;
+  final String name;
+  final int orders;
+  final int units;
+
+  /// Sold for after discounts and returns, before tax.
+  final double revenue;
+  final double returned;
+  final double average;
+
+  /// What they took off in line and order discounts.
+  final double discounts;
+
+  /// Orders of theirs that were cancelled.
+  final int cancelled;
+  final int activeDays;
+
+  /// "HH:MM": the earliest and the latest sale of any day in the period.
+  final String firstSale;
+  final String lastSale;
+
+  factory StaffRow.fromMap(Map<String, dynamic> m) => StaffRow(
+        key: '${m['key'] ?? ''}',
+        name: '${m['name'] ?? ''}',
+        orders: _i(m['orders']),
+        units: _i(m['units']),
+        revenue: _d(m['revenue']),
+        returned: _d(m['returned']),
+        average: _d(m['average']),
+        discounts: _d(m['discounts']),
+        cancelled: _i(m['cancelled']),
+        activeDays: _i(m['activeDays']),
+        firstSale: '${m['firstSale'] ?? ''}',
+        lastSale: '${m['lastSale'] ?? ''}',
+      );
+}
+
+class StaffReport {
+  const StaffReport({required this.period, required this.rows, required this.orders, required this.units, required this.revenue, required this.returned, required this.discounts, required this.cancelled});
+
+  final ReportPeriodDays period;
+  final List<StaffRow> rows;
+  final int orders;
+  final int units;
+  final double revenue;
+  final double returned;
+  final double discounts;
+  final int cancelled;
+
+  factory StaffReport.fromMap(Map<String, dynamic> m) {
+    final Object? totals = m['totals'];
+    final Map<String, dynamic> t = totals is Map<String, dynamic> ? totals : const <String, dynamic>{};
+    return StaffReport(
+      period: ReportPeriodDays.fromMap(m['period']),
+      rows: <StaffRow>[
+        for (final Object? r in (m['rows'] as List<Object?>? ?? <Object?>[]))
+          if (r is Map<String, dynamic>) StaffRow.fromMap(r),
+      ],
+      orders: _i(t['orders']),
+      units: _i(t['units']),
+      revenue: _d(t['revenue']),
+      returned: _d(t['returned']),
+      discounts: _d(t['discounts']),
+      cancelled: _i(t['cancelled']),
+    );
+  }
+}
+
+/// One person's day in the shift log: when they started and stopped selling and what they sold.
+class ShiftRow {
+  const ShiftRow({required this.day, required this.key, required this.name, required this.firstSale, required this.lastSale, required this.orders, required this.revenue});
+
+  final String day;
+  final String key;
+  final String name;
+  final String firstSale;
+  final String lastSale;
+  final int orders;
+  final double revenue;
+
+  factory ShiftRow.fromMap(Map<String, dynamic> m) => ShiftRow(
+        day: '${m['day'] ?? ''}',
+        key: '${m['key'] ?? ''}',
+        name: '${m['name'] ?? ''}',
+        firstSale: '${m['firstSale'] ?? ''}',
+        lastSale: '${m['lastSale'] ?? ''}',
+        orders: _i(m['orders']),
+        revenue: _d(m['revenue']),
+      );
+}
+
+class ShiftsReport {
+  const ShiftsReport({required this.period, required this.rows});
+
+  final ReportPeriodDays period;
+  final List<ShiftRow> rows;
+
+  factory ShiftsReport.fromMap(Map<String, dynamic> m) => ShiftsReport(
+        period: ReportPeriodDays.fromMap(m['period']),
+        rows: <ShiftRow>[
+          for (final Object? r in (m['rows'] as List<Object?>? ?? <Object?>[]))
+            if (r is Map<String, dynamic>) ShiftRow.fromMap(r),
+        ],
+      );
+}
+
 class SalesReport {
   const SalesReport({required this.period, required this.groupBy, required this.rows, required this.totals});
 

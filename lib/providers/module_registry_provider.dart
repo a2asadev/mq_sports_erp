@@ -1,3 +1,4 @@
+import 'package:a2_stocks/core/permissions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/erp_module.dart';
@@ -16,6 +17,7 @@ import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
 import 'package:a2_stocks/screens/banners/banners_screen.dart';
 import 'package:a2_stocks/screens/customers/customer_insights_screen.dart';
+import 'package:a2_stocks/screens/permissions/permissions_screen.dart';
 import 'package:a2_stocks/screens/sales/web_orders_screen.dart';
 import 'package:a2_stocks/screens/promotions/promotions_screen.dart';
 import 'package:a2_stocks/screens/purchasing/purchase_orders_screen.dart';
@@ -75,6 +77,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
       title: (AppLocalizations l10n) => l10n.moduleVendors,
       icon: Icons.local_shipping_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.purchasingManage,
       builder: (BuildContext context) => const VendorsScreen(),
     ),
     ErpModule(
@@ -83,6 +86,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
       title: (AppLocalizations l10n) => l10n.moduleReorder,
       icon: Icons.playlist_add_check_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.purchasingManage,
       builder: (BuildContext context) => const ReorderScreen(),
     ),
     ErpModule(
@@ -91,6 +95,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
       title: (AppLocalizations l10n) => l10n.modulePurchaseOrders,
       icon: Icons.assignment_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.purchasingManage,
       builder: (BuildContext context) => const PurchaseOrdersScreen(),
     ),
     ErpModule(
@@ -99,6 +104,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
       title: (AppLocalizations l10n) => l10n.modulePurchases,
       icon: Icons.shopping_cart_checkout_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.purchasingManage,
       builder: (BuildContext context) => const PurchasesScreen(),
     ),
     ErpModule(
@@ -124,6 +130,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
       title: (AppLocalizations l10n) => l10n.moduleCustomerInsights,
       icon: Icons.insights_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.reportsView,
       builder: (BuildContext context) => const CustomerInsightsScreen(),
     ),
     ErpModule(
@@ -132,6 +139,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
       title: (AppLocalizations l10n) => l10n.modulePromotions,
       icon: Icons.local_offer_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.promotionsManage,
       builder: (BuildContext context) => const PromotionsScreen(),
     ),
     ErpModule(
@@ -140,6 +148,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
       title: (AppLocalizations l10n) => l10n.moduleReports,
       icon: Icons.bar_chart_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.reportsView,
       builder: (BuildContext context) => const ReportsScreen(),
     ),
     ErpModule(
@@ -148,6 +157,7 @@ final Provider<List<ErpModule>> erpModulesProvider =
       title: (AppLocalizations l10n) => l10n.moduleExpenses,
       icon: Icons.request_quote_outlined,
       allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.expensesManage,
       builder: (BuildContext context) => const ExpensesScreen(),
     ),
     ErpModule(
@@ -228,6 +238,14 @@ final Provider<List<ErpModule>> erpModulesProvider =
       builder: (BuildContext context) => const SettingsScreen(),
     ),
     ErpModule(
+      id: 'permissions',
+      group: ModuleGroup.system,
+      title: (AppLocalizations l10n) => l10n.modulePermissions,
+      icon: Icons.admin_panel_settings_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin},
+      builder: (BuildContext context) => const PermissionsScreen(),
+    ),
+    ErpModule(
       id: 'users',
       group: ModuleGroup.system,
       title: (AppLocalizations l10n) => l10n.moduleUsers,
@@ -249,6 +267,6 @@ final Provider<List<ErpModule>> visibleModulesProvider =
   final bool hasOnlineStore = ref.watch(businessProvider.select((BusinessInfo b) => b.hasOnlineStore));
   return ref
       .watch(erpModulesProvider)
-      .where((ErpModule module) => module.allowedRoles.contains(user.role) && (!module.needsRegister || usesRegister) && (!module.needsOnlineStore || hasOnlineStore))
+      .where((ErpModule module) => (module.permission != null ? user.can(module.permission!) : module.allowedRoles.contains(user.role)) && (!module.needsRegister || usesRegister) && (!module.needsOnlineStore || hasOnlineStore))
       .toList();
 });

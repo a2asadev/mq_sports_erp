@@ -1,3 +1,4 @@
+import 'package:a2_stocks/core/permissions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
@@ -22,7 +23,6 @@ import 'package:a2_stocks/models/party_enums.dart';
 import 'package:a2_stocks/models/product_model.dart';
 import 'package:a2_stocks/models/stock_ledger_model.dart';
 import 'package:a2_stocks/models/user_model.dart';
-import 'package:a2_stocks/models/user_role.dart';
 import 'package:a2_stocks/models/variant_model.dart';
 import 'package:a2_stocks/providers/base_list_notifier.dart';
 import 'package:a2_stocks/providers/catalog_providers.dart';
@@ -40,12 +40,18 @@ final Provider<bool> canCreateOrdersProvider = Provider<bool>((Ref ref) {
   return user != null && user.isActive;
 });
 
+/// Taking goods back and refunding is for those the admin allows (managers by default).
+final Provider<bool> canReturnOrdersProvider = Provider<bool>((Ref ref) {
+  final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
+  return user != null && user.isActive && user.can(Permissions.returnsManage);
+});
+
 /// Cancelling reverses stock and money, so only admins and managers may do it.
 final Provider<bool> canCancelOrdersProvider = Provider<bool>((Ref ref) {
   final UserModel? user = ref.watch(currentUserProvider).valueOrNull;
   return user != null &&
       user.isActive &&
-      (user.role == UserRole.admin || user.role == UserRole.manager);
+      user.can(Permissions.ordersCancel);
 });
 
 String get _noPermissionMessage => L10n.current.salesYouAreNotAllowed;

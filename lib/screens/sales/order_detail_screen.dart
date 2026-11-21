@@ -190,6 +190,7 @@ class OrderDetailScreen extends ConsumerWidget {
     final ThemeData theme = Theme.of(context);
     final bool canChange = ref.watch(canCreateOrdersProvider);
     final bool canCancel = ref.watch(canCancelOrdersProvider);
+    final bool canReturn = ref.watch(canReturnOrdersProvider);
     final OrderModel? order =
         (ref.watch(ordersProvider).valueOrNull ?? <OrderModel>[])
             .where((OrderModel o) => o.id == orderId)
@@ -331,7 +332,7 @@ class OrderDetailScreen extends ConsumerWidget {
               ),
             ),
           ],
-          if (canCancel && order.status == OrderStatus.delivered) ...<Widget>[
+          if (canReturn && order.status == OrderStatus.delivered) ...<Widget>[
             const SizedBox(height: 8),
             OutlinedButton.icon(
               onPressed: () => Navigator.of(context).push<bool>(

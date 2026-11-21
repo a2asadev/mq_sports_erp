@@ -8,7 +8,7 @@ import 'package:a2_stocks/providers/core_providers.dart';
 final Provider<ReportsService> reportsServiceProvider =
     Provider<ReportsService>((Ref ref) => ReportsService(ref.watch(apiClientProvider)));
 
-enum ReportKind { sales, profit, tax, stock, receivables, payables }
+enum ReportKind { sales, staff, shifts, profit, tax, stock, receivables, payables }
 
 /// The ready-made periods of the sales and profit reports, and "custom" for any two days.
 enum ReportRange { today, last7, thisMonth, lastMonth, thisYear, custom }
@@ -66,6 +66,18 @@ final AutoDisposeFutureProvider<SalesReport> salesReportProvider = FutureProvide
   final ReportPeriod period = ref.watch(reportPeriodProvider);
   ref.watch(syncTickProvider);
   return ref.watch(reportsServiceProvider).sales(groupBy: ref.watch(salesGroupProvider), from: period.fromKey, to: period.toKey);
+});
+
+final AutoDisposeFutureProvider<StaffReport> staffReportProvider = FutureProvider.autoDispose<StaffReport>((Ref ref) {
+  final ReportPeriod period = ref.watch(reportPeriodProvider);
+  ref.watch(syncTickProvider);
+  return ref.watch(reportsServiceProvider).staff(from: period.fromKey, to: period.toKey);
+});
+
+final AutoDisposeFutureProvider<ShiftsReport> shiftsReportProvider = FutureProvider.autoDispose<ShiftsReport>((Ref ref) {
+  final ReportPeriod period = ref.watch(reportPeriodProvider);
+  ref.watch(syncTickProvider);
+  return ref.watch(reportsServiceProvider).shifts(from: period.fromKey, to: period.toKey);
 });
 
 final AutoDisposeFutureProvider<ProfitReport> profitReportProvider = FutureProvider.autoDispose<ProfitReport>((Ref ref) {

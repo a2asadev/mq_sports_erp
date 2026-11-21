@@ -40,6 +40,7 @@ class ErpModule {
     this.group = ModuleGroup.main,
     this.needsRegister = false,
     this.needsOnlineStore = false,
+    this.permission,
   });
 
   final String id;
@@ -53,5 +54,8 @@ class ErpModule {
   final bool needsRegister;
 
   /// Listed only for the business that runs the public online store (see `BusinessInfo.hasOnlineStore`).
+
+  /// When set, the module is listed for whoever holds this permission (see `Permissions`), instead of by role.
+  final String? permission;
   final bool needsOnlineStore;
 }

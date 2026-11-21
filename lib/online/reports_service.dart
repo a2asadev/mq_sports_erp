@@ -20,6 +20,12 @@ class ReportsService {
     return SalesReport.fromMap(r.asMap);
   }
 
+  /// Sales per person and the hours they worked, for the days [from] to [to].
+  Future<StaffReport> staff({String? from, String? to}) async => StaffReport.fromMap((await _api.get('/v1/reports/staff', query: _period(from, to))).asMap);
+
+  /// A shift log from the sales: each person's first and last sale of each day.
+  Future<ShiftsReport> shifts({String? from, String? to}) async => ShiftsReport.fromMap((await _api.get('/v1/reports/shifts', query: _period(from, to))).asMap);
+
   Future<ProfitReport> profit({String? from, String? to}) async {
     final ApiResponse r = await _api.get('/v1/reports/profit', query: _period(from, to));
     return ProfitReport.fromMap(r.asMap);

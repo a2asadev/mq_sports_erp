@@ -57,6 +57,49 @@ ReportTable salesTable(AppLocalizations l10n, SalesReport r) {
   );
 }
 
+/// Sales per person: what each sold, the average order, discounts given, cancelled orders, days worked and hours.
+ReportTable staffTable(AppLocalizations l10n, StaffReport r) {
+  String name(StaffRow row) => row.key.isEmpty ? l10n.reportOnlineStore : row.name;
+  String hours(StaffRow row) => row.firstSale.isEmpty ? '' : '${row.firstSale} - ${row.lastSale}';
+  return ReportTable(
+    title: l10n.reportStaffTitle,
+    subtitle: _period(r.period),
+    columns: <ReportColumn>[
+      ReportColumn(l10n.reportColCashier, ReportColumnType.text),
+      ReportColumn(l10n.reportColOrders, ReportColumnType.integer),
+      ReportColumn(l10n.reportColUnits, ReportColumnType.integer),
+      ReportColumn(l10n.reportColRevenue, ReportColumnType.money),
+      ReportColumn(l10n.reportColReturned, ReportColumnType.money),
+      ReportColumn(l10n.reportColAverageOrder, ReportColumnType.money),
+      ReportColumn(l10n.reportColDiscounts, ReportColumnType.money),
+      ReportColumn(l10n.reportColCancelled, ReportColumnType.integer),
+      ReportColumn(l10n.reportColDaysWorked, ReportColumnType.integer),
+      ReportColumn(l10n.reportColHours, ReportColumnType.text),
+    ],
+    rows: <List<Object?>>[
+      for (final StaffRow row in r.rows) <Object?>[name(row), row.orders, row.units, row.revenue, row.returned, row.average, row.discounts, row.cancelled, row.activeDays, hours(row)],
+    ],
+    totals: <Object?>[l10n.reportTotal, r.orders, r.units, r.revenue, r.returned, r.orders > 0 ? ((r.revenue / r.orders) * 100).round() / 100 : 0.0, r.discounts, r.cancelled, null, ''],
+  );
+}
+
+/// The shift log: each person and day with the first and last sale.
+ReportTable shiftsTable(AppLocalizations l10n, ShiftsReport r) => ReportTable(
+      title: l10n.reportShiftsTitle,
+      subtitle: _period(r.period),
+      columns: <ReportColumn>[
+        ReportColumn(l10n.reportColDay, ReportColumnType.date),
+        ReportColumn(l10n.reportColCashier, ReportColumnType.text),
+        ReportColumn(l10n.reportColFirstSale, ReportColumnType.text),
+        ReportColumn(l10n.reportColLastSale, ReportColumnType.text),
+        ReportColumn(l10n.reportColOrders, ReportColumnType.integer),
+        ReportColumn(l10n.reportColRevenue, ReportColumnType.money),
+      ],
+      rows: <List<Object?>>[
+        for (final ShiftRow row in r.rows) <Object?>[row.day, row.key.isEmpty ? l10n.reportOnlineStore : row.name, row.firstSale, row.lastSale, row.orders, row.revenue],
+      ],
+    );
+
 /// Revenue, cost of goods, gross profit, expenses and net profit, then the days.
 ReportTable profitTable(AppLocalizations l10n, ProfitReport r) => ReportTable(
       title: l10n.reportProfitTitle,
