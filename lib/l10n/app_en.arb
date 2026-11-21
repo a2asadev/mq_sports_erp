@@ -4597,5 +4597,109 @@
   "exportDatasetPurchases": "Purchases",
   "exportDatasetExpenses": "Expenses",
   "exportDatasetPromotions": "Promotions",
-  "apiErrorExportUnknownDataSet": "That is not a data set that can be exported."
+  "apiErrorExportUnknownDataSet": "That is not a data set that can be exported.",
+  "moduleBranches": "Branches",
+  "branchesChangedOnline": "Branches are added and changed by an admin, with a connection.",
+  "moduleStockTransfers": "Stock transfers",
+  "branchesAdd": "Add branch",
+  "branchesUseTitle": "Work with several branches",
+  "branchesUseHint": "Each branch has its own stock, sales, purchases and stock counts. Products, customers and vendors are shared. Switch it on after adding your branches.",
+  "branchMain": "Main",
+  "branchSwitchedOff": "switched off",
+  "branchesNote": "A branch is never deleted. To switch one off, first move its stock to another branch (Stock transfers). Everything you had before belongs to the main branch.",
+  "branchEdit": "Change branch",
+  "branchName": "Branch name",
+  "branchNeedName": "Give the branch a name.",
+  "branchCode": "Short code (optional)",
+  "branchAddress": "Address (optional)",
+  "branchPhone": "Phone (optional)",
+  "branchSave": "Save",
+  "branchPickerTitle": "Work in branch",
+  "branchPickerTooltip": "Change the branch you work in",
+  "branchPickerLocked": "You work in this branch",
+  "branchBannerStock": "Showing the stock of {name}",
+  "@branchBannerStock": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "userFormBranch": "Branch",
+  "userFormBranchHint": "A member of staff with a branch can only sell in it.",
+  "userFormAnyBranch": "Any branch",
+  "reportAllBranches": "All branches",
+  "transferNew": "New transfer",
+  "transferNone": "No transfers yet. A transfer moves stock from one branch to another.",
+  "transferUnits": "{count, plural, =1{1 unit} other{{count} units}}",
+  "@transferUnits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transferBy": "By {name}",
+  "@transferBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "transferFrom": "From branch",
+  "transferTo": "To branch",
+  "transferItems": "Items",
+  "transferAddItem": "Add item",
+  "transferAvailable": "{count} in the sending branch",
+  "@transferAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "transferNote": "Note (optional)",
+  "transferSave": "Move the stock",
+  "transferChooseTwoBranches": "Choose two different branches.",
+  "transferAddItems": "Add at least one item.",
+  "transferNotEnough": "The sending branch does not have enough of {sku}.",
+  "@transferNotEnough": {
+    "placeholders": {
+      "sku": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorTransfersAnItemNoLongerExists": "An item in this transfer no longer exists.",
+  "apiErrorTransfersChooseTwoDifferentBranches": "Choose two different branches.",
+  "apiErrorTransfersCouldNotGenerateATransferNumber": "Could not generate a transfer number, try again.",
+  "apiErrorBranchesBranchNotFound": "Branch not found",
+  "apiErrorBranchesGiveTheBranchAName": "Give the branch a name.",
+  "apiErrorBranchesMoveTheStockOutFirst": "Branch {name} still has stock. Move it to another branch before switching the branch off.",
+  "@apiErrorBranchesMoveTheStockOutFirst": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorBranchesThatNameIsAlreadyUsed": "There is already a branch called {name}.",
+  "@apiErrorBranchesThatNameIsAlreadyUsed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorBranchesTheMainBranchCannotBeSwitchedOff": "The main branch cannot be switched off.",
+  "apiErrorBranchesThisBranchIsSwitchedOff": "Branch {name} is switched off.",
+  "@apiErrorBranchesThisBranchIsSwitchedOff": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "apiErrorBranchesYouWorkInADifferentBranch": "You work in a different branch."
 }

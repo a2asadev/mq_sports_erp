@@ -175,6 +175,7 @@ class ApiCommands {
           'phoneNumber': item.phoneNumber,
           'role': item.role.name,
           'isActive': item.isActive,
+          'branchId': item.branchId,
         },
         idempotencyKey: key);
   }
@@ -241,6 +242,7 @@ class ApiCommands {
         'purchaseNo': purchase.purchaseNo,
         'vendorId': purchase.vendorId,
         'purchaseDate': _utc(purchase.purchaseDate),
+        if (purchase.branchId.isNotEmpty) 'branchId': purchase.branchId,
         'invoiceNo': purchase.invoiceNo,
         'notes': purchase.notes,
         'paidNow': _money(paidNow),
@@ -278,6 +280,7 @@ class ApiCommands {
         'saleType': order.saleType.name,
         'orderDate': _utc(order.orderDate),
         'channel': order.channel,
+        if (order.branchId.isNotEmpty) 'branchId': order.branchId,
         'notes': order.notes,
         'discount': _money(order.discount),
         if (payments.isEmpty)
@@ -327,6 +330,7 @@ class ApiCommands {
         'id': audit.id,
         'auditNo': audit.auditNo,
         'auditDate': _utc(audit.auditDate),
+        if (audit.branchId.isNotEmpty) 'branchId': audit.branchId,
         'note': audit.note,
         'counts': audit.items
             .map((StockAuditItem i) => <String, dynamic>{

@@ -17,6 +17,7 @@ class BusinessInfo {
     this.brandColor = '',
     this.usesRegister = false,
     this.requireBarcode = false,
+    this.usesBranches = false,
     this.taxEnabled = false,
     this.gstRate = 0,
     this.vatRate = 0,
@@ -51,6 +52,9 @@ class BusinessInfo {
 
   /// Every new item needs a barcode (off until an admin switches it on: barcodes are optional).
   final bool requireBarcode;
+
+  /// The business works with several branches (otherwise there is only the default one, and it is not shown).
+  final bool usesBranches;
 
   /// Tax: switched on by an admin. GST and VAT are percentages (0 = not charged), both applied to the same
   /// goods price. [pricesIncludeTax]: the shelf price already contains the tax, else it is added on top.
@@ -96,6 +100,7 @@ class BusinessInfo {
     final Object? color = map['brandColor'];
     final Object? register = map['usesRegister'];
     final Object? needBarcode = map['requireBarcode'];
+    final Object? branches = map['usesBranches'];
     final Object? taxOn = map['taxEnabled'];
     final Object? gst = map['gstRate'];
     final Object? vat = map['vatRate'];
@@ -112,6 +117,7 @@ class BusinessInfo {
       brandColor: color is String && RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(color) ? color.toUpperCase() : '',
       usesRegister: register is bool ? register : false,
       requireBarcode: needBarcode is bool ? needBarcode : false,
+      usesBranches: branches is bool ? branches : false,
       taxEnabled: taxOn is bool ? taxOn : false,
       gstRate: gst is num ? gst.toDouble() : 0,
       vatRate: vat is num ? vat.toDouble() : 0,
@@ -128,6 +134,7 @@ class BusinessInfo {
     String? brandColor,
     bool? usesRegister,
     bool? requireBarcode,
+    bool? usesBranches,
     bool? taxEnabled,
     double? gstRate,
     double? vatRate,
@@ -145,6 +152,7 @@ class BusinessInfo {
         brandColor: brandColor ?? this.brandColor,
         usesRegister: usesRegister ?? this.usesRegister,
         requireBarcode: requireBarcode ?? this.requireBarcode,
+        usesBranches: usesBranches ?? this.usesBranches,
         taxEnabled: taxEnabled ?? this.taxEnabled,
         gstRate: gstRate ?? this.gstRate,
         vatRate: vatRate ?? this.vatRate,
@@ -163,6 +171,7 @@ class BusinessInfo {
         'brandColor': brandColor,
         'usesRegister': usesRegister,
         'requireBarcode': requireBarcode,
+        'usesBranches': usesBranches,
         'taxEnabled': taxEnabled,
         'gstRate': gstRate,
         'vatRate': vatRate,
@@ -183,6 +192,7 @@ class BusinessInfo {
       other.brandColor == brandColor &&
       other.usesRegister == usesRegister &&
       other.requireBarcode == requireBarcode &&
+      other.usesBranches == usesBranches &&
       other.taxEnabled == taxEnabled &&
       other.gstRate == gstRate &&
       other.vatRate == vatRate &&
@@ -190,5 +200,5 @@ class BusinessInfo {
       other.taxNumber == taxNumber;
 
   @override
-  int get hashCode => Object.hash(id, name, phone, walkInCustomerId, hasOnlineStore, currency, logoUrl, brandColor, usesRegister, requireBarcode, taxEnabled, gstRate, vatRate, pricesIncludeTax, taxNumber);
+  int get hashCode => Object.hash(id, name, phone, walkInCustomerId, hasOnlineStore, currency, logoUrl, brandColor, usesRegister, requireBarcode, usesBranches, taxEnabled, gstRate, vatRate, pricesIncludeTax, taxNumber);
 }

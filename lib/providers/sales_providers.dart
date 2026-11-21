@@ -1,3 +1,4 @@
+import 'package:a2_stocks/providers/branch_providers.dart';
 import 'package:a2_stocks/core/permissions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
@@ -152,6 +153,7 @@ class OrdersNotifier extends BaseListNotifier<OrderModel> {
       items: items,
       discount: orderDiscount,
       notes: notes,
+      branchId: ref.read(workingBranchIdProvider),
       statusHistory: <OrderStatusEntry>[_entry(OrderStatus.pending)],
     );
     // The tax of this business at this moment, kept on the order (the server works it out again and has

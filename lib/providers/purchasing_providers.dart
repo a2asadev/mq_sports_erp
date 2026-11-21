@@ -1,3 +1,4 @@
+import 'package:a2_stocks/providers/branch_providers.dart';
 import 'package:a2_stocks/core/permissions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
@@ -127,6 +128,7 @@ class PurchasesNotifier extends BaseListNotifier<PurchaseModel> {
       purchaseDate: purchaseDate,
       items: items,
       notes: notes,
+      branchId: ref.read(workingBranchIdProvider),
     );
     if (paidNow < 0 || paidNow > purchase.totalAmount + 0.005) {
       return reportFailure(ValidationException(

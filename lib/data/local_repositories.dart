@@ -6,6 +6,7 @@ import 'package:a2_stocks/data/outbox_store.dart';
 import 'package:a2_stocks/data/pending_effects.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
+import 'package:a2_stocks/models/branch_model.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
 import 'package:a2_stocks/models/order_model.dart';
 import 'package:a2_stocks/models/payment_method.dart';
@@ -306,4 +307,25 @@ class LocalStockAuditRepository extends LocalRepository<StockAuditModel> impleme
   @override
   Future<void> delete(String id) =>
       Future<void>.error(unsupported(L10n.current.onlineRepositoriesAStockCountCannot));
+}
+
+/// The business's branches: read from the device; an admin changes them online (`BranchesService`), and they come
+/// back through the sync.
+class LocalBranchRepository extends LocalRepository<BranchModel> {
+  LocalBranchRepository({required super.collection, required super.outbox})
+      : super(
+          overlay: _keep,
+          entityLabel: L10n.current.moduleBranches,
+          labelOf: (BranchModel b) => b.name,
+        );
+
+  static List<BranchModel> _keep(List<BranchModel> base, List<OutboxEntry> entries) => base;
+
+  static String get _message => L10n.current.branchesChangedOnline;
+
+  @override
+  Future<void> save(BranchModel item, {String groupId = ''}) => Future<void>.error(unsupported(_message));
+
+  @override
+  Future<void> delete(String id) => Future<void>.error(unsupported(_message));
 }

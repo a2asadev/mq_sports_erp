@@ -32,6 +32,7 @@ class StockLedgerModel implements SyncableModel {
     this.unitCost = 0,
     DateTime? movementDate,
     this.note = '',
+    this.branchId = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -56,6 +57,8 @@ class StockLedgerModel implements SyncableModel {
   final double unitCost;
   final DateTime movementDate;
   final String note;
+  /// The branch the stock moved in ('' = the default branch).
+  final String branchId;
   final DateTime createdAt;
 
   @override
@@ -74,6 +77,7 @@ class StockLedgerModel implements SyncableModel {
       'unitCost': unitCost,
       'movementDate': movementDate.toIso8601String(),
       'note': note,
+      'branchId': branchId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -91,6 +95,7 @@ class StockLedgerModel implements SyncableModel {
       unitCost: (map['unitCost'] as num?)?.toDouble() ?? 0,
       movementDate: DateTime.tryParse(map['movementDate'] as String? ?? ''),
       note: map['note'] as String? ?? '',
+      branchId: map['branchId'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -98,6 +103,7 @@ class StockLedgerModel implements SyncableModel {
 
   /// Returns a modified copy. `updatedAt` is bumped to now unless given.
   StockLedgerModel copyWith({
+    String? branchId,
     String? note,
     DateTime? updatedAt,
   }) {
@@ -112,6 +118,7 @@ class StockLedgerModel implements SyncableModel {
       unitCost: unitCost,
       movementDate: movementDate,
       note: note ?? this.note,
+      branchId: branchId ?? this.branchId,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

@@ -166,6 +166,7 @@ List<StockLedgerModel> overlayStock(List<StockLedgerModel> base, List<OutboxEntr
             unitCost: item.unitPrice,
             movementDate: order.orderDate,
             note: order.orderNo,
+            branchId: order.branchId,
             createdAt: entry.createdAt,
             updatedAt: entry.createdAt,
           ));
@@ -188,6 +189,7 @@ List<StockLedgerModel> overlayStock(List<StockLedgerModel> base, List<OutboxEntr
             unitCost: item.unitPrice,
             movementDate: entry.createdAt,
             note: 'Cancelled ${order.orderNo}',
+            branchId: order.branchId,
             createdAt: entry.createdAt,
             updatedAt: entry.createdAt,
           ));
@@ -210,6 +212,7 @@ List<StockLedgerModel> overlayStock(List<StockLedgerModel> base, List<OutboxEntr
             unitCost: item.unitCost,
             movementDate: purchase.purchaseDate,
             note: purchase.purchaseNo,
+            branchId: purchase.branchId,
             createdAt: entry.createdAt,
             updatedAt: entry.createdAt,
           ));
@@ -234,6 +237,7 @@ List<StockLedgerModel> overlayStock(List<StockLedgerModel> base, List<OutboxEntr
             sourceId: audit.id,
             movementDate: audit.auditDate,
             note: audit.note.isEmpty ? audit.auditNo : '${audit.auditNo}: ${audit.note}',
+            branchId: audit.branchId,
             createdAt: entry.createdAt,
             updatedAt: entry.createdAt,
           ));

@@ -269,7 +269,7 @@ void main() {
   test('every collection can be found by the name the API uses', () {
     expect(local.every.map((c) => c.name).toSet(), <String>{
       'users', 'categories', 'products', 'vendors', 'customers', 'ledgers', 'purchases',
-      'stock_ledgers', 'stock_audits', 'orders',
+      'stock_ledgers', 'stock_audits', 'orders', 'branches',
     });
     expect(local.named('orders'), isNotNull);
     expect(local.named('nonsense'), isNull);

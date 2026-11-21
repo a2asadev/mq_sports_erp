@@ -16,6 +16,8 @@ import 'package:a2_stocks/screens/logs/activity_logs_screen.dart';
 import 'package:a2_stocks/screens/parties/customers_screen.dart';
 import 'package:a2_stocks/screens/pos/pos_screen.dart';
 import 'package:a2_stocks/screens/backup/backup_screen.dart';
+import 'package:a2_stocks/screens/branches/branches_screen.dart';
+import 'package:a2_stocks/screens/stock/stock_transfers_screen.dart';
 import 'package:a2_stocks/screens/banners/banners_screen.dart';
 import 'package:a2_stocks/screens/customers/customer_insights_screen.dart';
 import 'package:a2_stocks/screens/permissions/permissions_screen.dart';
@@ -186,6 +188,16 @@ final Provider<List<ErpModule>> erpModulesProvider =
       builder: (BuildContext context) => const OrdersScreen(),
     ),
     ErpModule(
+      id: 'stock_transfers',
+      group: ModuleGroup.inventory,
+      title: (AppLocalizations l10n) => l10n.moduleStockTransfers,
+      icon: Icons.swap_horiz_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin, UserRole.manager},
+      permission: Permissions.stockAudit,
+      needsBranches: true,
+      builder: (BuildContext context) => const StockTransfersScreen(),
+    ),
+    ErpModule(
       id: 'labels',
       group: ModuleGroup.inventory,
       title: (AppLocalizations l10n) => l10n.moduleLabels,
@@ -239,6 +251,14 @@ final Provider<List<ErpModule>> erpModulesProvider =
       builder: (BuildContext context) => const SettingsScreen(),
     ),
     ErpModule(
+      id: 'branches',
+      group: ModuleGroup.system,
+      title: (AppLocalizations l10n) => l10n.moduleBranches,
+      icon: Icons.store_mall_directory_outlined,
+      allowedRoles: const <UserRole>{UserRole.admin},
+      builder: (BuildContext context) => const BranchesScreen(),
+    ),
+    ErpModule(
       id: 'backup',
       group: ModuleGroup.system,
       title: (AppLocalizations l10n) => l10n.moduleBackup,
@@ -274,8 +294,9 @@ final Provider<List<ErpModule>> visibleModulesProvider =
   }
   final bool usesRegister = ref.watch(businessProvider.select((BusinessInfo b) => b.usesRegister));
   final bool hasOnlineStore = ref.watch(businessProvider.select((BusinessInfo b) => b.hasOnlineStore));
+  final bool usesBranches = ref.watch(businessProvider.select((BusinessInfo b) => b.usesBranches));
   return ref
       .watch(erpModulesProvider)
-      .where((ErpModule module) => (module.permission != null ? user.can(module.permission!) : module.allowedRoles.contains(user.role)) && (!module.needsRegister || usesRegister) && (!module.needsOnlineStore || hasOnlineStore))
+      .where((ErpModule module) => (module.permission != null ? user.can(module.permission!) : module.allowedRoles.contains(user.role)) && (!module.needsRegister || usesRegister) && (!module.needsOnlineStore || hasOnlineStore) && (!module.needsBranches || usesBranches))
       .toList();
 });

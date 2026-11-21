@@ -21,6 +21,7 @@ part 'app_database.g.dart';
   Orders,
   OrderItems,
   OrderStatusEntries,
+  Branches,
   Outbox,
   SyncKv,
 ])
@@ -31,11 +32,20 @@ class AppDatabase extends _$AppDatabase {
   factory AppDatabase.open(String userId) => AppDatabase(driftDatabase(name: 'mq_erp_$userId'));
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (Migrator m, int from, int to) async {
+          if (from < 9) {
+            // Branches: which branch a sale, a stock movement, a purchase, a count and a person belong to.
+            await m.createTable(branches);
+            await m.addColumn(orders, orders.branchId);
+            await m.addColumn(stockMovements, stockMovements.branchId);
+            await m.addColumn(purchases, purchases.branchId);
+            await m.addColumn(stockAudits, stockAudits.branchId);
+            await m.addColumn(users, users.branchId);
+          }
           if (from < 8) {
             // Products the shop features on the online store's home page.
             await m.addColumn(products, products.isFeatured);

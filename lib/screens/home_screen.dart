@@ -1,3 +1,4 @@
+import 'package:a2_stocks/widgets/branch_picker.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -246,6 +247,7 @@ class _TopBar extends StatelessWidget {
               ] else
                 Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
               const Spacer(),
+              const BranchPickerChip(),
               const NotificationBell(),
               const SizedBox(width: 4),
               if (online) const OnlineStatusChip() else const SyncStatusChip(),

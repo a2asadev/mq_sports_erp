@@ -84,6 +84,7 @@ class UsersNotifier extends BaseListNotifier<UserModel> {
     required String displayName,
     required String phoneNumber,
     required UserRole role,
+    String branchId = '',
   }) async {
     if (_activeAdmin() == null) {
       return _fail(PermissionDeniedException(
@@ -102,6 +103,7 @@ class UsersNotifier extends BaseListNotifier<UserModel> {
             displayName: displayName,
             phoneNumber: phoneNumber,
             role: role,
+            branchId: branchId,
           );
           state = AsyncData<List<UserModel>>(<UserModel>[...previous, user]);
           await repository.save(user);

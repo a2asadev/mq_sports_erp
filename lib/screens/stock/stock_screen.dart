@@ -1,3 +1,4 @@
+import 'package:a2_stocks/widgets/branch_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/core/theme/app_theme.dart';
@@ -115,6 +116,7 @@ class _StockScreenState extends ConsumerState<StockScreen> {
       ),
       body: Column(
         children: <Widget>[
+          const BranchBanner(),
           StatStrip(
             items: <StatItem>[
               StatItem(

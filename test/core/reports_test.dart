@@ -44,25 +44,25 @@ class _FakeReports implements ReportsService {
   final List<String> asked = <String>[];
 
   @override
-  Future<SalesReport> sales({required String groupBy, String? from, String? to}) async {
+  Future<SalesReport> sales({required String groupBy, String? from, String? to, String? branchId}) async {
     asked.add('sales:$groupBy:$from:$to');
     return SalesReport.fromMap(<String, dynamic>{..._sales, 'groupBy': groupBy});
   }
 
   @override
-  Future<StaffReport> staff({String? from, String? to}) async {
+  Future<StaffReport> staff({String? from, String? to, String? branchId}) async {
     asked.add('staff');
     return StaffReport.fromMap(_staff);
   }
 
   @override
-  Future<ShiftsReport> shifts({String? from, String? to}) async {
+  Future<ShiftsReport> shifts({String? from, String? to, String? branchId}) async {
     asked.add('shifts');
     return ShiftsReport.fromMap(_shifts);
   }
 
   @override
-  Future<ProfitReport> profit({String? from, String? to}) async {
+  Future<ProfitReport> profit({String? from, String? to, String? branchId}) async {
     asked.add('profit');
     return ProfitReport.fromMap(<String, dynamic>{
       'period': <String, dynamic>{'from': '2026-11-01', 'to': '2026-11-22'},

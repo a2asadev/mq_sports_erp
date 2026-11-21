@@ -6395,4 +6395,180 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get apiErrorExportUnknownDataSet =>
       'That is not a data set that can be exported.';
+
+  @override
+  String get moduleBranches => 'Branches';
+
+  @override
+  String get branchesChangedOnline =>
+      'Branches are added and changed by an admin, with a connection.';
+
+  @override
+  String get moduleStockTransfers => 'Stock transfers';
+
+  @override
+  String get branchesAdd => 'Add branch';
+
+  @override
+  String get branchesUseTitle => 'Work with several branches';
+
+  @override
+  String get branchesUseHint =>
+      'Each branch has its own stock, sales, purchases and stock counts. Products, customers and vendors are shared. Switch it on after adding your branches.';
+
+  @override
+  String get branchMain => 'Main';
+
+  @override
+  String get branchSwitchedOff => 'switched off';
+
+  @override
+  String get branchesNote =>
+      'A branch is never deleted. To switch one off, first move its stock to another branch (Stock transfers). Everything you had before belongs to the main branch.';
+
+  @override
+  String get branchEdit => 'Change branch';
+
+  @override
+  String get branchName => 'Branch name';
+
+  @override
+  String get branchNeedName => 'Give the branch a name.';
+
+  @override
+  String get branchCode => 'Short code (optional)';
+
+  @override
+  String get branchAddress => 'Address (optional)';
+
+  @override
+  String get branchPhone => 'Phone (optional)';
+
+  @override
+  String get branchSave => 'Save';
+
+  @override
+  String get branchPickerTitle => 'Work in branch';
+
+  @override
+  String get branchPickerTooltip => 'Change the branch you work in';
+
+  @override
+  String get branchPickerLocked => 'You work in this branch';
+
+  @override
+  String branchBannerStock(String name) {
+    return 'Showing the stock of $name';
+  }
+
+  @override
+  String get userFormBranch => 'Branch';
+
+  @override
+  String get userFormBranchHint =>
+      'A member of staff with a branch can only sell in it.';
+
+  @override
+  String get userFormAnyBranch => 'Any branch';
+
+  @override
+  String get reportAllBranches => 'All branches';
+
+  @override
+  String get transferNew => 'New transfer';
+
+  @override
+  String get transferNone =>
+      'No transfers yet. A transfer moves stock from one branch to another.';
+
+  @override
+  String transferUnits(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count units',
+      one: '1 unit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String transferBy(String name) {
+    return 'By $name';
+  }
+
+  @override
+  String get transferFrom => 'From branch';
+
+  @override
+  String get transferTo => 'To branch';
+
+  @override
+  String get transferItems => 'Items';
+
+  @override
+  String get transferAddItem => 'Add item';
+
+  @override
+  String transferAvailable(int count) {
+    return '$count in the sending branch';
+  }
+
+  @override
+  String get transferNote => 'Note (optional)';
+
+  @override
+  String get transferSave => 'Move the stock';
+
+  @override
+  String get transferChooseTwoBranches => 'Choose two different branches.';
+
+  @override
+  String get transferAddItems => 'Add at least one item.';
+
+  @override
+  String transferNotEnough(String sku) {
+    return 'The sending branch does not have enough of $sku.';
+  }
+
+  @override
+  String get apiErrorTransfersAnItemNoLongerExists =>
+      'An item in this transfer no longer exists.';
+
+  @override
+  String get apiErrorTransfersChooseTwoDifferentBranches =>
+      'Choose two different branches.';
+
+  @override
+  String get apiErrorTransfersCouldNotGenerateATransferNumber =>
+      'Could not generate a transfer number, try again.';
+
+  @override
+  String get apiErrorBranchesBranchNotFound => 'Branch not found';
+
+  @override
+  String get apiErrorBranchesGiveTheBranchAName => 'Give the branch a name.';
+
+  @override
+  String apiErrorBranchesMoveTheStockOutFirst(String name) {
+    return 'Branch $name still has stock. Move it to another branch before switching the branch off.';
+  }
+
+  @override
+  String apiErrorBranchesThatNameIsAlreadyUsed(String name) {
+    return 'There is already a branch called $name.';
+  }
+
+  @override
+  String get apiErrorBranchesTheMainBranchCannotBeSwitchedOff =>
+      'The main branch cannot be switched off.';
+
+  @override
+  String apiErrorBranchesThisBranchIsSwitchedOff(String name) {
+    return 'Branch $name is switched off.';
+  }
+
+  @override
+  String get apiErrorBranchesYouWorkInADifferentBranch =>
+      'You work in a different branch.';
 }

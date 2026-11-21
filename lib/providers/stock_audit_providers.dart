@@ -1,3 +1,4 @@
+import 'package:a2_stocks/providers/branch_providers.dart';
 import 'package:a2_stocks/core/permissions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
@@ -150,6 +151,7 @@ class StockAuditsNotifier extends BaseListNotifier<StockAuditModel> {
       auditDate: auditDate,
       items: items,
       note: note,
+      branchId: ref.read(workingBranchIdProvider),
       countedById: actor?.id ?? '',
       countedByName: actor == null
           ? ''

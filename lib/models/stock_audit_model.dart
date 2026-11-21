@@ -68,6 +68,7 @@ class StockAuditModel implements SyncableModel {
     this.note = '',
     this.countedById = '',
     this.countedByName = '',
+    this.branchId = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -87,6 +88,8 @@ class StockAuditModel implements SyncableModel {
   final String note;
   final String countedById;
   final String countedByName;
+  /// The branch that was counted ('' = the default branch).
+  final String branchId;
   final DateTime createdAt;
 
   @override
@@ -106,6 +109,7 @@ class StockAuditModel implements SyncableModel {
       'note': note,
       'countedById': countedById,
       'countedByName': countedByName,
+      'branchId': branchId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -124,6 +128,7 @@ class StockAuditModel implements SyncableModel {
       note: map['note'] as String? ?? '',
       countedById: map['countedById'] as String? ?? '',
       countedByName: map['countedByName'] as String? ?? '',
+      branchId: map['branchId'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );

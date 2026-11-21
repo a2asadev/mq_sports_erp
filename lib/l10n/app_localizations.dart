@@ -10118,6 +10118,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That is not a data set that can be exported.'**
   String get apiErrorExportUnknownDataSet;
+
+  /// No description provided for @moduleBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get moduleBranches;
+
+  /// No description provided for @branchesChangedOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches are added and changed by an admin, with a connection.'**
+  String get branchesChangedOnline;
+
+  /// No description provided for @moduleStockTransfers.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock transfers'**
+  String get moduleStockTransfers;
+
+  /// No description provided for @branchesAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add branch'**
+  String get branchesAdd;
+
+  /// No description provided for @branchesUseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Work with several branches'**
+  String get branchesUseTitle;
+
+  /// No description provided for @branchesUseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each branch has its own stock, sales, purchases and stock counts. Products, customers and vendors are shared. Switch it on after adding your branches.'**
+  String get branchesUseHint;
+
+  /// No description provided for @branchMain.
+  ///
+  /// In en, this message translates to:
+  /// **'Main'**
+  String get branchMain;
+
+  /// No description provided for @branchSwitchedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'switched off'**
+  String get branchSwitchedOff;
+
+  /// No description provided for @branchesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A branch is never deleted. To switch one off, first move its stock to another branch (Stock transfers). Everything you had before belongs to the main branch.'**
+  String get branchesNote;
+
+  /// No description provided for @branchEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change branch'**
+  String get branchEdit;
+
+  /// No description provided for @branchName.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch name'**
+  String get branchName;
+
+  /// No description provided for @branchNeedName.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the branch a name.'**
+  String get branchNeedName;
+
+  /// No description provided for @branchCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Short code (optional)'**
+  String get branchCode;
+
+  /// No description provided for @branchAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address (optional)'**
+  String get branchAddress;
+
+  /// No description provided for @branchPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (optional)'**
+  String get branchPhone;
+
+  /// No description provided for @branchSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get branchSave;
+
+  /// No description provided for @branchPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Work in branch'**
+  String get branchPickerTitle;
+
+  /// No description provided for @branchPickerTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the branch you work in'**
+  String get branchPickerTooltip;
+
+  /// No description provided for @branchPickerLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'You work in this branch'**
+  String get branchPickerLocked;
+
+  /// No description provided for @branchBannerStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the stock of {name}'**
+  String branchBannerStock(String name);
+
+  /// No description provided for @userFormBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get userFormBranch;
+
+  /// No description provided for @userFormBranchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A member of staff with a branch can only sell in it.'**
+  String get userFormBranchHint;
+
+  /// No description provided for @userFormAnyBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Any branch'**
+  String get userFormAnyBranch;
+
+  /// No description provided for @reportAllBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'All branches'**
+  String get reportAllBranches;
+
+  /// No description provided for @transferNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New transfer'**
+  String get transferNew;
+
+  /// No description provided for @transferNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No transfers yet. A transfer moves stock from one branch to another.'**
+  String get transferNone;
+
+  /// No description provided for @transferUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unit} other{{count} units}}'**
+  String transferUnits(int count);
+
+  /// No description provided for @transferBy.
+  ///
+  /// In en, this message translates to:
+  /// **'By {name}'**
+  String transferBy(String name);
+
+  /// No description provided for @transferFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From branch'**
+  String get transferFrom;
+
+  /// No description provided for @transferTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To branch'**
+  String get transferTo;
+
+  /// No description provided for @transferItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get transferItems;
+
+  /// No description provided for @transferAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add item'**
+  String get transferAddItem;
+
+  /// No description provided for @transferAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} in the sending branch'**
+  String transferAvailable(int count);
+
+  /// No description provided for @transferNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get transferNote;
+
+  /// No description provided for @transferSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the stock'**
+  String get transferSave;
+
+  /// No description provided for @transferChooseTwoBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose two different branches.'**
+  String get transferChooseTwoBranches;
+
+  /// No description provided for @transferAddItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one item.'**
+  String get transferAddItems;
+
+  /// No description provided for @transferNotEnough.
+  ///
+  /// In en, this message translates to:
+  /// **'The sending branch does not have enough of {sku}.'**
+  String transferNotEnough(String sku);
+
+  /// No description provided for @apiErrorTransfersAnItemNoLongerExists.
+  ///
+  /// In en, this message translates to:
+  /// **'An item in this transfer no longer exists.'**
+  String get apiErrorTransfersAnItemNoLongerExists;
+
+  /// No description provided for @apiErrorTransfersChooseTwoDifferentBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose two different branches.'**
+  String get apiErrorTransfersChooseTwoDifferentBranches;
+
+  /// No description provided for @apiErrorTransfersCouldNotGenerateATransferNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not generate a transfer number, try again.'**
+  String get apiErrorTransfersCouldNotGenerateATransferNumber;
+
+  /// No description provided for @apiErrorBranchesBranchNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch not found'**
+  String get apiErrorBranchesBranchNotFound;
+
+  /// No description provided for @apiErrorBranchesGiveTheBranchAName.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the branch a name.'**
+  String get apiErrorBranchesGiveTheBranchAName;
+
+  /// No description provided for @apiErrorBranchesMoveTheStockOutFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch {name} still has stock. Move it to another branch before switching the branch off.'**
+  String apiErrorBranchesMoveTheStockOutFirst(String name);
+
+  /// No description provided for @apiErrorBranchesThatNameIsAlreadyUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'There is already a branch called {name}.'**
+  String apiErrorBranchesThatNameIsAlreadyUsed(String name);
+
+  /// No description provided for @apiErrorBranchesTheMainBranchCannotBeSwitchedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'The main branch cannot be switched off.'**
+  String get apiErrorBranchesTheMainBranchCannotBeSwitchedOff;
+
+  /// No description provided for @apiErrorBranchesThisBranchIsSwitchedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch {name} is switched off.'**
+  String apiErrorBranchesThisBranchIsSwitchedOff(String name);
+
+  /// No description provided for @apiErrorBranchesYouWorkInADifferentBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'You work in a different branch.'**
+  String get apiErrorBranchesYouWorkInADifferentBranch;
 }
 
 class _AppLocalizationsDelegate

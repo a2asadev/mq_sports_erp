@@ -1,3 +1,5 @@
+import 'package:a2_stocks/core/utils/branch_rules.dart';
+import 'package:a2_stocks/providers/branch_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:a2_stocks/data/local_repositories.dart';
 import 'package:a2_stocks/providers/local_data_providers.dart';
@@ -36,14 +38,12 @@ final AsyncNotifierProvider<StockLedgerNotifier, List<StockLedgerModel>>
   StockLedgerNotifier.new,
 );
 
-/// Stock on hand per variant id: the sum of all its stock movements.
+/// Stock on hand per variant id: the sum of its stock movements. When the business uses branches it is the stock of
+/// the branch this device works in (that is what a sale there can take); otherwise the whole business's.
 final Provider<Map<String, int>> stockOnHandProvider =
     Provider<Map<String, int>>((Ref ref) {
   final List<StockLedgerModel> entries =
       ref.watch(stockLedgerProvider).valueOrNull ?? <StockLedgerModel>[];
-  final Map<String, int> totals = <String, int>{};
-  for (final StockLedgerModel entry in entries) {
-    totals[entry.variantId] = (totals[entry.variantId] ?? 0) + entry.quantity;
-  }
-  return totals;
+  final String branch = ref.watch(workingBranchIdProvider);
+  return stockByVariant(entries, branchId: branch.isEmpty ? null : branch, defaultBranchId: ref.watch(defaultBranchIdProvider));
 });

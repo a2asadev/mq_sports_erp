@@ -1,3 +1,5 @@
+import 'package:a2_stocks/providers/branch_providers.dart';
+import 'package:a2_stocks/models/branch_model.dart';
 import 'package:flutter/material.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
 import 'package:a2_stocks/l10n/model_labels.dart';
@@ -25,6 +27,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
   late final TextEditingController _phoneController;
   final TextEditingController _passwordController = TextEditingController();
   late UserRole _role;
+  String _branchId = '';
   late bool _isActive;
   late String _photoUrl;
   bool _obscurePassword = true;
@@ -38,6 +41,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
     _emailController = TextEditingController(text: existing?.email ?? '');
     _phoneController = TextEditingController(text: existing?.phoneNumber ?? '');
     _role = existing?.role ?? UserRole.staff;
+    _branchId = existing?.branchId ?? '';
     _isActive = existing?.isActive ?? true;
     _photoUrl = existing?.photoUrl ?? '';
   }
@@ -68,6 +72,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
             displayName: name,
             phoneNumber: phone,
             role: _role,
+            branchId: _branchId,
           )
         : await notifier.updateUser(existing.copyWith(
             displayName: name,
@@ -75,6 +80,7 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
             role: _role,
             isActive: _isActive,
             photoUrl: _photoUrl,
+            branchId: _branchId,
           ));
     if (!mounted) {
       return;
@@ -219,6 +225,18 @@ class _UserFormScreenState extends ConsumerState<UserFormScreen> {
                               }
                             },
                     ),
+                    if (ref.watch(usesBranchesProvider)) ...<Widget>[
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: ref.watch(activeBranchesProvider).any((BranchModel b) => b.id == _branchId) ? _branchId : '',
+                        decoration: InputDecoration(labelText: context.l10n.userFormBranch, helperText: context.l10n.userFormBranchHint, border: const OutlineInputBorder()),
+                        items: <DropdownMenuItem<String>>[
+                          DropdownMenuItem<String>(value: '', child: Text(context.l10n.userFormAnyBranch)),
+                          for (final BranchModel b in ref.watch(activeBranchesProvider)) DropdownMenuItem<String>(value: b.id, child: Text(b.name)),
+                        ],
+                        onChanged: _isSubmitting ? null : (String? value) => setState(() => _branchId = value ?? ''),
+                      ),
+                    ],
                     if (isEdit) ...<Widget>[
                       const SizedBox(height: 8),
                       SwitchListTile(

@@ -4,6 +4,7 @@ class StorageKeys {
   const StorageKeys._();
 
   static const String activityLogs = 'activity_logs';
+  static const String branches = 'branches';
   static const String categories = 'categories';
   static const String customers = 'customers';
   static const String goodsReceiptNotes = 'goods_receipt_notes';

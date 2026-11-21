@@ -40,6 +40,7 @@ class ErpModule {
     this.group = ModuleGroup.main,
     this.needsRegister = false,
     this.needsOnlineStore = false,
+    this.needsBranches = false,
     this.permission,
   });
 
@@ -58,4 +59,7 @@ class ErpModule {
   /// When set, the module is listed for whoever holds this permission (see `Permissions`), instead of by role.
   final String? permission;
   final bool needsOnlineStore;
+
+  /// Listed only for a business that works with branches (see `BusinessInfo.usesBranches`).
+  final bool needsBranches;
 }

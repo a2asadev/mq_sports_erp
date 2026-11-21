@@ -154,6 +154,26 @@ String? apiErrorText(AppLocalizations l10n, String code, Map<String, Object?> pa
       return l10n.apiErrorOrdersThisCustomerNoLongerExists;
     case 'orders.this_order_already_exists':
       return l10n.apiErrorOrdersThisOrderAlreadyExists;
+    case 'transfers.an_item_no_longer_exists':
+      return l10n.apiErrorTransfersAnItemNoLongerExists;
+    case 'transfers.choose_two_different_branches':
+      return l10n.apiErrorTransfersChooseTwoDifferentBranches;
+    case 'transfers.could_not_generate_a_transfer_number':
+      return l10n.apiErrorTransfersCouldNotGenerateATransferNumber;
+    case 'branches.branch_not_found':
+      return l10n.apiErrorBranchesBranchNotFound;
+    case 'branches.give_the_branch_a_name':
+      return l10n.apiErrorBranchesGiveTheBranchAName;
+    case 'branches.move_the_stock_out_first':
+      return l10n.apiErrorBranchesMoveTheStockOutFirst(_text(params, 'name'));
+    case 'branches.that_name_is_already_used':
+      return l10n.apiErrorBranchesThatNameIsAlreadyUsed(_text(params, 'name'));
+    case 'branches.the_main_branch_cannot_be_switched_off':
+      return l10n.apiErrorBranchesTheMainBranchCannotBeSwitchedOff;
+    case 'branches.this_branch_is_switched_off':
+      return l10n.apiErrorBranchesThisBranchIsSwitchedOff(_text(params, 'name'));
+    case 'branches.you_work_in_a_different_branch':
+      return l10n.apiErrorBranchesYouWorkInADifferentBranch;
     case 'banners.a_banner_needs_a_title':
       return l10n.apiErrorBannersABannerNeedsATitle;
     case 'banners.banner_not_found':

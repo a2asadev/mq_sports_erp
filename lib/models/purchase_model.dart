@@ -103,6 +103,7 @@ class PurchaseModel implements SyncableModel {
     DateTime? purchaseDate,
     List<PurchaseItem>? items,
     this.notes = '',
+    this.branchId = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -124,6 +125,8 @@ class PurchaseModel implements SyncableModel {
   final DateTime purchaseDate;
   final List<PurchaseItem> items;
   final String notes;
+  /// The branch the goods arrived in ('' = the default branch).
+  final String branchId;
   final DateTime createdAt;
 
   @override
@@ -150,6 +153,7 @@ class PurchaseModel implements SyncableModel {
       'items': items.map((PurchaseItem i) => i.toMap()).toList(),
       'notes': notes,
       'totalAmount': totalAmount,
+      'branchId': branchId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -169,6 +173,7 @@ class PurchaseModel implements SyncableModel {
           .map(PurchaseItem.fromMap)
           .toList(),
       notes: map['notes'] as String? ?? '',
+      branchId: map['branchId'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -176,6 +181,7 @@ class PurchaseModel implements SyncableModel {
 
   /// Returns a modified copy. `updatedAt` is bumped to now unless given.
   PurchaseModel copyWith({
+    String? branchId,
     String? invoiceNo,
     String? notes,
     DateTime? updatedAt,
@@ -189,6 +195,7 @@ class PurchaseModel implements SyncableModel {
       purchaseDate: purchaseDate,
       items: items,
       notes: notes ?? this.notes,
+      branchId: branchId ?? this.branchId,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

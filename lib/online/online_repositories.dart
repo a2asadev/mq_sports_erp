@@ -1,3 +1,4 @@
+import 'package:a2_stocks/models/branch_model.dart';
 import 'package:a2_stocks/core/constants/storage_keys.dart';
 import 'package:a2_stocks/core/errors/app_exceptions.dart';
 import 'package:a2_stocks/l10n/l10n.dart';
@@ -271,4 +272,18 @@ class OnlineUserRepository extends OnlineRepository<UserModel> {
 
   @override
   Future<void> remove(String id) => commands.deleteRecord(StorageKeys.users, id);
+}
+
+/// Branches are changed online by an admin (`BranchesService`); this only reads them.
+class OnlineBranchRepository extends OnlineRepository<BranchModel> {
+  OnlineBranchRepository(ApiClient api, RemoteStore store)
+      : super(api: api, store: store, collectionName: StorageKeys.branches, fromMap: BranchModel.fromMap);
+
+  static String get _message => L10n.current.branchesChangedOnline;
+
+  @override
+  Future<void> write(BranchModel item, {required bool exists}) => Future<void>.error(unsupported(_message));
+
+  @override
+  Future<void> remove(String id) => Future<void>.error(unsupported(_message));
 }

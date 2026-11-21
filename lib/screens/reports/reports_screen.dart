@@ -1,3 +1,5 @@
+import 'package:a2_stocks/providers/branch_providers.dart';
+import 'package:a2_stocks/models/branch_model.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -203,6 +205,22 @@ class ReportsScreen extends ConsumerWidget {
               ),
             ),
           ),
+          if (ref.watch(usesBranchesProvider) && (kind == ReportKind.sales || kind == ReportKind.staff || kind == ReportKind.shifts || kind == ReportKind.profit))
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: <Widget>[
+                    ChoiceChip(label: Text(l10n.reportAllBranches), selected: ref.watch(reportBranchProvider).isEmpty, onSelected: (bool _) => ref.read(reportBranchProvider.notifier).state = ''),
+                    for (final BranchModel b in ref.watch(activeBranchesProvider))
+                      ChoiceChip(label: Text(b.name), selected: ref.watch(reportBranchProvider) == b.id, onSelected: (bool _) => ref.read(reportBranchProvider.notifier).state = b.id),
+                  ],
+                ),
+              ),
+            ),
           if (hasPeriod)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),

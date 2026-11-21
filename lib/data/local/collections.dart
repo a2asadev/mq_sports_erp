@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:a2_stocks/core/constants/storage_keys.dart';
 import 'package:a2_stocks/data/local/app_database.dart';
 import 'package:a2_stocks/data/local/tables.dart';
+import 'package:a2_stocks/models/branch_model.dart';
 import 'package:a2_stocks/models/category_model.dart';
 import 'package:a2_stocks/models/customer_model.dart';
 import 'package:a2_stocks/models/ledger_model.dart';
@@ -53,6 +54,7 @@ abstract class LocalCollection<T extends SyncableModel> {
 class LocalCollections {
   LocalCollections(AppDatabase db)
       : users = UsersCollection(db),
+        branches = BranchesCollection(db),
         categories = CategoriesCollection(db),
         products = ProductsCollection(db),
         vendors = VendorsCollection(db),
@@ -64,6 +66,7 @@ class LocalCollections {
         orders = OrdersCollection(db);
 
   final UsersCollection users;
+  final BranchesCollection branches;
   final CategoriesCollection categories;
   final ProductsCollection products;
   final VendorsCollection vendors;
@@ -76,7 +79,7 @@ class LocalCollections {
 
   List<LocalCollection<SyncableModel>> get every => <LocalCollection<SyncableModel>>[
         users, categories, products, vendors, customers, ledgers, purchases,
-        stockLedgers, stockAudits, orders,
+        stockLedgers, stockAudits, orders, branches,
       ];
 
   LocalCollection<SyncableModel>? named(String name) {
@@ -119,6 +122,7 @@ class UsersCollection extends LocalCollection<UserModel> {
         role: UserRole.fromName(r.role),
         isActive: r.isActive,
         photoUrl: r.photoUrl,
+        branchId: r.branchId,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -145,6 +149,7 @@ class UsersCollection extends LocalCollection<UserModel> {
               role: Value<String>(u.role.name),
               isActive: Value<bool>(u.isActive),
               photoUrl: Value<String>(u.photoUrl),
+              branchId: Value<String>(u.branchId),
               createdAt: Value<DateTime>(u.createdAt),
               updatedAt: Value<DateTime>(u.updatedAt),
             ),
@@ -592,6 +597,7 @@ class PurchasesCollection extends LocalCollection<PurchaseModel> {
                 ))
             .toList(),
         notes: r.notes,
+        branchId: r.branchId,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -632,6 +638,7 @@ class PurchasesCollection extends LocalCollection<PurchaseModel> {
                 purchaseDate: Value<DateTime>(p.purchaseDate),
                 notes: Value<String>(p.notes),
                 totalAmount: Value<double>(p.totalAmount),
+                branchId: Value<String>(p.branchId),
                 createdAt: Value<DateTime>(p.createdAt),
                 updatedAt: Value<DateTime>(p.updatedAt),
               ),
@@ -686,6 +693,7 @@ class StockMovementsCollection extends LocalCollection<StockLedgerModel> {
         unitCost: r.unitCost,
         movementDate: r.movementDate,
         note: r.note,
+        branchId: r.branchId,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -716,6 +724,7 @@ class StockMovementsCollection extends LocalCollection<StockLedgerModel> {
               unitCost: Value<double>(m.unitCost),
               movementDate: Value<DateTime>(m.movementDate),
               note: Value<String>(m.note),
+              branchId: Value<String>(m.branchId),
               createdAt: Value<DateTime>(m.createdAt),
               updatedAt: Value<DateTime>(m.updatedAt),
             ),
@@ -773,6 +782,7 @@ class StockAuditsCollection extends LocalCollection<StockAuditModel> {
         note: r.note,
         countedById: r.countedById,
         countedByName: r.countedByName,
+        branchId: r.branchId,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -811,6 +821,7 @@ class StockAuditsCollection extends LocalCollection<StockAuditModel> {
                 note: Value<String>(a.note),
                 countedById: Value<String>(a.countedById),
                 countedByName: Value<String>(a.countedByName),
+                branchId: Value<String>(a.branchId),
                 createdAt: Value<DateTime>(a.createdAt),
                 updatedAt: Value<DateTime>(a.updatedAt),
               ),
@@ -895,6 +906,7 @@ class OrdersCollection extends LocalCollection<OrderModel> {
                   byName: h.byName,
                 ))
             .toList(),
+        branchId: r.branchId,
         createdAt: r.createdAt,
         updatedAt: r.updatedAt,
       );
@@ -951,6 +963,7 @@ class OrdersCollection extends LocalCollection<OrderModel> {
                 taxInclusive: Value<bool>(o.taxInclusive),
                 channel: Value<String>(o.channel),
                 notes: Value<String>(o.notes),
+                branchId: Value<String>(o.branchId),
                 createdAt: Value<DateTime>(o.createdAt),
                 updatedAt: Value<DateTime>(o.updatedAt),
               ),
@@ -993,4 +1006,60 @@ class OrdersCollection extends LocalCollection<OrderModel> {
         await (_db.delete(_db.orderStatusEntries)..where((OrderStatusEntries t) => t.orderId.isIn(ids))).go();
         await (_db.delete(_db.orders)..where((Orders t) => t.id.isIn(ids))).go();
       });
+}
+
+// ---- branches --------------------------------------------------------------
+
+class BranchesCollection extends LocalCollection<BranchModel> {
+  BranchesCollection(this._db);
+
+  final AppDatabase _db;
+
+  @override
+  String get name => StorageKeys.branches;
+
+  @override
+  BranchModel fromMap(Map<String, dynamic> map) => BranchModel.fromMap(map);
+
+  BranchModel _model(BranchRow r) => BranchModel(
+        id: r.id,
+        name: r.name,
+        code: r.code,
+        address: r.address,
+        phone: r.phone,
+        isDefault: r.isDefault,
+        isActive: r.isActive,
+        createdAt: r.createdAt,
+        updatedAt: r.updatedAt,
+      );
+
+  @override
+  Future<List<BranchModel>> all() async => (await _db.select(_db.branches).get()).map(_model).toList();
+
+  @override
+  Future<BranchModel?> byId(String id) async {
+    final BranchRow? row = await (_db.select(_db.branches)..where((Branches t) => t.id.equals(id))).getSingleOrNull();
+    return row == null ? null : _model(row);
+  }
+
+  @override
+  Future<void> upsertAll(List<BranchModel> items) => _db.batch((Batch b) {
+        b.insertAllOnConflictUpdate(_db.branches, <BranchesCompanion>[
+          for (final BranchModel c in items)
+            BranchesCompanion(
+              id: Value<String>(c.id),
+              name: Value<String>(c.name),
+              code: Value<String>(c.code),
+              address: Value<String>(c.address),
+              phone: Value<String>(c.phone),
+              isDefault: Value<bool>(c.isDefault),
+              isActive: Value<bool>(c.isActive),
+              createdAt: Value<DateTime>(c.createdAt),
+              updatedAt: Value<DateTime>(c.updatedAt),
+            ),
+        ]);
+      });
+
+  @override
+  Future<void> deleteIds(List<String> ids) => (_db.delete(_db.branches)..where((Branches t) => t.id.isIn(ids))).go();
 }

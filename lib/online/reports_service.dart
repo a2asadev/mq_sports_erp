@@ -9,25 +9,26 @@ class ReportsService {
 
   final ApiClient _api;
 
-  Map<String, String> _period(String? from, String? to) => <String, String>{
+  Map<String, String> _period(String? from, String? to, [String? branchId]) => <String, String>{
         if (from != null) 'from': from,
         if (to != null) 'to': to,
+        if (branchId != null && branchId.isNotEmpty) 'branchId': branchId,
       };
 
   /// [groupBy] is product, category, customer or cashier; [from] and [to] are "YYYY-MM-DD" (both included).
-  Future<SalesReport> sales({required String groupBy, String? from, String? to}) async {
-    final ApiResponse r = await _api.get('/v1/reports/sales', query: <String, String>{..._period(from, to), 'groupBy': groupBy});
+  Future<SalesReport> sales({required String groupBy, String? from, String? to, String? branchId}) async {
+    final ApiResponse r = await _api.get('/v1/reports/sales', query: <String, String>{..._period(from, to, branchId), 'groupBy': groupBy});
     return SalesReport.fromMap(r.asMap);
   }
 
   /// Sales per person and the hours they worked, for the days [from] to [to].
-  Future<StaffReport> staff({String? from, String? to}) async => StaffReport.fromMap((await _api.get('/v1/reports/staff', query: _period(from, to))).asMap);
+  Future<StaffReport> staff({String? from, String? to, String? branchId}) async => StaffReport.fromMap((await _api.get('/v1/reports/staff', query: _period(from, to, branchId))).asMap);
 
   /// A shift log from the sales: each person's first and last sale of each day.
-  Future<ShiftsReport> shifts({String? from, String? to}) async => ShiftsReport.fromMap((await _api.get('/v1/reports/shifts', query: _period(from, to))).asMap);
+  Future<ShiftsReport> shifts({String? from, String? to, String? branchId}) async => ShiftsReport.fromMap((await _api.get('/v1/reports/shifts', query: _period(from, to, branchId))).asMap);
 
-  Future<ProfitReport> profit({String? from, String? to}) async {
-    final ApiResponse r = await _api.get('/v1/reports/profit', query: _period(from, to));
+  Future<ProfitReport> profit({String? from, String? to, String? branchId}) async {
+    final ApiResponse r = await _api.get('/v1/reports/profit', query: _period(from, to, branchId));
     return ProfitReport.fromMap(r.asMap);
   }
 

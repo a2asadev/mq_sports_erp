@@ -20,6 +20,7 @@ class Users extends Table {
   TextColumn get role => text().withDefault(const Constant('staff'))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
   TextColumn get photoUrl => text().withDefault(const Constant(''))();
+  TextColumn get branchId => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -164,6 +165,7 @@ class Purchases extends Table {
   DateTimeColumn get purchaseDate => dateTime()();
   TextColumn get notes => text().withDefault(const Constant(''))();
   RealColumn get totalAmount => real().withDefault(const Constant(0))();
+  TextColumn get branchId => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -203,6 +205,7 @@ class StockMovements extends Table {
   RealColumn get unitCost => real().withDefault(const Constant(0))();
   DateTimeColumn get movementDate => dateTime()();
   TextColumn get note => text().withDefault(const Constant(''))();
+  TextColumn get branchId => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -218,6 +221,7 @@ class StockAudits extends Table {
   TextColumn get note => text().withDefault(const Constant(''))();
   TextColumn get countedById => text().withDefault(const Constant(''))();
   TextColumn get countedByName => text().withDefault(const Constant(''))();
+  TextColumn get branchId => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -263,6 +267,7 @@ class Orders extends Table {
   TextColumn get shippingAddress => text().withDefault(const Constant(''))();
   TextColumn get channel => text().withDefault(const Constant('admin'))();
   TextColumn get notes => text().withDefault(const Constant(''))();
+  TextColumn get branchId => text().withDefault(const Constant(''))();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -346,4 +351,21 @@ class SyncKv extends Table {
 
   @override
   Set<Column<Object>> get primaryKey => <Column<Object>>{key};
+}
+
+/// The business's branches (server-confirmed; an admin changes them online).
+@DataClassName('BranchRow')
+class Branches extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get code => text().withDefault(const Constant(''))();
+  TextColumn get address => text().withDefault(const Constant(''))();
+  TextColumn get phone => text().withDefault(const Constant(''))();
+  BoolColumn get isDefault => boolean().withDefault(const Constant(false))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => <Column<Object>>{id};
 }

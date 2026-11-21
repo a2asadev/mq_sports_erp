@@ -185,6 +185,7 @@ class OrderModel implements SyncableModel {
     this.channel = 'admin',
     this.notes = '',
     List<OrderStatusEntry>? statusHistory,
+    this.branchId = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : id = id ?? const Uuid().v4(),
@@ -231,6 +232,8 @@ class OrderModel implements SyncableModel {
   final String channel;
   final String notes;
   final List<OrderStatusEntry> statusHistory;
+  /// The branch the sale was made in ('' = the default branch).
+  final String branchId;
   final DateTime createdAt;
 
   @override
@@ -270,6 +273,7 @@ class OrderModel implements SyncableModel {
         vatRate: tax.vatRate,
         taxInclusive: tax.inclusive,
         channel: channel,
+        branchId: branchId,
         notes: notes,
         statusHistory: statusHistory,
         createdAt: createdAt,
@@ -312,6 +316,7 @@ class OrderModel implements SyncableModel {
           statusHistory.map((OrderStatusEntry e) => e.toMap()).toList(),
       'subtotal': subtotal,
       'totalAmount': totalAmount,
+      'branchId': branchId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -348,6 +353,7 @@ class OrderModel implements SyncableModel {
           .whereType<Map<String, dynamic>>()
           .map(OrderStatusEntry.fromMap)
           .toList(),
+      branchId: map['branchId'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -355,6 +361,7 @@ class OrderModel implements SyncableModel {
 
   /// Returns a modified copy. `updatedAt` is bumped to now unless given.
   OrderModel copyWith({
+    String? branchId,
     OrderStatus? status,
     List<OrderStatusEntry>? statusHistory,
     String? notes,
@@ -381,6 +388,7 @@ class OrderModel implements SyncableModel {
       channel: channel,
       notes: notes ?? this.notes,
       statusHistory: statusHistory ?? this.statusHistory,
+      branchId: branchId ?? this.branchId,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );

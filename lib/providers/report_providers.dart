@@ -57,6 +57,9 @@ final StateProvider<ReportPeriod> reportPeriodProvider =
     StateProvider<ReportPeriod>((Ref ref) => ReportPeriod.preset(ReportRange.thisMonth, DateTime.now()));
 
 /// product, category, customer or cashier.
+/// The branch the reports look at ('' = all branches). Only used when the business works with branches.
+final StateProvider<String> reportBranchProvider = StateProvider<String>((Ref ref) => '');
+
 final StateProvider<String> salesGroupProvider = StateProvider<String>((Ref ref) => 'product');
 
 /// How many days back "stock that does not sell" looks.
@@ -65,25 +68,25 @@ final StateProvider<int> stockDaysProvider = StateProvider<int>((Ref ref) => 90)
 final AutoDisposeFutureProvider<SalesReport> salesReportProvider = FutureProvider.autoDispose<SalesReport>((Ref ref) {
   final ReportPeriod period = ref.watch(reportPeriodProvider);
   ref.watch(syncTickProvider);
-  return ref.watch(reportsServiceProvider).sales(groupBy: ref.watch(salesGroupProvider), from: period.fromKey, to: period.toKey);
+  return ref.watch(reportsServiceProvider).sales(groupBy: ref.watch(salesGroupProvider), from: period.fromKey, to: period.toKey, branchId: ref.watch(reportBranchProvider));
 });
 
 final AutoDisposeFutureProvider<StaffReport> staffReportProvider = FutureProvider.autoDispose<StaffReport>((Ref ref) {
   final ReportPeriod period = ref.watch(reportPeriodProvider);
   ref.watch(syncTickProvider);
-  return ref.watch(reportsServiceProvider).staff(from: period.fromKey, to: period.toKey);
+  return ref.watch(reportsServiceProvider).staff(from: period.fromKey, to: period.toKey, branchId: ref.watch(reportBranchProvider));
 });
 
 final AutoDisposeFutureProvider<ShiftsReport> shiftsReportProvider = FutureProvider.autoDispose<ShiftsReport>((Ref ref) {
   final ReportPeriod period = ref.watch(reportPeriodProvider);
   ref.watch(syncTickProvider);
-  return ref.watch(reportsServiceProvider).shifts(from: period.fromKey, to: period.toKey);
+  return ref.watch(reportsServiceProvider).shifts(from: period.fromKey, to: period.toKey, branchId: ref.watch(reportBranchProvider));
 });
 
 final AutoDisposeFutureProvider<ProfitReport> profitReportProvider = FutureProvider.autoDispose<ProfitReport>((Ref ref) {
   final ReportPeriod period = ref.watch(reportPeriodProvider);
   ref.watch(syncTickProvider);
-  return ref.watch(reportsServiceProvider).profit(from: period.fromKey, to: period.toKey);
+  return ref.watch(reportsServiceProvider).profit(from: period.fromKey, to: period.toKey, branchId: ref.watch(reportBranchProvider));
 });
 
 final AutoDisposeFutureProvider<TaxReport> taxReportProvider = FutureProvider.autoDispose<TaxReport>((Ref ref) {

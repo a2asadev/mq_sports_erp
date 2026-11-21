@@ -17,6 +17,7 @@ class UserModel implements SyncableModel {
     this.isActive = true,
     this.photoUrl = '',
     this.permissions,
+    this.branchId = '',
     DateTime? createdAt,
     DateTime? updatedAt,
   })  : createdAt = createdAt ?? DateTime.now(),
@@ -36,6 +37,8 @@ class UserModel implements SyncableModel {
   /// What this person may do now, as the server last said (null until it has: then the role's defaults apply).
   /// Only the signed-in user's own record carries it.
   final List<String>? permissions;
+  /// The person's home branch ('' = any).
+  final String branchId;
   final DateTime createdAt;
 
   @override
@@ -61,6 +64,7 @@ class UserModel implements SyncableModel {
       'isActive': isActive,
       'photoUrl': photoUrl,
       if (permissions != null) 'permissions': permissions,
+      'branchId': branchId,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
@@ -76,6 +80,7 @@ class UserModel implements SyncableModel {
       isActive: map['isActive'] as bool? ?? false,
       photoUrl: map['photoUrl'] as String? ?? '',
       permissions: map['permissions'] is List<Object?> ? <String>[for (final Object? p in map['permissions'] as List<Object?>) '$p'] : null,
+      branchId: map['branchId'] as String? ?? '',
       createdAt: DateTime.tryParse(map['createdAt'] as String? ?? ''),
       updatedAt: DateTime.tryParse(map['updatedAt'] as String? ?? ''),
     );
@@ -83,6 +88,7 @@ class UserModel implements SyncableModel {
 
   /// Returns a modified copy. `updatedAt` is bumped to now unless given.
   UserModel copyWith({
+    String? branchId,
     String? displayName,
     String? phoneNumber,
     UserRole? role,
@@ -100,6 +106,7 @@ class UserModel implements SyncableModel {
       isActive: isActive ?? this.isActive,
       photoUrl: photoUrl ?? this.photoUrl,
       permissions: permissions ?? this.permissions,
+      branchId: branchId ?? this.branchId,
       createdAt: createdAt,
       updatedAt: updatedAt ?? DateTime.now(),
     );
